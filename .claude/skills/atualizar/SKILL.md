@@ -29,7 +29,7 @@ e em recados (contrato do robô, `AGENTS.md` seção 6).
 2. A origem deste computador: `cat .origem`. Se o arquivo não existe, perguntar antes de escrever
    qualquer coisa: *"Este é o seu computador principal? Se sim, eu escrevo o diário sem
    sufixo. Se é outro computador ou outra pessoa, me diz um nome curto pra ele (ex: notebook,
-   alcides)."* Criar `.origem` com `dono` ou com o nome (minúsculas, sem espaço). O arquivo fica
+   socio, escritorio)."* Criar `.origem` com `dono` ou com o nome (minúsculas, sem espaço). O arquivo fica
    fora do git.
 
 ## Passo 1 · separar o que tem valor depois que a sessão terminar
