@@ -24,10 +24,12 @@ propõe, nunca sobrescreve, e adapta tudo aos nomes que ele usa (se a memória d
 1. **A primeira mensagem da conversa é só esta, e nada mais:** "Se o seu sistema te atende como
    está, não precisa atualizar. Quer ver o que a versão nova traz, e escolher o que entra?"
    **PARE.**
-2. **Cópia de segurança antes de qualquer mudança.** Se a pasta tem git: `git add -A && git commit
-   -m "antes de atualizar pra <versão>"` (aqui o `add -A` é de propósito: é a foto inteira). Sem
-   git: `cp -R` da pasta inteira pra `<pasta>-antes-da-<versão>-<data>`, conferindo a contagem de
-   arquivos dos dois lados. Dizer onde a cópia está.
+2. **Cópia de segurança antes de qualquer mudança, sempre a pasta inteira:** `cp -R` da pasta
+   pra `<pasta>-antes-da-<versão>-<data>` (ao lado, fora dela), conferindo a contagem de arquivos
+   dos dois lados. Commit de git **não substitui** essa cópia: o `.gitignore` da 1.0 esconde as
+   pastas de trabalho, então um commit "antes" não guarda o que mais importa. Se a pasta tem git,
+   fazer o commit também (`git add -A && git commit -m "antes de atualizar pra <versão>"`), como
+   segundo colete. Dizer onde a cópia está.
 3. **No máximo 3 mudanças por rodada.** Terminou as três, pergunta se segue. "Faz tudo, decide tu"
    vale pra aplicar; não vale pra apagar nada nem pra mexer em arquivo que ele escreveu.
 4. **Antes/depois na tela** de todo arquivo que muda, antes de mudar.
