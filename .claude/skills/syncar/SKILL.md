@@ -1,97 +1,141 @@
 ---
 name: syncar
 description: >
-  Salva o estado atual do workspace no GitHub (commit + push).
-  Use quando quiser garantir que o trabalho está seguro, ao final de uma sessão produtiva,
-  ou quando o usuário disser "salva no github", "faz commit", "synca", "syncar",
-  "backup no github", "salva tudo", "manda pro github".
-  Também configura o git pela primeira vez se ainda não estiver configurado.
+  Manda o trabalho pro GitHub com cuidado: mostra o que vai subir, nunca sobe segredo,
+  puxa o que mudou em outro lugar antes de enviar e diz o que subiu. Configura o git e o
+  GitHub na primeira vez.
+  Use quando o usuário chamar /syncar, ou disser "synca", "salva no github", "faz commit",
+  "manda pro github", "backup", "salva tudo".
 ---
 
-# /syncar — Salvar no GitHub
+# /syncar · mandar pro GitHub
+
+**Esta skill não decide nada.** Ela manda pro GitHub o que já foi escrito. Guardar a sessão no
+lugar certo é `/atualizar`. Se o usuário chamou o `/syncar` numa sessão que rendeu trabalho e o
+`/atualizar` não rodou, oferecer primeiro: *"quer que eu guarde a sessão antes de subir?"*.
+
+Regras que valem em toda falha: **nunca jargão** (nada de rebase, HEAD, upstream, fast-forward,
+merge, conflito) e **nunca travar mudo**. Toda falha vira uma frase: o que aconteceu, o que continua
+seguro, qual é o próximo passo. E o primeiro fato é sempre este: falha de sincronização não apaga
+arquivo; o trabalho está no computador.
 
 ## Verificação inicial
 
-Rode os dois comandos pra entender o estado atual:
-
 ```bash
-git status --short
+git status --short 2>&1
 git remote get-url origin 2>/dev/null
+cat .origem 2>/dev/null
 ```
 
----
+## Fluxo 0 · a pasta nunca foi preparada pra salvar
 
-## Fluxo A: sem remote configurado (primeira vez)
-
-Se `git remote get-url origin` não retornar nada, o aluno ainda não conectou ao GitHub.
-
-Diga:
-
-> "Seu workspace ainda não está conectado a um repositório no GitHub.
->
-> Pra conectar, você precisa de um repositório no GitHub. Se ainda não criou:
-> 1. Acesse github.com/new
-> 2. Crie um repositório (pode ser privado, nome sugerido: `meu-negocio` ou `workspace`)
-> 3. Não inicialize com README — deixa vazio
-> 4. Me passa o link do repositório criado (ex: https://github.com/seunome/workspace)"
-
-Após receber o link, configure e envie:
+`git status` respondeu algo como *not a git repository*: ligar o salvamento e contar depois.
 
 ```bash
-git remote add origin [link]
+git init
 git branch -M main
-git push -u origin main
 ```
 
-Confirme:
+> "Liguei o salvamento nesta pasta. Por enquanto está tudo só no seu computador; falta conectar num
+> lugar de fora pra ter cópia de segurança. Quer fazer isso agora? Leva 2 minutos."
 
-> "Conectado. Seu workspace está agora em [link].
-> Sempre que quiser salvar, é só me pedir 'synca' (ou rodar /syncar) que eu faço o commit e o push."
+Seguir pro Fluxo A.
 
----
+## Fluxo A · sem GitHub conectado (primeira vez)
 
-## Fluxo B: remote configurado, tem mudanças
+> "Seu sistema ainda não está conectado a um repositório no GitHub. Se ainda não criou:
+> 1. Acesse github.com/new
+> 2. Crie um repositório **privado** (nome sugerido: `meu-negocio`)
+> 3. Não inicialize com README, deixa vazio
+> 4. Me passa o link (ex: https://github.com/seunome/meu-negocio)"
 
-Se `git status` mostrar arquivos modificados, liste o que vai ser salvo e faça o commit:
+Com o link: `git remote add origin <link>` e seguir pro Fluxo B (o primeiro envio é
+`git push -u origin main`). Se o `git push` pedir login: *"seu computador não está conectado à sua
+conta do GitHub. É uma vez só: rode `gh auth login` e siga o que aparecer. Te ajudo se quiser."*
+
+## Fluxo B · tem mudanças pra subir
+
+### 1. Mostrar o que vai subir, e barrar o que não pode
+
+Listar os arquivos de `git status --short` em linguagem de gente (não a saída crua): *"vão subir
+3 arquivos novos e 2 alterados: a proposta da Acme, o diário de hoje, ..."*. Antes disso, três
+conferências, sem perguntar:
+
+- **Segredo:** procurar nos arquivos que vão subir por cara de chave (`sk-`, `ghp_`, `AKIA`,
+  `-----BEGIN`, `password=`, `token=`, `api_key`). Achou: **não sobe esse arquivo**, avisar
+  qual e onde, e sugerir mover a chave pro `.env`.
+- **Pesado:** arquivo acima de 50 MB fica de fora, e avisa: *"tem arquivo pesado demais pro GitHub
+  (vídeo, zip); esse fica só no seu computador."*
+- **Nada de `git add -A` cego.** Adicionar pelo que foi listado e aprovado:
+  `git add <arquivos>` (ou `git add -A` só depois de mostrar a lista e sem nenhum barrado).
+
+**Primeira sincronização depois de atualizar o `.gitignore`:** a lista pode ser um paredão de
+arquivos (as pastas de trabalho, que antes não subiam). Avisar em uma linha: *"é um monte de
+arquivo porque é a primeira vez que o seu trabalho sobe; é só desta vez."*
+
+### 2. Trazer o que mudou fora daqui, antes de mandar
 
 ```bash
-git add -A
-git commit -m "sync: [descrição curta do que foi feito]"
+git pull --ff-only 2>&1
+```
+
+Se a resposta disser que as versões divergiram (este computador e o GitHub mudaram os dois):
+
+> "Seu sistema mudou em outro lugar também (outro computador, outra pessoa, ou um robô). Vou
+> trazer o que está lá antes de mandar o seu, pra não atropelar nada."
+
+Aí: `git stash` do que ainda não foi commitado (se houver), `git pull --rebase`, `git stash pop`.
+Se o git parar dizendo que **o mesmo arquivo mudou nos dois lados**:
+
+- arquivo do diário (`_memoria/diario/`) ou recado: não devia acontecer (cada origem tem o seu).
+  Ficar com os dois blocos, um embaixo do outro, e seguir.
+- arquivo destilado (`agora.md`, `andamento.md`, `empresa.md`, qualquer `_contexto/`):
+  **evento supervisionado.** Fazer backup antes (`cp <arquivo> <arquivo>.antes-de-juntar`),
+  mostrar as duas versões em linguagem de gente, propor a junção (o conteúdo dos dois, destilado
+  de novo), e só aplicar com o sim. Sem sim, `git rebase --abort` e:
+  *"O mesmo arquivo foi editado aqui e em outro lugar. Não vou juntar sozinho pra não apagar nada
+  seu. Seu trabalho está salvo no computador; me chama que a gente junta os dois."*
+
+### 3. Commit com a origem identificada, push só pra frente
+
+```bash
+git commit -m "sync (<origem>): <o que foi feito, curto>"
 git push
 ```
 
-Para a descrição do commit, use o que foi feito na sessão (ex: "sync: nova proposta cliente X", "sync: carrossel episódio 42", "sync: atualização de contexto"). Se não souber o que colocar, use `sync: atualizações do dia`.
+A origem vem do `.origem` (`dono` ou o nome da máquina). A descrição vem da sessão ("sync (dono):
+proposta Acme + diário"); sem saber, `sync (<origem>): atualizações do dia`. Nunca `push --force`.
 
-Após o push, confirme:
+### 4. Dizer o que subiu
 
-> "Salvo. Seu trabalho está seguro em [url do remote]."
+> "Subiu: a proposta da Acme, o diário de hoje e o onde-paramos. 3 arquivos, em [link do repositório]."
 
----
+Não dizer "seu trabalho está seguro": dizer **o que** subiu. Se algo ficou de fora (segredo, pesado),
+repetir o quê e por quê.
 
-## Fluxo C: sem mudanças
+## Fluxo C · sem mudanças
 
-Se `git status` não mostrar nada:
+> "Nada novo pra subir. Está tudo sincronizado."
 
-> "Tudo já está sincronizado. Nenhuma mudança nova pra salvar."
+Se `git pull --ff-only` trouxe coisa nova, dizer o que veio: *"trouxe 2 arquivos que mudaram em
+outro lugar: ..."*.
 
----
+## Fluxo D · deu errado
 
-## Fluxo D: erro no push
+| o que aconteceu | o que dizer |
+|---|---|
+| sem internet | "Não consegui alcançar o GitHub agora. Parece internet. Seu trabalho está salvo aqui no computador; quando voltar, é só pedir 'synca'." |
+| autenticação falhou | "Seu computador não está conectado à sua conta do GitHub. É uma vez só: `gh auth login`. Te ajudo se quiser." |
+| repositório não existe ou não é seu | "O endereço configurado não existe ou sua conta não tem acesso. Quer conferir o link comigo?" |
+| recusou porque tem coisa nova lá | seguir o passo 2 do Fluxo B |
+| arquivo grande demais | "Tem arquivo pesado demais pro GitHub. Esse fica só no computador. Quer ver quais?" |
+| qualquer outra | "Não consegui subir, e essa eu não sei resolver de cabeça. Seu trabalho está seguro no computador. Quer que eu investigue?" |
 
-Se o push falhar (credenciais, conexão, etc.), mostre o erro de forma simples:
-
-> "Não consegui enviar pro GitHub. O erro foi: [mensagem]
->
-> Causas mais comuns:
-> - Sem conexão com internet
-> - Precisa configurar autenticação no GitHub (token ou SSH)
->
-> Se quiser resolver agora, me diz e eu te ajudo passo a passo."
-
----
+O erro cru só aparece se o usuário pedir.
 
 ## Regras
 
-- Nunca commitar `.env`, `.env.local` ou qualquer arquivo com chaves secretas
-- Tom direto — não explica git em detalhes a não ser que o usuário pergunte
-- Se der erro, sempre mostrar o que fazer a seguir — nunca só mostrar o erro
+- Nunca subir `.env`, chave, token ou senha. Achou: barra e avisa.
+- Nunca `git add -A` sem antes mostrar a lista. Nunca `push --force`. Nunca `reset --hard`.
+- Antes de qualquer coisa que possa apagar trabalho: parar e perguntar.
+- Tom direto; não explicar git a não ser que perguntem.

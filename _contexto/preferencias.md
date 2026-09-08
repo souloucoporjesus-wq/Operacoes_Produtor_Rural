@@ -1,4 +1,4 @@
-<!-- quem alimenta: o /setup semeia; o /atualizar acrescenta correção ou preferência de trabalho. Lido em toda conversa (boot). -->
+<!-- quem alimenta: o /setup semeia; o /atualizar acrescenta correção ou preferência de trabalho. Lido em toda conversa (boot). Teto: 40 linhas; estourou, vira ponteiro pra arquivo próprio. -->
 # Preferências de Comunicação
 
 <!-- NOT CONFIGURED -->

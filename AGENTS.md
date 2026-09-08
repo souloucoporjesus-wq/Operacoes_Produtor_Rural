@@ -51,7 +51,7 @@ diário de outra origem, avisa se o `agora.md` está velho.
 | onde algo está hospedado (site, domínio, servidor, banco, DNS) | `_contexto/infra.md` |
 | identidade visual e como a marca fala com o cliente | `_contexto/marca/` (começa por `design-guide.md`) |
 | por que algo foi decidido, ou antes de mudar uma decisão | `_memoria/decisoes.md` |
-| o que aconteceu num dia, ou pra voltar no tempo | `_memoria/diario/` |
+| o que aconteceu num dia, ou pra voltar no tempo | `_memoria/diario/` (mais de 90 dias: `_memoria/arquivo/`) |
 | recado deixado por um robô ou por outra pessoa | `_memoria/recados/` |
 | de um contato ou fornecedor recorrente (não é cliente, não é time) | `_contexto/pessoas/<nome>.md` |
 | de um projeto ou cliente, pra trabalhar nele | a pasta dele: `AGENTS.md` + `contexto.md` + `andamento.md` |
@@ -127,12 +127,15 @@ Pergunta sobre o passado (o que foi feito, quando, por quê, o que ficou combina
 nas decisões **antes** de responder. Nunca responder de memória de sessão nem completar com suposição.
 Não achou: dizer que não achou.
 
-## 8. Fim de sessão
+## 8. Fim de sessão (e a oferta ativa)
 
 Sessão que rendeu trabalho termina com `/atualizar`. É ele que escreve o diário, o `agora.md`, as
-decisões e o `_contexto/`, e fecha dizendo o que escreveu onde. Quando você estiver se despedindo e
-a sessão rendeu, o agente pergunta se roda o `/atualizar` agora. Depois dele, `/syncar` se este sistema
-está no GitHub. Correção dita no meio da sessão: o agente responde "anotado, salvo no fim" e segue.
+decisões e o `_contexto/`, e fecha dizendo o que escreveu onde. Depois dele, `/syncar` se este sistema
+está no GitHub. Nada disso depende de você lembrar: **o agente oferece**. Sinal de encerramento na
+conversa ("era isso", "valeu", "até amanhã") ou tarefa que mudou o contexto (cliente novo, ferramenta
+ligada, decisão tomada, correção do jeito de trabalhar) → o agente pergunta, em uma linha, se roda o
+`/atualizar` agora. Correção dita no meio ("não faça mais isso", "prefiro assim") vira "anotado, salvo
+no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivial.
 
 | comando | o que faz | o que não faz |
 |---|---|---|
@@ -148,4 +151,5 @@ está no GitHub. Correção dita no meio da sessão: o agente responde "anotado,
 - `_memoria/` · o que aconteceu e por quê: `diario/`, `decisoes.md`, `recados/`
 - `sistema/` · o motor do kit (scripts e modelos). Você não precisa abrir
 - `.claude/` · as habilidades (skills) deste sistema
+- `.ratosos` · a versão do kit (uma linha). Não apague: é como a atualização sabe de onde você parte
 <!-- pastas de trabalho abaixo, criadas pelo /setup conforme o negócio -->

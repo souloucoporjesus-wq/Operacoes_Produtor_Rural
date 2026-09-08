@@ -7,7 +7,7 @@
 !.gitignore
 
 # arquivo sem extensão que o kit pode precisar (o `*` acima come qualquer um)
-!VERSION
+!.ratosos
 !LICENSE
 
 # texto e estrutura

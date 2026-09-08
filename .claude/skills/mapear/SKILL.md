@@ -7,7 +7,7 @@ description: >
   "quero criar skills", "mapear tarefas", ou "personalizar o ambiente".
 ---
 
-# /mapear — Mapeamento de Processos
+# /mapear: Mapeamento de Processos
 
 ## Contexto
 
@@ -17,12 +17,12 @@ Essa skill é o segundo passo depois do `/setup`. O setup configurou quem o usu�
 
 1. Ler `_contexto/empresa.md` pra entender o negócio
 2. Ler `_contexto/estrategia.md` pra saber o foco atual
-3. Ler `templates/ferramentas/catalogo.md` pra saber quais APIs, CLIs e MCPs estão disponíveis
-4. Ler `templates/skills/catalogo.md` pra saber quais skills externas prontas existem
+3. Ler `_contexto/ferramentas.md` (o que está ligado aqui) e o catálogo de ferramentas do kit (linha "modelos e scripts" do mapa; numa instalação nova, `sistema/templates/ferramentas/catalogo.md`) pra saber o que dá pra usar
+4. Ler o catálogo de skills externas do kit (`sistema/templates/skills/catalogo.md` numa instalação nova)
 5. Listar as pastas que já existem no workspace (pra não criar duplicatas)
-6. Listar os templates disponíveis em `templates/skills/` (pra saber o que já temos pronto)
+6. Listar os modelos de skill do kit (`sistema/templates/skills/` numa instalação nova), pra saber o que já temos pronto
 
-## Fase 1 — Descoberta
+## Fase 1: Descoberta
 
 Começar com uma pergunta aberta:
 
@@ -41,31 +41,31 @@ O objetivo é montar uma lista clara de processos repetitivos. Pra cada um, ente
 - **Se gera um entregável** (arquivo, documento, post) ou é só um processo
 - **Se segue um passo a passo consistente** ou varia muito
 
-## Fase 2 — Apresentar o mapa
+## Fase 2: Apresentar o mapa
 
 Quando tiver entendido o suficiente (geralmente 3-6 processos), apresentar o mapa:
 
 > "Beleza, identifiquei esses processos no seu dia a dia:
 >
-> 1. **[nome do processo]** — [frequência] — [gera entregável / é um fluxo]
-> 2. **[nome do processo]** — [frequência] — [gera entregável / é um fluxo]
+> 1. **[nome do processo]** · [frequência] · [gera entregável / é um fluxo]
+> 2. **[nome do processo]** · [frequência] · [gera entregável / é um fluxo]
 > 3. ...
 >
 > Qual você quer organizar primeiro?"
 
 Aguardar o usuário escolher. Mapear um por vez.
 
-## Fase 3 — Organizar cada processo
+## Fase 3: Organizar cada processo
 
 Para o processo escolhido, seguir esta lógica:
 
-### 3.1 — Verificar se já tem algo pronto
+### 3.1: Verificar se já tem algo pronto
 
 Verificar em duas fontes, nessa ordem:
 
-**1. Templates de skills** (`templates/skills/`) — skills editáveis que vão ser instaladas no projeto.
+**1. Modelos de skill do kit** (a pasta de modelos do mapa; `sistema/templates/skills/`): skills editáveis que vão ser instaladas no projeto.
 
-**2. Catálogo de skills externas** (`templates/skills/catalogo.md`) — skills globais ou nativas do Claude Code que já estão prontas.
+**2. Catálogo de skills externas** (`catalogo.md` na mesma pasta de modelos): skills globais ou nativas que já estão prontas.
 
 **Se encontrar template compatível:**
 
@@ -90,7 +90,7 @@ Se o usuário quiser adaptar o comportamento, criar uma skill local que compleme
 
 Seguir pra criação manual (3.3).
 
-### 3.2 — Decidir a estrutura
+### 3.2: Decidir a estrutura
 
 Analisar as pastas que já existem no workspace e decidir:
 
@@ -117,9 +117,9 @@ Antes de criar qualquer coisa, mostrar o plano:
 
 Só criar depois que o usuário confirmar.
 
-### 3.3 — Criar a skill personalizada
+### 3.3: Criar a skill personalizada
 
-Antes de criar, ler `templates/ferramentas/catalogo.md` e verificar se alguma ferramenta disponível resolve parte do fluxo que o usuário descreveu. Por exemplo:
+Antes de criar, ler `_contexto/ferramentas.md` e o catálogo de ferramentas do kit, e verificar se alguma ferramenta disponível resolve parte do fluxo que o usuário descreveu. Por exemplo:
 
 - O processo envolve publicar em rede social? → verificar se Post for Me ou Canva MCP ajudam
 - Precisa gerar imagem? → verificar Gemini ou DALL-E
@@ -133,31 +133,31 @@ Se encontrar ferramenta relevante, incorporar na skill e avisar o usuário:
 
 A partir daqui o fluxo se divide em dois caminhos, dependendo do que aconteceu na 3.1:
 
-#### Caminho A — Adaptar template existente
+#### Caminho A: Adaptar template existente
 
-Quando a 3.1 encontrou um template compatível em `templates/skills/`, criar a skill diretamente a partir dele. Garantir:
+Quando a 3.1 encontrou um modelo compatível, criar a skill diretamente a partir dele. Garantir:
 
 1. O frontmatter tem `name` e `description` claros
-2. A skill lê o contexto relevante (`_contexto/preferencias.md`, `marca/design-guide.md` se for visual)
+2. A skill lê o contexto relevante (`_contexto/preferencias.md`; se for visual, o guia de design da marca, citado pelo nome, nunca por caminho fixo: o mapa do `AGENTS.md` resolve)
 3. O passo a passo reflete o que o usuário descreveu, não um fluxo genérico
 4. Se gera arquivo, a skill indica onde salvar
 5. O tom e formato seguem as preferências do usuário
 6. Se usa ferramenta do catálogo, inclui as instruções de uso dentro da skill
 
-#### Caminho B — Criar do zero (delegar pra skill-creator)
+#### Caminho B: Criar do zero (delegar pra skill-creator)
 
 Quando a 3.1 não encontrou nem template nem skill externa que sirva, **invocar a skill-creator nativa do Claude Code via Skill tool** ao invés de tentar escrever a skill na mão. A skill-creator é especialista em estruturar skills com os princípios certos (concisão, degrees of freedom, anatomia correta de bundled resources).
 
 Antes de invocar, montar um briefing completo com tudo que você já sabe da entrevista e do contexto do projeto:
 
-- **O processo** — o que o usuário descreveu, em uma frase
-- **Frequência e gatilhos** — quando ele faz isso, o que dispara
-- **Passo a passo** — o fluxo que ele descreveu, sem inventar etapas
-- **Entregável** — se gera arquivo, qual formato e onde salvar
-- **Ferramentas relevantes** — o que do `templates/ferramentas/catalogo.md` se aplica
-- **Contexto do negócio** — pontos de `_contexto/empresa.md` e `_contexto/preferencias.md` que importam (tom de voz, estilo, restrições)
-- **Identidade visual** — se for skill que gera output visual, apontar pra `marca/design-guide.md`
-- **Onde salvar** — `.claude/skills/nome-da-skill/SKILL.md`
+- **O processo**: o que o usuário descreveu, em uma frase
+- **Frequência e gatilhos**: quando ele faz isso, o que dispara
+- **Passo a passo**: o fluxo que ele descreveu, sem inventar etapas
+- **Entregável**: se gera arquivo, qual formato e onde salvar
+- **Ferramentas relevantes**: o que de `_contexto/ferramentas.md` e do catálogo do kit se aplica
+- **Contexto do negócio**: pontos de `_contexto/empresa.md` e `_contexto/preferencias.md` que importam (tom de voz, estilo, restrições)
+- **Identidade visual**: se for skill que gera output visual, apontar pra "o guia de design da marca (ver mapa do `AGENTS.md`)", nunca caminho fixo
+- **Onde salvar**: `.claude/skills/nome-da-skill/SKILL.md`
 
 Passar esse briefing pra skill-creator e deixar ela estruturar a skill. Depois que ela retornar, **revisar o resultado** antes de finalizar:
 
@@ -170,7 +170,7 @@ Ajustar o que precisar ajustar antes de mostrar pro usuário. Se algo crítico f
 
 #### Estrutura final (vale pros dois caminhos)
 
-Salvar em `.claude/skills/nome-da-skill/SKILL.md` (local do projeto).
+Salvar em `.claude/skills/nome-da-skill/SKILL.md` na raiz. Se a skill é de **uma pasta de projeto** (só faz sentido lá, ou vai viajar com ela), salvar em `<pasta>/.claude/skills/nome-da-skill/SKILL.md` e acrescentar a linha dela no `AGENTS.md` daquela pasta ("Habilidades desta pasta").
 
 Se a skill precisar de arquivos de apoio (templates HTML, referências de design, exemplos de output), criar dentro da mesma pasta:
 
@@ -182,20 +182,20 @@ Se a skill precisar de arquivos de apoio (templates HTML, referências de design
 ```
 
 Depois de criar, **sincronizar a ponte pro Codex enxergar a skill nova** (symlink/junction refletem
-sozinhos; só cópia precisa re-sincronizar de fato). Rodar o script — é idempotente:
+sozinhos; só cópia precisa re-sincronizar de fato). Rodar o script: é idempotente:
 
 ```bash
-bash scripts/sync-ponte.sh        # Mac/Linux — nunca no Windows, mesmo em Git Bash
+bash sistema/scripts/sync-ponte.sh        # Mac/Linux, nunca no Windows, mesmo em Git Bash
 ```
 ```powershell
-powershell -ExecutionPolicy Bypass -File scripts\sync-ponte.ps1   # Windows — sempre este
+powershell -ExecutionPolicy Bypass -File sistema\scripts\sync-ponte.ps1   # Windows, sempre este
 ```
 
 Depois, confirmar:
 
 > "Pronto, a skill `/[nome]` tá instalada. Você pode rodar ela agora se quiser testar, ou a gente segue pro próximo processo."
 
-## Fase 4 — Continuar ou encerrar
+## Fase 4: Continuar ou encerrar
 
 Depois de cada processo mapeado, perguntar:
 
@@ -203,18 +203,12 @@ Depois de cada processo mapeado, perguntar:
 
 Se sim, voltar pra Fase 3 com o próximo processo.
 
-Se não, salvar os processos que ainda não foram mapeados em `tarefas.md`:
-
-```
-## Processos pra mapear depois
-- [ ] [processo não mapeado 1]
-- [ ] [processo não mapeado 2]
-```
+Se não, anotar os processos que ainda não foram mapeados nas **pendências do `_contexto/agora.md`** (uma linha: "mapear: [processo]").
 
 Mensagem final:
 
 > "[N] processos mapeados, [N] skills criadas.
-> Os que ficaram pendentes estão salvos em tarefas.md. Quando quiser continuar, é só rodar /mapear de novo."
+> Os que ficaram pendentes estão nas pendências do agora.md. Quando quiser continuar, é só rodar /mapear de novo."
 
 ## Regras
 

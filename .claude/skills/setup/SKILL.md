@@ -1,612 +1,261 @@
 ---
 name: setup
 description: >
-  Configura o Claude Code OS pro seu negócio. Faz perguntas sobre quem você é,
-  o que faz e como trabalha, e gera AGENTS.md, memória, estrutura de pastas e
-  lista de MCPs personalizados pro seu perfil.
-  Use quando o usuário chamar /setup, quando _contexto/empresa.md estiver vazio
-  ou ausente, ou quando disser "configurar o sistema", "primeira vez", "setup".
+  Configura o RatosOS pro seu negócio: entrevista curta (quem você é, o que faz, o que usa,
+  onde suas coisas moram na internet, como a sua marca é), preenche a memória do sistema,
+  cria as pastas de trabalho, prepara este computador e termina com a página bem-vindo.html
+  na sua identidade visual.
+  Use quando o usuário chamar /setup, quando _contexto/empresa.md tiver <!-- NOT CONFIGURED -->,
+  ou quando disser "configurar o sistema", "primeira vez", "setup", "começar do zero".
 ---
 
-# /setup — Configuração do Sistema
+# /setup · configurar o sistema
 
-## Passo 0 — Ambiente (silencioso, antes de tudo)
+Como esta skill se comporta: uma pergunta por vez, em conversa, esperando a resposta. Nunca
+despejar a lista. Resposta vaga ganha **uma** pergunta de acompanhamento e segue (insistir cansa e
+a pessoa abandona). Gera os arquivos todos de uma vez no fim, não durante as perguntas. Caminho de
+pasta vem do mapa do `AGENTS.md`; os citados aqui são os de uma instalação nova.
 
-Este kit serve Claude Code e Codex. Antes das perguntas, garantir que os dois enxergam as skills.
-Fazer isso sem alardear pro usuário — é setup técnico. Só reportar no fim se algo falhar.
+## Passo 0 · ambiente (silencioso, antes de tudo)
 
-**Criar a ponte `.agents/skills` (pro Codex), apontando pra `.claude/skills`.** Sempre criar,
-independente de qual agente está rodando agora — o aluno pode abrir no outro amanhã. Rodar o
-script de sincronização, que já resolve symlink (Mac/Linux) ou junction/cópia (Windows):
+Fazer sem alardear; só reportar no fim se algo falhar.
 
-```bash
-# Mac / Linux — nunca no Windows, mesmo em Git Bash (ln -s falha silenciosamente sem
-# privilégio elevado e cai pra cópia, mesmo reportando "symlink criado")
-bash scripts/sync-ponte.sh
-```
-```powershell
-# Windows — sempre este, mesmo se a sessão está rodando em Git Bash. É o único que
-# tenta junction (não exige privilégio nem Developer Mode; link de verdade, sem
-# precisar re-sincronizar depois)
-powershell -ExecutionPolicy Bypass -File scripts\sync-ponte.ps1
-```
-
-Detectar o SO pelo ambiente: se `uname` responder `Linux` ou `Darwin`, usar o `.sh`; em
-qualquer cenário Windows (incluindo Git Bash, onde `uname` responde `MINGW*`/`MSYS*`),
-usar sempre o `.ps1` via `powershell -ExecutionPolicy Bypass -File`. O script é idempotente:
-no Mac/Linux cria um symlink (que reflete `.claude/skills` sozinho pra sempre); no Windows
-cria junction (idem, sem precisar re-sincronizar), e só cai pra cópia se nem isso for possível.
-Quando a ponte é cópia, skill nova precisa re-sincronizar — o `/mapear` e o `/atualizar`
-rodam esse mesmo script no fim.
-
-**Validar (opcional, se der):** no Codex, `codex debug prompt-input` mostra a tabela de skill roots;
-se `.claude/skills` aparecer lá, a ponte funcionou. No Claude Code as skills já aparecem no `/`.
-
-Feito isso, seguir pra verificação inicial.
-
----
+1. **A ponte pro Codex.** Este kit roda no Claude Code e no Codex; os dois precisam enxergar as
+   skills. Rodar o script da ponte, que mora na pasta de scripts do sistema (`sistema/scripts/`):
+   ```bash
+   bash sistema/scripts/sync-ponte.sh                                     # Mac / Linux
+   ```
+   ```powershell
+   powershell -ExecutionPolicy Bypass -File sistema\scripts\sync-ponte.ps1   # Windows, sempre este
+   ```
+   Detectar o sistema: `uname` respondendo `Linux` ou `Darwin` usa o `.sh`; qualquer cenário
+   Windows (inclusive Git Bash, onde `uname` responde `MINGW*`/`MSYS*`) usa o `.ps1`. No Mac/Linux
+   vira symlink e reflete as skills sozinho; no Windows vira junction, e só cai pra cópia se nem
+   isso der (aí skill nova precisa re-sincronizar: o `/mapear` e o `/atualizar` rodam o script).
+2. **A estrutura mínima existe?** `_memoria/diario/`, `_memoria/recados/` (com `.gitkeep`),
+   `_memoria/decisoes.md`, `_contexto/marca/`, `.ratosos`. O kit já traz tudo; se algo faltar
+   (alguém apagou), recriar em silêncio.
 
 ## Verificação inicial
 
-Antes de qualquer coisa, verifique se `_contexto/empresa.md` existe e tem conteúdo real (não apenas o template).
+Se `_contexto/empresa.md` já tem conteúdo real (sem `<!-- NOT CONFIGURED -->`), o setup já rodou.
+Dizer isso e perguntar se quer refazer tudo ou só atualizar uma parte (aí ir direto à pergunta certa).
 
-- Se **não existe ou está vazio**: inicia o fluxo de onboarding abaixo.
-- Se **já tem conteúdo**: informa ao usuário que o setup já foi feito e pergunta se quer refazer ou apenas atualizar alguma parte.
+## Entrevista
 
----
+Abrir com uma frase:
 
-## Onboarding (primeira vez)
+> "Boa. Vou te fazer algumas perguntas pra configurar o sistema pro seu negócio. Quanto mais
+> específico, melhor ele trabalha pra você."
 
-Comece com uma mensagem curta de boas-vindas:
-
-> "Boa. Vou te fazer algumas perguntas pra configurar o sistema pro seu negócio. Responde com calma — quanto mais específico, melhor o sistema vai trabalhar pra ti."
-
-Faça as perguntas em sequência, uma por vez, em conversa natural. Não liste todas de uma vez. Espere a resposta de cada uma antes de ir pra próxima.
-
-### Pergunta 1
+### 1 · Nome
 "Qual é o seu nome e o nome do seu negócio?"
 
-### Pergunta 2 — Verificação de histórico
+### 2 · O que você já tem
+"Você já usa o Claude Code ou o Codex há algum tempo, ou é a primeira vez?"
 
-"Você já usa o Claude Code há algum tempo, ou é a primeira vez?"
+- **Já usa:** "Quer que eu tente carregar o que você já tem configurado em outros projetos, ou
+  prefere do zero?" Se quiser carregar: ler `~/.claude/CLAUDE.md` e a memória em
+  `~/.claude/projects/` (e `~/.codex/` se existir), montar um resumo (nome, negócio, o que faz, tom,
+  ferramentas), mostrar e pedir confirmação. Pular as perguntas já respondidas.
+- **Primeira vez:** "Você usa outro assistente com frequência (ChatGPT, Claude na web, Gemini)? Se
+  sim, dá pra puxar o contexto de lá." Se sim, mostrar este prompt pra ele colar lá e trazer a
+  resposta:
 
-**Se já usa há algum tempo:** perguntar:
+  ```
+  Preciso exportar o contexto do meu negócio das nossas conversas pra configurar uma ferramenta
+  nova. Responda com o que sabe sobre mim, deixando em branco o que não souber:
+  NOME · NEGÓCIO · O QUE FAZ (pra quem, 1-2 frases) · PRINCIPAIS ATIVIDADES · CLIENTES
+  (externos, uso interno, os dois) · EQUIPE · FERRAMENTAS QUE USO · ONDE MEU SITE/EMAIL/LOJA
+  ESTÃO HOSPEDADOS · IDENTIDADE VISUAL (cores, fontes, estilo) · COMO EU ESCREVO · O QUE EVITAR
+  EM TEXTO DE IA · OUTROS DETALHES
+  ```
+  Com a resposta, extrair, mostrar o resumo, confirmar, pular o que já veio.
 
-> "Quer que eu tente carregar o que você já tem configurado em outros projetos, ou prefere configurar do zero aqui?"
+### 3 · O que você produz
+"O que você mais produz no dia a dia? Pode ser mais de uma coisa." *(conteúdo, propostas,
+relatórios, código, emails, apresentações...)*
 
-- **Se quiser carregar:** executar o bloco **"Carregamento de contexto existente"** abaixo antes de continuar.
-- **Se preferir do zero:** continua normalmente pra Pergunta 3.
+### 4 · Pra quem
+"Você atende clientes externos, usa o sistema pro seu próprio negócio, ou os dois?"
 
-**Se for a primeira vez:** perguntar:
+### 5 · Foco
+"Qual é o seu principal foco agora? O que você está tentando fazer ou resolver nos próximos
+meses?" *(lançamento, crescer um canal, fechar clientes, organizar a operação...)*
 
-> "Você usa outro assistente de IA com frequência — ChatGPT, Claude na web, Gemini? Se sim, consigo pegar o contexto de lá pra não precisar responder tudo do zero."
+### 6 · Ferramentas
+"Quais ferramentas você usa hoje no trabalho? Cita as principais." Depois, os sete assuntos que
+todo negócio tem, em conversa (não como formulário):
 
-- **Se não usa outro assistente:** continua normalmente pra Pergunta 3.
-- **Se usa:** executar o bloco **"Importação de contexto de outro assistente"** abaixo antes de continuar.
+> "E o que você usa hoje pra cada uma dessas coisas? Pode responder 'nada', é resposta: mensagem
+> com cliente, tarefa e prazo, email, agenda, dinheiro entrando e saindo, ficha do cliente, reunião."
 
----
+Isso vira o `_contexto/ferramentas.md`. O que ele não tem fica como **não ligada**: é assim que
+o agente sabe depois que aquilo é possível e está faltando, em vez de achar que não dá. Não ligar
+nada ainda; é só o mapa.
 
-#### Bloco: Carregamento de contexto existente (Claude Code anterior)
+### 7 · Onde suas coisas moram
+"Onde ficam as suas coisas na internet: site, domínio, email, loja, área de membros, banco de
+dados? Só o nome do serviço (Hostinger, Vercel, Shopify, Kiwify, Google Workspace...). Nada de
+senha." Isso vira o `_contexto/infra.md`. Se não tem nada, tudo bem: a tabela fica vazia.
 
-Tentar ler, nessa ordem:
-1. `~/.claude/CLAUDE.md` — CLAUDE.md global (se existir)
-2. Arquivos de memória em `~/.claude/projects/` — procurar por arquivos relevantes (empresa, preferências, contexto)
-
-Com o que encontrar, montar um resumo e apresentar ao usuário:
-
-> "Encontrei isso no que você já tem configurado:
->
-> - **Nome / negócio:** [extraído]
-> - **O que faz:** [extraído]
-> - **Tom de voz:** [extraído]
-> - **Ferramentas:** [extraído]
-> - *(... outras informações encontradas)*
->
-> Está correto? Quer ajustar alguma coisa ou completar o que faltou?"
-
-Aguardar confirmação ou correções do usuário. Após confirmar, **pular as perguntas já respondidas** e continuar apenas com o que ficou em aberto (identidade visual, equipe, etc.).
-
-Se não encontrar nada relevante, informar:
-
-> "Não encontrei contexto salvo de outros projetos. Vamos configurar do zero — leva poucos minutos."
-
-E continuar normalmente pra Pergunta 3.
-
----
-
-#### Bloco: Importação de contexto de outro assistente (ChatGPT, Claude web, Gemini, etc.)
-
-Mostrar ao usuário o seguinte prompt pra copiar e colar no assistente que ele usa:
-
----
-
-> **Copia esse prompt e cola no seu assistente de IA:**
->
-> ```
-> Preciso exportar o contexto do meu negócio das nossas conversas para configurar uma nova ferramenta. Por favor, responda com o que sabe sobre mim nas seguintes categorias — se não souber algo, deixe em branco:
->
-> NOME: [seu nome completo]
-> NEGÓCIO: [nome do negócio ou projeto]
-> O QUE FAZ: [descrição do que você faz e pra quem, em 1-2 frases]
-> PRINCIPAIS ATIVIDADES: [o que você mais produz ou faz no dia a dia]
-> CLIENTES: [atende clientes externos, uso interno, ou os dois]
-> EQUIPE: [trabalha solo ou tem equipe — quem são]
-> FERRAMENTAS: [ferramentas que você usa com frequência no trabalho]
-> IDENTIDADE VISUAL: [cores, fontes, estilo da marca — se mencionou alguma vez]
-> TOM DE VOZ: [como você prefere escrever e se comunicar]
-> O QUE EVITAR: [o que te incomoda em textos ou respostas de IA]
-> OUTROS DETALHES: [qualquer outro contexto relevante sobre você ou seu negócio]
-> ```
-
----
-
-Após mostrar o prompt, dizer:
-
-> "Cola isso no [nome do assistente que o usuário mencionou] e traz a resposta aqui."
-
-Aguardar o usuário colar a resposta. Com o que vier:
-
-1. Extrair todas as informações da resposta
-2. Montar um resumo e apresentar pro usuário confirmar:
-
-> "Com base no que você trouxe, aqui está o que vou usar pra configurar:
->
-> - **Nome / negócio:** [extraído]
-> - **O que faz:** [extraído]
-> - **Tom de voz:** [extraído]
-> - **Ferramentas:** [extraído]
-> - *(... demais campos preenchidos)*
->
-> Está correto? Tem algo pra corrigir ou adicionar?"
-
-3. Aguardar confirmação ou ajustes
-4. **Pular as perguntas já respondidas** e continuar apenas com o que ficou em branco ou incerto (tipicamente: identidade visual, se não foi mencionada)
-
----
-
-### Pergunta 3
-"O que você mais produz no dia a dia? Pode ser mais de uma coisa."
-
-*(Exemplos: conteúdo pra redes sociais, propostas comerciais, relatórios, código, emails pra clientes, apresentações, combinação de tudo)*
-
-### Pergunta 4
-"Você atende clientes externos ou usa o sistema principalmente pro seu próprio negócio?"
-
-*(Ou os dois — pode responder livremente)*
-
-### Pergunta 4.5 — Foco atual
-
-"E qual é o seu principal foco agora? O que você tá tentando fazer ou resolver nos próximos meses?"
-
-*(Pode ser um lançamento, crescer um canal, fechar mais clientes, organizar a operação, aprender uma ferramenta — qualquer coisa que esteja na cabeça)*
-
-### Pergunta 5
-"Quais ferramentas você usa hoje no trabalho? Cita as principais."
-
-*(Exemplos: Notion, Google Drive, Canva, Gmail, Meta Ads, Google Ads, Figma, Slack, WhatsApp Business — qualquer uma que use com frequência)*
-
-### Pergunta 6 — Identidade visual
-
+### 8 · Identidade visual
 "Sua marca tem identidade visual? Se sim, como prefere compartilhar?"
 
-Apresentar as opções de forma natural, não como lista formal:
+> "Pode me mandar o link do site, jogar uns prints na pasta da marca (`_contexto/marca/`) e me
+> dizer os nomes, descrever em texto (cores, estilo, fontes), ou dizer que ainda não tem."
 
-> "Pode me mandar o link do seu site, jogar alguns prints na pasta `dados/` e me dizer o nome dos arquivos, descrever em texto mesmo (cores, estilo, fontes), ou dizer que ainda não tem definido. Qualquer uma dessas funciona."
+- **URL:** buscar com WebFetch, analisar cores dominantes, tipografia, estilo. Mostrar o que viu
+  antes de preencher: *"Vi no seu site: fundo X, destaque Y, tipografia sem serifa, estilo Z. Bate?"*
+- **Prints:** ler como imagem, analisar, mostrar antes de preencher.
+- **Texto:** usar direto.
+- **Não tem:** o guia fica com os campos em branco e um visual neutro até lá. Dizer isso em uma frase.
 
-**Se compartilhar URL:**
-- Buscar o conteúdo do site com WebFetch
-- Analisar: cores dominantes, tipografia aparente, estilo geral (clean/bold/editorial/etc), tom visual
-- Apresentar o que foi detectado antes de preencher o design-guide:
-  > "Vi no seu site: fundo [cor], destaque em [cor], tipografia sem serifa, estilo [adjetivo]. Bate com a sua marca?"
-- Ajustar conforme feedback e preencher `marca/design-guide.md`
+**Logo (sempre):** "Tem o logo em PNG ou SVG? Se tiver, joga na pasta da marca e me diz o nome. Se
+tiver versão pra fundo claro e escuro, manda as duas." Registrar na seção Logo do guia.
 
-**Se compartilhar imagens (prints de Instagram, logo, etc.):**
-- Pedir pro usuário colocar os arquivos na pasta `dados/` e informar os nomes
-- Ler os arquivos como imagem
-- Analisar cores, estilo, padrões visuais
-- Apresentar o que foi detectado antes de preencher, igual ao fluxo de URL
+**A metade verbal (sempre):** "E quando eu escrever no seu lugar, pro seu cliente: trato por tu ou
+por você? Pode ser informal ou tem que ser mais sério? Tem palavra ou promessa que você nunca
+faria?" Se ele tiver um texto que ficou bom (email, proposta antiga), pedir pra colar: exemplo
+real vale mais que descrição. Isso vira `_contexto/marca/tom-de-voz.md`.
 
-**Se descrever em texto:**
-- Usar a descrição diretamente pra preencher `marca/design-guide.md`
+### 9 · Como falar com você
+"Como você prefere que eu escreva pra você aqui no chat? O que mais te incomoda em texto de IA?"
+*("direto, sem enrolação" / "odeio travessão e 'mergulhe de cabeça'" / "pode ser informal")*.
+Isso é `preferencias.md` (como o agente fala **com você**), diferente da 8 (como a marca fala com
+o cliente).
 
-**Se ainda não tiver definido:**
-- Preencher o `marca/design-guide.md` com campos em branco e orientações pra preencher depois
-- Mencionar brevemente: "Sem problema — você preenche quando tiver. O Claude vai usar um visual neutro até lá."
+### 10 · Equipe e máquinas
+"Tem equipe ou é você que toca tudo? E você vai usar este sistema em mais de um computador?"
 
-**Logo (perguntar em todos os casos acima):**
+- Toca sozinho, um computador: **não perguntar mais nada**; a origem desta máquina é `dono`.
+- Tem sócio, equipe, robô, ou mais de um computador: "Como você quer chamar este computador aqui?
+  Um nome curto (ex: `mac-do-joao`, `notebook`). Quando outra pessoa ou outra máquina escrever no
+  sistema, cada uma assina com o nome dela, e nada se atropela." Se este é o computador principal
+  dele, a origem segue `dono`; o nome serve pros outros.
 
-Após resolver cores e estilo, perguntar:
+## Processamento
 
-> "Tem o logo da marca em PNG ou SVG? Se tiver, joga na pasta `marca/` e me diz o nome do arquivo. Se tiver uma versão pra fundo escuro e outra pra fundo claro, manda as duas."
-
-- Se o usuário fornecer: preencher a seção **Logo** do `marca/design-guide.md` com o caminho do arquivo e a variação (se houver)
-- Se não tiver logo: deixar a seção Logo em branco no design-guide
-
-### Pergunta 7
-"Como você prefere que o Claude escreva? O que mais incomoda em textos gerados por IA?"
-
-*(Exemplos: "direto, sem enrolação, sem bullet points desnecessários" / "odeio travessão e 'mergulhe de cabeça'" / "pode ser mais informal, falo gíria com clientes")*
-
-### Pergunta 8
-"Tem equipe ou é você que toca tudo?"
-
-*(Pode mencionar parceiros, freelas, sócios se tiver)*
-
----
-
-## Processamento das respostas
-
-Com todas as respostas, detecte o perfil principal:
-
-**Perfis possíveis:**
-- `agencia` — atende múltiplos clientes, tem processos de entrega
-- `freelancer` — trabalha solo, atende clientes, vende serviço próprio
-- `solopreneur` — negócio próprio sem foco em clientes, mais em audiência/produto
-- `criador` — foco em conteúdo, canal, audiência
-- `empresa` — pequena/média empresa com equipe organizada por setores (marketing, comercial, RH, etc.)
-- `profissional-clt` — usa pra produtividade pessoal e carreira
-
-*(Um perfil pode ter características de outro — use o que melhor descreve o uso principal)*
-
----
+Detectar o perfil principal: `agencia` (vários clientes, processo de entrega) · `freelancer` (solo,
+atende clientes) · `solopreneur` (negócio próprio, audiência/produto; inclui criador) · `empresa`
+(equipe por setor). Um perfil pode ter traço de outro: usar o que descreve o uso principal.
 
 ## O que gerar
 
-### 1. Atualizar `AGENTS.md` na raiz
-
-O `AGENTS.md` é a fonte das instruções (Claude Code lê via `CLAUDE.md → @AGENTS.md`; Codex lê direto).
-Substitua o conteúdo placeholder pelo `AGENTS.md` real do usuário. **Não** criar/editar `CLAUDE.md`:
-ele tem que continuar com uma linha só (`@AGENTS.md`). Se por acaso o `CLAUDE.md` estiver diferente
-disso, corrigir pra `@AGENTS.md`.
-
-```markdown
-# [Nome do Negócio] — Claude Code OS
-
-## O que é esse workspace
-[uma ou duas frases descrevendo o que essa pasta representa pro negócio do usuário]
-
-**Estrutura de pastas:**
-[lista das pastas criadas e o que vai em cada uma — gerada conforme o perfil detectado]
-- `templates/skills/` — templates de skills prontos pra personalizar com /mapear
-- `templates/ferramentas/catalogo.md` — APIs e ferramentas disponíveis pra usar em skills
-
-## Sobre o negócio
-[descrição em 2-4 linhas com o que foi dito]
-
-## O que mais fazemos aqui
-[lista das principais atividades/entregas]
-
-## Clientes e contexto
-[atende clientes ou uso interno, tamanho, tipo]
-
-## Tom de voz
-[como escrever, o que evitar, exemplos se mencionou]
-
-## Ferramentas conectadas
-[lista das ferramentas que usa — atualizar conforme MCPs forem instalados]
-
----
-
-## Como este workspace é organizado (Claude Code e Codex)
-
-- **Instruções:** `AGENTS.md` é a fonte (este arquivo). `CLAUDE.md` tem só `@AGENTS.md`. Nunca escrever conteúdo no `CLAUDE.md`.
-- **Skills:** em `.claude/skills/<nome>/SKILL.md`. Pro Codex enxergar, existe `.agents/skills` apontando pra `.claude/skills` (criado pelo `/setup`, não vai pro git). No Windows a ponte é cópia: skill nova precisa de `/atualizar` pra re-sincronizar.
-
----
-
-## Contexto do negócio
-
-No início de toda conversa, ler os seguintes arquivos (se existirem e estiverem configurados):
-
-1. `_contexto/empresa.md` — quem é o usuário, o que faz, como funciona o negócio
-2. `_contexto/preferencias.md` — tom de voz, estilo de escrita, o que evitar
-3. `_contexto/estrategia.md` — foco atual, prioridades, o que pode esperar
-4. `_contexto/agora.md` — contexto vivo: onde paramos, decisões recentes, pendências (atualizado a cada sessão)
-
-Usar essas informações como base pra qualquer resposta ou decisão. Ao sugerir prioridades, formatos ou abordagens, considerar o foco atual descrito em `estrategia.md`.
-
-Para qualquer tarefa visual (carrossel, proposta, slide, landing page), consultar `marca/design-guide.md` como referência de estilo.
-
-Não é necessário listar o que foi lido nem confirmar a leitura. Apenas usar o contexto naturalmente.
-
----
-
-## Fluxo de trabalho
-
-Antes de executar qualquer tarefa, verificar se existe uma skill relevante em `.claude/skills/` (Claude Code) ou `.agents/skills/` (Codex).
-Se encontrar, seguir as instruções da skill.
-Se não encontrar, executar a tarefa normalmente.
-
-Ao concluir uma tarefa que não tinha skill mas parece repetível (o usuário provavelmente vai pedir de novo no futuro), perguntar:
-
-> "Isso pode virar uma skill pra próxima vez. Quer que eu crie?"
-
-Não perguntar pra tarefas pontuais ou perguntas simples. Só quando o padrão de repetição for claro.
-
----
-
-## Aprender com correções
-
-Quando o usuário corrigir algo, melhorar uma resposta ou dar uma instrução que parece permanente (frases como "na verdade é assim", "não faça mais isso", "prefiro assim", "sempre que...", "evita...", "da próxima vez..."), perguntar:
-
-> "Quer que eu salve isso pra não precisar repetir?"
-
-Se sim, identificar onde faz mais sentido salvar:
-
-- **Sobre o negócio** (quem são os clientes, como funciona a empresa, serviços, mercado) → adicionar em `_contexto/empresa.md`
-- **Sobre preferências e estilo** (tom de voz, formato de resposta, o que evitar, como estruturar textos) → adicionar em `_contexto/preferencias.md`
-- **Sobre prioridades e foco atual** (projetos em andamento, metas do momento, prazos importantes, o que é prioridade agora) → adicionar em `_contexto/estrategia.md`
-- **Regra de comportamento nessa pasta** (onde salvar arquivos, como nomear, fluxos específicos) → adicionar no próprio `AGENTS.md`
-
-Salvar com uma linha nova clara, sem reformatar o arquivo inteiro. Confirmar o que foi salvo mostrando a linha adicionada.
-
-Não perguntar se a correção for óbvia de contexto imediato (ex: "na verdade o arquivo se chama X"). Só perguntar quando a informação tiver valor duradouro.
-
----
-
-## Manter contexto atualizado
-
-Ao terminar uma tarefa que mudou algo relevante no projeto (novo cliente, nova skill, mudança de foco, novo processo, ferramenta instalada, estrutura de pastas alterada), perguntar:
-
-> "Isso mudou algo no teu contexto. Quer que eu atualize os arquivos de memória?"
-
-Se sim, identificar o que precisa atualizar:
-
-- **Novo cliente, serviço, ferramenta, equipe** → `_contexto/empresa.md`
-- **Mudança de prioridade ou foco** → `_contexto/estrategia.md`
-- **Correção de tom ou estilo** → `_contexto/preferencias.md`
-- **Nova pasta, regra de organização, skill criada** → `AGENTS.md`
-- **Mudança visual (cores, fontes, logo)** → `marca/design-guide.md`
-
-Mostrar o que vai mudar antes de salvar. Não reformatar o arquivo inteiro, só adicionar ou editar a linha relevante.
-
-**Quando NÃO perguntar:**
-- Tarefas pontuais que não mudam o contexto (ex: escrever um email, criar um post avulso)
-- Perguntas simples ou conversas sem ação
-- Mudanças que já foram salvas pelo bloco "Aprender com correções"
-
-**Dica:** se o usuário não sabe se algo mudou, rodar `/atualizar` faz uma varredura completa.
-
----
-
-## Criação de skills
-
-Quando o usuário pedir pra criar uma nova skill:
-
-1. Verificar se existe um template relevante em `templates/skills/`. Se existir, usar como base e adaptar pro contexto do usuário
-2. Perguntar: "Essa skill é específica pra esse projeto ou vai ser útil em qualquer projeto?"
-   - Específica desse negócio → salvar em `.claude/skills/nome-da-skill/SKILL.md` (local)
-   - Útil em qualquer projeto → salvar em `~/.claude/skills/nome-da-skill/SKILL.md` (global)
-3. Ler `_contexto/empresa.md` e `_contexto/preferencias.md` pra calibrar o conteúdo da skill ao contexto do negócio
-4. Se a skill precisar de arquivos de apoio (templates, referências, exemplos), criar dentro da pasta da skill
-5. Seguir o fluxo da skill-creator nativa do Claude Code
-```
-
-### 2. Criar `_contexto/empresa.md`
-
-```markdown
-# Contexto da Empresa — [Nome]
-
-**Nome:** [nome do usuário]
-**Negócio:** [nome do negócio]
-**O que faz:** [descrição]
-**Perfil:** [agencia / freelancer / solopreneur / criador / profissional-clt]
-**Atende clientes:** [sim/não/ambos]
-**Equipe:** [solo / com equipe — detalhe se mencionou]
-**Ferramentas:** [lista]
-**Principais entregas:** [lista do que mais produz]
-
-## Contexto adicional
-[qualquer informação relevante que surgiu nas respostas]
-```
-
-### 3. Criar `_contexto/estrategia.md`
-
-```markdown
-# Foco Atual — [Nome]
-
-## Fase
-[Em que fase do negócio o usuário está agora — lançamento, crescimento, organização, etc]
-
-## Prioridade principal
-[O que foi dito como foco principal agora]
-
-## O que pode esperar
-[O que não é prioridade no momento — ajuda o Claude a não sugerir fora de hora]
-
-## Contexto com prazo
-[Datas ou eventos relevantes mencionados, se houver]
-
----
-*Atualize esse arquivo quando suas prioridades mudarem.*
-```
-
-### 4. Criar `_contexto/preferencias.md`
-
-```markdown
-# Preferências de Comunicação
-
-## Tom de voz
-[como o Claude deve escrever pros outputs desse usuário]
-
-## O que evitar
-[lista do que incomoda, palavras proibidas, construções a evitar]
-
-## Estilo geral
-[formal/informal, curto/longo, com/sem bullet points, etc]
-
-## Preferências adicionais
-[qualquer outra preferência mencionada]
-```
-
-### 4.5. Semear `_contexto/agora.md`
-
-O `agora.md` é o contexto vivo que o `/iniciar` lê no começo de cada sessão. No template ele vem com `<!-- NOT CONFIGURED -->` e placeholders. Substitua pelo estado inicial abaixo, pra que o **primeiro** `/iniciar` já mostre "onde paramos" (sem isso, o aluno recém-instalado abre a próxima sessão e não vê nada, parecendo que o setup falhou). Remova o marcador `<!-- NOT CONFIGURED -->` e os placeholders `[...]`, deixando assim:
-
-```markdown
-# Agora — contexto vivo
-
-> Este é o contexto que muda toda semana (diferente de `estrategia.md`, que é o foco de fundo).
-> O `/iniciar` lê isto no começo da sessão; o `/atualizar` escreve aqui no fim.
-> Mantenha curto: o que passou de ~30 dias sai daqui (vai pro histórico ou some).
-
-## Onde paramos
-Acabei de configurar o sistema pro meu negócio com o /setup. Próximo passo sugerido: rodar /mapear pra criar skills pro meu dia a dia.
-
-## Decisões recentes
-[vazio por enquanto — o /atualizar preenche no fim de cada sessão]
-
-## Pendências
-- Rodar /mapear pra criar as primeiras skills personalizadas.
-
-## Quente agora
-[o que estiver ativo esta semana]
-```
-
-Não invente conteúdo além disso: o `agora.md` é preenchido de verdade pelo uso, via `/atualizar`.
-
-### 5. Pré-preencher `marca/design-guide.md`
-
-Se o usuário descreveu cores e estilo, preencha com o que foi dito.
-Se não tem identidade definida, preencha com campos em branco e um comentário orientando como preencher depois.
-
-Em ambos os casos, manter este aviso no topo do arquivo (logo abaixo do título):
-
-```
-> Você pode editar esse arquivo a qualquer momento.
-> As skills de carrossel, proposta e slide leem este arquivo antes de criar qualquer visual.
-```
-
-### 6. Escolher estrutura de pastas
-
-Antes de criar qualquer pasta, **mostrar ao usuário o que você pensou** e deixar ele ajustar.
-
-Ler os templates de perfil disponíveis em `templates/perfis/` pra saber quais opções existem. Depois apresentar:
-
-> "Com base no que você me contou, acho que a estrutura de **[perfil detectado]** faz mais sentido pra você. Ficaria assim:
->
-> ```
-> [lista de pastas do perfil detectado]
-> ```
->
-> Mas também tenho outros modelos se preferir:
-> - **Por cliente** (agência/freelancer) — uma pasta por cliente com briefing e proposta
-> - **Por tipo de conteúdo** (solopreneur/criador) — organizado por o que você produz
-> - **Por setor** (empresa) — uma pasta por área (marketing, comercial, financeiro, RH)
-> - **Por projeto** (profissional) — organizado por projetos e reuniões
->
-> Quer usar esse que sugeri, trocar por outro, ou montar uma estrutura personalizada?"
-
-**Se aceitar a sugestão:** criar as pastas do perfil detectado.
-
-**Se quiser outro template:** mostrar a estrutura daquele template e confirmar.
-
-**Se quiser personalizar:** perguntar quais pastas faz sentido ter e criar conforme ele descrever.
-
-Estruturas padrão por perfil (referência):
-
-**Agência / freelancer:**
-```
-clientes/
-  _modelo-cliente/
-    briefing.md
-    proposta.html
-briefings/
-propostas/
-conteudo/
-tarefas.md
-```
-
-**Solopreneur / criador:**
-```
-conteudo/
-  carrosseis/
-  newsletters/
-  roteiros/
-projetos/
-estudos/
-publicacoes/
-tarefas.md
-```
-
-**Empresa (por setor):**
-```
-marketing/
-comercial/
-  propostas/
-financeiro/
-  relatorios/
-rh/
-operacoes/
-projetos/
-dados/
-tarefas.md
-```
-
-**Profissional / carreira:**
-```
-trabalho/
-  projetos/
-  reunioes/
-anotacoes/
-curriculo/
-tarefas.md
-```
-
-### 7. Recomendar MCPs e ferramentas
-
-Ler `templates/ferramentas/catalogo.md` e cruzar com as ferramentas que o usuário citou na Pergunta 5.
-
-Para cada ferramenta que o usuário usa e que tem um MCP ou conector disponível no catálogo:
-- Mostrar o que o conector faz
-- Mostrar o comando de instalação
-- Perguntar se quer instalar agora
-
-Exemplo:
-
-> "Vi que você usa Notion. Tem um conector que deixa o Claude acessar suas páginas e bases direto. Quer que eu instale?"
-
-Se o usuário aceitar, rodar o comando de instalação do MCP.
-Se preferir depois, anotar em `tarefas.md`:
-
-```
-## MCPs pra instalar depois
-- [ ] Notion — `claude mcp add notion -- npx -y @notionhq/notion-mcp-server`
-```
-
-Se o usuário mencionar uma ferramenta que não está no catálogo, informar:
-
-> "Não tenho um conector pronto pra [ferramenta], mas você pode pesquisar se existe um MCP pra ela em mcp.so. Se encontrar, me passa que eu instalo."
-
----
+### 1. `AGENTS.md`: só os dois blocos que são seus
+
+O `AGENTS.md` do kit é a constituição (boot, mapa, tabela, contrato). **Não reescrever o arquivo.**
+Ler o trecho do perfil em `sistema/templates/perfis/agents-md-<perfil>.md` e preencher:
+
+- o título (`# [Nome do negócio] · RatosOS`) e a frase de instalação (apagar "Se você acabou de
+  instalar: rode /setup...");
+- **seção 1, "O que é este sistema":** o bloco do perfil, com os colchetes preenchidos pelo que
+  ele contou (4 a 8 linhas). Sem lista de ferramentas nem tom de voz: têm casa própria;
+- **seção 9, "Mapa de pastas":** acrescentar as pastas de trabalho abaixo do comentário, uma linha
+  por pasta ("`clientes/` · uma pasta por cliente").
+
+`CLAUDE.md` tem que continuar com uma linha só: `@AGENTS.md`. Se estiver diferente, corrigir.
+
+### 2. `_contexto/` (remover o `<!-- NOT CONFIGURED -->` de cada um que preencher)
+
+- **`empresa.md`:** nome, negócio, o que faz, perfil, atende clientes, equipe, principais
+  entregas, contexto adicional. Ferramentas **não** ficam aqui.
+- **`estrategia.md`:** fase, prioridade principal, o que pode esperar, contexto com prazo (data
+  absoluta).
+- **`preferencias.md`:** tom no chat, o que evitar, estilo geral.
+- **`ferramentas.md`:** uma linha por ferramenta citada e uma por assunto dos sete (mesmo que
+  "nada"). Colunas: pra quê · como o agente alcança (a decidir no passo 5) · estado (`não ligada`
+  por padrão) · última checagem (hoje, AAAA-MM-DD).
+- **`infra.md`:** uma linha por coisa hospedada. Sem chave, sem senha.
+- **`agora.md`:** o estado inicial, pro primeiro `/iniciar` já mostrar algo:
+  ```markdown
+  ## Onde paramos
+  Acabei de configurar o sistema com o /setup (AAAA-MM-DD). Próximo passo: /mapear.
+  ## Pendências
+  - Rodar /mapear pra criar as primeiras skills do dia a dia.
+  ## Quente agora
+  [vazio]
+  ```
+  Não inventar além disso: o `agora.md` é preenchido pelo uso, via `/atualizar`.
+
+### 3. `_contexto/marca/`
+
+`design-guide.md` com o que foi dito (ou em branco com orientação). `tom-de-voz.md` novo, curto:
+tratamento (tu/você), registro (formal/informal), o que nunca dizer, e o exemplo colado, se houver.
+
+### 4. Pastas de trabalho
+
+Antes de criar, **mostrar** a estrutura do perfil e deixar ajustar:
+
+> "Com base no que você contou, a estrutura de **[perfil]** faz mais sentido. Ficaria assim:
+> [lista]. Tenho outros modelos (por cliente · por tipo de conteúdo · por setor), ou montamos uma
+> personalizada. Qual prefere?"
+
+Criar cada pasta com `mkdir -p` e um `.gitkeep` dentro (git não guarda pasta vazia). Nada de
+`tarefas.md` nem `dados/`: pendência vai pro `agora.md`, material bruto vai pra pasta do projeto.
+
+### 5. `.origem`
+
+Um arquivo na raiz, uma linha: `dono` ou o nome da máquina (minúsculas, sem espaço). Fica fora do
+git de propósito: cada computador tem o seu.
+
+### 6. Conectores (MCPs)
+
+Ler o catálogo em `sistema/templates/ferramentas/catalogo.md` e cruzar com a pergunta 6. Pra cada
+ferramenta que tem conector: dizer o que ele faz, mostrar o comando, perguntar se instala agora.
+Instalou: `ferramentas.md` ganha `ligada` + "MCP" na coluna de alcance. Ficou pra depois: uma
+pendência no `agora.md` com o comando. Ferramenta fora do catálogo: "não tenho conector pronto pra
+X; se achar um em mcp.so, me passa que eu instalo".
+
+### 7. `bem-vindo.html`
+
+Ler `sistema/templates/bem-vindo.template.html`, preencher e salvar `bem-vindo.html` na raiz.
+
+- **Cores e fontes vêm do `design-guide.md` recém-preenchido**: `COR_FUNDO`, `COR_CARD` (fundo
+  alternativo), `COR_TEXTO`, `COR_TEXTO_FRACO` (o texto com opacidade), `COR_DESTAQUE`,
+  `COR_LINHA` (destaque bem clarinho), `FONTE_TITULO` e `FONTE_CORPO` (nome legível) e as versões
+  `_URL` (nome com `+` no lugar de espaço, ex: `Bricolage+Grotesque:wght@400;600;800`). Guia vazio:
+  fundo `#FAF7F2`, card `#F3EFE8`, texto `#1C1917`, fraco `#6B645C`, destaque `#C96442`, linha
+  `#E4DDD3`, título `Instrument Serif`, corpo `Bricolage Grotesque`.
+- `LOGO`: `<img class="logo" src="_contexto/marca/<arquivo>" alt="">` se tem logo; vazio se não.
+- `NOME`, `NEGOCIO`, `RESUMO` (uma frase do que ele faz, nas palavras dele), `SABERES` (4 a 6
+  `<li>` com pedaços reais das respostas: "que 70% do seu movimento vem de arquiteto", não
+  "contexto configurado"), `PASTAS` (`<li>` por pasta com o que vai nela), `PASSOS` (três
+  `<div class="passo"><div class="n">1</div><div><b>...</b><p>...</p></div></div>`: rodar
+  `/mapear`; conectar ao GitHub com `/syncar`; fechar a primeira sessão com `/atualizar`).
+- Texto na voz dele (`preferencias.md`), frases curtas, **sem travessão**, sem "mergulhe",
+  "desbloqueie", "jornada". Nada que ele não tenha dito.
+- Conferir que não sobrou `{{` no arquivo: `grep -c '{{' bem-vindo.html` tem que dar 0.
+
+### 8. Teste de aceite (na frente dele)
+
+Reler **do disco** os três arquivos do boot e o `AGENTS.md`, como se fosse uma sessão nova, e
+provar que funcionou com três fatos concretos:
+
+> "Pra conferir: se eu entendi, você [fato 1 de empresa.md], o que mais pesa agora é [foco de
+> estrategia.md], e comigo você quer [uma preferência]. Bateu?"
+
+Errou algo: corrigir no arquivo e mostrar a linha. Conferência silenciosa junto: nenhum dos três
+do boot ainda tem `<!-- NOT CONFIGURED -->`; `.origem` existe; `bem-vindo.html` sem `{{`.
 
 ## Mensagem final
 
-Após gerar todos os arquivos, envie uma mensagem de encerramento:
-
-> "[Nome], seu sistema tá configurado.
+> "[Nome], seu sistema está configurado. Abre o `bem-vindo.html` que está na pasta: é o resumo
+> do que eu aprendi, na sua cara.
 >
-> Aqui está o que foi criado:
-> - AGENTS.md — o agente agora sabe quem você é, como trabalha e onde fica cada coisa
-> - _contexto/ — negócio, preferências e foco atual salvos
-> - marca/design-guide.md — identidade visual [preenchida / pronta pra preencher]
-> - Estrutura de pastas pro seu perfil de [perfil detectado]
-> - [N] MCPs instalados / [N] anotados pra instalar depois
+> O que existe agora: `AGENTS.md` (as regras e o mapa) · `_contexto/` (negócio, preferências,
+> foco, ferramentas, infra, marca) · `_memoria/` (vai enchendo sozinha a cada sessão) · pastas de
+> [perfil] · [N] conectores instalados, [N] anotados pra depois.
 >
-> **Duas coisas importantes antes de continuar:**
+> Duas coisas: chave de API vai sempre num arquivo `.env`, que nunca sai daqui. E pra não perder
+> trabalho, conecta ao GitHub com `/syncar` (2 minutos).
 >
-> 1. Se você tiver chaves de API (como a da Anthropic), guarde sempre num arquivo chamado `.env` — ele já está protegido e nunca vai ser enviado pro GitHub por engano.
->
-> 2. Para não perder seu trabalho, conecte esse workspace ao GitHub rodando `/syncar`. Leva 2 minutos. Depois, sempre que quiser salvar, é só pedir "synca" (ou rodar `/syncar`).
->
-> **Próximo passo:** rode `/mapear` pra eu entender seus processos do dia a dia e criar skills personalizadas pra você."
-
----
+> Próximo passo: `/mapear`, pra eu entender o seu dia a dia e criar skills pra ele."
 
 ## Regras
 
-- Tom direto e humano, sem excesso de entusiasmo
-- Não use listas com bullet points nas perguntas — faça em conversa
-- Se o usuário der respostas vagas, faz uma pergunta de acompanhamento antes de continuar
-- Gera os arquivos todos de uma vez no final, não um a um durante as perguntas
-- Após gerar, mostra a mensagem final resumida — não lista cada linha de cada arquivo
+- Tom direto e humano, sem entusiasmo de vendedor.
+- Perguntas em conversa, nunca em lista com bullets.
+- Não inventar dado; campo que ele não respondeu fica em branco.
+- Não reescrever o `AGENTS.md` inteiro; só os dois blocos dele.
+- Depois de gerar, a mensagem final resumida; não listar cada linha de cada arquivo.

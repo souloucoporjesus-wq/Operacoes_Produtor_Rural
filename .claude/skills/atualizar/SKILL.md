@@ -1,139 +1,143 @@
 ---
 name: atualizar
 description: >
-  Varre o estado atual do projeto e atualiza os arquivos de contexto que ficaram
-  desatualizados. Compara o que existe nas pastas, skills e configurações com o que
-  está documentado em AGENTS.md, _contexto/ e marca/design-guide.md.
-  Use quando o usuário chamar /atualizar, quando disser "atualiza o contexto",
-  "os arquivos tão desatualizados", "sincroniza a memória", ou no fim de uma sessão
-  longa com muitas mudanças.
+  Fecha a sessão guardando o que aconteceu no lugar certo: diário do dia, onde paramos,
+  decisões e os arquivos de contexto, roteando pela tabela de destinos do AGENTS.md.
+  Trabalha com o que está na conversa; não varre o sistema (isso é a /faxina).
+  Use quando o usuário chamar /atualizar, disser "salva o que a gente fez", "fecha a
+  sessão", "atualiza o contexto", "guarda isso", ou quando você ofereceu e ele aceitou.
+  Não manda pro GitHub (isso é /syncar).
 ---
 
-# /atualizar — Manutenção de Contexto
+# /atualizar · guardar a sessão no lugar certo
 
-## O que fazer
+Esta skill **decide onde cada informação mora e escreve**. Leve por contrato: a fonte é a
+conversa que acabou de acontecer; o roteamento é a tabela de destinos do `AGENTS.md` (já
+carregada); ela lê **só os destinos que vai tocar**. Nada de varrer o sistema atrás de coisa
+velha: varredura é `/faxina`.
 
-Fazer uma varredura comparando o **estado real do projeto** com o que está **documentado nos arquivos de contexto**. Identificar diferenças e propor atualizações pro usuário aprovar.
+Robô, rotina e agente autônomo **não rodam esta skill**: eles escrevem direto no próprio diário
+e em recados (contrato do robô, `AGENTS.md` seção 6).
 
-## Passo 0: Sincronizar a ponte de skills (rápido, silencioso)
+## Passo 0 · silencioso
 
-Garantir que o Codex enxerga as skills que existem hoje. Rodar o script (idempotente — no Mac/Linux
-é symlink e vira no-op; no Windows-junction também vira no-op; só re-sincroniza de fato se caiu
-pra cópia):
+1. A ponte do Codex, idempotente, sem comentar: rodar o script da ponte que mora na pasta de
+   scripts do sistema (linha "modelos e scripts" do mapa; numa instalação nova é
+   `bash sistema/scripts/sync-ponte.sh` no Mac/Linux e
+   `powershell -ExecutionPolicy Bypass -File sistema\scripts\sync-ponte.ps1` no Windows, inclusive
+   dentro do Git Bash).
+2. A origem deste computador: `cat .origem`. Se o arquivo não existe, perguntar antes de escrever
+   qualquer coisa: *"Este é o seu computador principal? Se sim, eu escrevo o diário sem
+   sufixo. Se é outro computador ou outra pessoa, me diz um nome curto pra ele (ex: notebook,
+   alcides)."* Criar `.origem` com `dono` ou com o nome (minúsculas, sem espaço). O arquivo fica
+   fora do git.
 
-```bash
-bash scripts/sync-ponte.sh        # Mac/Linux — nunca no Windows, mesmo em Git Bash
-```
-```powershell
-powershell -ExecutionPolicy Bypass -File scripts\sync-ponte.ps1   # Windows — sempre este
-```
+## Passo 1 · separar o que tem valor depois que a sessão terminar
 
-Não precisa reportar isso ao usuário, só rodar.
+Olhar a conversa inteira e listar, em rascunho, cada item que vale guardar. O que costuma aparecer:
 
-## Passo 1: Levantar o estado real
+- o que foi feito (entregável criado, arquivo salvo, tarefa concluída)
+- decisão (escolheu um caminho, descartou outro, mudou de ideia, fechou preço, definiu regra)
+- fato novo do negócio (cliente, serviço, equipe, preço, mercado)
+- mudança de rumo, foco ou meta
+- correção do jeito de trabalhar ("não faça mais isso", "prefiro assim"), inclusive as que você
+  respondeu "anotado, salvo no fim"
+- ferramenta nova, acesso novo, ou algo que você tentou e não alcançou
+- onde alguma coisa passou a estar hospedada
+- pendência que ficou em aberto, e pendência que foi resolvida
+- pessoa ou empresa que apareceu de novo (não cliente, não time)
+- recado que foi tratado nesta sessão
+- material bruto que chegou (transcrição, PDF, email) e ainda não foi destilado
 
-Ler e anotar:
+**Não entra:** pergunta solta, teste, conversa sem ação, tarefa trivial. Guardar demais é tão ruim
+quanto guardar de menos: em três meses ninguém acha nada.
 
-1. **Estrutura de pastas** — listar os diretórios de primeiro nível (ignorar `.git`, `node_modules`, `.claude`, `templates`, `dados`)
-2. **Skills instaladas** — listar `.claude/skills/*/` (exceto as skills do kit: setup, iniciar, syncar, mapear, novo-projeto, atualizar)
-3. **MCPs configurados** — verificar se `.claude.json` ou `.claude/mcp.json` existe e quais servers estão listados
-4. **Arquivos recentes** — usar `git diff --name-only HEAD~5..HEAD` (ou menos commits se não tiver 5) pra ver o que mudou recentemente
-5. **Mudanças não commitadas** — `git status` pra ver trabalho em andamento
+Sessão inteira trivial: dizer *"nada desta sessão precisa ser guardado; seu sistema já está em dia"*
+e parar.
 
-## Passo 2: Ler os arquivos de contexto
+## Passo 2 · rotear pela tabela de destinos
 
-Ler cada um dos arquivos abaixo (se existir):
+Pra cada item, achar a linha da tabela "aconteceu X, escreve em Y" do `AGENTS.md`. **A tabela de
+lá vence o que está escrito aqui**: é o que faz o sistema seguir funcionando quando o usuário
+renomeia uma pasta.
 
-1. `AGENTS.md` — foco em: estrutura de pastas, lista de skills, ferramentas conectadas, regras do sistema
-2. `_contexto/empresa.md` — foco em: equipe, ferramentas, entregas, clientes
-3. `_contexto/estrategia.md` — foco em: prioridade principal, fase, o que pode esperar
-4. `_contexto/preferencias.md` — foco em: tom de voz, o que evitar
-5. `_contexto/agora.md` — contexto vivo: onde paramos, decisões recentes, pendências, o que está quente
-6. `marca/design-guide.md` — foco em: cores, fontes, estilo
+- Cabe claro numa linha: vai pra lá.
+- Cabe em duas: a mais específica, e dizer qual escolheu. Nunca a mesma informação em dois
+  arquivos (duplicata é o que faz os dois envelhecerem torto).
+- Não cabe em nenhuma: **perguntar**. Nunca inventar gaveta nem destino em silêncio. Se o usuário
+  topar criar um lugar novo, criar **e** acrescentar a linha na tabela do `AGENTS.md` junto.
 
-## Passo 1.5: Atualizar o contexto vivo (`agora.md`)
+Se a sessão trabalhou dentro de uma pasta de projeto, o `andamento.md` dela entra na lista.
 
-Isto é o "fechar a sessão": capturar o que aconteceu nesta conversa pro próximo `/iniciar` retomar rápido.
-Diferente do resto do `/atualizar` (que compara pastas com docs), aqui você escreve a partir da **conversa atual**.
+## Passo 3 · ler só os destinos que vai tocar
 
-Olhando o que rolou nesta sessão, atualizar `_contexto/agora.md`:
+Dois a quatro arquivos pequenos, direcionados. Ler antes de escrever, sempre: é assim que se evita
+duplicar linha e contradizer o que já está lá.
 
-- **Onde paramos:** a última coisa em andamento (substitui a anterior).
-- **Decisões recentes:** se alguma decisão foi tomada, adicionar uma linha com a data (`AAAA-MM-DD — decisão`).
-- **Pendências:** adicionar o que ficou em aberto; remover o que foi resolvido.
-- **Quente agora:** ajustar o que está ativo esta semana.
-- **Higiene:** o que passou de ~30 dias em "Decisões recentes" e "Quente agora" sai daqui (some, ou vai pra um `_contexto/historico.md` se o usuário quiser guardar). Manter o arquivo curto.
+## Passo 4 · mostrar o plano, uma vez
 
-Só escrever se houve algo digno de nota na sessão. Sessão trivial (uma pergunta, um email avulso) não mexe no `agora.md`.
-Mostrar ao usuário as linhas que vão mudar antes de salvar, igual ao resto do `/atualizar`.
+Uma mensagem só, no formato "arquivo → o que vai entrar" (as linhas de verdade, não um resumo):
 
-## Passo 3: Comparar e identificar gaps
-
-Para cada arquivo de contexto, verificar:
-
-### AGENTS.md
-- Pastas listadas na estrutura batem com as pastas reais?
-- Skills mencionadas existem de fato? Tem skills novas não documentadas?
-- Ferramentas marcadas como conectadas estão de fato configuradas (MCPs)?
-- Regras do sistema ainda fazem sentido com o estado atual?
-
-### _contexto/empresa.md
-- Ferramentas listadas incluem tudo que o usuário instalou (MCPs)?
-- Clientes ou projetos mencionados ainda são atuais?
-- Equipe mudou?
-
-### _contexto/estrategia.md
-- A prioridade principal ainda parece ser o foco (baseado nos arquivos recentes)?
-- Tem prazos vencidos ou contextos datados?
-
-### _contexto/preferencias.md
-- (Esse raramente muda, mas verificar se tem algo contraditório com o uso recente)
-
-### marca/design-guide.md
-- Está preenchido ou ainda é template vazio?
-- Se tem logo referenciado, o arquivo existe?
-
-## Passo 4: Apresentar o diagnóstico
-
-Mostrar um resumo organizado no formato:
-
-```
-## Diagnóstico de contexto
-
-### Em dia
-- [lista do que está atualizado]
-
-### Desatualizado
-- **[arquivo]:** [o que está errado e o que deveria ser]
-- **[arquivo]:** [o que está errado e o que deveria ser]
-
-### Não configurado
-- [arquivos que existem mas estão vazios ou com template padrão]
-```
-
-Se tudo estiver em dia, dizer:
-
-> "Tudo atualizado. Os arquivos de contexto refletem o estado atual do projeto."
-
-## Passo 5: Aplicar as correções (com aprovação)
-
-Para cada item desatualizado, mostrar a mudança proposta:
-
-> **`_contexto/empresa.md`** — adicionar "Canva" na lista de ferramentas
+> Vou guardar assim:
+> - `_memoria/diario/2026-09-08.md` → 3 linhas: proposta da Acme enviada; ...
+> - `_contexto/agora.md` → onde paramos: ... · pendência "orçamento gráfica" **sai** (feito)
+> - `_memoria/decisoes.md` → "2026-09-08 (você) [acme]: proposta em 3 parcelas. Por quê: ..."
+> - `_contexto/ferramentas.md` → linha nova: Canva, ligada por MCP
 >
-> **`AGENTS.md`** — adicionar pasta `relatorios/` na estrutura de pastas
+> Aplico?
 
-Perguntar:
+Esperar o sim. Se o usuário quiser mudar algo, ajustar e aplicar.
 
-> "Quer que eu aplique essas atualizações?"
+## Passo 5 · escrever, nesta ordem
 
-Se sim, aplicar todas de uma vez. Mostrar um resumo do que foi atualizado.
-Se o usuário quiser aprovar uma a uma, respeitar.
+1. **Diário** (`_memoria/diario/AAAA-MM-DD.md` se a origem é `dono`; `AAAA-MM-DD-<origem>.md` se
+   não). Criar a pasta se faltar. **Acrescentar no fim**, nunca reescrever. Um bloco por sessão:
+
+   ```markdown
+   ## HH:MM · [origem]
+   - o que foi feito, cru, em poucas linhas
+   - recado tratado: "assunto" (de quem)
+   ```
+
+2. **`_contexto/agora.md`**: reescreve (é destilado). "Onde paramos" é a última coisa em
+   andamento. Pendência resolvida **sai com motivo dito na resposta** (feito / virou projeto /
+   mandaram soltar), nunca some em silêncio. "Quente agora" é o que está ativo esta semana. O que
+   passou de ~30 dias sai. Decisão não vai aqui.
+
+3. **`andamento.md` da pasta de projeto** em que a sessão trabalhou: reescrever a seção "onde
+   está" com a data de hoje; pendências do projeto seguem a mesma regra do `agora.md`.
+
+4. **`_memoria/decisoes.md`**: acrescentar no fim, no formato do próprio arquivo (data, quem, projeto
+   se houver, a decisão, o porquê). Quando muda uma decisão anterior, `Substitui: <data>`; a antiga
+   fica onde está. Nunca editar linha velha.
+
+5. **`_contexto/`** (`empresa.md`, `estrategia.md`, `preferencias.md`, `ferramentas.md`,
+   `infra.md`, `marca/`, `pessoas/<nome>.md`): acrescentar a linha na seção certa, sem reformatar o
+   arquivo. Antes de cada linha, o **checklist das 4 doenças**:
+   - **duplicata:** já existe linha dizendo isso? Então não escreve.
+   - **contradição:** a linha nova contradiz uma antiga? Então a antiga sai e você diz isso na resposta.
+   - **vencido:** tem linha com prazo que já passou? Marcar como vencida e perguntar se sai.
+   - **data relativa:** "semana que vem", "mês passado" viram data absoluta (AAAA-MM-DD).
+   Em `ferramentas.md`, atualizar a coluna "última checagem" do que foi usado hoje.
+   `pessoas/<nome>.md` nasce quando a mesma pessoa ou empresa apareceu em mais de uma sessão
+   (conferir no diário); a pasta nasce no primeiro arquivo.
+   Arquivo de boot que passou do teto declarado no topo: escrever mesmo assim e avisar em uma linha.
+
+6. **Recados tratados:** apagar o arquivo em `_memoria/recados/` (o registro do que foi feito já
+   está no diário).
+
+## Passo 6 · fechar
+
+Dizer o que escreveu onde, em poucas linhas, e oferecer o `/syncar` se o sistema está no GitHub:
+
+> Guardado: diário (3 linhas), agora.md (onde paramos + 1 pendência resolvida), 1 decisão,
+> ferramentas.md (+Canva). Quer mandar pro GitHub? É só dizer "synca".
 
 ## Regras
 
-- Nunca reformatar um arquivo inteiro. Só editar as linhas relevantes
-- Se não tem certeza se algo mudou, perguntar ao usuário em vez de assumir
-- Não inventar informação. Se não consegue inferir do estado do projeto, perguntar
-- Tom direto. Não exagerar no diagnóstico de coisas triviais
-- Se o projeto acabou de ser configurado (setup recente, poucos commits), dizer que está tudo certo e não forçar atualizações desnecessárias
+- Não mexe no GitHub. Não varre o sistema. Não relê o que não vai tocar.
+- Nunca reformatar arquivo inteiro. Nunca reescrever arquivo cujo modo é acrescentar (diário,
+  decisões). Nunca apagar linha sem dizer.
+- Não inventar informação que não apareceu na conversa.
+- Em dúvida sobre o destino, pergunta. Em dúvida se vale guardar, não guarda.
+- Tom direto, sem diagnóstico inflado: sistema recém-configurado costuma estar em dia.

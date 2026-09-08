@@ -1,4 +1,4 @@
-# Claude Code OS — Kit de Boas-Vindas 🐀
+# Claude Code OS: Kit de Boas-Vindas 🐀
 
 Feito pelo [Ratos de IA](https://ratosdeia.com.br) pra alunos do curso **Claude Code OS**.
 
@@ -8,7 +8,7 @@ Feito pelo [Ratos de IA](https://ratosdeia.com.br) pra alunos do curso **Claude 
 
 Este kit funciona no **Claude Code** e no **Codex** (Windows, Mac ou Linux). Escolha um.
 
-### Opção 1 — Via prompt (mais fácil)
+### Opção 1: Via prompt (mais fácil)
 
 Com o Claude Code **ou** o Codex aberto em qualquer pasta, copie e cole esse prompt:
 
@@ -18,11 +18,11 @@ Clona https://github.com/dobralabs/ccos-ratos.git na pasta atual, entra nela, l�
 
 O agente faz tudo: clona, entra na pasta e inicia a configuração (que já deixa Claude e Codex prontos).
 
-> Se você está no **Claude Code**, depois de clonar dá pra chamar direto `/setup` — dá no mesmo.
+> Se você está no **Claude Code**, depois de clonar dá pra chamar direto `/setup`: dá no mesmo.
 
 ---
 
-### Opção 2 — Via terminal
+### Opção 2: Via terminal
 
 **1. Clone o repositório**
 ```bash
@@ -53,13 +53,15 @@ O agente vai te fazer algumas perguntas e configurar o sistema pro seu negócio.
 ## O que vem no kit
 
 **Skills prontas pra usar:**
-- `/setup` — configura o sistema pro seu negócio (comece por aqui)
-- `/iniciar` — abre a sessão: puxa o GitHub, carrega o contexto, anuncia recados e diz onde você parou
-- `/atualizar` — fecha a sessão: escreve o diário do dia, o "onde paramos", as decisões e o contexto, e diz o que escreveu onde
-- `/syncar` — manda o trabalho pro GitHub e diz o que subiu
-- `/novo-projeto` — cria pasta de projeto ou cliente com contexto próprio
-- `/mapear` — entrevista você sobre o dia a dia e cria skills personalizadas
-- `/carrossel` `/proposta-comercial` `/slide` `/publicar-site` `/analisar-dados` `/roteiro-post` `/email-profissional` — modelos prontos que o `/mapear` instala com a sua identidade
+- `/setup`: configura o sistema pro seu negócio (comece por aqui)
+- `/iniciar`: abre a sessão: puxa o GitHub, carrega o contexto, anuncia recados e diz onde você parou
+- `/atualizar`: fecha a sessão: escreve o diário do dia, o "onde paramos", as decisões e o contexto, e diz o que escreveu onde
+- `/syncar`: manda o trabalho pro GitHub e diz o que subiu
+- `/novo-projeto`: cria pasta de projeto ou cliente com contexto próprio
+- `/mapear`: entrevista você sobre o dia a dia e cria skills personalizadas
+- `/compartilhar`: prepara uma pasta de projeto pra sair daqui como repositório próprio (cliente, sócio)
+- `/faxina`: varredura mensal: o que envelheceu, o que estourou o teto, o que está fora do lugar. Só relata
+- `/carrossel` `/proposta-comercial` `/slide` `/publicar-site` `/analisar-dados` `/roteiro-post` `/email-profissional`: modelos prontos que o `/mapear` instala com a sua identidade
 
 **A casa, depois do `/setup`:**
 
@@ -77,8 +79,9 @@ seu-negocio/
 Três comandos que você vai confundir no começo: `/iniciar` lê, `/atualizar` escreve, `/syncar` manda pro GitHub.
 
 **Se você já tinha a versão anterior do kit** (a que tinha `dados/` e `marca/` na raiz): não precisa
-mudar nada se o seu sistema te atende. Quando quiser atualizar, existe um arquivo de atualização que
-você cola no agente e ele faz com você, no máximo três mudanças por vez.
+mudar nada se o seu sistema te atende. Quando quiser atualizar: descompacte este kit **ao lado** da
+sua pasta, abra o agente dentro da sua pasta e peça pra ele ler `sistema/changelog/COMO-ATUALIZAR.md`
+do kit novo. Ele mostra o que mudou, aplica no máximo três coisas por vez, e você decide cada uma.
 
 ---
 
