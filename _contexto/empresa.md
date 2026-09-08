@@ -1,7 +1,8 @@
+<!-- quem alimenta: o /setup semeia; o /atualizar acrescenta fato novo sobre o negócio. Lido em toda conversa (boot). -->
 # Contexto da Empresa
 
-> Este arquivo será preenchido automaticamente pelo `/setup`.
-> Não edite manualmente antes de rodar o setup.
+<!-- NOT CONFIGURED -->
+> Este arquivo será preenchido pelo `/setup`. Não edite manualmente antes de rodar o setup.
 
 **Nome:**
 **Negócio:**
@@ -9,7 +10,6 @@
 **Perfil:**
 **Atende clientes:**
 **Equipe:**
-**Ferramentas:**
 **Principais entregas:**
 
 ## Contexto adicional

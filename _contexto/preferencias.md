@@ -1,7 +1,9 @@
+<!-- quem alimenta: o /setup semeia; o /atualizar acrescenta correção ou preferência de trabalho. Lido em toda conversa (boot). -->
 # Preferências de Comunicação
 
-> Este arquivo será preenchido automaticamente pelo `/setup`.
-> Você pode editar a qualquer momento pra ajustar como o Claude escreve.
+<!-- NOT CONFIGURED -->
+> Como o agente fala **com você** no chat. Como a sua marca fala com o seu cliente é outra coisa: fica em `_contexto/marca/`.
+> Este arquivo será preenchido pelo `/setup`. Você pode editar a qualquer momento.
 
 ## Tom de voz
 

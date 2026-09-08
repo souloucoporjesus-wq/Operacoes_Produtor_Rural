@@ -1,7 +1,8 @@
+<!-- quem alimenta: o /setup semeia; o /atualizar escreve quando muda rumo, foco ou meta. Lido quando a sessão pede (mapa). -->
 # Foco Atual
 
-> Este arquivo será preenchido automaticamente pelo `/setup`.
-> Atualize quando suas prioridades mudarem.
+<!-- NOT CONFIGURED -->
+> Este arquivo será preenchido pelo `/setup`. Atualize quando suas prioridades mudarem.
 
 ## Fase
 

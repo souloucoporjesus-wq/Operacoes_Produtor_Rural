@@ -1,54 +1,65 @@
-# Variáveis de ambiente (API keys, tokens — NUNCA commitar)
+# Fail-closed: nega tudo, libera só o que o sistema precisa.
+# Extensão nova (vídeo, zip, build) nasce bloqueada em vez de virar furo.
+# E o seu trabalho (clientes/, propostas/, projetos/...) SOBE, ao contrário da 1.0.
+*
+!*/
+!.gitkeep
+!.gitignore
+
+# arquivo sem extensão que o kit pode precisar (o `*` acima come qualquer um)
+!VERSION
+!LICENSE
+
+# texto e estrutura
+!*.md
+!*.html
+!*.css
+!*.txt
+!*.csv
+
+# material de projeto (transcrição, proposta recebida, contrato). Vídeo e áudio ficam de fora
+!*.pdf
+
+# config
+!*.json
+!*.yaml
+!*.yml
+!*.toml
+
+# script de skill
+!*.py
+!*.js
+!*.sh
+!*.ps1
+
+# imagem (marca, carrossel, slide)
+!*.png
+!*.jpg
+!*.jpeg
+!*.svg
+!*.webp
+
+# segredo: nunca, mesmo com a liberação acima
 .env
-.env.local
 .env.*
+!.env.example
 
-# Arquivo gerado pelo /setup com MCPs específicos do usuário
-_configurar-mcps.md
+# identidade desta máquina (nome da origem, criado pelo /setup): cada computador tem a sua
+.origem
 
-# Outputs de renderização (binários pesados)
-*.png
+# config local do agente nesta máquina (permissões, caminhos): não viaja
+.claude/settings.local.json
 
-# Arquivos de dados do usuário (CSVs, planilhas, etc)
-dados/*.csv
-dados/*.xlsx
-dados/*.xls
-dados/*.txt
-dados/*.pdf
-dados/*.json
-!dados/README.md
+# pasta que o !*/ reabriria por acidente: sem isso, o !*.js libera node_modules inteiro
+node_modules/
+__pycache__/
+.venv/
+dist/
+build/
+.DS_Store
 
-# Pastas de trabalho do usuário (geradas pelo /setup, conteúdo pessoal)
-clientes/
-propostas/
-conteudo/
-projetos/
-briefings/
-trabalho/
-estudos/
-publicacoes/
-anotacoes/
-curriculo/
-tarefas.md
-
-# Skills: as 6 do kit vêm versionadas; as que o aluno cria com /mapear ficam locais.
-.claude/skills/*
-!.claude/skills/setup/
-!.claude/skills/iniciar/
-!.claude/skills/syncar/
-!.claude/skills/mapear/
-!.claude/skills/novo-projeto/
-!.claude/skills/atualizar/
-
-# Ponte pro Codex enxergar as skills — criada pelo /setup em CADA máquina
-# (symlink no Mac/Linux, cópia no Windows). Nunca vai pro git.
+# ponte pro Codex enxergar as skills: cada máquina cria a sua, nunca vai pro git
 .agents/
 
-# Arquivos gerados pelo uso/registro das skills (conteúdo pessoal, nunca no kit)
-automacoes-dm.md
-prioridades.md
+# config de skill de ads: costuma ter só ID, mas é onde chave costuma escorregar
 contas.yaml
-
-# Sistema
-.DS_Store
-node_modules/

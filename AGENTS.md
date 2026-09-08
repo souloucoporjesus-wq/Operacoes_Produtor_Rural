@@ -1,112 +1,151 @@
-# Claude Code OS — Kit Ratos de IA
+<!-- Teto deste arquivo: 180 linhas. Ele carrega em toda conversa, então cada linha aqui é paga sempre.
+     O que cresce vai pras pastas (o mapa da seção 3 diz qual). A /faxina avisa quando estourar. -->
+# [Nome do negócio] · RatosOS
 
-Este repositório é o kit de boas-vindas do curso Claude Code OS.
+Se você acabou de instalar: rode `/setup` (uns 5 minutos). Depois, `/mapear` pra criar as
+habilidades do seu dia a dia. Neste arquivo, "você" é o dono do sistema; as instruções são pro agente.
 
-Se você acabou de clonar esse repositório:
-1. Rode `/setup` pra configurar o sistema pro seu negócio (uns 5 minutos)
-2. Depois rode `/mapear` pra criar skills personalizadas pro que você faz no dia a dia
+## 1. O que é este sistema
 
----
+<!-- /setup preenche este bloco (4 a 8 linhas): o que esta pasta representa, quem você é, o que
+     faz e pra quem, o que mais produz aqui. Sem lista de ferramentas nem tom de voz: isso tem casa própria. -->
 
-## Como este kit é organizado (Claude Code e Codex)
+**Regras gerais**
 
-Este kit funciona nos dois agentes. Quem lê o quê:
+- Este kit roda no Claude Code e no Codex. `AGENTS.md` é a fonte (este arquivo). `CLAUDE.md` tem uma
+  linha só (`@AGENTS.md`), nunca conteúdo. Skills moram em `.claude/skills/<nome>/SKILL.md`; a ponte
+  `.agents/skills` (o `/setup` cria em cada máquina, fora do git) é como o Codex e os outros agentes
+  enxergam as mesmas skills.
+- Antes de executar uma tarefa, ver se existe skill pra ela. Se existe, seguir a skill. Tarefa sem
+  skill que parece repetível: ao terminar, perguntar "isso pode virar uma skill, quer que eu crie?".
+  Só quando a repetição for clara, nunca em tarefa pontual.
+- Skill nova parte de um modelo do kit quando houver (ver mapa). Skill deste negócio fica em
+  `.claude/skills/`; skill de uma pasta de projeto fica em `<pasta>/.claude/skills/` e viaja com ela;
+  global (`~/.claude/skills/`) é só o que serve em qualquer projeto e não viaja.
+- Falhou alguma coisa: falar como gente. O que aconteceu, o que continua seguro, qual o próximo passo.
+  Erro cru só se pedirem. Nunca parar em silêncio.
+- Antes de salvar um arquivo, criar a pasta (`mkdir -p`). Pasta que nasce vazia leva um `.gitkeep`.
+- Com você, o agente fala como `_contexto/preferencias.md` manda. Com o seu cliente, como a marca
+  manda. São duas coisas diferentes, e não se misturam.
 
-- **Instruções:** `AGENTS.md` é a fonte (este arquivo). `CLAUDE.md` tem só uma linha (`@AGENTS.md`),
-  que é como o Claude Code importa este conteúdo. O Codex lê `AGENTS.md` direto. Nunca escrever
-  conteúdo no `CLAUDE.md`.
-- **Skills:** ficam em `.claude/skills/<nome>/SKILL.md`. O Claude Code lê daí direto. Pro Codex
-  enxergar, existe `.agents/skills` apontando pra `.claude/skills` (symlink no Mac/Linux, cópia no
-  Windows), criado pelo `/setup` na sua máquina. **Esse ponte não vai pro git** — cada máquina cria
-  a sua. As 6 skills do kit vêm versionadas; as que você criar com `/mapear` ficam locais.
-- Se você abrir este kit no Codex e ele não achar as skills, rode `/setup` (ou peça pro agente ler e
-  seguir `.claude/skills/setup/SKILL.md`) — ele cria a ponte.
+## 2. Boot (o que ler em toda conversa)
 
-<!-- Este arquivo será atualizado pelo /setup com o contexto do seu negócio. -->
+No início de toda conversa, ler estes três arquivos, e só eles:
 
-## Contexto do negócio
+1. `_contexto/empresa.md` (quem você é, o que faz, como o negócio funciona)
+2. `_contexto/preferencias.md` (como falar com você, o que evitar)
+3. `_contexto/agora.md` (onde paramos, pendências: a continuidade entre sessões)
 
-No início de toda conversa, ler os seguintes arquivos (se existirem e estiverem configurados):
+Usar isso naturalmente, sem listar o que leu nem confirmar leitura. Se algum deles ainda tem
+`<!-- NOT CONFIGURED -->`, o sistema não passou pelo `/setup`: dizer isso e oferecer rodar.
+Todo o resto se lê quando a sessão pedir (seção 3) ou quando uma ação disparar (seção 4).
+O `/iniciar` é o ritual completo por cima deste boot: puxa o GitHub, anuncia recados, resume o
+diário de outra origem, avisa se o `agora.md` está velho.
 
-1. `_contexto/empresa.md` — quem é o usuário, o que faz, como funciona o negócio
-2. `_contexto/preferencias.md` — tom de voz, estilo de escrita, o que evitar
-3. `_contexto/estrategia.md` — foco atual, prioridades, o que pode esperar
-4. `_contexto/agora.md` — contexto vivo: onde paramos, decisões recentes, pendências (atualizado a cada sessão)
+## 3. O mapa (pra saber X, leia Y)
 
-Usar essas informações como base pra qualquer resposta ou decisão. Ao sugerir prioridades, formatos ou abordagens, considerar o foco atual descrito em `estrategia.md`.
+| pra saber... | leia |
+|---|---|
+| o foco do momento, o que pode esperar | `_contexto/estrategia.md` |
+| o que o negócio usa e como o agente alcança (MCP, API, CLI, conta) | `_contexto/ferramentas.md` |
+| onde algo está hospedado (site, domínio, servidor, banco, DNS) | `_contexto/infra.md` |
+| identidade visual e como a marca fala com o cliente | `_contexto/marca/` (começa por `design-guide.md`) |
+| por que algo foi decidido, ou antes de mudar uma decisão | `_memoria/decisoes.md` |
+| o que aconteceu num dia, ou pra voltar no tempo | `_memoria/diario/` |
+| recado deixado por um robô ou por outra pessoa | `_memoria/recados/` |
+| de um contato ou fornecedor recorrente (não é cliente, não é time) | `_contexto/pessoas/<nome>.md` |
+| de um projeto ou cliente, pra trabalhar nele | a pasta dele: `AGENTS.md` + `contexto.md` + `andamento.md` |
+| que modelos e scripts o kit traz (perfis, skills prontas, catálogos, ponte) | `sistema/templates/` e `sistema/scripts/` |
 
-Para qualquer tarefa visual (carrossel, proposta, slide, landing page), consultar `marca/design-guide.md` como referência de estilo.
+Este mapa é a única fonte de caminho do sistema. **Skill nunca escreve caminho de marca, de script ou
+de modelo: ela diz "a marca", "o script da ponte", e o caminho se resolve aqui.** Se você mudou uma
+pasta de lugar, atualize a linha correspondente e tudo continua funcionando. Pasta de projeto que
+tem `marca/` própria usa a dela; sem isso, vale a da raiz.
 
-Não é necessário listar o que foi lido nem confirmar a leitura. Apenas usar o contexto naturalmente.
+## 4. Gatilhos de ação (o que ler antes de fazer)
 
----
+- **Antes de escrever texto ou peça que sai pra fora** (email, proposta, post, slide, página, anúncio):
+  ler a marca (a do projeto se existir, senão a da raiz) e reler o resultado contra ela antes de entregar.
+- **Antes de salvar qualquer arquivo:** a tabela de destinos (seção 5).
+- **Perguntaram "por quê", ou vai mudar algo já decidido:** `_memoria/decisoes.md`.
+- **Precisa voltar no tempo** ("o que fizemos semana passada", "quando falamos disso"): `_memoria/diario/`.
+- **Vai dizer "não consigo" ou "não tenho acesso":** `_contexto/ferramentas.md` primeiro. Muita coisa
+  que parece impossível só está desligada, e a tabela diz o que dá pra ligar.
+- **Vai trabalhar numa pasta de projeto:** ler o `AGENTS.md`, o `contexto.md` e o `andamento.md` dela.
+  Abrir a raiz não carrega a subpasta sozinho: é preciso ir buscar.
+- **Chegou material bruto** (transcrição, PDF, email exportado): vai pra pasta do projeto certo, e o
+  essencial é destilado no `contexto.md` dele. Nada de gaveta de entrada.
 
-## Fluxo de trabalho
+## 5. Tabela de destinos (aconteceu X, escreve em Y)
 
-Antes de executar qualquer tarefa, verificar se existe uma skill relevante em `.claude/skills/` (Claude Code) ou `.agents/skills/` (Codex).
-Se encontrar, seguir as instruções da skill.
-Se não encontrar, executar a tarefa normalmente.
+Toda vez que for salvar alguma coisa, é aqui que se consulta. Quem escreve é o `/atualizar`, no fim
+da sessão, numa passada só. No meio da sessão o agente não sai salvando por conta: anota e segue.
+Pedido explícito ("salva isso") é exceção, e passa pela tabela do mesmo jeito.
 
-Ao concluir uma tarefa que não tinha skill mas parece repetível (o usuário provavelmente vai pedir de novo no futuro), perguntar:
+| aconteceu na sessão | escreve em |
+|---|---|
+| fato novo sobre o negócio (cliente, serviço, equipe, preço) | `_contexto/empresa.md` |
+| mudança de rumo, foco ou meta | `_contexto/estrategia.md` |
+| correção ou preferência de trabalho ("não faça mais isso", "prefiro assim") | `_contexto/preferencias.md` |
+| ferramenta nova, acesso novo, "não alcanço isso" | `_contexto/ferramentas.md` |
+| onde algo passou a estar hospedado | `_contexto/infra.md` |
+| onde paramos, pendências | `_contexto/agora.md` |
+| o que foi feito hoje | `_memoria/diario/` (o arquivo da própria origem, acrescenta no fim) |
+| decisão com motivo | `_memoria/decisoes.md` (acrescenta; nome do projeto na linha, se for de projeto) |
+| robô quer propor ou reportar | `_memoria/recados/` (um arquivo por recado) |
+| identidade visual, jeito de falar com o cliente | `_contexto/marca/` |
+| trabalho de projeto ou cliente | a pasta do projeto |
+| chegou transcrição, material de reunião, documento | a pasta do projeto; destilar o essencial no `contexto.md` dele |
+| pessoa ou empresa recorrente que não é cliente nem time | `_contexto/pessoas/<nome>.md` (a pasta nasce no primeiro arquivo) |
+| coisa trivial (pergunta solta, teste, conversa sem ação) | **não salva.** Poluir o sistema é pior que perder |
+| não coube em nada acima | **pergunta.** Nunca inventar gaveta nem destino em silêncio |
 
-> "Isso pode virar uma skill pra próxima vez. Quer que eu crie?"
+Formatos que não mudam: diário é `AAAA-MM-DD.md` (o dono) ou `AAAA-MM-DD-<origem>.md` (qualquer outra
+origem), sempre acrescentando embaixo, nunca reescrevendo. Decisão é uma entrada nova, datada e assinada;
+quando muda decisão velha, diz `substitui: <data>` em vez de editar a antiga. Toda entrada durável leva
+data absoluta (nunca "semana passada"). Arquivar em vez de apagar.
 
-Não perguntar pra tarefas pontuais ou perguntas simples. Só quando o padrão de repetição for claro.
+## 6. Contrato do robô (rotina, cron, agente autônomo, subagente)
 
----
+**Rotina lê muito e escreve pouco: o que ela escreve fica no diário e nos recados dela; criar arquivo
+novo pode, reescrever o que existe não. Quem promove pra memória durável é você, pelo `/atualizar`.**
 
-## Aprender com correções
+- Cada origem escreve só no próprio diário (`_memoria/diario/AAAA-MM-DD-<origem>.md`), assinado com o
+  id dela. Duas origens nunca tocam o mesmo arquivo; conflito de sincronização fica impossível por desenho.
+- O nome da origem desta máquina está em `.origem` (o `/setup` cria; fica fora do git). Sem esse
+  arquivo, perguntar antes de escrever no diário. O dono escreve limpo, sem sufixo.
+- Mudança em `_contexto/`, em `decisoes.md` ou em arquivo de trabalho alheio vira **recado**, nunca
+  edição. Recado é um arquivo `_memoria/recados/AAAA-MM-DD-<origem>-<assunto>.md` que começa com
+  `de:`, `quando:` e `precisa de ação: sim/não`. Tratou, apaga (ou leva pro diário se vale registro).
+- Entregável ou rascunho novo a rotina cria direto, de preferência na pasta do projeto dela, e avisa
+  por recado. Arquivo que ela mesma criou e mantém, ela reescreve à vontade.
+- Sessão sem gente na frente não gera memória durável sozinha. Nunca.
 
-Quando o usuário corrigir algo, melhorar uma resposta ou dar uma instrução que parece permanente (frases como "na verdade é assim", "não faça mais isso", "prefiro assim", "sempre que...", "evita...", "da próxima vez..."), perguntar:
+## 7. Regra de recall
 
-> "Quer que eu salve isso pra não precisar repetir?"
+Pergunta sobre o passado (o que foi feito, quando, por quê, o que ficou combinado): buscar no diário e
+nas decisões **antes** de responder. Nunca responder de memória de sessão nem completar com suposição.
+Não achou: dizer que não achou.
 
-Se sim, identificar onde faz mais sentido salvar:
+## 8. Fim de sessão
 
-- **Sobre o negócio** (quem são os clientes, como funciona a empresa, serviços, mercado) → adicionar em `_contexto/empresa.md`
-- **Sobre preferências e estilo** (tom de voz, formato de resposta, o que evitar, como estruturar textos) → adicionar em `_contexto/preferencias.md`
-- **Sobre prioridades e foco atual** (projetos em andamento, metas do momento, prazos importantes, o que é prioridade agora) → adicionar em `_contexto/estrategia.md`
-- **Regra de comportamento nessa pasta** (onde salvar arquivos, como nomear, fluxos específicos) → adicionar no próprio `AGENTS.md`
+Sessão que rendeu trabalho termina com `/atualizar`. É ele que escreve o diário, o `agora.md`, as
+decisões e o `_contexto/`, e fecha dizendo o que escreveu onde. Quando você estiver se despedindo e
+a sessão rendeu, o agente pergunta se roda o `/atualizar` agora. Depois dele, `/syncar` se este sistema
+está no GitHub. Correção dita no meio da sessão: o agente responde "anotado, salvo no fim" e segue.
 
-Salvar com uma linha nova clara, sem reformatar o arquivo inteiro. Confirmar o que foi salvo mostrando a linha adicionada.
+| comando | o que faz | o que não faz |
+|---|---|---|
+| `/iniciar` | lê o sistema e devolve onde você parou | não escreve nada |
+| `/atualizar` | decide onde cada coisa mora e escreve | não mexe no GitHub |
+| `/syncar` | manda pro GitHub e diz o que subiu | não decide nada |
 
-Não perguntar se a correção for óbvia de contexto imediato (ex: "na verdade o arquivo se chama X"). Só perguntar quando a informação tiver valor duradouro.
+## 9. Mapa de pastas
 
----
+<!-- O /setup e o /novo-projeto mantêm esta lista: uma linha por pasta, com o que vai nela. -->
 
-## Manter contexto atualizado
-
-Ao terminar uma tarefa que mudou algo relevante no projeto (novo cliente, nova skill, mudança de foco, novo processo, ferramenta instalada, estrutura de pastas alterada), perguntar:
-
-> "Isso mudou algo no teu contexto. Quer que eu atualize os arquivos de memória?"
-
-Se sim, identificar o que precisa atualizar:
-
-- **Novo cliente, serviço, ferramenta, equipe** → `_contexto/empresa.md`
-- **Mudança de prioridade ou foco** → `_contexto/estrategia.md`
-- **Correção de tom ou estilo** → `_contexto/preferencias.md`
-- **Nova pasta, regra de organização, skill criada** → `AGENTS.md`
-- **Mudança visual (cores, fontes, logo)** → `marca/design-guide.md`
-
-Mostrar o que vai mudar antes de salvar. Não reformatar o arquivo inteiro, só adicionar ou editar a linha relevante.
-
-**Quando NÃO perguntar:**
-- Tarefas pontuais que não mudam o contexto (ex: escrever um email, criar um post avulso)
-- Perguntas simples ou conversas sem ação
-- Mudanças que já foram salvas pelo bloco "Aprender com correções"
-
-**Dica:** se não sabe se algo mudou, rode `/atualizar` pra uma varredura completa.
-
----
-
-## Criação de skills
-
-Quando o usuário pedir pra criar uma nova skill:
-
-1. Verificar se existe um template relevante em `templates/skills/`. Se existir, usar como base e adaptar pro contexto do usuário
-2. Perguntar: "Essa skill é específica pra esse projeto ou vai ser útil em qualquer projeto?"
-   - Específica desse negócio → salvar em `.claude/skills/nome-da-skill/SKILL.md` (local)
-   - Útil em qualquer projeto → salvar em `~/.claude/skills/nome-da-skill/SKILL.md` (global)
-3. Ler `_contexto/empresa.md` e `_contexto/preferencias.md` pra calibrar o conteúdo da skill ao contexto do negócio
-4. Se a skill precisar de arquivos de apoio (templates, referências, exemplos), criar dentro da pasta da skill
-5. Seguir o fluxo da skill-creator nativa do Claude Code
+- `_contexto/` · o que o sistema sabe do negócio. Não apagar
+- `_memoria/` · o que aconteceu e por quê: `diario/`, `decisoes.md`, `recados/`
+- `sistema/` · o motor do kit (scripts e modelos). Você não precisa abrir
+- `.claude/` · as habilidades (skills) deste sistema
+<!-- pastas de trabalho abaixo, criadas pelo /setup conforme o negócio -->

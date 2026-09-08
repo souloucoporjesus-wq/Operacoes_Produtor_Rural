@@ -1,18 +1,16 @@
-# Agora — contexto vivo
+<!-- quem alimenta: o /setup semeia; o /atualizar reescreve no fim de cada sessão. Lido em toda conversa (boot). -->
+# Agora · onde paramos
 
 <!-- NOT CONFIGURED -->
-> Este é o contexto que muda toda semana (diferente de `estrategia.md`, que é o foco de fundo).
-> O `/iniciar` lê isto no começo da sessão; o `/atualizar` escreve aqui no fim.
-> Mantenha curto: o que passou de ~30 dias sai daqui (vai pro histórico ou some).
+> O contexto que muda toda semana (diferente de `estrategia.md`, que é o foco de fundo).
+> Mantenha curto: o que passou de ~30 dias sai daqui. Decisão não mora aqui: mora em `_memoria/decisoes.md`.
+> Pendência que sai desta lista sai com motivo (feito, virou projeto, mandaram soltar), nunca em silêncio.
 
 ## Onde paramos
 [a última coisa em que você estava trabalhando, pra retomar rápido]
 
-## Decisões recentes
-[decisões tomadas nas últimas semanas, uma linha cada, com data]
-
 ## Pendências
-[coisas em aberto esperando você ou terceiros — o que precisa acontecer]
+[coisas em aberto esperando você ou terceiros, uma por linha, com data]
 
 ## Quente agora
 [o que está ativo esta semana: prazos, threads, entregas em andamento]

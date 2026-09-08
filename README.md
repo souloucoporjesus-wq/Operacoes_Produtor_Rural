@@ -54,27 +54,31 @@ O agente vai te fazer algumas perguntas e configurar o sistema pro seu negócio.
 
 **Skills prontas pra usar:**
 - `/setup` — configura o sistema pro seu negócio (comece por aqui)
-- `/iniciar` — carrega o contexto do negócio no começo de cada sessão de trabalho
-- `/syncar` — salva o trabalho no GitHub (commit + push, configura na primeira vez)
-- `/carrossel` — cria carrosséis pra Instagram e TikTok com a sua identidade visual
-- `/proposta-comercial` — gera proposta profissional em HTML a partir de um briefing
-- `/publicar-site` — publica qualquer HTML no ar com um link compartilhável
-- `/slide` — cria slide/card visual pra apresentação
-- `/analisar-dados` — analisa um arquivo e gera resumo executivo com insights
-- `/roteiro-post` — transforma ideia ou texto em roteiro de post ou vídeo
-- `/email-profissional` — rascunha email profissional a partir de contexto livre
-- `/atualizar` — varre o projeto e atualiza os arquivos de contexto que ficaram desatualizados
-- `/novo-projeto` — cria pasta de projeto novo com CLAUDE.md dedicado (entrevista sobre o projeto)
+- `/iniciar` — abre a sessão: puxa o GitHub, carrega o contexto, anuncia recados e diz onde você parou
+- `/atualizar` — fecha a sessão: escreve o diário do dia, o "onde paramos", as decisões e o contexto, e diz o que escreveu onde
+- `/syncar` — manda o trabalho pro GitHub e diz o que subiu
+- `/novo-projeto` — cria pasta de projeto ou cliente com contexto próprio
+- `/mapear` — entrevista você sobre o dia a dia e cria skills personalizadas
+- `/carrossel` `/proposta-comercial` `/slide` `/publicar-site` `/analisar-dados` `/roteiro-post` `/email-profissional` — modelos prontos que o `/mapear` instala com a sua identidade
 
-**Pastas geradas pelo `/setup`:**
-- `_contexto/` — contexto do seu negócio e preferências
-- `marca/` — guia de identidade visual da sua marca
-- `templates/ferramentas/catalogo.md` — APIs, CLIs e MCPs disponíveis pra usar em skills
+**A casa, depois do `/setup`:**
 
-**Pasta `dados/`:**
-- Drop zone pra arquivos que você quer analisar (CSV, XLSX, TXT, PDF)
-- Útil quando você não tem MCP de Google Drive instalado
-- Use com `/analisar-dados dados/seu-arquivo.csv`
+```
+seu-negocio/
+├── AGENTS.md        as regras, o boot, o mapa e a tabela de destinos (o cérebro, com teto de 180 linhas)
+├── CLAUDE.md        uma linha: @AGENTS.md
+├── _contexto/       o que o sistema sabe do negócio: empresa, preferências, foco, ferramentas, infra, marca/
+├── _memoria/        o que aconteceu e por quê: diario/ (um arquivo por dia), decisoes.md, recados/
+├── sistema/         o motor do kit: scripts e modelos. Você não precisa abrir
+├── .claude/         as skills
+└── clientes/ propostas/ conteudo/ ...   as pastas de trabalho, conforme o seu perfil
+```
+
+Três comandos que você vai confundir no começo: `/iniciar` lê, `/atualizar` escreve, `/syncar` manda pro GitHub.
+
+**Se você já tinha a versão anterior do kit** (a que tinha `dados/` e `marca/` na raiz): não precisa
+mudar nada se o seu sistema te atende. Quando quiser atualizar, existe um arquivo de atualização que
+você cola no agente e ele faz com você, no máximo três mudanças por vez.
 
 ---
 
