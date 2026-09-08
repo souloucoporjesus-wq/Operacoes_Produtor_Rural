@@ -75,7 +75,8 @@ tem `marca/` própria usa a dela; sem isso, vale a da raiz.
 - **Vai trabalhar numa pasta de projeto:** ler o `AGENTS.md`, o `contexto.md` e o `andamento.md` dela.
   Abrir a raiz não carrega a subpasta sozinho: é preciso ir buscar.
 - **Chegou material bruto** (transcrição, PDF, email exportado): vai pra pasta do projeto certo, e o
-  essencial é destilado no `contexto.md` dele. Nada de gaveta de entrada.
+  essencial é destilado no `contexto.md` dele, **com a data e o caminho da fonte** ("reunião
+  12/08 → o arquivo: o que fechou"). Guarda-se o mapa, não uma cópia. Nada de gaveta de entrada.
 
 ## 5. Tabela de destinos (aconteceu X, escreve em Y)
 
@@ -97,7 +98,7 @@ Pedido explícito ("salva isso") é exceção, e passa pela tabela do mesmo jeit
 | robô quer propor ou reportar | `_memoria/recados/` (um arquivo por recado) |
 | identidade visual, jeito de falar com o cliente | `_contexto/marca/` |
 | trabalho de projeto ou cliente | a pasta do projeto |
-| chegou transcrição, material de reunião, documento | a pasta do projeto; destilar o essencial no `contexto.md` dele |
+| chegou transcrição, material de reunião, documento | a pasta do projeto; destilar o essencial no `contexto.md` dele, com data e caminho da fonte |
 | pessoa ou empresa recorrente que não é cliente nem time | `_contexto/pessoas/<nome>.md` (a pasta nasce no primeiro arquivo) |
 | coisa trivial (pergunta solta, teste, conversa sem ação) | **não salva.** Poluir o sistema é pior que perder |
 | não coube em nada acima | **pergunta.** Nunca inventar gaveta nem destino em silêncio |
