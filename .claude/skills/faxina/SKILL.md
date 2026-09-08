@@ -65,6 +65,11 @@ achou algo. "Nada encontrado" some.
 11. **Memória → contexto.** Coisa que aparece repetida no diário ou nas decisões (mesmo cliente,
     mesma ferramenta, mesma pessoa, 3 vezes ou mais) e não está no `_contexto/` nem no
     `contexto.md` do projeto certo. Propor a promoção (a linha pronta), aplicar só com o sim.
+12b. **Automações × sinais de vida.** Cruzar `_contexto/automacoes.md` (se existir) com os
+    rastros reais: recados e diários assinados pela origem de cada rotina nos últimos 30 dias.
+    Rotina registrada sem nenhum sinal no período: avisar ("pode ter quebrado em silêncio; a
+    coluna 'como saber se quebrou' diz onde conferir"). Sinal chegando de origem que NÃO está
+    no registro: avisar ("automação fantasma; registrar ou desligar"). Só relata.
 12. **Memória do agente → sistema.** Ler a auto-memória do Claude Code deste projeto
     (`~/.claude/projects/<pasta-codificada>/memory/`) e a do Codex, se existirem. O que for **fato
     de negócio** (cliente, preço, preferência de trabalho) mora no sistema, não no agente: sugerir

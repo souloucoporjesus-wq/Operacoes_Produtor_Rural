@@ -48,6 +48,7 @@ diário de outra origem, avisa se o `agora.md` está velho.
 |---|---|
 | o foco do momento, o que pode esperar | `_contexto/estrategia.md` |
 | o que o negócio usa e como o agente alcança (MCP, API, CLI, conta) | `_contexto/ferramentas.md` |
+| que automações estão ligadas (cron, worker, rotina que roda sozinha) | `_contexto/automacoes.md` |
 | onde algo está hospedado (site, domínio, servidor, banco, DNS) | `_contexto/infra.md` |
 | identidade visual e como a marca fala com o cliente | `_contexto/marca/` (começa por `design-guide.md`) |
 | por que algo foi decidido, ou antes de mudar uma decisão | `_memoria/decisoes.md` |
@@ -88,6 +89,7 @@ Pedido explícito ("salva isso") é exceção, e passa pela tabela do mesmo jeit
 | mudança de rumo, foco ou meta | `_contexto/estrategia.md` |
 | correção ou preferência de trabalho ("não faça mais isso", "prefiro assim") | `_contexto/preferencias.md` |
 | ferramenta nova, acesso novo, "não alcanço isso" | `_contexto/ferramentas.md` |
+| automação ligada, desligada ou mudada | `_contexto/automacoes.md` (nasce no primeiro registro: rotina, o que faz, onde roda, quando, origem que assina, como saber se quebrou) |
 | onde algo passou a estar hospedado | `_contexto/infra.md` |
 | onde paramos, pendências | `_contexto/agora.md` |
 | o que foi feito hoje | `_memoria/diario/` (o arquivo da própria origem, acrescenta no fim) |
@@ -119,6 +121,8 @@ novo pode, reescrever o que existe não. Quem promove pra memória durável é v
   `de:`, `quando:` e `precisa de ação: sim/não`. Tratou, apaga (ou leva pro diário se vale registro).
 - Entregável ou rascunho novo a rotina cria direto, de preferência na pasta do projeto dela, e avisa
   por recado. Arquivo que ela mesma criou e mantém, ela reescreve à vontade.
+- Toda rotina ligada tem uma linha em `_contexto/automacoes.md` (é o inventário do que roda
+  sozinho). Rotina que não está lá não deveria estar rodando.
 - Sessão sem gente na frente não gera memória durável sozinha. Nunca.
 
 ## 7. Regra de recall
