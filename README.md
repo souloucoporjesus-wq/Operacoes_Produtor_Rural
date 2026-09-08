@@ -7,21 +7,19 @@ O sistema operacional do seu negócio, feito pelo [Ratos de IA](https://ratosdei
 ## Como instalar
 
 O kit funciona no **Claude Code** e no **Codex** (Windows, Mac ou Linux). Você baixou um zip na
-plataforma do curso; a instalação é abrir a pasta e rodar o setup.
+plataforma do curso; instalar é abrir a pasta e chamar o setup.
 
-**1. Descompacte o zip** onde você guarda seus projetos (dê à pasta o nome que quiser: ela vai ser
-a casa do seu negócio).
+**1. Descompacte o zip** onde você guarda seus projetos. Essa pasta vai ser a casa do seu negócio
+(pode renomear pra o nome dele, se quiser).
 
-**2. Abra a pasta no VS Code**
+**2. Abra a pasta no seu agente:** no aplicativo do **Claude Code** (ou no VS Code com a
+extensão), use "Abrir pasta" e escolha a pasta que você descompactou. No **Codex**, mesma coisa.
 
-**3. Abra o terminal integrado** (Ctrl + ` no Windows / Cmd + ` no Mac) e rode o seu agente:
-```bash
-claude      # ou: codex
-```
-
-**4. Chame o setup**
-- No Claude Code: `/setup`
+**3. Chame o setup:**
+- No Claude Code: digite `/setup`
 - No Codex (primeira vez): peça `leia e siga o arquivo .claude/skills/setup/SKILL.md`
+
+> Prefere o terminal? Entrar na pasta e rodar `claude` (ou `codex`) dá no mesmo.
 
 O agente vai te fazer algumas perguntas e configurar o sistema pro seu negócio. Em 5 minutos você tem tudo pronto, funcionando nos dois.
 

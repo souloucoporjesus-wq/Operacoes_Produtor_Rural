@@ -221,7 +221,7 @@ Ler `sistema/templates/bem-vindo.template.html`, preencher e salvar `bem-vindo.h
 - `LOGO`: `<img class="logo" src="_contexto/marca/<arquivo>" alt="">` se tem logo; vazio se não.
 - `NOME`, `NEGOCIO`, `RESUMO` (uma frase do que ele faz, nas palavras dele), `SABERES` (4 a 6
   `<li>` com pedaços reais das respostas: "que 70% do seu movimento vem de arquiteto", não
-  "contexto configurado"), `PASTAS` (`<li>` por pasta com o que vai nela), `PASSOS` (três
+  "contexto configurado"), `PASTAS` (as pastas de trabalho como linhas do bloco da árvore, uma por pasta, no formato `<b>clientes/</b>       <i>uma pasta por cliente, com contexto próprio</i>`, alinhando a coluna dos comentários com as linhas fixas de cima), `PASSOS` (três
   `<div class="passo"><div class="n">1</div><div><b>...</b><p>...</p></div></div>`: rodar
   `/mapear`; conectar ao GitHub com `/syncar`; fechar a primeira sessão com `/atualizar`).
 - Texto na voz dele (`preferencias.md`), frases curtas, **sem travessão**, sem "mergulhe",
