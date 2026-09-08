@@ -203,6 +203,7 @@ git de propósito: cada computador tem o seu.
 
 Ler o catálogo em `sistema/templates/ferramentas/catalogo.md` e cruzar com a pergunta 6. Pra cada
 ferramenta que tem conector: dizer o que ele faz, mostrar o comando, perguntar se instala agora.
+Instalar só com o sim específico daquele conector; "faz tudo" não vale pra instalar nada.
 Instalou: `ferramentas.md` ganha `ligada` + "MCP" na coluna de alcance. Ficou pra depois: uma
 pendência no `agora.md` com o comando. Ferramenta fora do catálogo: "não tenho conector pronto pra
 X; se achar um em mcp.so, me passa que eu instalo".

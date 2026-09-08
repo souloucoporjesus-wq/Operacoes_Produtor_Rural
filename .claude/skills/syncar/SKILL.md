@@ -49,6 +49,10 @@ Seguir pro Fluxo A.
 > 3. Não inicialize com README, deixa vazio
 > 4. Me passa o link (ex: https://github.com/seunome/meu-negocio)"
 
+**Quem cria o repositório é o usuário, no site.** Nunca criar por ele (`gh repo create` ou
+API), mesmo que a conta esteja logada nesta máquina e mesmo que ele diga "faz tudo": conta e
+repositório são dele, e ele precisa saber onde o trabalho dele mora. Sem o link, parar aqui.
+
 Com o link: `git remote add origin <link>` e seguir pro Fluxo B (o primeiro envio é
 `git push -u origin main`). Se o `git push` pedir login: *"seu computador não está conectado à sua
 conta do GitHub. É uma vez só: rode `gh auth login` e siga o que aparecer. Te ajudo se quiser."*
@@ -92,7 +96,8 @@ Se o git parar dizendo que **o mesmo arquivo mudou nos dois lados**:
 - arquivo destilado (`agora.md`, `andamento.md`, `empresa.md`, qualquer `_contexto/`):
   **evento supervisionado.** Fazer backup antes (`cp <arquivo> <arquivo>.antes-de-juntar`),
   mostrar as duas versões em linguagem de gente, propor a junção (o conteúdo dos dois, destilado
-  de novo), e só aplicar com o sim. Sem sim, `git rebase --abort` e:
+  de novo: **uma seção só de cada**, sem título repetido, sem linha duplicada), e só aplicar com
+  o sim. Sem sim, `git rebase --abort` e:
   *"O mesmo arquivo foi editado aqui e em outro lugar. Não vou juntar sozinho pra não apagar nada
   seu. Seu trabalho está salvo no computador; me chama que a gente junta os dois."*
 
@@ -136,6 +141,7 @@ O erro cru só aparece se o usuário pedir.
 ## Regras
 
 - Nunca subir `.env`, chave, token ou senha. Achou: barra e avisa.
+- Nunca criar repositório, conta ou credencial pelo usuário. Ele cria e cola o link.
 - Nunca `git add -A` sem antes mostrar a lista. Nunca `push --force`. Nunca `reset --hard`.
 - Antes de qualquer coisa que possa apagar trabalho: parar e perguntar.
 - Tom direto; não explicar git a não ser que perguntem.

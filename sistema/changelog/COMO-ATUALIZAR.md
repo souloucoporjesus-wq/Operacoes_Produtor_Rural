@@ -18,8 +18,12 @@ Se o seu sistema te atende como está, **não precisa atualizar.** Nada abaixo �
 propõe, nunca sobrescreve, e adapta tudo aos nomes que ele usa (se a memória dele se chama
 `cerebro/`, é `cerebro/` no papel também).
 
-1. **Primeira frase da conversa:** "Se o seu sistema te atende como está, não precisa atualizar.
-   Quer ver o que a versão nova traz, e escolher o que entra?"
+0. **Você não aplica nada sem um sim explícito.** Este arquivo tem pontos marcados **PARE**: neles
+   você termina a mensagem e espera a resposta. Não encadeie fases, não "adiante" mudanças, não
+   presuma que ele quer tudo. "Faz tudo, decide tu" vale só pro grupo de 3 mudanças em curso.
+1. **A primeira mensagem da conversa é só esta, e nada mais:** "Se o seu sistema te atende como
+   está, não precisa atualizar. Quer ver o que a versão nova traz, e escolher o que entra?"
+   **PARE.**
 2. **Cópia de segurança antes de qualquer mudança.** Se a pasta tem git: `git add -A && git commit
    -m "antes de atualizar pra <versão>"` (aqui o `add -A` é de propósito: é a foto inteira). Sem
    git: `cp -R` da pasta inteira pra `<pasta>-antes-da-<versão>-<data>`, conferindo a contagem de
@@ -32,6 +36,10 @@ propõe, nunca sobrescreve, e adapta tudo aos nomes que ele usa (se a memória d
 6. **Fale como gente.** Sem "merge", "rebase", "diff", "commit" na tela: "cópia de segurança",
    "salvar", "juntar os dois textos".
 7. **Escreva na voz dele:** ler o `preferencias.md` dele antes de escrever qualquer texto novo.
+8. **A atualização mexe só dentro da pasta dele.** Nada de criar repositório no GitHub, instalar
+   conector (MCP), mexer em configuração do agente ou da máquina, abrir programa. Isso não é
+   atualização; se ele quiser, é outra conversa, com o comando certo (`/syncar`, `/setup`).
+   "Faz tudo, decide tu" não cobre nada disso.
 
 ## O procedimento
 
@@ -65,11 +73,16 @@ testar**. Rodar o check de cada uma na instalação dele. As que o check diz "n�
 da lista. As que sobram, apresentar **rankeadas como estão no arquivo** (valor primeiro), em
 linguagem de gente, e propor as 3 primeiras.
 
+Apresentadas as 3, **PARE** e espere ele dizer quais entram.
+
 ### 4. Aplicar, uma por vez
 
-Pra cada mudança aceita: antes/depois → aplicar → rodar o "como testar" → uma linha no
+Pra cada mudança aceita: mostrar o antes/depois de cada arquivo que muda e **PARE** → com o sim,
+aplicar → rodar o "como testar" → uma linha no
 `decisoes.md` dele: `- **AAAA-MM-DD** (agente) [atualizacao]: aplicada "<nome da mudança>" da
 versão X. Por quê: <motivo dele, se disse>`. Recusada: mesma linha com "recusada".
+
+Terminou o grupo de 3: dizer o que mudou, listar o que ainda falta, perguntar se segue. **PARE.**
 
 ### 5. Fechar a rodada
 

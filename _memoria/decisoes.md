@@ -11,7 +11,7 @@ regra de trabalho. O que não entra: tarefa feita (isso é o diário).
 **Formato de cada entrada:**
 
 ```
-- **AAAA-MM-DD** (quem decidiu) [projeto, se for de projeto]: a decisão em uma frase. Por quê: o motivo em outra. Substitui: AAAA-MM-DD (só quando muda uma decisão anterior; a antiga fica onde está)
+- **AAAA-MM-DD** (quem decidiu: o nome da pessoa, ou a origem se foi um robô) [projeto, se for de projeto]: a decisão em uma frase. Por quê: o motivo em outra. Substitui: AAAA-MM-DD (só quando muda uma decisão anterior; a antiga fica onde está)
 ```
 
 ---
