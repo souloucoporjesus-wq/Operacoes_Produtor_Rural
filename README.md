@@ -1,39 +1,18 @@
-# Claude Code OS: Kit de Boas-Vindas 🐀
+# Ratos OS 🐀
 
-Feito pelo [Ratos de IA](https://ratosdeia.com.br) pra alunos do curso **Claude Code OS**.
+O sistema operacional do seu negócio, feito pelo [Ratos de IA](https://ratosdeia.com.br) pra alunos do curso **Ratos OS** (o Claude Code OS).
 
 ---
 
 ## Como instalar
 
-Este kit funciona no **Claude Code** e no **Codex** (Windows, Mac ou Linux). Escolha um.
+O kit funciona no **Claude Code** e no **Codex** (Windows, Mac ou Linux). Você baixou um zip na
+plataforma do curso; a instalação é abrir a pasta e rodar o setup.
 
-### Opção 1: Via prompt (mais fácil)
+**1. Descompacte o zip** onde você guarda seus projetos (dê à pasta o nome que quiser: ela vai ser
+a casa do seu negócio).
 
-Com o Claude Code **ou** o Codex aberto em qualquer pasta, copie e cole esse prompt:
-
-```
-Clona https://github.com/dobralabs/ccos-ratos.git na pasta atual, entra nela, lê e segue o arquivo .claude/skills/setup/SKILL.md
-```
-
-O agente faz tudo: clona, entra na pasta e inicia a configuração (que já deixa Claude e Codex prontos).
-
-> Se você está no **Claude Code**, depois de clonar dá pra chamar direto `/setup`: dá no mesmo.
-
----
-
-### Opção 2: Via terminal
-
-**1. Clone o repositório**
-```bash
-git clone https://github.com/dobralabs/ccos-ratos.git
-cd ccos-ratos
-```
-
-**2. Abra no VS Code**
-```bash
-code .
-```
+**2. Abra a pasta no VS Code**
 
 **3. Abra o terminal integrado** (Ctrl + ` no Windows / Cmd + ` no Mac) e rode o seu agente:
 ```bash
@@ -43,8 +22,6 @@ claude      # ou: codex
 **4. Chame o setup**
 - No Claude Code: `/setup`
 - No Codex (primeira vez): peça `leia e siga o arquivo .claude/skills/setup/SKILL.md`
-
----
 
 O agente vai te fazer algumas perguntas e configurar o sistema pro seu negócio. Em 5 minutos você tem tudo pronto, funcionando nos dois.
 
