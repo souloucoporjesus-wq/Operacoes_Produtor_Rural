@@ -69,3 +69,7 @@
 ---
 
 ## Observações adicionais
+
+Identidade visual ainda não definida aqui (decisão de deixar pra depois, 2026-09-16). Existe
+material bruto da marca em `_contexto/marca/Universo de Marca - Aliare 1.pdf` (46 MB, não deu pra
+abrir automaticamente); quando for preencher este guia, consultar esse PDF na mão.

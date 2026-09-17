@@ -1,14 +1,19 @@
 <!-- Teto deste arquivo: 180 linhas. Ele carrega em toda conversa, então cada linha aqui é paga sempre.
      O que cresce vai pras pastas (o mapa da seção 3 diz qual). A /faxina avisa quando estourar. -->
-# [Nome do negócio] · RatosOS
+# Operações - Produtor Rural
 
-Se você acabou de instalar: rode `/setup` (uns 5 minutos). Depois, `/mapear` pra criar as
-habilidades do seu dia a dia. Neste arquivo, "você" é o dono do sistema; as instruções são pro agente.
+Neste arquivo, "você" é o dono do sistema; as instruções são pro agente.
 
 ## 1. O que é este sistema
 
-<!-- /setup preenche este bloco (4 a 8 linhas): o que esta pasta representa, quem você é, o que
-     faz e pra quem, o que mais produz aqui. Sem lista de ferramentas nem tom de voz: isso tem casa própria. -->
+Workspace de operações do Julio na Aliare, holding de tecnologia pra agronegócio sediada em
+Goiânia (GO), dona dos ERPs AgriManager/AGM (desktop, precisa de servidor) e myFarm (SaaS).
+Julio é Coordenador de Operações: cuida de Customer Success, implantação de ERP e gestão de
+projetos, cruzando as duas linhas de produto. Reporta direto ao diretor Leandro Xavier, sem
+gerente intermediário. Time de ~13 pessoas: 2 analistas de projetos, 5 analistas de sucesso do
+cliente, 1 consultor AGM CLT, 1 consultor AGM PJ e 3 consultores myFarm. O que mais se produz
+aqui: relatórios de prestação de contas pra diretoria e outros líderes, planos de implantação,
+acompanhamento de OKR do time, análise de churn/CS e propostas.
 
 **Regras gerais**
 
@@ -56,6 +61,7 @@ diário de outra origem, avisa se o `agora.md` está velho.
 | recado deixado por um robô ou por outra pessoa | `_memoria/recados/` |
 | de um contato ou fornecedor recorrente (não é cliente, não é time) | `_contexto/pessoas/<nome>.md` |
 | de um projeto ou cliente, pra trabalhar nele | a pasta dele: `AGENTS.md` + `contexto.md` + `andamento.md` |
+| posição de suspensos, inadimplência e churn, e o que ficou combinado com a diretoria | `retencao/contexto.md` (reuniões brutas em `retencao/reunioes/`) |
 | que modelos e scripts o kit traz (perfis, skills prontas, catálogos, ponte) | `sistema/templates/` e `sistema/scripts/` |
 
 Este mapa é a única fonte de caminho do sistema. **Skill nunca escreve caminho de marca, de script ou
@@ -158,3 +164,9 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
 - `.claude/` · as habilidades (skills) deste sistema
 - `.ratosos` · a versão do kit (uma linha). Não apague: é como a atualização sabe de onde você parte
 <!-- pastas de trabalho abaixo, criadas pelo /setup conforme o negócio -->
+- `clientes/` · uma pasta por cliente ou projeto de implantação (Grupo Marcondes, Agropecuária
+  Amazônia, AgroJem, MOTTA, parceiro do Paraguai...)
+- `retencao/` · acompanhamento de clientes em suspensão, cancelamento e inadimplência
+- `equipe/` · gestão do time: OKRs, 1:1, onboarding da equipe recém-montada
+- `relatorios/` · prestação de contas pra diretoria e outros líderes
+- `projetos/` · iniciativas que cruzam mais de uma área (definição de ferramentas, automações, o Engenho)

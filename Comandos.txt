@@ -1,0 +1,13 @@
+Do kit do RatosOS, específicos pra você usar no dia a dia:
+
+/setup — configurar o sistema (é o que estamos fazendo agora)
+/mapear — próximo passo: entrevista seus processos repetitivos e cria skills pra eles
+/iniciar — abre a sessão: puxa GitHub, recados, e diz onde você parou
+/atualizar — fecha a sessão: salva diário, decisões e contexto
+/syncar — manda o trabalho pro GitHub
+/novo-projeto — cria a pasta de um cliente/projeto novo
+/compartilhar — prepara uma pasta de projeto pra sair daqui (cliente, sócio)
+/faxina — auditoria mensal do sistema (o que envelheceu, o que quebrou)
+Gerais do Claude Code, que valem em qualquer projeto: /code-review, /simplify, /security-review, /run, /design, /loop, /schedule, entre outros de config e infraestrutura. E tem uma skill de projeto já criada, analise_dados_senior, pra quando você for mexer com dados em Jupyter.
+
+Voltando: o setup ainda não fechou — ainda preciso da sua confirmação sobre o resumo que te passei (a coordenação, o foco em suspensão/cancelamento, e o jeito de eu falar com você). Bateu, ou tem algo pra ajustar?

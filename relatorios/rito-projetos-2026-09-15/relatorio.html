@@ -1,0 +1,865 @@
+<title>Rito de Projetos · 15/09</title>
+<style>
+  :root{
+    color-scheme: light;
+    --bg: #f9f9f7;
+    --surface: #fcfcfb;
+    --surface-2: #f2f1ec;
+    --text: #0b0b0b;
+    --text-2: #52514e;
+    --muted: #898781;
+    --line: #e1e0d9;
+    --border: rgba(11,11,11,0.10);
+    --accent: #2a78d6;   /* AgriManager */
+    --accent-2: #eb6834; /* myFarm / destaque */
+    --good: #0ca30c;
+    --warning: #fab219;
+    --critical: #d03b3b;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg: #0d0d0d;
+      --surface: #1a1a19;
+      --surface-2: #202020;
+      --text: #ffffff;
+      --text-2: #c3c2b7;
+      --muted: #8f8d87;
+      --line: #2c2c2a;
+      --border: rgba(255,255,255,0.10);
+      --accent: #3987e5;
+      --accent-2: #d95926;
+      --good: #0ca30c;
+      --warning: #fab219;
+      --critical: #e66767;
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg: #0d0d0d;
+    --surface: #1a1a19;
+    --surface-2: #202020;
+    --text: #ffffff;
+    --text-2: #c3c2b7;
+    --muted: #8f8d87;
+    --line: #2c2c2a;
+    --border: rgba(255,255,255,0.10);
+    --accent: #3987e5;
+    --accent-2: #d95926;
+    --good: #0ca30c;
+    --warning: #fab219;
+    --critical: #e66767;
+  }
+
+  * { box-sizing: border-box; }
+  body{
+    background: var(--bg);
+    color: var(--text);
+    font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding-inline: 20px;
+    padding-block: 40px;
+  }
+  .page{ max-width: 880px; margin: 0 auto; }
+
+  h1,h2,h3{ font-family: "Archivo", system-ui, sans-serif; text-wrap: balance; margin: 0; }
+  .mono{ font-family: "IBM Plex Mono", ui-monospace, monospace; }
+  .tab{ font-variant-numeric: tabular-nums; }
+
+  header.top{
+    display: flex; flex-direction: column; gap: 10px;
+    padding-bottom: 22px; margin-bottom: 26px;
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow{
+    font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 600;
+  }
+  h1{ font-size: clamp(26px, 4.5vw, 34px); font-weight: 800; letter-spacing: -.01em; }
+  .meta-row{
+    display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; color: var(--text-2);
+  }
+  .meta-row b{ color: var(--text); font-weight: 600; }
+
+  section{ margin-bottom: 40px; }
+  .section-label{
+    font-size: 12.5px; letter-spacing: .08em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin-bottom: 14px;
+  }
+
+  /* ---- stat tiles ---- */
+  .stats{
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+    background: var(--line); border: 1px solid var(--line); border-radius: 10px; overflow: hidden;
+  }
+  @media (max-width: 640px){ .stats{ grid-template-columns: repeat(2, 1fr); } }
+  .stat{ background: var(--surface); padding: 18px 16px; }
+  .stat .n{ font-family: "Archivo", sans-serif; font-size: 30px; font-weight: 800; line-height: 1; }
+  .stat .n small{ font-size: 16px; font-weight: 700; }
+  .stat .l{ margin-top: 6px; font-size: 13px; color: var(--text-2); line-height: 1.35; }
+  .stat.accent-critical .n{ color: var(--critical); }
+  .stat.accent-warning .n{ color: #a86400; }
+  :root[data-theme="dark"] .stat.accent-warning .n{ color: var(--warning); }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]) .stat.accent-warning .n{ color: var(--warning); }
+  }
+
+  p{ color: var(--text-2); line-height: 1.6; font-size: 15px; max-width: 65ch; }
+  p.lede{ color: var(--text); font-size: 16px; }
+  strong{ color: var(--text); }
+
+  /* ---- chart ---- */
+  .chart-card{
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 20px 20px 14px;
+  }
+  .chart-title{ font-size: 14.5px; font-weight: 700; margin-bottom: 2px; }
+  .chart-sub{ font-size: 12.5px; color: var(--muted); margin-bottom: 14px; }
+  .bar-row{ display: grid; grid-template-columns: 190px 1fr 46px; align-items: center; gap: 10px; padding: 6px 0; }
+  .bar-row .label{ font-size: 13px; color: var(--text-2); }
+  .bar-track{ background: var(--surface-2); border-radius: 4px; height: 20px; overflow: hidden; }
+  .bar-fill{ height: 100%; border-radius: 4px 0 0 4px; }
+  .bar-row .val{ font-size: 13px; font-weight: 700; text-align: right; }
+  .bar-row.muted .label, .bar-row.muted .val{ color: var(--muted); font-weight: 400; }
+  .chart-foot{ margin-top: 12px; font-size: 12px; color: var(--muted); }
+
+  /* ---- tabs ---- */
+  .tabs{
+    display: flex; gap: 4px; border-bottom: 1px solid var(--line);
+    margin-bottom: 20px; overflow-x: auto;
+  }
+  .tab-btn{
+    appearance: none; border: none; background: transparent; cursor: pointer;
+    font-family: "Public Sans", sans-serif; font-size: 13.5px; font-weight: 600;
+    color: var(--text-2); padding: 10px 6px; margin-bottom: -1px;
+    border-bottom: 2px solid transparent; white-space: nowrap;
+  }
+  .tab-btn:hover{ color: var(--text); }
+  .tab-btn[aria-selected="true"]{ color: var(--text); border-bottom-color: var(--accent); }
+  .tab-btn .tab-count{
+    display: inline-block; margin-left: 6px; font-size: 11px; font-weight: 700;
+    background: var(--surface-2); color: var(--text-2); border-radius: 999px; padding: 1px 7px;
+  }
+  .tab-btn[aria-selected="true"] .tab-count{ background: var(--accent); color: #fff; }
+  .tab-btn:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .subsection-label{
+    font-size: 12px; letter-spacing: .06em; text-transform: uppercase;
+    color: var(--muted); font-weight: 700; margin: 22px 0 10px;
+  }
+  .subsection-label:first-child{ margin-top: 0; }
+
+  /* ---- client cards ---- */
+  .client{
+    border: 1px solid var(--border); border-left: 3px solid var(--accent);
+    border-radius: 8px; background: var(--surface);
+    padding: 14px 16px; margin-bottom: 10px;
+  }
+  .client.myfarm{ border-left-color: var(--accent-2); }
+  .client-head{ display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 12px; margin-bottom: 6px; }
+  .client-head .name{ font-weight: 700; font-size: 14.5px; }
+  .badge{
+    font-size: 10.5px; letter-spacing: .04em; text-transform: uppercase; font-weight: 700;
+    padding: 2px 7px; border-radius: 999px; color: #fff; background: var(--accent);
+  }
+  .badge.myfarm{ background: var(--accent-2); }
+  .badge.status{ background: var(--surface-2); color: var(--text-2); }
+  .badge.status.cancel{ background: var(--critical); color: #fff; }
+  .badge.status.ok{ background: var(--good); color: #fff; }
+  .client p{ margin: 0 0 6px; font-size: 13.5px; max-width: none; }
+  .client .combinado{ font-size: 13.5px; color: var(--text); }
+  .client .combinado b{ color: var(--text); }
+  .prazo{
+    display: inline-block; margin-top: 2px; font-size: 12px; font-weight: 700;
+    color: var(--accent-2); font-family: "IBM Plex Mono", monospace;
+  }
+
+  /* ---- checklist ---- */
+  .checklist{ display: flex; flex-direction: column; gap: 10px; }
+  .check{
+    display: grid; grid-template-columns: 22px 1fr; gap: 10px; align-items: start;
+    padding: 10px 12px; background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  }
+  .check .num{
+    width: 22px; height: 22px; border-radius: 50%; background: var(--accent); color: #fff;
+    font-size: 11.5px; font-weight: 800; display: flex; align-items: center; justify-content: center;
+  }
+  .check p{ margin: 0; font-size: 13.5px; color: var(--text); max-width: none; }
+
+  footer{
+    margin-top: 46px; padding-top: 18px; border-top: 1px solid var(--line);
+    font-size: 12px; color: var(--muted); line-height: 1.6;
+  }
+
+  @media (max-width: 480px){
+    .bar-row{ grid-template-columns: 118px 1fr 34px; }
+    .bar-row .label{ font-size: 11.5px; }
+  }
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@700;800&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+
+<div class="page">
+
+  <header class="top">
+    <div class="eyebrow">Rito de alinhamento de projetos · Operações Aliare</div>
+    <h1>AgriManager e myFarm — situação dos projetos de implantação</h1>
+    <div class="meta-row">
+      <span><b>Data:</b> 15/09/2026, 13h01</span>
+      <span><b>Duração:</b> 1h22</span>
+      <span><b>Participantes:</b> Julio Santos, Jaqueline Martins, Joyce Pereira</span>
+    </div>
+  </header>
+
+  <section>
+    <p class="lede">Levantamento feito a partir dos dois reports de projeto do dia (AgriManager
+    e myFarm) e da reunião de alinhamento entre Julio, Jaqueline e Joyce. Cobre quantos projetos
+    estão abertos, o que está represando cada um, e o que ficou combinado com cada cliente.</p>
+  </section>
+
+  <section>
+    <div class="stats">
+      <div class="stat">
+        <div class="n tab">76</div>
+        <div class="l">projetos abertos hoje<br>(12 AgriManager + 64 myFarm)</div>
+      </div>
+      <div class="stat">
+        <div class="n tab">1.008<small>h</small></div>
+        <div class="l">saldo financeiro parado nos projetos abertos</div>
+      </div>
+      <div class="stat accent-critical">
+        <div class="n tab">8</div>
+        <div class="l">projetos abertos com cliente inadimplente</div>
+      </div>
+      <div class="stat accent-warning">
+        <div class="n tab">14</div>
+        <div class="l">cancelamentos no myFarm (2 com registro formal de churn)</div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">O que está represando os 76 projetos abertos</div>
+    <div class="chart-card">
+      <div class="chart-title">O maior travador não é o cliente — é fechar o que já foi entregue</div>
+      <div class="chart-sub">Motivos citados no texto de cada projeto. Um projeto pode ter mais de um motivo, por isso a soma passa de 76.</div>
+
+      <div class="bar-row">
+        <div class="label">Falta só formalizar handoff e encerramento</div>
+        <div class="bar-track"><div class="bar-fill tab" style="width:100%; background:var(--accent-2)"></div></div>
+        <div class="val tab">26</div>
+      </div>
+      <div class="bar-row">
+        <div class="label">Cliente sumiu ou não responde</div>
+        <div class="bar-track"><div class="bar-fill" style="width:42%; background:var(--accent)"></div></div>
+        <div class="val tab">11</div>
+      </div>
+      <div class="bar-row">
+        <div class="label">Cliente inadimplente</div>
+        <div class="bar-track"><div class="bar-fill" style="width:31%; background:var(--accent)"></div></div>
+        <div class="val tab">8</div>
+      </div>
+      <div class="bar-row">
+        <div class="label">Cliente recusa atendimento agora</div>
+        <div class="bar-track"><div class="bar-fill" style="width:8%; background:var(--accent)"></div></div>
+        <div class="val tab">2</div>
+      </div>
+      <div class="bar-row">
+        <div class="label">Agenda do cliente é difícil de encaixar</div>
+        <div class="bar-track"><div class="bar-fill" style="width:4%; background:var(--accent)"></div></div>
+        <div class="val tab">1</div>
+      </div>
+      <div class="bar-row muted">
+        <div class="label">Sem motivo de bloqueio no texto</div>
+        <div class="bar-track"><div class="bar-fill" style="width:100%; background:var(--surface-2); border:1px solid var(--line)"></div></div>
+        <div class="val tab">31</div>
+      </div>
+
+      <div class="chart-foot">34% dos projetos abertos (26 de 76) já entregaram o que o cliente
+      precisava; falta apenas a etapa administrativa de handoff e encerramento formal — o ponto
+      que Julio cobrou ao vivo na reunião como prioridade das próximas semanas.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="section-label">Situação por cliente, separada por produto</div>
+
+    <div class="tabs" role="tablist" aria-label="Produto">
+      <button class="tab-btn" role="tab" id="tab-agm" aria-selected="true" aria-controls="panel-agm">AgriManager <span class="tab-count">14</span></button>
+      <button class="tab-btn" role="tab" id="tab-myfarm" aria-selected="false" aria-controls="panel-myfarm">myFarm <span class="tab-count">78</span></button>
+      <button class="tab-btn" role="tab" id="tab-combinados" aria-selected="false" aria-controls="panel-combinados">Combinados gerais</button>
+    </div>
+
+    <div id="panel-agm" role="tabpanel" aria-labelledby="tab-agm">
+      <p>12 seguem abertos, 2 foram encerrados por email durante a própria reunião (Sapezal Cotton
+      e Bridi Capital).</p>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Sapezal Cotton</span><span class="badge">AGM</span><span class="badge status ok">Concluído hoje</span></div>
+        <p>Implantação finalizada em setembro de 2025, contrato ativo, sem pendência financeira.</p>
+        <div class="combinado"><b>Combinado:</b> encerramento formal enviado por email na própria reunião.</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Fazenda Riqueza</span><span class="badge">AGM</span></div>
+        <p>Implantação concluída; cliente comprou 32h de treinamento avulso, sem data marcada.</p>
+        <div class="combinado"><b>Combinado:</b> preencher handoff, reunião interna com a equipe de myFarm e encerrar formalmente.</div>
+        <div class="prazo">até sexta, 25/09</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Bridi Capital</span><span class="badge">AGM</span><span class="badge status ok">Concluído hoje</span></div>
+        <p>Implantação finalizada em janeiro de 2026, contrato ativo, sem pendência.</p>
+        <div class="combinado"><b>Combinado:</b> encerramento formal enviado por email na própria reunião.</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Grupo Ferrari</span><span class="badge">AGM</span></div>
+        <p>Implantação concluída em janeiro; saldo de 95,5h porque o módulo de algodoeira e a
+        integração bancária não foram usados. Cliente ainda não quer atendimento adicional.</p>
+        <div class="combinado"><b>Combinado:</b> entender com o cliente o porquê do não uso e avaliar migrar o saldo para o myFarm.</div>
+        <div class="prazo">decisão até segunda, 21/09</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Fazenda Bela Vista</span><span class="badge">AGM</span><span class="badge status">Inadimplente</span></div>
+        <p>Cliente usa apenas o módulo básico e mantém um segundo sistema só para emissão de nota fiscal.</p>
+        <div class="combinado"><b>Combinado:</b> agendar conversa com apoio do consultor Felipe e avaliar migração para o myFarm.</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">SJB Group</span><span class="badge">AGM</span></div>
+        <p>Dois projetos vinculados (essencial e horas complementares); handoff em preenchimento com apoio de IA a partir das ordens de serviço.</p>
+        <div class="combinado"><b>Combinado:</b> concluir handoff, reunião interna e encerramento formal.</div>
+        <div class="prazo">até sexta, 25/09</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Siap Agricultura</span><span class="badge">AGM</span></div>
+        <p>Importação de saldos financeiros em finalização, com equipe do cliente e da Aliare atuando em conjunto.</p>
+        <div class="combinado"><b>Combinado:</b> concluir a importação, confirmar necessidade de acompanhamento adicional e encaminhar para encerramento.</div>
+        <div class="prazo">até sexta, 18/09</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Fazenda Bom Sucesso</span><span class="badge">AGM</span></div>
+        <p>Implantação avançada; a parte que o cliente mais precisava (produção) já foi entregue. Atraso pontual por agenda do produtor, que administra a fazenda sozinho.</p>
+        <div class="combinado"><b>Combinado:</b> novo atendimento para concluir o treinamento dos módulos restantes.</div>
+        <div class="prazo">até o fim do mês</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">JOD — João Osório Dumoncel</span><span class="badge">AGM</span><span class="badge status ok">Em dia</span></div>
+        <p>Reimplantação rodando dentro do escopo e do cronograma previstos; feedback do cliente positivo.</p>
+        <div class="combinado"><b>Combinado:</b> Go Live antecipado; equipe deve sempre buscar o retorno do cliente logo após cada apresentação técnica.</div>
+        <div class="prazo">Go Live · semana de 14/12</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Agropecuária Viana</span><span class="badge">AGM</span><span class="badge status ok">Em dia</span></div>
+        <p>Implantação em ritmo acelerado a pedido do próprio cliente, com agendas de treinamento, Go Live e pós-implantação já organizadas.</p>
+        <div class="combinado"><b>Combinado:</b> manter o ritmo de agendas semanais até a entrega.</div>
+        <div class="prazo">Go Live previsto para outubro</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Fazenda Ferradura</span><span class="badge">AGM</span></div>
+        <p>Diagnóstico inicial identificou a necessidade de reimplantação completa, já validada com o cliente.</p>
+        <div class="combinado"><b>Combinado:</b> diagnóstico de 5 a 7/10, reimplantação a partir de 13/10, conduzida por um único consultor do início ao fim.</div>
+        <div class="prazo">entrega até final de novembro</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Grupo Germina</span><span class="badge">AGM</span></div>
+        <p>Migração do myFarm para o AgriManager. Reunião de abertura concluída, base já em preparação com a contabilidade do cliente.</p>
+        <div class="combinado"><b>Combinado:</b> início da implantação.</div>
+        <div class="prazo">semana de 22/09</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Canindé Grãos</span><span class="badge">AGM</span></div>
+        <p>Contrato pequeno, focado em armazenagem e administrativo. Reunião de abertura ainda sem data por agenda de várias pessoas do lado do cliente.</p>
+        <div class="combinado"><b>Combinado:</b> confirmar data de abertura assim que o cliente definir.</div>
+        <div class="prazo">início previsto meados de outubro</div>
+      </div>
+
+      <div class="client">
+        <div class="client-head"><span class="name">Agropecuária Amazônia</span><span class="badge">AGM</span></div>
+        <p>Projeto registrado como implantação nova, mas trata-se de um cliente de carteira em treinamento.</p>
+        <div class="combinado"><b>Combinado:</b> corrigir a classificação do projeto e confirmar a situação financeira do cliente antes de seguir com o treinamento.</div>
+      </div>
+    </div>
+
+    <div id="panel-myfarm" role="tabpanel" aria-labelledby="tab-myfarm" hidden>
+      <p>64 projetos em andamento e 14 cancelamentos a pedido do cliente. A reunião tratou o
+      myFarm sobretudo em bloco (a lista completa abaixo vem direto do report); quatro pontos
+      foram discutidos nominalmente:</p>
+
+      <div class="subsection-label">Discutidos na reunião</div>
+
+      <div class="client myfarm">
+        <div class="client-head"><span class="name">Fazenda Pontal das Perdizes</span><span class="badge myfarm">myFarm</span><span class="badge status">Atenção</span></div>
+        <p>Cliente com receio de que o sistema seja pouco parametrizável; chegou a cogitar cancelar.</p>
+        <div class="combinado"><b>Combinado:</b> reunião de alinhamento para entender as dores do cliente ponto a ponto.</div>
+        <div class="prazo">17/09</div>
+      </div>
+
+      <div class="client myfarm">
+        <div class="client-head"><span class="name">Fazenda Estrela</span><span class="badge myfarm">myFarm</span></div>
+        <p>Cliente estava distribuindo pedidos entre vários contatos internos da Aliare, o que gerou ruído sobre uma pendência de nota fiscal.</p>
+        <div class="combinado"><b>Combinado:</b> centralizar o contato do cliente e seguir para a reunião de pós-produção.</div>
+        <div class="prazo">final do mês</div>
+      </div>
+
+      <div class="client myfarm">
+        <div class="client-head"><span class="name">Jefferson</span><span class="badge myfarm">myFarm</span></div>
+        <p>Contrato pequeno (10h); cliente com pouca disponibilidade no período.</p>
+        <div class="combinado"><b>Combinado:</b> fixar agenda de duas horas por atendimento junto com o cliente.</div>
+      </div>
+
+      <div class="client myfarm">
+        <div class="client-head"><span class="name">Força tarefa de encerramento</span><span class="badge myfarm">myFarm</span></div>
+        <p>76 projetos abertos e consultores com ociosidade pontual no período.</p>
+        <div class="combinado"><b>Combinado:</b> meta de 12 encerramentos de projetos anteriores a maio — 6 com Jaqueline e 6 com Joyce, com apoio de consultores sem agenda no momento.</div>
+        <div class="prazo">até 30/09</div>
+      </div>
+
+      <div class="subsection-label">Todos os 78 projetos do report (dados brutos, sem edição)</div>
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">AGROPECUARIA ALVORADA - BELA VISTA DE GOIAS-GO</span><span class="badge myfarm">myFarm</span><span class="badge status ok">Em dia</span></div>
+      <p>Em andamento conforme cronograma</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SANTA MATILDE - APIACAS - MT</span><span class="badge myfarm">myFarm</span><span class="badge status ok">Em dia</span></div>
+      <p>Em andamento conforme cronograma</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA OLHOS D AGUA - BURITIS-MG</span><span class="badge myfarm">myFarm</span><span class="badge status ok">Em dia</span></div>
+      <p>Em andamento conforme cronograma</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SANTA MARIA - PARAIBANO MA</span><span class="badge myfarm">myFarm</span><span class="badge status ok">Em dia</span></div>
+      <p>Em andamento conforme cronograma</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">EWALDO MENDES - GRUPO 2 M - PONTA PORA - MS TREINAMENTO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Em andamento, apenas 2 horas para cada agenda</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA ESTRELA - CAMPO NOVO DO PARECIS-MT</span><span class="badge myfarm">myFarm</span><span class="badge status ok">Em dia</span></div>
+      <p>Em andamento conforme cronograma</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">DN AGRICOLA - SAO ROQUE DE MINAS - MG</span><span class="badge myfarm">myFarm</span><span class="badge status ok">Em dia</span></div>
+      <p>Em andamento conforme cronograma, mas tem 1 ticket de erro</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SAO FRANCISCO - CATALAO-GO</span><span class="badge myfarm">myFarm</span><span class="badge status ok">Em dia</span></div>
+      <p>Em andamento conforme cronograma</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA NOSSA SENHORA DA LUZ - SORRISO MT</span><span class="badge myfarm">myFarm</span></div>
+      <p>não tem NF, sobrou 2 horas de saldo, mas esta concluido</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">CHACARA SAO JOAO - IBIA - MG</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! implantação iniciada em 01/07, realizou 2 agendas e pausou devido viagem do cliente mas já retomamos o cronograma</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA PONTAL DAS PERDIZES - JATAÍ - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação em andamento ativo e iniciada em 10/08 agendas sendo executadas, saldo metade do projeto tendo 08hrs de saldo. Marcado status report para 16/9 devido insatisfação com o produto</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA TRAMELA DE OURO - S. F. DO XINGU</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>CLIENTE SOLICITOU O CANCELAMENTO NO DIA 31/08/26.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">KNAP - GOIANIA - GO</span><span class="badge myfarm">myFarm</span><span class="badge status">Inadimplente</span></div>
+      <p>Cliente com contrato suspenso por inadimplancia! Projeto finalizado em agosto e não há saldo. Projeto todo bonificado. Preencher Hand Off e encerrar.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">GRUPO BJM - UNAI - MG</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em junho de 2026. Projeto sem saldo. Preencher HandOff e encerrar. Saldo financeiro de 5h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">AGRICOLA ROMERO - QUINTA DO SOL - PR</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação iniciada em maio de 2026 e ultimo atendimento em junho. Projeto com 15h de saldo. Tentando contato para agendamento com o cliente. Saldo financeiro do projeto é de 20h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA TREVO AZUL - CAMPOS NOVOS PAULISTA - SP</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação iniciada em maio de 2026 e ultimo atendimento em junho. Projeto com 5h de saldo. Tentando contato para agendamento com o cliente. Saldo financeiro do projeto é de 10h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA CANAA - AGUA BOA - MT</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em maio de 2026. Projeto sem saldo. Preencher HandOff e encerrar. Saldo financeiro de 5h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA ARAGUAIA - CANDEIAS DO JAMARI - RO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em junho de 2026. Projeto sem saldo. Preencher HandOff e encerrar. Saldo financeiro de 5h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA CEDRO E CATINGUEIRO - UNAI - MG</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em abril de 2026. Projeto com 27h de saldo visto que só usam o sistema para emitir nota fiscal. Amanda do SC tentou contato com a cliente para oferecer atendimento com o consultor, mas a cliente recusou. Preencher HandOff e encerrar. Saldo financeiro de 32h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA HORIZONTE - LONDRINA - PR</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em junho de 2026. Projeto com 1h de saldo. Preencher HandOff e encerrar. Saldo financeiro de 6h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SAO GERONIMO DO RV - COCALZINHO - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em maio de 2026. Projeto com 5h de saldo. Preencher HandOff e encerrar. Saldo financeiro de 10h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">CONFINAMENTO MP - FORMOSA - GO</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>CLIENTE SOLICITOU O CANCELAMENTO DO CONTRATO</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA LAGOA -SÃO SEBASTIÃO DO PARAÍSO - MG</span><span class="badge myfarm">myFarm</span><span class="badge status">Inadimplente</span></div>
+      <p>Cliente com o contrato suspenso por inadimplencia! Já repassado ao financeiro para tratativa. Implantação iniciada em abril de 2026 porém só de teve atendimentos visto que o foco da cliente era rodar somente o financeiro. Os outros módulos por depender do marido e do cunhado que ficam no campo, não será feito agora. Projeto com 14h de saldoo e com possibilidade de agenda sobre lançamento de contratos. Aguardando retorno da Amanda SC que está em contato com a cliente. Saldo financeiro do projeto é de 19h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SERTANEJO - S.J. DA ALIANÇA - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação iniciada em março de 2026 e ultimo atendimento em maio. Projeto com 9h de saldo. Tentando contato para agendamento com o cliente. Saldo financeiro do projeto é de 14h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">SYAGRI AGROPECUARIA - NOVA PONTE - MG</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em abril de 2026. Projeto sem saldo. Preencher HandOff e encerrar. Saldo financeiro de 5h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA DO BAU - SAO FRANCISCO DE PAULA - RS</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em junho de 2026. Projeto sem saldo. Preencher HandOff e encerrar. Saldo financeiro de 5h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA CAMACARI - SAO JOSE DO XINGU - MT</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>Cliente solicitou o cancelamento por email no dia 17/08</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">AGROCICO AGRONEGOCIO - COSTA RICA - MS</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação iniciada em abril de 2026 e ultimo atendimento em junho. Projeto com 11h de saldo. Tentando contato com o cliente para retomar atendimento. Saldo financeiro do projeto é de 16h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA AGRO ALIANCA - SORRISO - MT</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>Suspensão do contrato 30007127-5 em 03/06/2026 11:02 por: CHURN - ASSINATURA DE DISTRATO
+CLIENTE SOLICITOU CANCELAMENTO DO CONTRATO.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA ARIRANHA - JATAI - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em agosto de 2026. Projeto com 4h de saldo. Preencher HandOff e encerrar. Saldo financeiro do projeto está negativo pq não há nota vinculada e não consegui encontrar a nota</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SANTA CRUZ - CRISTALINA - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em julho de 2026. Projeto com 1h de saldo. Preencher HandOff e encerrar. Saldo financeiro de 4h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FERTYL LTDA - OURINHOS - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em maio de 2026. Projeto com 7h de saldo. Preencher HandOff e encerrar. Saldo financeiro de 12h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SANTA ELISA - NOVOS CAMPOS PAULISTA - SP</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação iniciada em abril de 2026 e ultimo atendimento em julho. Projeto com 5h de saldo. Tentando contato para agendamento com o cliente. Saldo financeiro do projeto é de 10h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA PAULISTA - CRISTALINA - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação iniciada em março de 2026 e ainda há 7h de saldo. Cliente realizando lançamentos retroativos de 2026, com foco na centralização das operações pelos módulos Financeiro e Suprimentos. A rotina definida permite também obter um resultado aproximado por safra e ciclo. Pelo processo definido e a expectativa do cliente que no presente momento e só livro caixa e financeiro, o cliente pode ser considerado implantado, permanecendo no Marco 2 apenas para conclusão formal no Cutover. Acompanhamento periódico e esclarecimento de dúvidas conforme necessidade. Saldo financeiro do projeto é de 12h por conta do gerenciamento. Tentando contato com o cliente para uso do saldo</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA CASCATA - NOVA SANTA HELENA - MT</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação iniciada em fevereiro 2026 e ultimo atendimento em maio 2026. Projeto com 9h de saldo. Tentando contato com a cliente para retomar. Saldo financeiro do projeto é de 14h por connta do gerenciamento!</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SITIO DO CAMPO - ITABERAI - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação iniciada em fevereiro de 2026 e ainda resta 5h de saldo no projeto, porém o cliente contratou um consultor externo que tem conhecimento no sistema e não quis mais atendimentos. Saldo financeiro do projeto é de 10h por cnta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA MONTE ALEGRE - RIO VERDE - GO</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>CLIENTE SOLICITOU O CANCELAMENTO DO CONTRATO</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA CAMPO GRANDE - URBANOS SANTOS - MA</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação finalizada em abril de 2026 e há  1h de saldo. Saldo financeiro do projeto é de 6h por conta do gerenciamento. Preencher Handoff e encerrar</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FACULDADE QUIRINOPOLIS - FAQUI - QUIRINOPOLIS - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Projeto bonificado! Implantação finalizada em maio de 2026. Não há saldo. Preencher HandOff e encerrar.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA FUNIL SOYFIELD - SILVANIA - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação em março de 2026 e há 4h de saldo. Saldo financeiro do projeto é de 9h por conta do gerenciamento. Preencher Handoff e encerrar</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">PROJETO COAP 2 - SORRISO - MT</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>CLIENTE SOLICITOU O CANCELAMENTO DO PROJETO</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA AGRO CORRENTE - RIACHAO - MA</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação iniciado em janeiro de 2026 porém tem sido dificil o contato com o cliente para seguir com os agendamentos. Ultimo atendimento em 15/07. Saldo de 11h no projeto. Tentando contato para retomar a implantação. Saldo financeiro  é de 16h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA BACH III - ARIPUANA - MT</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>CLIENTE SOLICITOU O CANCELAMENTO DO CONTRATO.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">PIAZZA AGROPECUARIA - CHAPECO - SC</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação iniciada em janeiro de 2026 porém só teve 3 atendimentos em janeiro e desde então não houve novos agendamentos. Ainda há 8h de saldo no projeto. No dia 19/08 a cliente solicitou ao o Yuri a supensao do contrato por 60 dias por estar sem equipe e precisar deste tempo para contratar uma pessoa. Verificando com a euqipe de contratos sobre a suspensão. Saldo financeiro do projeto é de 13h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SANTA RITA - RIO VERDE - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação finalizada em fevereiro de 2026 e não há saldo. Saldo financeiro do projeto é de 5h por conta do gerenciamento. Preencher Handoff e encerrar</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SAFRA - AÇAILANDIA - MA</span><span class="badge myfarm">myFarm</span><span class="badge status">Inadimplente</span></div>
+      <p>Cliente com contrato contrato suspenso por inadimplencia! Projeto iniciado em dezembro de 2025 e ultima agenda realizada em 03/07/26 para treinamento de novo colaborador. Restando 7h de saldo. Saldo financeiro do projeto é de 12h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">AGROPECUÁRIA GIONGO FREITAS - JATAÍ - GO</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>CLIENTE SOLICITOU O CANCELAMENTO</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA ANTONIO DILCEU GUZATTI(FADU) - TANGARA - MT</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação finalizada em janeiro de 2026 e há 1h de saldo. Saldo financeiro do projeto é de 6h por conta do gerenciamento. Preencher HandOff e encerrar</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA VALE DO OURO NEGRO - ALCOBAÇA - BA</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação finalizada em janeiro de 2026 e não há saldo. Saldo financeiro do projeto é de 3h por conta do gerenciamento. Preencher Handoff e encerrar</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA FREI FABIANO DE CRISTO - ITAMOGI - MG</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação finalizada em janeiro de 2026 e projeto com 4h de saldo porém o cliente continua em atendimento com BPO. Saldo fonanceiro do projeto é de 7h por conta do gerenciamento. Preencher HandOff e encerrar</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA PRIMAVERA - RIO VERDE - GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Projeto finalizado em março de 2026 e não há saldo. Em abril cliente adquiriu treinamento presencial e atualmente está com o BPO. Saldo financeiro do projeto é de 2h sobre gerenciamento.Preencher HandOff e encerrar</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FALCON AGRICOLA - ARINOS - MG</span><span class="badge myfarm">myFarm</span><span class="badge status">Inadimplente</span></div>
+      <p>Cliente com o contratoo suspenso por inadimplencia! Implantação iniciada em novembro de 2025, mas o cliente sumiu. Não estamos conseguindo contato pq o número saldo no cadastro e na sintonia não existe mais e não conseguimos encontrar um novo contato que seja do cliente. Projeto com 4h de saldo. Saldo financeiro do projeto é de 7h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA ESTRELA - DOVERLANDIA-GO</span><span class="badge myfarm">myFarm</span><span class="badge status">Inadimplente</span></div>
+      <p>Cliente com o contrato suspenso por inadimplencia! Já repassado ao financeiro para tratativa, cliente alega não estar conseguindo pagar os boletos. Implantação iniciada em novembro de 2025 e ultimo atendimento em março de 2026. Ainda possue 4h de saldo. Saldo financeiro do projeto é de 7h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA AGUA SANTA - JUSSARA-GO</span><span class="badge myfarm">myFarm</span><span class="badge status">Inadimplente</span></div>
+      <p>Cliente com contrato suspenso por inadimplencia! Foi repassado ao escritório de cobrança. Ultimo atendimento em novembro de 2025, projeto com 12h de saldo. Saldo financeiro do projeto é de 15h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA VERONICA - UBERABA-MG</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Projeto com 6h de saldo. Cliente só movimenta o financeiro e o fiscal. Não vão ultilizar o produção por falta de mão de obra e não pretendem contrata ninguém no momento para dar sequencia nisso. Cliente alega não estar com duvidas e nem dificuldade no uso do sistema. Saldo financeiro do projeto é de 9h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">SOCIEDADE EDUCACIONAL UBERABENSE - UBERABA - MG</span><span class="badge myfarm">myFarm</span></div>
+      <p>Projeto bonificado! Ainda com 10h30 de saldo, tentando retomar a implantação.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA AGUA QUENTE - BRASILIA-DF</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! O cliente havia realizado os treinamentos e utilizado o sistema, mas interrompeu a operação por falta de tempo para conduzir a implantação. Após vários meses, retomou o projeto solicitando uma revisão completa do MyFarm.
+Foi realizada uma reimplantação, contemplando limpeza dos registros históricos, revisão dos treinamentos, reestruturação dos processos e reorganização da base. Também foram disponibilizados materiais de apoio dos processos.
+O cliente iniciará novamente os lançamentos operacionais e financeiros em uma base organizada, buscando maior confiabilidade das informações e dos resultados. Projeto com 1h de saldo. Saldo financeiro do projeto é de 1h.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA OURO VERDE - VILA RICA-MT</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Implantação finalizada. Preencher HandOff e seguir com o encerramento. Saldo financeiro do projeto zerado.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA VL AGRO - BRASILIA-DF</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Ultimo atendimento em março de 2026. Projeto com 2h de saldo. Saldo financeiro do projeto é de 6h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">PROJETO COAP - SORRISO-MT</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>CLIENTE SOLICITOU O CANCELAMENTO DO PROJETO</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA CEU AZUL - TABAPORA-MT</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com o contrato ativo! Só aconteceu uma agenda em outubro de 2025. Projeto com 16h de saldo. Tentando contato com o cliente para retomar a implantação, porém sem sucesso de retorno. Saldo financeiro é de 20h por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA IMPERIAL - TEIXEIRA DE FREITAS-BA</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>CLIENTE SOLICITOU O CANCELAMENTO NO DIA 03/09/26</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">AGRICOLA GRAO 7 - ARAGUARI-MG</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Projeto com 2h30 de saldo. Ultimo atendimento em 08/05/26.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">CELSO LEAO RIBEIRO - RIO VERDE-GO</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>CLIENTE SOLICOTU O CANCELAMENTO DO CONTRATO.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SAO JOSE - CANARANA-MT</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Implantação finalizada em fevereiro de 2026. Saldo de 5h horas será usado para conciliação bancária, tentando contato com a cliente para agendamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">GERSON VILMAR SCHWADE - HUMAITA-RS</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Ultimo atendimento em outubro de 2025, ainda há 2h de saldo. Saldo financeiro do projeto é de 2h.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA CAMPO SAGRADO - CAMPO VERDE-MT</span><span class="badge myfarm">myFarm</span><span class="badge status">Inadimplente</span></div>
+      <p>Cliente com contrato suspenso por inadimplencia! Foi repassado ao escritório de cobrança. Ultimo atendimento em setembro de 2025, projeto com 2h de saldo. Saldo financeiro do projeto é de 2h.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA MILENIO - NOVA PONTE - MG</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Go live realizado em setembro de 2025 e projeto com saldo de 4h30, porém não retorna nossos contatos e está há mais de 6 meses sem acessar a ferramenta. Tentivas de contato em 03/07/26 e 02/09/26. Saldo financeiro do projeto é de 9h30 por conta do gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA PONTE ALTA - IPAMERI-GO</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>Cliente solicitou o cancelamento do contrato. Ticket: 787634.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">CGS BRASIL - SINOP - MT</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Projeto com saldo zerado, somente horas de gerenciamento pra lançar. Ultima agenda em outubro de 2025. Posteriormente cliente adquiriu treinamento avulso não há saldo. Saldo financeiro zerado</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">SITIO SANTA TEREZA DA BELA VISTA - PIRASSUNUNGA-SP</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>CLIENTE DECIDIU NÃO SEGUIR COM A RENOVAÇÃO DO CONTRATO. Cancelado</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">RC AGRO SANTA MARIA - RIO VERDE-GO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Projeto com saldo de 8h bonificadas apenas e as horas de gerenciamento. Ultimo atendimento em 06/11/25, porém posteriormente já foram abertos dois projetos avulsos de treinamento bonificado com agenda realizada em abril. Não há mais nada previsto. Saldo financeiro do projeto é de 4h referente a gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">EWALDO MENDES - PONTA PORA - MS</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo! Projeto com saldo apenas de gerenciamento e o cliente negociou recentemente uma reimplantação que já está em andamento. Saldo financeiro do projeto é de 5h30 referente a gerenciamento.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA SARANDI - GUARANTÃ DO NORTE-MT</span><span class="badge myfarm">myFarm</span><span class="badge status cancel">Cancelado</span></div>
+      <p>Suspensão do contrato 30005679-5 em 19/08/2026 13:16 por: CHURN - ASSINATURA DE DISTRATO
+Cliente solicitou o cancelamento do contrato. E-mail: fazendasarandi.mtpa@gmail.com</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">SENAR - FAZENDA SEGREDO</span><span class="badge myfarm">myFarm</span></div>
+      <p>Não tenho informações sobre esse projeto.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA AGRO CONCEIÇÃO - SANTA RITA</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente do PY com contrato ativo! Ultimo atendidimento realizada em 02/07 com o consultor Guilherme e foi solicitada uma melhoria pro cliente a respeito de moeda guarani. Projeto ainda possue 3h10 de saldo para agendar com o cliente caso ele ainda precise de apoio. Mas houve um intervalo entre 13/11/25 para a agenda desse ano. Saldo financeiro do projeto é de 3h10.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">AGROPECUARIA CRUVINEL - PORTO ALEGRE</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo porém consta como AGM! Projeto pausado desde abril/2025. Não há histórico de conversa como a cliente no whatsapp. Projeto com 19h de saldo que foi uma transferencia do projeto de implantação do AgriManager. Saldo financeiro do projeto é de 19h.</p>
+    </div>
+
+    <div class="client myfarm">
+      <div class="client-head"><span class="name">FAZENDA MATA BURRO CAPOEIRAO - LAGOA FORMOSA-MG</span><span class="badge myfarm">myFarm</span></div>
+      <p>Cliente com contrato ativo, Implantação finalizada em agosto de 2025, porém não houve HandOff e encerramento formal. Projeto com 5h30 de saldo. Cliente gostaria de um treinamento sobre relatórios. Saldo financeiro do projeto com 10h30 por conta das horas de gerenciamento.</p>
+    </div>
+
+    </div>
+
+    <div id="panel-combinados" role="tabpanel" aria-labelledby="tab-combinados" hidden>
+      <div class="checklist">
+        <div class="check"><div class="num">1</div><p>Contato inicial com o cliente em até 24h da chegada de um projeto novo.</p></div>
+        <div class="check"><div class="num">2</div><p>Confirmação de agenda com o cliente com pelo menos 10 dias de antecedência.</p></div>
+        <div class="check"><div class="num">3</div><p>Status report estruturado a cada atendimento relevante — horas consumidas, saldo, riscos e impeditivos — não apenas uma mensagem de WhatsApp.</p></div>
+        <div class="check"><div class="num">4</div><p>Emails, reuniões e WhatsApp de projeto centralizados dentro do HubSpot, para manter histórico único por cliente.</p></div>
+        <div class="check"><div class="num">5</div><p>Bloqueio de agenda de consultor passa sempre por autorização prévia de Julio.</p></div>
+        <div class="check"><div class="num">6</div><p>Avaliação em andamento de uma ferramenta única de controle de projetos, entre ClickUp e Evolution API.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    Fontes: transcrição da reunião "Alinhamento de Projetos" (15/09/2026, Ritos - Projetos/Rito
+    dia 15 de Setembro de 2026) e os reports "Report Projetos AgriManager 2025-2026 — Report
+    09-2026.xlsx" e "Report Projetos Myfarm 2025-2026.xlsx", extraídos na mesma pasta. A lista
+    completa do myFarm reproduz o texto de observação de cada projeto tal como está no report,
+    sem edição. Análise quantitativa em
+    <span class="mono">relatorios/rito-projetos-2026-09-15/analise-projetos.ipynb</span>.
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var tabs = [
+    { btn: "tab-agm", panel: "panel-agm" },
+    { btn: "tab-myfarm", panel: "panel-myfarm" },
+    { btn: "tab-combinados", panel: "panel-combinados" }
+  ];
+  tabs.forEach(function(t){
+    var btn = document.getElementById(t.btn);
+    btn.addEventListener("click", function(){
+      tabs.forEach(function(other){
+        var isActive = other.btn === t.btn;
+        document.getElementById(other.btn).setAttribute("aria-selected", String(isActive));
+        document.getElementById(other.panel).hidden = !isActive;
+      });
+    });
+  });
+})();
+</script>

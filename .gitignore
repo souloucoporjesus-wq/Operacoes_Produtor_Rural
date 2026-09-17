@@ -63,3 +63,13 @@ build/
 
 # config de skill de ads: costuma ter só ID, mas é onde chave costuma escorregar
 contas.yaml
+
+# planilhas, documentos e notebooks de trabalho sobem (pedido do Julio, 2026-09-17)
+!*.xlsx
+!*.xlsm
+!*.docx
+!*.pptx
+!*.ipynb
+
+# arquivo de trava que o Excel/Word cria enquanto o documento está aberto: nunca sobe
+~$*

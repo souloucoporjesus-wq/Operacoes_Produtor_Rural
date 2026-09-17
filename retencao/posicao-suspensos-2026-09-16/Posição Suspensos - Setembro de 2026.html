@@ -1,0 +1,1429 @@
+<title>Posição dos Suspensos</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,600;1,400&display=swap">
+<style>
+  :root {
+    --ground:      #F4F6F9;
+    --surface:     #FFFFFF;
+    --surface-alt: #EDF1F6;
+    --ink:         #172029;
+    --ink-soft:    #4A5766;
+    --ink-faint:   #7B8896;
+    --rule:        #D8DFE8;
+    --accent:      #0A5C8A;
+    --accent-soft: #E2EDF5;
+    --warn:        #B26A00;
+    --warn-soft:   #F7EBD6;
+    --crit:        #A63D18;
+    --crit-soft:   #F7E4DC;
+    --good:        #0B6B54;
+    --good-soft:   #DCEFE8;
+    --on-accent:   #FFFFFF;
+
+    --sans:  "IBM Plex Sans", system-ui, -apple-system, Segoe UI, sans-serif;
+    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --mono:  "IBM Plex Mono", ui-monospace, "Courier New", monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground:      #10151B;
+      --surface:     #181F27;
+      --surface-alt: #1F2833;
+      --ink:         #E4EAF1;
+      --ink-soft:    #A8B4C2;
+      --ink-faint:   #7A8797;
+      --rule:        #2C3743;
+      --accent:      #57A8D8;
+      --accent-soft: #17303F;
+      --warn:        #E0A345;
+      --warn-soft:   #33280F;
+      --crit:        #E08256;
+      --crit-soft:   #35211A;
+      --good:        #4FBD9C;
+      --good-soft:   #12302A;
+      --on-accent:   #0E141A;
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --ground:      #10151B;
+    --surface:     #181F27;
+    --surface-alt: #1F2833;
+    --ink:         #E4EAF1;
+    --ink-soft:    #A8B4C2;
+    --ink-faint:   #7A8797;
+    --rule:        #2C3743;
+    --accent:      #57A8D8;
+    --accent-soft: #17303F;
+    --warn:        #E0A345;
+    --warn-soft:   #33280F;
+    --crit:        #E08256;
+    --crit-soft:   #35211A;
+    --good:        #4FBD9C;
+    --good-soft:   #12302A;
+    --on-accent:   #0E141A;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 900px;
+    margin: 0 auto;
+    padding-inline: 20px;
+    padding-block: 0 72px;
+  }
+
+  /* ---------- cabeçalho ---------- */
+  header { padding-block: 52px 30px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-weight: 700;
+    font-size: clamp(30px, 5.2vw, 42px);
+    line-height: 1.12;
+    letter-spacing: -.02em;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .standfirst {
+    font-family: var(--serif);
+    font-size: clamp(17px, 2.4vw, 19px);
+    line-height: 1.55;
+    color: var(--ink-soft);
+    margin: 0;
+    max-width: 62ch;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 28px;
+    margin-top: 26px;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- abas ---------- */
+  .tabs {
+    display: flex;
+    gap: 4px;
+    border-bottom: 2px solid var(--ink);
+    margin-bottom: 4px;
+  }
+  .tab {
+    appearance: none;
+    border: 1px solid var(--rule);
+    border-bottom: none;
+    background: var(--surface-alt);
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    font-size: 14.5px;
+    font-weight: 500;
+    padding: 11px 20px;
+    cursor: pointer;
+    border-radius: 3px 3px 0 0;
+  }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-selected="true"] {
+    background: var(--ink);
+    color: var(--ground);
+    border-color: var(--ink);
+  }
+  .tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ---------- seções ---------- */
+  section { padding-block: 40px 0; }
+  h2 {
+    font-size: 23px;
+    font-weight: 600;
+    letter-spacing: -.015em;
+    margin: 0 0 6px;
+    text-wrap: balance;
+  }
+  h3 {
+    font-size: 17.5px;
+    font-weight: 600;
+    margin: 32px 0 10px;
+  }
+  .sec-mark {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 10px;
+  }
+  p { margin: 0 0 16px; max-width: 68ch; }
+  .lead { font-family: var(--serif); font-size: 17.5px; }
+  strong { font-weight: 600; }
+
+  /* ---------- números de topo ---------- */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin-block: 30px;
+  }
+  .tile {
+    background: var(--surface);
+    padding: 20px 18px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .tile .k {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .tile .v {
+    font-size: 27px;
+    font-weight: 600;
+    letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.1;
+  }
+  .tile .n { font-size: 13.5px; color: var(--ink-soft); line-height: 1.4; }
+  .tile.is-good .v { color: var(--good); }
+  .tile.is-accent .v { color: var(--accent); }
+  .tile.is-warn .v { color: var(--warn); }
+
+  /* ---------- barra de progresso ---------- */
+  .progress { margin-block: 26px 30px; }
+  .progress h3 { margin-top: 0; }
+  .pbar {
+    display: flex;
+    height: 40px;
+    border-radius: 2px;
+    overflow: hidden;
+    background: var(--surface-alt);
+    border: 1px solid var(--rule);
+  }
+  .pbar > span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--on-accent);
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .seg-caixa { background: var(--good); }
+  .seg-prev  { background: var(--accent); }
+  .seg-rest  { background: var(--surface-alt); color: var(--ink-soft); }
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 14px;
+    font-size: 13px; color: var(--ink-soft);
+  }
+  .legend i {
+    display: inline-block; width: 11px; height: 11px; margin-right: 7px;
+    border-radius: 2px; border: 1px solid var(--rule);
+  }
+
+  /* ---------- tabelas ---------- */
+  .tbl-wrap { overflow-x: auto; margin-block: 22px 28px; border: 1px solid var(--rule); background: var(--surface); }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; min-width: 520px; }
+  th, td { padding: 11px 14px; text-align: left; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--ink-faint); font-weight: 500;
+    background: var(--surface-alt); white-space: nowrap;
+  }
+  tbody tr:last-child td { border-bottom: none; }
+  td.num { font-family: var(--mono); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .pill {
+    display: inline-block; padding: 2px 8px; border-radius: 3px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .03em; white-space: nowrap;
+  }
+  .p-pago  { background: var(--good-soft); color: var(--good); }
+  .p-prev  { background: var(--accent-soft); color: var(--accent); }
+  .p-parc  { background: var(--warn-soft); color: var(--warn); }
+  .p-mudo  { background: var(--crit-soft); color: var(--crit); }
+  .p-fala  { background: var(--accent-soft); color: var(--accent); }
+  .p-nao   { background: var(--surface-alt); color: var(--ink-soft); }
+
+  /* ---------- destaques ---------- */
+  .flag {
+    border-left: 3px solid var(--warn);
+    background: var(--surface);
+    padding: 18px 20px;
+    margin-block: 26px;
+  }
+  .flag.good { border-left-color: var(--good); }
+  .flag.good .t { color: var(--good); }
+  .flag .t {
+    font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--warn); margin: 0 0 8px;
+  }
+  .flag p:last-child { margin-bottom: 0; }
+
+  .note {
+    border: 1px solid var(--rule);
+    background: var(--surface-alt);
+    padding: 16px 18px;
+    margin-block: 24px;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+  .note p:last-child { margin-bottom: 0; }
+  .note .t { font-weight: 600; color: var(--ink); }
+
+  /* ---------- casos ---------- */
+  .cases { display: grid; gap: 1px; background: var(--rule); border: 1px solid var(--rule); margin-block: 24px 28px; }
+  @media (min-width: 680px) { .cases { grid-template-columns: 1fr 1fr; } }
+  .case { background: var(--surface); padding: 20px 18px; }
+  .case h4 { font-size: 15.5px; font-weight: 600; margin: 0 0 3px; }
+  .case .sub { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); margin: 0 0 12px; }
+  .case p { font-size: 14.5px; margin: 0; color: var(--ink-soft); }
+
+  /* ---------- ações ---------- */
+  ol.acoes { list-style: none; counter-reset: a; padding: 0; margin: 24px 0 0; }
+  ol.acoes > li {
+    counter-increment: a;
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr);
+    gap: 16px;
+    padding-block: 18px;
+    border-top: 1px solid var(--rule);
+  }
+  ol.acoes > li::before {
+    content: counter(a, decimal-leading-zero);
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    color: var(--accent); padding-top: 3px;
+  }
+  ol.acoes h4 { font-size: 16.5px; font-weight: 600; margin: 0 0 6px; text-wrap: balance; }
+  ol.acoes p { font-size: 15px; color: var(--ink-soft); margin: 0; max-width: 62ch; }
+  .tag-andamento {
+    display: inline-block; margin-left: 8px; vertical-align: middle;
+    background: var(--good-soft); color: var(--good);
+    font-family: var(--mono); font-size: 10.5px; letter-spacing: .06em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 3px;
+  }
+
+  ul.plain { margin: 0 0 16px; padding-left: 20px; max-width: 68ch; }
+  ul.plain li { margin-bottom: 8px; }
+
+  /* ---------- fichas do analítico ---------- */
+  .fichas { display: flex; flex-direction: column; gap: 14px; margin-block: 24px 8px; }
+  .ficha {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--ink-faint);
+    padding: 18px 18px 16px;
+  }
+  .ficha.f-pago { border-left-color: var(--good); }
+  .ficha.f-prev { border-left-color: var(--accent); }
+  .ficha.f-parc { border-left-color: var(--warn); }
+  .ficha.f-nao  { border-left-color: var(--crit); }
+
+  .ficha-top {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    gap: 6px 12px; margin-bottom: 4px;
+  }
+  .ficha-top h4 { font-size: 16px; font-weight: 600; margin: 0; }
+  .ficha-id {
+    font-family: var(--mono); font-size: 11.5px; color: var(--ink-faint);
+    margin: 0 0 14px;
+  }
+  .stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(96px, 1fr));
+    gap: 10px 14px;
+    padding-block: 12px;
+    border-block: 1px solid var(--rule);
+    margin-bottom: 13px;
+  }
+  .stat { display: flex; flex-direction: column; gap: 1px; }
+  .stat .sk {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink-faint);
+  }
+  .stat .sv {
+    font-family: var(--mono); font-size: 14px; font-weight: 500;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat .sv.rep { color: var(--warn); }
+  .stat .sv.rec { color: var(--good); }
+  .ficha .neg { font-size: 14.5px; color: var(--ink-soft); margin: 0; max-width: none; }
+  .ficha .neg b { color: var(--ink); font-weight: 600; }
+
+  footer {
+    margin-top: 56px; padding-top: 22px; border-top: 1px solid var(--rule);
+    font-family: var(--mono); font-size: 12px; color: var(--ink-faint);
+    display: flex; flex-wrap: wrap; gap: 6px 24px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; }
+  }
+  ol.acoes > li::before { font-variant-numeric: tabular-nums; }
+  .tbl-wrap table td.num { white-space: nowrap; }
+/* ---------- gráficos ---------- */
+  .chart { margin-block: 22px 26px; }
+  .chart-cap {
+    font-size: 13px; color: var(--ink-faint); margin: 10px 0 0;
+  }
+
+  .hbars { display: flex; flex-direction: column; gap: 11px; }
+  .hbar {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+  }
+  @media (min-width: 600px) {
+    .hbar { grid-template-columns: 210px minmax(0, 1fr); gap: 14px; align-items: center; }
+  }
+  .hbar-lab { font-size: 13.5px; color: var(--ink-soft); line-height: 1.35; }
+  .hbar-track { display: flex; align-items: center; gap: 10px; min-width: 0; }
+  .hbar-fill {
+    height: 26px; border-radius: 3px; flex: none; min-width: 3px;
+    display: flex; align-items: center; padding-inline: 8px;
+    font-family: var(--mono); font-size: 11.5px; font-weight: 500;
+    color: var(--on-accent); white-space: nowrap; overflow: hidden;
+  }
+  .hbar-val {
+    font-family: var(--mono); font-size: 13px; font-weight: 500;
+    font-variant-numeric: tabular-nums; white-space: nowrap;
+  }
+  .c-crit { background: var(--crit); }
+  .c-warn { background: var(--warn); }
+  .c-acc  { background: var(--accent); }
+  .c-good { background: var(--good); }
+  .c-mute { background: var(--surface-alt); color: var(--ink-soft); border: 1px solid var(--rule); }
+
+  /* barra empilhada */
+  .stackbar {
+    display: flex; height: 46px; border-radius: 3px; overflow: hidden;
+    background: var(--surface-alt); border: 1px solid var(--rule);
+  }
+  .stackbar > span {
+    display: flex; align-items: center; justify-content: center;
+    font-family: var(--mono); font-size: 12px; font-weight: 500;
+    color: var(--on-accent); white-space: nowrap; overflow: hidden;
+  }
+  .stackbar > span.c-mute { color: var(--ink-soft); }
+
+  /* par de barras para comparar duas medidas */
+  .compare { display: flex; flex-direction: column; gap: 16px; }
+  .compare-row { display: flex; flex-direction: column; gap: 5px; }
+  .compare-lab {
+    font-family: var(--mono); font-size: 11px; letter-spacing: .07em;
+    text-transform: uppercase; color: var(--ink-faint);
+  }
+
+  /* cartões-resumo de produto */
+  .prodcards { display: grid; gap: 14px; margin-block: 22px 26px; }
+  @media (min-width: 620px) { .prodcards { grid-template-columns: 1fr 1fr; } }
+  .prodcard {
+    background: var(--surface); border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent); padding: 18px;
+  }
+  .prodcard.agm { border-top-color: var(--crit); }
+  .prodcard h4 { margin: 0 0 3px; font-size: 16px; font-weight: 600; }
+  .prodcard .big {
+    font-size: 25px; font-weight: 600; letter-spacing: -.02em;
+    font-variant-numeric: tabular-nums; margin: 8px 0 2px;
+  }
+  .prodcard .sm { font-size: 13.5px; color: var(--ink-soft); margin: 0; }
+  .prodmeter {
+    height: 8px; border-radius: 4px; background: var(--surface-alt);
+    margin: 14px 0 7px; overflow: hidden; border: 1px solid var(--rule);
+  }
+  .prodmeter > span { display: block; height: 100%; background: var(--warn); }
+
+  .keyline {
+    font-family: var(--serif); font-size: 17px; line-height: 1.5;
+    color: var(--ink); margin: 0 0 18px; max-width: 62ch;
+  }
+</style>
+
+
+<div class="wrap">
+
+  <header>
+    <p class="eyebrow">Operações · Sucesso do Cliente</p>
+    <h1>Posição dos clientes suspensos</h1>
+    <p class="standfirst">
+      O pacote de 64 contratos suspensos que chegou, o recorte em que escolhemos atuar, e
+      quanto já foi recuperado. Com detalhamento contrato a contrato na aba analítica.
+    </p>
+    <div class="meta">
+      <span>Posição em 16/09/2026</span>
+      <span>64 contratos recebidos, 26 em foco</span>
+      <span>AgriManager, myFarm e Aliare Cloud</span>
+    </div>
+  </header>
+
+  <div class="tabs" role="tablist">
+    <button class="tab" id="tab-sintese" role="tab" aria-controls="p-sintese" aria-selected="true">Síntese</button>
+    <button class="tab" id="tab-analitico" role="tab" aria-controls="p-analitico" aria-selected="false">Analítico</button>
+  </div>
+
+      <!-- ============================ SÍNTESE ============================ -->
+  <div id="p-sintese" role="tabpanel" aria-labelledby="tab-sintese">
+
+    <section>
+      <p class="sec-mark">Contexto</p>
+      <h2>O pacote que chegou</h2>
+      <p class="keyline">
+        64 contratos suspensos, R$ 116.297,67 de recorrência parada. Só a inadimplência tem dívida
+        levantada: R$ 328.280,26.
+      </p>
+
+      <div class="chart">
+        <div class="stackbar" role="img" aria-label="Inadimplência 26 contratos, Churn 28 contratos, Em negociação 10 contratos">
+          <span class="c-acc"  style="width:40.6%">Inadimplência · 26</span>
+          <span class="c-warn" style="width:43.8%">Churn · 28</span>
+          <span class="c-mute" style="width:15.6%">Negociação · 10</span>
+        </div>
+        <p class="chart-cap">Distribuição dos 64 contratos suspensos por frente.</p>
+      </div>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Frente</th><th>Contratos</th><th>Recorrência parada</th><th>Dívida apurada</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Inadimplência</strong></td>
+              <td class="num">26</td><td class="num">R$ 59.016,38</td><td class="num">R$ 328.280,26</td>
+            </tr>
+            <tr>
+              <td>Churn</td>
+              <td class="num">28</td><td class="num">R$ 44.028,56</td>
+              <td class="num" style="color:var(--ink-faint)">a levantar</td>
+            </tr>
+            <tr>
+              <td>Em negociação</td>
+              <td class="num">10</td><td class="num">R$ 13.252,73</td>
+              <td class="num" style="color:var(--ink-faint)">a levantar</td>
+            </tr>
+            <tr>
+              <td><strong>Total</strong></td>
+              <td class="num"><strong>64</strong></td>
+              <td class="num"><strong>R$ 116.297,67</strong></td>
+              <td class="num"><strong>R$ 328.280,26</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <p class="sec-mark">Recorte</p>
+      <h2>Onde escolhemos atuar</h2>
+      <p class="keyline">
+        Focamos na inadimplência: 41% dos contratos, metade da recorrência e 100% da dívida apurada.
+      </p>
+
+      <div class="chart">
+        <div class="compare">
+          <div class="compare-row">
+            <span class="compare-lab">Contratos</span>
+            <div class="stackbar" style="height:34px" role="img" aria-label="26 de 64 contratos no foco, 41 por cento">
+              <span class="c-acc" style="width:40.6%">26 no foco</span>
+              <span class="c-mute" style="width:59.4%">38 fora</span>
+            </div>
+          </div>
+          <div class="compare-row">
+            <span class="compare-lab">Recorrência parada</span>
+            <div class="stackbar" style="height:34px" role="img" aria-label="50,7 por cento da recorrência no foco">
+              <span class="c-acc" style="width:50.7%">R$ 59.016,38</span>
+              <span class="c-mute" style="width:49.3%">R$ 57.281,29</span>
+            </div>
+          </div>
+          <div class="compare-row">
+            <span class="compare-lab">Dívida apurada</span>
+            <div class="stackbar" style="height:34px" role="img" aria-label="100 por cento da dívida apurada no foco">
+              <span class="c-acc" style="width:100%">R$ 328.280,26 · toda na inadimplência</span>
+            </div>
+          </div>
+        </div>
+        <p class="chart-cap">Churn e negociação ainda não têm dívida levantada, só valor de contrato.</p>
+      </div>
+    </section>
+
+    <section>
+      <p class="sec-mark">Resultado</p>
+      <h2>O que já foi recuperado</h2>
+      <p class="keyline">
+        12 dos 64 contratos com movimento positivo, somando R$ 65.356,22.
+      </p>
+
+      <div class="tiles">
+        <div class="tile is-good">
+          <span class="k">Caixa confirmado</span>
+          <span class="v">R$ 25.061,51</span>
+          <span class="n">7 contratos, somando as três frentes</span>
+        </div>
+        <div class="tile is-accent">
+          <span class="k">Negociado, em recebimento</span>
+          <span class="v">R$ 40.294,71</span>
+          <span class="n">5 contratos, somando as três frentes</span>
+        </div>
+        <div class="tile">
+          <span class="k">Contratos com avanço</span>
+          <span class="v">12 de 64</span>
+          <span class="n">18,8% do pacote recebido</span>
+        </div>
+        <div class="tile">
+          <span class="k">No recorte de foco</span>
+          <span class="v">12 de 26</span>
+          <span class="n">30,8% da inadimplência</span>
+        </div>
+      </div>
+
+      <h3>De onde vêm os 12</h3>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>Frente</th><th>Caixa</th><th>Negociado</th><th>Contratos</th><th>Valor</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Inadimplência</strong></td>
+              <td class="num">4</td><td class="num">4</td>
+              <td class="num"><strong>8</strong></td><td class="num">R$ 44.150,23</td>
+            </tr>
+            <tr>
+              <td>Churn</td>
+              <td class="num">2</td><td class="num">—</td>
+              <td class="num">2</td><td class="num">R$ 15.000,00</td>
+            </tr>
+            <tr>
+              <td>Em negociação</td>
+              <td class="num">1</td><td class="num">1</td>
+              <td class="num">2</td><td class="num">R$ 6.205,99</td>
+            </tr>
+            <tr>
+              <td><strong>Total</strong></td>
+              <td class="num"><strong>7</strong></td><td class="num"><strong>5</strong></td>
+              <td class="num"><strong>12</strong></td><td class="num"><strong>R$ 65.356,22</strong></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="chart-cap" style="margin-bottom:26px">
+        Os 4 contratos que ficam fora do recorte estão em churn e negociação. Continuam no
+        resultado, apenas não entram na conta dos 26.
+      </p>
+
+      <h3>Avanço sobre a dívida, só na inadimplência</h3>
+      <p class="chart-cap" style="margin:0 0 14px">
+        Os valores abaixo são menores que os quadros acima porque olham apenas os 26 contratos de
+        inadimplência, deixando de fora churn e negociação.
+      </p>
+      <div class="chart">
+        <div class="stackbar" role="img" aria-label="Caixa 2,8 por cento, negociado 10,6 por cento, a recuperar 86,6 por cento">
+          <span class="c-good" style="width:2.8%"></span>
+          <span class="c-acc"  style="width:10.6%">10,6%</span>
+          <span class="c-mute" style="width:86.6%">86,6% a recuperar</span>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--good)"></i>Caixa na inadimplência · R$ 9.355,52</span>
+          <span><i style="background:var(--accent)"></i>Negociado na inadimplência · R$ 34.794,71</span>
+          <span><i style="background:var(--surface-alt)"></i>A recuperar · R$ 284.130,03</span>
+        </div>
+        <p class="chart-cap">Sobre a dívida de R$ 328.280,26 dos 26 contratos em foco.</p>
+      </div>
+    </section>
+
+    <section>
+      <p class="sec-mark">Exposição</p>
+      <h2>Quanto está em jogo</h2>
+      <p class="keyline">
+        R$ 450.783,92 apurados. É piso, não teto: 36 contratos ainda não tiveram a dívida levantada.
+      </p>
+
+      <div class="chart">
+        <div class="hbars">
+          <div class="hbar">
+            <span class="hbar-lab">Dívida em atraso<br><small style="color:var(--ink-faint)">28 contratos com dívida apurada</small></span>
+            <span class="hbar-track">
+              <span class="hbar-fill c-crit" style="width:100%">74%</span>
+              <span class="hbar-val">R$ 334.486,25</span>
+            </span>
+          </div>
+          <div class="hbar">
+            <span class="hbar-lab">Recorrência a retomar<br><small style="color:var(--ink-faint)">64 contratos, por mês</small></span>
+            <span class="hbar-track">
+              <span class="hbar-fill c-acc" style="width:34.8%">26%</span>
+              <span class="hbar-val">R$ 116.297,67</span>
+            </span>
+          </div>
+        </div>
+        <p class="chart-cap">
+          Um contrato já levantado constava com R$ 1.859,64, só a recorrência, quando a dívida real
+          é de R$ 5.500,00. Cada novo levantamento aumenta o total.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <p class="sec-mark">O que trava</p>
+      <h2>Quando conseguimos falar, a proposta converte</h2>
+      <p class="keyline">
+        Ao conseguir falar com o cliente, as propostas que levamos são eficientes e estão
+        convertendo. O gargalo não está na oferta: está em chegar até ele.
+      </p>
+
+      <div class="flag good">
+        <p class="t">A oferta já está funcionando</p>
+        <p>
+          A política vigente é <strong>15% de desconto para pagamento à vista, ou prazo até 30/03 no
+          formato de plano safra</strong>. Dos contratos recuperados no período, <strong>dois
+          fecharam justamente com proposta de desconto</strong>. Sempre que houve interlocutor do
+          outro lado, a negociação andou.
+        </p>
+      </div>
+
+      <h3>O problema é de alcance</h3>
+      <p>
+        O valor represado dos 26 contratos soma <strong>R$ 223.122,45</strong>. Esse é o montante
+        que a política precisaria alcançar. Hoje ela não chega em quase 90% dele.
+      </p>
+
+      <div class="chart">
+        <div class="stackbar" role="img" aria-label="Bloqueado 89,9 por cento, em tratativa ou resolvido 10,1 por cento">
+          <span class="c-crit" style="width:89.9%">Bloqueado · R$ 200.654,15</span>
+          <span class="c-good" style="width:10.1%">R$ 22.468,30</span>
+        </div>
+        <div class="legend">
+          <span><i style="background:var(--crit)"></i>A proposta não chega ao cliente · 89,9%</span>
+          <span><i style="background:var(--good)"></i>Em tratativa ou já resolvido · 10,1%</span>
+        </div>
+      </div>
+
+      <h3>Os três bloqueios</h3>
+      <div class="chart">
+        <div class="hbars">
+          <div class="hbar">
+            <span class="hbar-lab"><strong>Não conseguimos falar</strong><br><small style="color:var(--ink-faint)">Não atende ligação, e-mail nem WhatsApp<br>8 contratos · 43,4% do represado</small></span>
+            <span class="hbar-track">
+              <span class="hbar-fill c-crit" style="width:100%"></span>
+              <span class="hbar-val">R$ 96.915,53</span>
+            </span>
+          </div>
+          <div class="hbar">
+            <span class="hbar-lab"><strong>Acordo assinado sem o represado</strong><br><small style="color:var(--ink-faint)">Paga a renegociação em dia, mas o saldo ficou fora<br>3 contratos · 30,5% do represado</small></span>
+            <span class="hbar-track">
+              <span class="hbar-fill c-warn" style="width:70%"></span>
+              <span class="hbar-val">R$ 68.002,14</span>
+            </span>
+          </div>
+          <div class="hbar">
+            <span class="hbar-lab"><strong>Cliente contesta o valor</strong><br><small style="color:var(--ink-faint)">Responde e quer negociar, mas não reconhece o débito<br>1 contrato · 16,0% do represado</small></span>
+            <span class="hbar-track">
+              <span class="hbar-fill c-acc" style="width:37%"></span>
+              <span class="hbar-val">R$ 35.736,48</span>
+            </span>
+          </div>
+        </div>
+        <p class="chart-cap">
+          A contagem é de contratos que têm valor represado, por isso não bate com o total de
+          contratos da carteira. Os 3 do segundo bloqueio também não respondem ao Sucesso do
+          Cliente: somados aos 11 do primeiro, formam os 14 que não atendem.
+        </p>
+      </div>
+
+      <p class="chart-cap">
+        Os R$ 22.468,30 restantes estão em contratos já negociados ou em tratativa, entre eles
+        R$ 9.753,20 com pagamento marcado para 21/09. Descontado esse valor, o represado ainda sem
+        solução é de R$ 213.369,25.
+      </p>
+
+      <div class="flag">
+        <p class="t">Item com prazo</p>
+        <p>
+          Três contratos cumprem acordo e <strong>R$ 68.002,14 de represado ficaram fora dele</strong>.
+          Terminada a renegociação, o cliente entende que quitou e a cobrança do resto vira conflito
+          com quem acabou de voltar a pagar.
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Metade não tem com quem falar</h2>
+      <p class="keyline">
+        14 dos 26 contratos não respondem, e são os maiores: 53,8% dos contratos, 67,2% da dívida.
+      </p>
+
+      <div class="chart">
+        <div class="compare">
+          <div class="compare-row">
+            <span class="compare-lab">Contratos</span>
+            <div class="stackbar" style="height:34px" role="img" aria-label="Responde 46,2 por cento, não responde 53,8 por cento dos contratos">
+              <span class="c-acc"  style="width:46.2%">Responde · 12</span>
+              <span class="c-crit" style="width:53.8%">Não responde · 14</span>
+            </div>
+          </div>
+          <div class="compare-row">
+            <span class="compare-lab">Dívida</span>
+            <div class="stackbar" style="height:34px" role="img" aria-label="Responde 32,8 por cento, não responde 67,2 por cento da dívida">
+              <span class="c-acc"  style="width:32.8%">R$ 107.741,59</span>
+              <span class="c-crit" style="width:67.2%">R$ 220.538,67</span>
+            </div>
+          </div>
+        </div>
+        <p class="chart-cap">
+          Dívida mediana de quem não responde: R$ 12.104,97, contra R$ 4.373,65 de quem responde.
+          Atraso médio de 222 dias contra 145.
+        </p>
+      </div>
+
+      <p class="keyline" style="margin-top:6px">
+        A boa notícia: <strong>dez contratos concentram 78,4% da dívida</strong>, R$ 257.530,15.
+        Dá para atacar quase 80% do valor com uma lista curta.
+      </p>
+    </section>
+
+    <section>
+      <h2>Dois produtos, dois problemas</h2>
+
+      <div class="prodcards">
+        <div class="prodcard agm">
+          <h4>AgriManager</h4>
+          <p class="sm">10 contratos</p>
+          <p class="big">R$ 205.544,09</p>
+          <p class="sm">dívida, média de R$ 20.554,41 por contrato</p>
+          <div class="prodmeter"><span style="width:94.2%"></span></div>
+          <p class="sm"><strong>94,2%</strong> da dívida é valor represado</p>
+        </div>
+        <div class="prodcard">
+          <h4>myFarm</h4>
+          <p class="sm">16 contratos</p>
+          <p class="big">R$ 122.736,17</p>
+          <p class="sm">dívida, média de R$ 7.671,01 por contrato</p>
+          <div class="prodmeter"><span style="width:24.1%"></span></div>
+          <p class="sm"><strong>24,1%</strong> da dívida é valor represado</p>
+        </div>
+      </div>
+
+      <p class="chart-cap" style="margin-bottom:22px">
+        AgriManager é desktop e exige servidor: contrato maior, cada mês suspenso acumula parcela
+        alta. Pede tratamento caso a caso. myFarm é SaaS de ticket menor: só escala com régua
+        automatizada.
+      </p>
+
+      <div class="note">
+        <p><span class="t">Onde o processo emperra.</span> Dois casos do período mostram o mesmo
+        padrão, e ele não está no cliente. Num, um acordo de R$ 20.862,90 fechado à vista virou
+        parcelamento na etapa do financeiro, e o cliente teve que voltar pedindo para quitar tudo.
+        No outro, a cobrança integral do período suspenso fechou a porta para qualquer acordo: o
+        cliente pagou só o faturado, cancelou e sinalizou via judicial, com perda de R$ 1.700 de
+        recorrência.</p>
+      </div>
+    </section>
+
+    <section>
+      <p class="sec-mark">Plano de ação</p>
+      <h2>O que está em execução</h2>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr><th>#</th><th>Ação</th><th>Dono</th><th>Situação</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="num">01</td>
+              <td><strong>Cobrança centralizada numa pessoa dedicada.</strong> Uma analista de Sucesso do Cliente conduz as negociações de ponta a ponta, em vez de distribuí-las entre o time.</td>
+              <td>Amanda</td>
+              <td><span class="pill p-prev">iniciando</span></td>
+            </tr>
+            <tr>
+              <td class="num">02</td>
+              <td><strong>Política de represado nos casos ativos.</strong> 15% para pagamento à vista ou prazo até 30/03 no formato de plano safra, oferecidos a todo cliente com contato.</td>
+              <td>CS</td>
+              <td><span class="pill p-pago">em curso</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note">
+        <p><span class="t">Outras frentes de retenção em andamento.</span> Existem iniciativas
+        correndo em paralelo no âmbito de retenção, ligadas a telemetria, engajamento de uso e
+        priorização no produto, que podem agregar a este resultado. Serão consolidadas nesta posição
+        conforme avançarem.</p>
+      </div>
+    </section>
+  </div>
+
+<!-- ============================ ANALÍTICO ============================ -->
+  <div id="p-analitico" role="tabpanel" aria-labelledby="tab-analitico" hidden>
+
+    <section>
+      <p class="sec-mark">Visão analítica</p>
+      <h2>Inadimplência, contrato a contrato</h2>
+      <p>
+        Os 26 contratos em ordem decrescente de dívida, com a composição do débito e o que foi
+        negociado em cada um. A dívida total é a soma do débito faturado, já emitido em nota, com o
+        valor represado, que são parcelas seguradas durante a suspensão.
+      </p>
+
+      <div class="legend" style="margin-bottom:6px">
+        <span><i style="background:var(--good)"></i>Caixa confirmado</span>
+        <span><i style="background:var(--accent)"></i>Negociado em curso</span>
+        <span><i style="background:var(--warn)"></i>Pago em parte</span>
+        <span><i style="background:var(--crit)"></i>Sem recuperação</span>
+      </div>
+
+      <div class="fichas">
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Petras de Lima Telles</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30002744-5 · AgriManager ERP · IE 153.832.963</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 58.075,29</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 58.075,29</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">13</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">366 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 4.467,33</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> parcelas faturadas regularizadas com a Averbach. A tentativa de negociar os represados não avançou e o cliente parou de responder. Represado desde 09/2025, sem negativação. Em 31/08/2026 a vertical solicitou novo contato. Maior caso da carteira e sem responsável definido.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Alzir Pimentel Aguiar Neto</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30003232-5 · AgriManager ERP · IE 19.569.743-0</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 43.792,20</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 43.792,20</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">5</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">219 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 8.758,44</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> acordo de 10 parcelas com a Averbach, em cumprimento. As parcelas represadas de 05/2026 a 09/2026 estão registradas como fora do acordo, sem previsão de negociação. A vertical ficou ciente em 20/04/2026. O cliente paga à cobrança, mas não responde ao Sucesso do Cliente.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Pedro Henrique Pinto Fadel</h4><span class="pill p-fala">responde</span></div>
+          <p class="ficha-id">30003903-5 · AgriManager ERP · IE 95045009-66</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 35.736,48</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 35.736,48</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">8</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">194 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 3.098,61</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> cobrança enviada sem retorno e, em 09/01/2026, solicitado aceite da vertical para negativação. O contato foi retomado por WhatsApp e está ativo: o cliente não concorda com o valor do débito, porque já havia tentado renegociar redução anteriormente. Represado desde 02/2026, sem negativação. É o maior caso que ainda conversa com a gente.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Tellus Agropecuária Ltda</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30003178-5 · AgriManager ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 24.097,17</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 2.067,47</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 22.029,70</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">10</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">378 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 2.202,97</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> sem previsão de pagamento. Negativação liberada pela vertical em 01/12/2025, após solicitação de 14/11/2025. As notas 150640, 152385 e 154397 estão em processo de cancelamento. É o caso mais avançado no caminho da perda.</p>
+        </article>
+
+        <article class="ficha f-prev">
+          <div class="ficha-top"><h4>Luiz Moreira Rocha</h4><span class="pill p-prev">negociado em curso</span></div>
+          <p class="ficha-id">30006200-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 20.862,90</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 20.862,90</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Negociado</span><span class="sv rec">R$ 20.862,90</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">64 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 2.500,00</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> valor cheio fechado à vista, via PIX, e subido ao financeiro. Por motivo que não ficou claro para a operação, foi ofertada a possibilidade de parcelamento, e o cliente pagou a primeira parcela. Logo em seguida ele procurou novamente a Amanda dizendo que queria pagar tudo. O restante foi subido para o cliente e estamos aguardando o comprovante. O valor entra integralmente como recuperado porque o acordo é do valor cheio e a divisão foi decisão interna.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Christopher Terrengui</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30005824-5 · myFarm ERP · IE 138736561</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 16.658,51</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 14.877,45</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 1.781,06</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">2</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">406 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 10.686,36</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> sem previsão de pagamento. Em 09/11/2025 foi solicitada informação sobre a implantação em razão do débito em aberto. O projeto tem pendência e há bloqueio para negativação junto ao Serasa. É o maior MRR de toda a frente e o maior tempo de atraso.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Fyllipe Carvalho Freitas Barros</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30006051-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 15.927,50</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 9.610,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 6.317,50</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">7</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">278 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 902,50</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> suspensão da plataforma solicitada em 28/01/2026 e negativação liberada pela vertical em 17/02/2026. Sem previsão de pagamento e sem retorno nas tentativas de contato desde então.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Silvano Roger da Silva</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30005936-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 15.000,00</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 9.000,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 6.000,00</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">8</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">333 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 750,00</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> bloqueio da plataforma solicitado em 26/12/2025, sem previsão de pagamento. Aguardando aceite da vertical para negativação. Três tentativas de contato sem retorno.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Falcon Agrícola Ltda</h4><span class="pill p-fala">responde</span></div>
+          <p class="ficha-id">30006062-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 13.859,02</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 5.959,02</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 7.900,00</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">5</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">125 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 1.580,00</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> suspensão solicitada em 13/03/2026 e negativação liberada pela vertical em 19/03/2026. O cliente solicitou o cancelamento por e-mail em 15/09. Migra para tratamento de distrato, com o represado ainda em aberto.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Marcos Aurélio Sinopoli</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30002424-5 · AgriManager ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 13.521,08</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 13.521,08</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">4</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">96 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 3.380,27</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> renegociação em andamento, com reativação prevista apenas após o cumprimento total do acordo. As parcelas represadas de 06/2026 a 09/2026 estão fora do acordo. Em 20/04/2026 foi solicitado aceite da vertical para negativação.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>João Batista Consentini Filho</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30001698-1 · AgriManager ERP · IE 11.457.541-0</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 10.688,86</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 10.688,86</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">2</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">160 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 4.204,55</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> renegociação em andamento, com reativação após cumprimento total. Represado de 08/2026 e 09/2026 fora do acordo. Em 09/07/2026 a vertical solicitou retorno para negociação com o cliente.</p>
+        </article>
+
+        <article class="ficha f-prev">
+          <div class="ficha-top"><h4>Vitor Marcio Dumoncel e outros</h4><span class="pill p-prev">pagamento em 21/09</span></div>
+          <p class="ficha-id">30005234-5 · AgriManager ERP · IE 13.890.735-8</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 9.753,20</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 9.753,20</span></div>
+            <div class="stat"><span class="sk">Negociado</span><span class="sv rec">R$ 9.753,20</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">145 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 4.876,60</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> acordo em andamento, com reativação após cumprimento total da renegociação. Pagamento previsto para 21/09, com a vertical registrando 18/09. É o único contrato com dívida integralmente represada que tem pagamento marcado, e por isso vale acompanhar de perto: confirma ou não a viabilidade de cobrar represado.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Luiz Espindula Cardoso Neto</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30007418-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 9.000,00</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 9.000,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">0</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">60 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 1.500,00</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> cobrança enviada sem retorno. O cliente solicitou cancelamento ao time de projetos, ainda durante a implantação, e depois disso deixou de responder tanto a projetos quanto ao Sucesso do Cliente. Não houve abertura para tentativa de reversão e o cancelamento não foi formalizado.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>José Rosa dos Santos</h4><span class="pill p-fala">responde</span></div>
+          <p class="ficha-id">30005102-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 7.345,86</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 6.780,76</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 565,10</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">1</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">357 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 565,06</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> suspensão da plataforma solicitada em 11/11/2025 e aceite para negativação pedido em 15/01/2026. A negociação segue aberta, sem previsão de pagamento definida.</p>
+        </article>
+
+        <article class="ficha f-parc">
+          <div class="ficha-top"><h4>Theodoro Ricardo de Andrade</h4><span class="pill p-parc">pago em parte · cliente perdido</span></div>
+          <p class="ficha-id">30005717-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 5.950,00</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 1.700,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 4.250,00</span></div>
+            <div class="stat"><span class="sk">Recebido</span><span class="sv rec">R$ 1.700,00</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">409 d</span></div>
+            <div class="stat"><span class="sk">MRR perdido</span><span class="sv">R$ 1.700,00</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> tentamos negociar, mas a cliente havia solicitado a suspensão do contrato. Quando entramos em contato para cobrar o que estava em aberto, a equipe do financeiro informou que os valores referentes ao período de suspensão deveriam ser cobrados. A conversa foi puxada para o critério de implantação não finalizada, que não era o alvo da tratativa, e com isso nenhuma abertura foi concedida à cliente. Ela optou por pagar apenas as pendências faturadas, R$ 1.700, recusou os valores represados, formalizou o cancelamento e informou que pretende tratar o remanescente judicialmente. Perdemos MRR de R$ 1.700.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Nova Fronteira Agropecuária Ltda</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30003342-5 · AgriManager ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 4.955,97</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 4.955,97</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">0</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">44 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 1.784,94</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> cobrança enviada sem retorno e, em 02/07/2026, solicitado aceite da vertical para negativação. Contato tentado por WhatsApp, sem sucesso. É o caso mais recente entre os que não respondem, o que o torna o de melhor prognóstico do grupo.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Marcelo Benedito Lara</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30003885-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 4.476,00</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 2.611,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 1.865,00</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">5</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">327 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 373,00</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> bloqueio da plataforma solicitado em 24/07/2025 e negativação liberada pela vertical em 05/08/2025. Sem retorno do cliente por e-mail desde então.</p>
+        </article>
+
+        <article class="ficha f-prev">
+          <div class="ficha-top"><h4>Moacyr Brunetta</h4><span class="pill p-prev">aguardando comprovante</span></div>
+          <p class="ficha-id">30001803-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 2.797,30</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 2.797,30</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Negociado</span><span class="sv rec">R$ 2.797,30</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">37 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 1.398,65</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> o financeiro enviou os dados para pagamento via PIX e aguardamos o comprovante. Menor tempo de atraso de toda a frente, com 37 dias, o que explica a tratativa direta e sem atrito.</p>
+        </article>
+
+        <article class="ficha f-pago">
+          <div class="ficha-top"><h4>Juarez Carlos Silva Filho</h4><span class="pill p-pago">quitado</span></div>
+          <p class="ficha-id">30006056-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 2.600,00</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 2.600,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Recebido</span><span class="sv rec">R$ 2.600,00</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">96 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 650,00</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> cobrança enviada sem retorno inicial e solicitação de suspensão da plataforma em 30/06/2026. Após a suspensão, o cliente realizou o pagamento integral. Dívida sem qualquer parcela represada.</p>
+        </article>
+
+        <article class="ficha f-pago">
+          <div class="ficha-top"><h4>Ana Paula Bandeira de Lima</h4><span class="pill p-pago">quitado</span></div>
+          <p class="ficha-id">30007162-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 2.531,68</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 2.531,68</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Recebido</span><span class="sv rec">R$ 2.531,68</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">100 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 565,00</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> cobrança enviada sem retorno inicial e solicitação de suspensão da plataforma em 10/08/2026. Após a suspensão, o cliente realizou o pagamento integral. Dívida sem qualquer parcela represada.</p>
+        </article>
+
+        <article class="ficha f-pago">
+          <div class="ficha-top"><h4>Paulo Massayoshi Mizote</h4><span class="pill p-pago">quitado</span></div>
+          <p class="ficha-id">30000710-5 · AgriManager ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 2.523,84</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 2.523,84</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Recebido</span><span class="sv rec">R$ 2.523,84</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">59 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 1.261,92</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> o responsável Carlos informou que as notas estavam agendadas para pagamento, o que se confirmou. Dívida sem qualquer parcela represada.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Pablo Rafael Schneider</h4><span class="pill p-fala">responde</span></div>
+          <p class="ficha-id">30006069-5 · AgriManager ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 2.400,00</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 2.400,00</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">0</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">53 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 1.200,00</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> divergência de periodicidade. O contrato deveria ser cobrado semestralmente e foi faturado mensal. O responsável Pablo confirma que a negociação previa cobrança semestral. Informamos que a alteração pode valer a partir de outubro de 2026, mas que as notas já emitidas precisam ser pagas. Em análise pela Dinamara, aguardando posicionamento. Não é inadimplência de fato, é erro de faturamento a corrigir.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Henrique Reges de Carvalho</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30003568-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 1.966,40</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 1.474,80</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 491,60</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">1</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">96 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 491,60</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> cobrança enviada sem retorno e bloqueio da plataforma solicitado em 10/08/2026. Duas tentativas de contato sem resposta.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Roni Cesar Ferreira Alves Machado</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30001886-5 · myFarm ERP</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 1.678,29</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 1.678,29</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">0</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">217 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 423,01</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> em 17/07/2026 solicitamos apoio da vertical para obter novos telefones e, em 20/07/2026, aceite para negativação, sem resposta. O WhatsApp Business informa que a empresa está fechada, o último visto é de 01/09 e não há atendimento telefônico. Provável encerramento de atividades, o que orienta o encaminhamento para perda.</p>
+        </article>
+
+        <article class="ficha f-prev">
+          <div class="ficha-top"><h4>João Everton Paulino Ramos Alves</h4><span class="pill p-prev">pagamento em 18/09</span></div>
+          <p class="ficha-id">30004027-5 · myFarm ERP · IE 002448697.03-57</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 1.381,31</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 1.381,31</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv">R$ 0,00</span></div>
+            <div class="stat"><span class="sk">Negociado</span><span class="sv rec">R$ 1.381,31</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">105 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 427,11</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> o cliente aceitou proposta com 15% de desconto sobre o débito, com previsão de pagamento em 18/09. A suspensão havia sido solicitada em 30/06/2026. Caso em que o desconto destravou a tratativa.</p>
+        </article>
+
+        <article class="ficha f-nao">
+          <div class="ficha-top"><h4>Marcia Angelica Barboza Coradini</h4><span class="pill p-mudo">não responde</span></div>
+          <p class="ficha-id">30001840-5 · myFarm ERP · IE 13898617-7</p>
+          <div class="stats">
+            <div class="stat"><span class="sk">Dívida total</span><span class="sv">R$ 701,40</span></div>
+            <div class="stat"><span class="sk">Faturado</span><span class="sv">R$ 346,02</span></div>
+            <div class="stat"><span class="sk">Represado</span><span class="sv rep">R$ 355,38</span></div>
+            <div class="stat"><span class="sk">Parcelas</span><span class="sv">3</span></div>
+            <div class="stat"><span class="sk">Atraso</span><span class="sv">127 d</span></div>
+            <div class="stat"><span class="sk">MRR</span><span class="sv">R$ 118,46</span></div>
+          </div>
+          <p class="neg"><b>Negociado:</b> suspensão da plataforma solicitada em 30/06/2026. Em 02/01/2026 pedimos aceite para negativação; a vertical ficou de tentar contato antes, sem retorno, e seguimos com a negativação. Menor dívida e menor MRR da frente.</p>
+        </article>
+
+      </div>
+    </section>
+
+    <section>
+      <h2>Churn: posição dos 28 contratos</h2>
+      <p>
+        Nesta frente o cliente já pediu cancelamento, então o valor em jogo é multa de distrato e
+        boleto em aberto, não mensalidade a recuperar. A coluna de valor registra valor de contrato.
+      </p>
+
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Estágio</th>
+              <th>Contratos</th>
+              <th>Valor de contrato</th>
+              <th>% da frente</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Aguardando pagamento da multa</td><td class="num">4</td><td class="num">R$ 11.020,00</td><td class="num">25,0%</td></tr>
+            <tr><td>Em negociação</td><td class="num">4</td><td class="num">R$ 8.917,41</td><td class="num">20,3%</td></tr>
+            <tr><td>Aguardando pagamento de boletos</td><td class="num">6</td><td class="num">R$ 7.421,36</td><td class="num">16,9%</td></tr>
+            <tr><td>Distrato em conclusão</td><td class="num">7</td><td class="num">R$ 5.988,40</td><td class="num">13,6%</td></tr>
+            <tr><td>Aguardando retorno do cliente sobre a multa</td><td class="num">4</td><td class="num">R$ 5.525,55</td><td class="num">12,5%</td></tr>
+            <tr><td>Aguardando assinatura do distrato</td><td class="num">2</td><td class="num">R$ 4.455,84</td><td class="num">10,1%</td></tr>
+            <tr><td>Acordo de pagamento em curso</td><td class="num">1</td><td class="num">R$ 700,00</td><td class="num">1,6%</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="flag good">
+        <p class="t">Recebimento registrado</p>
+        <p>
+          <strong>Lucival Portilho Arantes pagou R$ 15.000 em 16/09.</strong> O cliente tem dois
+          contratos em churn sob a mesma inscrição estadual, AgriManager (R$ 4.248,62) e Aliare
+          Cloud (R$ 1.647,50), somando R$ 5.896,12 de valor de contrato. Como o pagamento supera
+          esse total em duas vezes e meia, cobre débito em aberto e multa de distrato, e não apenas
+          as mensalidades. Descontado o Lucival, a fila efetiva de multa fica em dois contratos,
+          Gemiro Carafini (R$ 2.581,48) e Augusto Cesar Andrade Maia (R$ 2.542,40).
+        </p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Em negociação: posição dos 10 contratos</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Cliente</th>
+              <th>Contrato</th>
+              <th>Produto</th>
+              <th>Valor na base</th>
+              <th>Dívida apurada</th>
+              <th>Posição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>KNAP Soluções Contábeis</td>
+              <td class="num">30007333-5</td>
+              <td>myFarm</td>
+              <td class="num">R$ 705,99</td>
+              <td class="num">R$ 705,99</td>
+              <td><span class="pill p-pago">pago</span> Pendência era documental, com o contrato em análise do Jurídico por ser o instrumento usado pelo BPO para atendimento de terceiros. Quitados os valores em aberto, sai da lista de suspensos.</td>
+            </tr>
+            <tr>
+              <td>Agropecuária Alvorada</td>
+              <td class="num">30004481-5</td>
+              <td>AgriManager</td>
+              <td class="num">R$ 1.859,64</td>
+              <td class="num">R$ 5.500,00</td>
+              <td><span class="pill p-prev">retido</span> Acordo fechado sobre a dívida apurada de R$ 5.500,00, aguardando pagamento da primeira parcela, e cliente migrado para o myFarm com aumento de recorrência. Não houve perda: houve retenção com troca de produto. Caso aberto desde junho de 2025. O valor de R$ 1.859,64 que consta na base é apenas a recorrência mensal, não a dívida.</td>
+            </tr>
+            <tr>
+              <td>Cooperativa Agropecuária Primavera</td>
+              <td class="num">30005923-5</td>
+              <td>myFarm</td>
+              <td class="num">R$ 5.946,19</td>
+              <td class="num" style="color:var(--ink-faint)">a levantar</td>
+              <td>Negociação de renovação anual do myFarm, com prazo de retomada a definir. Maior valor restante da frente.</td>
+            </tr>
+            <tr>
+              <td>Fernando Vieira Peres</td>
+              <td class="num">30007136-5</td>
+              <td>myFarm</td>
+              <td class="num">R$ 1.670,87</td>
+              <td class="num" style="color:var(--ink-faint)">a levantar</td>
+              <td>Inadimplente desde 05/2026, com solicitação de cancelamento em 08/2026. Precisa de definição entre reativar e encaminhar para churn.</td>
+            </tr>
+            <tr>
+              <td>Liseu José Scherer</td>
+              <td class="num">30005114-5</td>
+              <td>myFarm</td>
+              <td class="num">R$ 936,91</td>
+              <td class="num" style="color:var(--ink-faint)">a levantar</td>
+              <td>Negociação de renovação anual do myFarm, com prazo de retomada a definir.</td>
+            </tr>
+            <tr>
+              <td>William Cardoso dos Santos</td>
+              <td class="num">30005762-5</td>
+              <td>myFarm</td>
+              <td class="num">R$ 500,00</td>
+              <td class="num" style="color:var(--ink-faint)">a levantar</td>
+              <td>Cliente solicitou cancelamento, tratado no ticket 724692. Aguardando retorno do Sucesso do Cliente.</td>
+            </tr>
+            <tr>
+              <td>Diego Mora Macena</td>
+              <td class="num">30005113-5</td>
+              <td>myFarm</td>
+              <td class="num">R$ 493,08</td>
+              <td class="num" style="color:var(--ink-faint)">a levantar</td>
+              <td>Negociação de renovação anual do myFarm, com prazo de retomada a definir.</td>
+            </tr>
+            <tr>
+              <td>Waldyrene Barros Silva</td>
+              <td class="num">30005886-5</td>
+              <td>myFarm</td>
+              <td class="num">R$ 419,25</td>
+              <td class="num" style="color:var(--ink-faint)">a levantar</td>
+              <td>A cliente não deseja cancelar, mas precisou pausar a implantação por um projeto pessoal. Status correto como suspenso por pendência de projeto.</td>
+            </tr>
+            <tr>
+              <td>Adriana Cristina Guizelini</td>
+              <td class="num">30002312-5</td>
+              <td>myFarm</td>
+              <td class="num">R$ 408,28</td>
+              <td class="num" style="color:var(--ink-faint)">a levantar</td>
+              <td>Negociação de renovação anual do myFarm, com prazo de retomada a definir.</td>
+            </tr>
+            <tr>
+              <td>José Wilian Bahdur</td>
+              <td class="num">30003798-5</td>
+              <td>myFarm</td>
+              <td class="num">R$ 312,52</td>
+              <td class="num" style="color:var(--ink-faint)">a levantar</td>
+              <td>Cliente não está utilizando o sistema. O comercial do myFarm entrará em contato para verificação junto ao cliente.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </div>
+
+  <footer>
+    <span>Coordenação de Operações</span>
+    <span>Base: Clientes Suspensos e Tratados por CS, posição em 16/09/2026</span>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
+    function pick(alvo) {
+      tabs.forEach(function (t) {
+        var sel = t === alvo;
+        t.setAttribute('aria-selected', sel ? 'true' : 'false');
+        document.getElementById(t.getAttribute('aria-controls')).hidden = !sel;
+      });
+    }
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        pick(t);
+        window.scrollTo({ top: 0, behavior: 'instant' });
+      });
+    });
+  })();
+</script>
