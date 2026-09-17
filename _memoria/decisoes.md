@@ -36,3 +36,17 @@ regra de trabalho. O que não entra: tarefa feita (isso é o diário).
   custos". Por quê: não informado; as três reduções vieram por chamado sem justificativa.
 - **2026-09-17** (Julio) [churn]: análise de churn pra diretoria sai sem comparativo com
   referência de mercado. Por quê: não informado.
+- **2026-09-17** (Leandro Xavier e Julio) [onboarding myFarm]: adotar a Evoluto como plataforma
+  guiada de implantação e de projetos do myFarm. Por quê: cliente myFarm abandona o sistema logo
+  após começar e a base perde cliente pra concorrência; a Evoluto conduz o cliente passo a passo
+  (documentos, formulários, vídeos) desde o email de boas-vindas.
+- **2026-09-17** (Julio) [onboarding myFarm]: Guilherme Job passa a ser o dono da gravação da trilha
+  de vídeos do myFarm, no lugar do Luiz Carlos; Lucas Nogueira é o dono da importação de XML e das
+  planilhas. Por quê: o Luiz foi desligado em 17/09 por corte de custos; o projeto
+  precisa de um responsável por frente e de prazo real (vídeos até 15/10, XML até 22/09).
+- **2026-09-17** (Julio, com observação do Guilherme) [onboarding myFarm]: cadastros de
+  fornecedores, clientes e produtos extraídos do XML podem ser importados direto no myFarm;
+  tributação vai pra planilha no layout de importação e só entra depois que o cliente ou a
+  contabilidade valida. Por quê: a legislação mudou no período e muito cliente tributava errado no
+  sistema anterior; importar às cegas coloca a percepção de qualidade em risco, e a planilha facilita
+  o retorno da contabilidade.

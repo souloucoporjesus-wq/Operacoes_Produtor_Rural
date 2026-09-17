@@ -10,8 +10,8 @@ Workspace de operações do Julio na Aliare, holding de tecnologia pra agronegó
 Goiânia (GO), dona dos ERPs AgriManager/AGM (desktop, precisa de servidor) e myFarm (SaaS).
 Julio é Coordenador de Operações: cuida de Customer Success, implantação de ERP e gestão de
 projetos, cruzando as duas linhas de produto. Reporta direto ao diretor Leandro Xavier, sem
-gerente intermediário. Time de ~13 pessoas: 2 analistas de projetos, 5 analistas de sucesso do
-cliente, 1 consultor AGM CLT, 1 consultor AGM PJ e 3 consultores myFarm. O que mais se produz
+gerente intermediário. Time de ~12 pessoas: 2 analistas de projetos, 5 analistas de sucesso do
+cliente, 1 consultor AGM CLT, 1 consultor AGM PJ e 2 consultores myFarm. O que mais se produz
 aqui: relatórios de prestação de contas pra diretoria e outros líderes, planos de implantação,
 acompanhamento de OKR do time, análise de churn/CS e propostas.
 
@@ -170,3 +170,5 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
 - `equipe/` · gestão do time: OKRs, 1:1, onboarding da equipe recém-montada
 - `relatorios/` · prestação de contas pra diretoria e outros líderes
 - `projetos/` · iniciativas que cruzam mais de uma área (definição de ferramentas, automações, o Engenho)
+- `projetos/onboarding-myfarm/` · entrada do cliente no myFarm: trilha de vídeos (Plantar Educação),
+  plataforma Evoluto e carga inicial de cadastros por XML com a Pâmela

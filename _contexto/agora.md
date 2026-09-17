@@ -7,10 +7,11 @@
 
 ## Onde paramos
 
-Análise de churn jan a jun/2026 entregue e revisada com o Leandro em 16/09: HTML e planilha pra
-diretoria em `relatorios/raio-x-churn-2026-09-16/`
-(https://claude.ai/artifact/VaVY2LJNJxJD33fV1RznJL). Antes disso, o rito de projetos de 15/09
-em `relatorios/rito-projetos-2026-09-15/relatorio.html`. Próximo passo: `/mapear`.
+Projeto de onboarding myFarm lançado em 17/09 com Guilherme e Lucas (`projetos/onboarding-myfarm/`):
+Evoluto fechada com o Leandro, Guilherme nos vídeos, Lucas no XML, Pâmela trata os dados. Luiz
+Carlos desligado no mesmo dia (corte de custos); time myFarm agora com 2 consultores. Antes disso,
+análise de churn jan a jun/2026 entregue em 16/09 (`relatorios/raio-x-churn-2026-09-16/`,
+https://claude.ai/artifact/VaVY2LJNJxJD33fV1RznJL). Próximo passo: chamar o Wellington e rodar `/mapear`.
 
 ## Pendências
 
@@ -38,6 +39,10 @@ em `relatorios/rito-projetos-2026-09-15/relatorio.html`. Próximo passo: `/mapea
 - Encerramento formal da Fazenda Riqueza e do SJB Group (handoff + reunião interna) — até 25/09/2026
 - Força-tarefa: 12 encerramentos de projetos myFarm anteriores a maio, 6 com a Jaqueline e 6 com
   a Joyce — até 30/09/2026
+- Onboarding myFarm (`projetos/onboarding-myfarm/`): chamar o Wellington pro OBS do Guilherme e
+  passar o contato pro Lucas — 17/09/2026; XMLs de 2 a 3 clientes com o Lucas — até 22/09/2026;
+  trilha de vídeos do Guilherme — até 15/10/2026; validar com o Leandro se vídeo conta como
+  produtividade extra
 
 ## Quente agora
 
