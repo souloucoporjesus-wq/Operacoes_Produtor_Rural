@@ -50,3 +50,8 @@ regra de trabalho. O que não entra: tarefa feita (isso é o diário).
   contabilidade valida. Por quê: a legislação mudou no período e muito cliente tributava errado no
   sistema anterior; importar às cegas coloca a percepção de qualidade em risco, e a planilha facilita
   o retorno da contabilidade.
+- **2026-09-17** (Carlos, CEO, repassado por Leandro Xavier) [retenção]: Leandro e Julio têm
+  autonomia pra decidir como tratar cada cliente em suspensão/negociação, sem precisar de aval de
+  cobrança/financeiro; empecilho de terceiro na operação escala direto pro Leandro. Por quê: o CEO
+  reconheceu, ao ouvir as dificuldades da operação, que as regras de cobrança vinham sendo aplicadas
+  sem entender o contexto de cada cliente. Em troca, quer reporte semanal de posição de suspensos.

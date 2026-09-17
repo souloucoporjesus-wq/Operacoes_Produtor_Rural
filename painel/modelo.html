@@ -1,0 +1,543 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Painel Produtor Rural</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --fundo: #f4f6f2;
+    --superficie: #ffffff;
+    --suave: #eef1ea;
+    --tinta: #171d18;
+    --tinta-2: #55605a;
+    --tinta-3: #85908a;
+    --linha: #dde3dc;
+    --destaque: #1f6b3a;
+    --destaque-suave: #e2efe5;
+    --critico: #d03b3b;
+    --alerta: #fab219;
+    --serio: #ec835a;
+    --bom: #0ca30c;
+    --sombra: 0 1px 2px rgba(23, 29, 24, 0.06);
+    --fonte: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --fundo: #121513;
+      --superficie: #1a1f1b;
+      --suave: #232925;
+      --tinta: #edf1ec;
+      --tinta-2: #a9b3ac;
+      --tinta-3: #7c867f;
+      --linha: #2c332e;
+      --destaque: #62c184;
+      --destaque-suave: #1e3527;
+      --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --fundo: #121513;
+    --superficie: #1a1f1b;
+    --suave: #232925;
+    --tinta: #edf1ec;
+    --tinta-2: #a9b3ac;
+    --tinta-3: #7c867f;
+    --linha: #2c332e;
+    --destaque: #62c184;
+    --destaque-suave: #1e3527;
+    --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--fundo);
+    color: var(--tinta);
+    font-family: var(--fonte);
+    font-size: 14.5px;
+    line-height: 1.45;
+    padding-inline: 16px;
+    padding-block: 0 48px;
+  }
+  a { color: var(--destaque); }
+  code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 0.92em; background: var(--suave); padding: 0 4px; border-radius: 3px; }
+  h1, h2, h3 { margin: 0; text-wrap: balance; }
+  h2 { font-size: 17px; font-weight: 600; }
+  h3 { font-size: 14px; font-weight: 600; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
+
+  .rotulo {
+    font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+    color: var(--tinta-3);
+  }
+
+  /* topo */
+  .topo {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+    background: var(--fundo);
+    margin-inline: -16px; padding-inline: 16px;
+    border-bottom: 1px solid var(--linha);
+  }
+  .topo-in {
+    max-width: 1120px; margin: 0 auto;
+    display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px;
+    padding-block: 12px;
+  }
+  .titulo { display: flex; flex-direction: column; gap: 2px; margin-right: auto; }
+  .titulo h1 { font-size: 20px; font-weight: 600; }
+  .titulo .quando { font-size: 12.5px; color: var(--tinta-3); }
+  .controles { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .controles input[type="search"] {
+    width: 220px; max-width: 100%;
+    padding: 6px 10px; border: 1px solid var(--linha); border-radius: 6px;
+    background: var(--superficie);
+  }
+  .controles select {
+    padding: 6px 8px; border: 1px solid var(--linha); border-radius: 6px; background: var(--superficie);
+  }
+  .segmento { display: inline-flex; border: 1px solid var(--linha); border-radius: 6px; overflow: hidden; background: var(--superficie); }
+  .segmento button {
+    border: 0; background: transparent; padding: 6px 10px; cursor: pointer; color: var(--tinta-2);
+  }
+  .segmento button + button { border-left: 1px solid var(--linha); }
+  .segmento button[aria-pressed="true"] { background: var(--destaque-suave); color: var(--destaque); font-weight: 500; }
+  .tema {
+    border: 1px solid var(--linha); background: var(--superficie); border-radius: 6px;
+    padding: 6px 10px; cursor: pointer; color: var(--tinta-2);
+  }
+
+  main { max-width: 1120px; margin: 0 auto; display: grid; gap: 28px; padding-top: 22px; }
+  section > h2 { margin-bottom: 10px; display: flex; align-items: baseline; gap: 10px; }
+  section > h2 .conta { font-weight: 400; color: var(--tinta-3); font-size: 13.5px; }
+
+  /* indicadores */
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .kpi {
+    display: flex; flex-direction: column; gap: 4px; text-align: left;
+    background: var(--superficie); border: 1px solid var(--linha); border-radius: 8px;
+    padding: 12px 14px; cursor: pointer; box-shadow: var(--sombra);
+  }
+  .kpi:hover { border-color: var(--tinta-3); }
+  .kpi .valor { font-size: 32px; font-weight: 600; line-height: 1.1; }
+  .kpi .rotulo { display: flex; align-items: center; gap: 6px; }
+  .ponto { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+  .ponto.critico { background: var(--critico); }
+  .ponto.alerta { background: var(--alerta); }
+  .ponto.serio { background: var(--serio); }
+  .ponto.bom { background: var(--bom); }
+  .ponto.neutro { background: var(--tinta-3); }
+
+  /* contexto */
+  .contexto { display: grid; grid-template-columns: 1.6fr 1fr; gap: 16px; align-items: start; }
+  .contexto .bloco { background: var(--superficie); border: 1px solid var(--linha); border-radius: 8px; padding: 14px 16px; }
+  .contexto p { margin: 6px 0 0; max-width: 70ch; color: var(--tinta-2); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+  .chip { background: var(--suave); border-radius: 999px; padding: 3px 10px; font-size: 13px; color: var(--tinta-2); }
+
+  /* grade principal */
+  .grade { display: grid; grid-template-columns: 1.6fr 1fr; gap: 24px; align-items: start; }
+  .grade aside { display: grid; gap: 28px; }
+
+  .grupo { margin-bottom: 18px; }
+  .grupo h3 { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; color: var(--tinta-2); }
+  .grupo h3 .conta { font-weight: 400; color: var(--tinta-3); }
+
+  .item {
+    display: grid; grid-template-columns: 4px 1fr; gap: 12px;
+    background: var(--superficie); border: 1px solid var(--linha); border-radius: 6px;
+    padding: 9px 12px 9px 0; margin-bottom: 6px; overflow: hidden;
+  }
+  .item .marca { background: var(--linha); border-radius: 0; }
+  .item[data-estado="atrasado"] .marca { background: var(--critico); }
+  .item[data-estado="hoje"] .marca { background: var(--alerta); }
+  .item[data-estado="semana"] .marca { background: var(--serio); }
+  .item[data-estado="recorrente"] .marca { background: var(--destaque); }
+  .item .texto { font-size: 14.5px; }
+  .item .meta { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 4px; font-size: 12.5px; color: var(--tinta-3); font-variant-numeric: tabular-nums; }
+  .item .meta .prazo { color: var(--tinta-2); }
+  .item[data-estado="atrasado"] .meta .prazo { font-weight: 500; }
+  .quem {
+    display: inline-block; padding: 0 7px; border-radius: 4px; font-size: 12px; font-weight: 500;
+    background: var(--suave); color: var(--tinta-2);
+  }
+  .quem.cobrar { background: var(--destaque-suave); color: var(--destaque); }
+  .decisao-marca { color: var(--tinta-2); font-weight: 500; }
+  .vazio { color: var(--tinta-3); font-size: 13.5px; padding: 6px 0 10px; }
+
+  .pessoa { margin-bottom: 16px; }
+  .pessoa h3 { margin-bottom: 6px; }
+  .pessoa h3 .conta { font-weight: 400; color: var(--tinta-3); }
+
+  /* projetos */
+  .projetos { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; }
+  .projeto { background: var(--superficie); border: 1px solid var(--linha); border-radius: 8px; padding: 14px 16px; display: grid; gap: 10px; align-content: start; }
+  .projeto header { display: flex; justify-content: space-between; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+  .projeto header h3 { font-size: 15px; }
+  .projeto header a { font-size: 12px; color: var(--tinta-3); text-decoration: none; }
+  .projeto header a:hover { color: var(--destaque); }
+  .projeto p { margin: 0; color: var(--tinta-2); font-size: 13.5px; }
+  .projeto .rotulo { margin-top: 2px; }
+  .projeto .mini { display: grid; gap: 4px; }
+  .projeto .mini li { display: flex; gap: 8px; align-items: baseline; font-size: 13.5px; }
+  .projeto .mini .ponto { position: relative; top: -1px; }
+  .projeto .mini .p { margin-left: auto; white-space: nowrap; color: var(--tinta-3); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+  .projeto .feito li { color: var(--tinta-3); font-size: 13px; }
+
+  /* decisões */
+  .decisoes-lista li { display: grid; grid-template-columns: 88px 1fr; gap: 12px; padding: 10px 0; border-top: 1px solid var(--linha); }
+  .decisoes-lista li:last-child { border-bottom: 1px solid var(--linha); }
+  .decisoes-lista .data { color: var(--tinta-3); font-size: 13px; font-variant-numeric: tabular-nums; padding-top: 2px; }
+  .decisoes-lista .cab { font-size: 12.5px; color: var(--tinta-3); margin-bottom: 2px; }
+  .decisoes-lista details { margin-top: 4px; }
+  .decisoes-lista summary { cursor: pointer; font-size: 13px; color: var(--destaque); }
+  .decisoes-lista details p { margin: 4px 0 0; color: var(--tinta-2); font-size: 13.5px; max-width: 75ch; }
+
+  .avisos { background: var(--superficie); border: 1px dashed var(--linha); border-radius: 8px; padding: 12px 16px; font-size: 13.5px; color: var(--tinta-2); }
+  .avisos ul { margin-top: 6px; display: grid; gap: 2px; }
+  .avisos li::before { content: "· "; color: var(--tinta-3); }
+
+  footer { color: var(--tinta-3); font-size: 12.5px; max-width: 1120px; margin: 8px auto 0; }
+  footer p { margin: 4px 0; }
+
+  @media (max-width: 760px) {
+    .contexto, .grade { grid-template-columns: 1fr; }
+    .decisoes-lista li { grid-template-columns: 1fr; gap: 2px; }
+    .controles input[type="search"] { width: 100%; }
+  }
+  @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+  @media print {
+    .topo .controles, .avisos { display: none; }
+    body { background: #fff; color: #000; }
+    .item, .kpi, .projeto, .contexto .bloco { break-inside: avoid; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-in">
+    <div class="titulo">
+      <h1>Painel · Operações Produtor Rural</h1>
+      <span class="quando" id="quando"></span>
+    </div>
+    <div class="controles">
+      <input type="search" id="busca" placeholder="Buscar pendência" aria-label="Buscar pendência">
+      <select id="filtro-quem" aria-label="Filtrar por pessoa"><option value="">Todo mundo</option></select>
+      <div class="segmento" role="group" aria-label="Recorte">
+        <button type="button" id="modo-todos" data-modo="todos" aria-pressed="true">Tudo</button>
+        <button type="button" id="modo-meus" data-modo="meus" aria-pressed="false">Meus prazos</button>
+        <button type="button" id="modo-cobrar" data-modo="cobrar" aria-pressed="false">Pra cobrar</button>
+      </div>
+      <button type="button" class="tema" id="tema" aria-label="Alternar tema">Tema</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="kpis" aria-label="Resumo" id="kpis"></section>
+
+  <section class="contexto" aria-label="Contexto">
+    <div class="bloco">
+      <span class="rotulo">Onde paramos</span>
+      <div id="onde-paramos"></div>
+    </div>
+    <div class="bloco">
+      <span class="rotulo">Quente agora</span>
+      <div class="chips" id="quente"></div>
+    </div>
+  </section>
+
+  <div class="grade">
+    <section id="prazos" aria-labelledby="h-prazos">
+      <h2 id="h-prazos">Prazos <span class="conta" id="conta-prazos"></span></h2>
+      <div id="prazos-corpo"></div>
+    </section>
+    <aside>
+      <section id="cobrar" aria-labelledby="h-cobrar">
+        <h2 id="h-cobrar">Pra cobrar <span class="conta" id="conta-cobrar"></span></h2>
+        <div id="cobrar-corpo"></div>
+      </section>
+      <section id="decidir" aria-labelledby="h-decidir">
+        <h2 id="h-decidir">Decisões a tomar <span class="conta" id="conta-decidir"></span></h2>
+        <div id="decidir-corpo"></div>
+      </section>
+    </aside>
+  </div>
+
+  <section id="projetos" aria-labelledby="h-projetos">
+    <h2 id="h-projetos">Projetos <span class="conta" id="conta-projetos"></span></h2>
+    <div class="projetos" id="projetos-corpo"></div>
+  </section>
+
+  <section id="decisoes" aria-labelledby="h-decisoes">
+    <h2 id="h-decisoes">Decisões recentes <span class="conta" id="conta-decisoes"></span></h2>
+    <ul class="decisoes-lista" id="decisoes-corpo"></ul>
+  </section>
+
+  <section class="avisos" id="avisos" hidden></section>
+</main>
+
+<footer>
+  <p>Fonte: <code>_contexto/agora.md</code>, <code>andamento.md</code> de cada projeto e <code>_memoria/decisoes.md</code>. Este arquivo é gerado; não editar na mão.</p>
+  <p>Pra atualizar: conte no chat o que mudou, rode <code>/atualizar</code> e depois <code>/painel</code>.</p>
+</footer>
+
+<script>
+const DADOS = __DADOS_JSON__;
+const EU = DADOS.eu;
+const DIAS = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+const HOJE = (() => { const d = new Date(); d.setHours(0, 0, 0, 0); return d; })();
+
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const md = (s) => esc(s)
+  .replace(/`([^`]+)`/g, "<code>$1</code>")
+  .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+  .replace(/(https?:\/\/[^\s<)]+)/g, '<a href="$1">$1</a>');
+const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
+const cobravel = (p) => p.quem !== EU && p.quem !== "Agente";
+
+function parseISO(iso) { const [a, m, d] = iso.split("-").map(Number); return new Date(a, m - 1, d); }
+function dias(iso) { return Math.round((parseISO(iso) - HOJE) / 86400000); }
+function fmt(iso) {
+  const d = parseISO(iso);
+  const dd = String(d.getDate()).padStart(2, "0"), mm = String(d.getMonth() + 1).padStart(2, "0");
+  const ano = d.getFullYear() !== HOJE.getFullYear() ? "/" + d.getFullYear() : "";
+  return `${DIAS[d.getDay()]} ${dd}/${mm}${ano}`;
+}
+function rel(n) {
+  if (n === 0) return "hoje";
+  if (n === 1) return "amanhã";
+  if (n === -1) return "ontem";
+  return n < 0 ? `há ${-n} dias` : `em ${n} dias`;
+}
+function idade(n) { return n === 0 ? "hoje" : n === -1 ? "há 1 dia" : `há ${-n} dias`; }
+const fimSemana = (7 - HOJE.getDay()) % 7;
+
+function estado(p) {
+  if (p.recorrente) return "recorrente";
+  if (!p.prazo) return "semdata";
+  const n = dias(p.prazo);
+  if (n < 0) return "atrasado";
+  if (n === 0) return "hoje";
+  if (n <= fimSemana) return "semana";
+  return "depois";
+}
+function prazoTexto(p) {
+  if (p.recorrente) return p.recorrente;
+  if (p.prazo) {
+    const n = dias(p.prazo);
+    return n < 0 ? `venceu ${fmt(p.prazo)} · ${rel(n)}` : `até ${fmt(p.prazo)} · ${rel(n)}`;
+  }
+  if (p.desde) { const n = dias(p.desde); return `sem prazo · na lista desde ${fmt(p.desde)} (${idade(n)})`; }
+  return "sem prazo";
+}
+function ordem(a, b) {
+  const ka = a.prazo || a.desde || "9999", kb = b.prazo || b.desde || "9999";
+  return ka < kb ? -1 : ka > kb ? 1 : a.quem.localeCompare(b.quem);
+}
+
+const TODAS = [...DADOS.pendencias, ...DADOS.projetos.flatMap((pr) => pr.pendencias)].filter((p) => !p.concluida);
+TODAS.forEach((p) => { p.estado = estado(p); });
+
+// estado dos filtros (lembrado só neste navegador)
+const filtro = { busca: "", quem: "", modo: "todos" };
+try { Object.assign(filtro, JSON.parse(localStorage.getItem("painel-filtro") || "{}")); } catch (e) {}
+function lembrar() { try { localStorage.setItem("painel-filtro", JSON.stringify(filtro)); } catch (e) {} }
+
+function passa(p) {
+  if (filtro.modo === "meus" && p.quem !== EU) return false;
+  if (filtro.modo === "cobrar" && !cobravel(p)) return false;
+  if (filtro.quem && p.quem !== filtro.quem) return false;
+  if (filtro.busca) {
+    const alvo = `${p.texto} ${p.quem} ${p.tag || ""} ${p.origem || ""}`.toLowerCase();
+    if (!alvo.includes(filtro.busca.toLowerCase())) return false;
+  }
+  return true;
+}
+
+function itemHTML(p) {
+  return `<li class="item" data-estado="${p.estado}">
+    <span class="marca" aria-hidden="true"></span>
+    <div class="corpo">
+      <div class="texto">${md(cap(p.texto))}</div>
+      <div class="meta">
+        <span class="quem${cobravel(p) ? " cobrar" : ""}">${esc(p.quem)}</span>
+        <span class="prazo">${esc(prazoTexto(p))}</span>
+        ${p.decisao ? '<span class="decisao-marca">decisão</span>' : ""}
+        ${p.tag ? `<span>${esc(p.tag)}</span>` : ""}
+        ${p.origem ? `<span>${esc(p.origem)}</span>` : ""}
+      </div>
+    </div>
+  </li>`;
+}
+
+const GRUPOS = [
+  ["atrasado", "Atrasado", "critico"],
+  ["hoje", "Hoje", "alerta"],
+  ["semana", "Esta semana", "serio"],
+  ["depois", "Depois", "neutro"],
+  ["semdata", "Sem prazo", "neutro"],
+  ["recorrente", "Recorrente", "bom"],
+];
+
+function renderPrazos(lista) {
+  const el = $("#prazos-corpo");
+  let html = "";
+  for (const [chave, nome, cor] of GRUPOS) {
+    const itens = lista.filter((p) => p.estado === chave).sort(ordem);
+    if (!itens.length) continue;
+    html += `<div class="grupo"><h3><span class="ponto ${cor}" aria-hidden="true"></span>${nome} <span class="conta">${itens.length}</span></h3><ul>${itens.map(itemHTML).join("")}</ul></div>`;
+  }
+  el.innerHTML = html || '<p class="vazio">Nada aqui com esse recorte.</p>';
+  $("#conta-prazos").textContent = lista.length ? `${lista.length}` : "";
+}
+
+function renderCobrar(lista) {
+  const el = $("#cobrar-corpo");
+  const outros = lista.filter(cobravel);
+  const porPessoa = new Map();
+  outros.forEach((p) => { if (!porPessoa.has(p.quem)) porPessoa.set(p.quem, []); porPessoa.get(p.quem).push(p); });
+  const pessoas = [...porPessoa.entries()].sort((a, b) => b[1].length - a[1].length || a[0].localeCompare(b[0]));
+  el.innerHTML = pessoas.length
+    ? pessoas.map(([nome, itens]) => `<div class="pessoa"><h3>${esc(nome)} <span class="conta">${itens.length}</span></h3><ul>${itens.sort(ordem).map(itemHTML).join("")}</ul></div>`).join("")
+    : '<p class="vazio">Nada pra cobrar de ninguém com esse recorte.</p>';
+  $("#conta-cobrar").textContent = outros.length ? `${outros.length}` : "";
+}
+
+function renderDecidir(lista) {
+  const el = $("#decidir-corpo");
+  const itens = lista.filter((p) => p.decisao).sort(ordem);
+  el.innerHTML = itens.length ? `<ul>${itens.map(itemHTML).join("")}</ul>` : '<p class="vazio">Nenhuma decisão pendente com esse recorte.</p>';
+  $("#conta-decidir").textContent = itens.length ? `${itens.length}` : "";
+}
+
+function renderKpis() {
+  const atrasadas = TODAS.filter((p) => p.estado === "atrasado").length;
+  const semana = TODAS.filter((p) => p.estado === "hoje" || p.estado === "semana").length;
+  const cobrar = TODAS.filter(cobravel).length;
+  const decidir = TODAS.filter((p) => p.decisao).length;
+  const tiles = [
+    ["Atrasadas", atrasadas, "critico", "#prazos"],
+    ["Vencem até domingo", semana, "alerta", "#prazos"],
+    ["Pra cobrar", cobrar, "neutro", "#cobrar"],
+    ["Decisões a tomar", decidir, "neutro", "#decidir"],
+    ["Projetos", DADOS.projetos.length, "bom", "#projetos"],
+  ];
+  $("#kpis").innerHTML = tiles.map(([rot, v, cor, alvo]) =>
+    `<button type="button" class="kpi" data-alvo="${alvo}"><span class="valor">${v}</span><span class="rotulo"><span class="ponto ${cor}" aria-hidden="true"></span>${rot}</span></button>`
+  ).join("");
+  document.querySelectorAll(".kpi").forEach((b) => b.addEventListener("click", () => {
+    const alvo = document.querySelector(b.dataset.alvo);
+    if (alvo) alvo.scrollIntoView({ block: "start" });
+  }));
+}
+
+function renderContexto() {
+  $("#onde-paramos").innerHTML = DADOS.onde_paramos.map((p) => `<p>${md(p)}</p>`).join("") || '<p class="vazio">Sem registro.</p>';
+  $("#quente").innerHTML = DADOS.quente.map((q) => `<span class="chip">${md(q)}</span>`).join("") || '<span class="vazio">Nada marcado.</span>';
+}
+
+function renderProjetos() {
+  const el = $("#projetos-corpo");
+  el.innerHTML = DADOS.projetos.map((pr) => {
+    const abertas = pr.pendencias.filter((p) => !p.concluida).sort(ordem);
+    const cor = (p) => ({ atrasado: "critico", hoje: "alerta", semana: "serio", recorrente: "bom" }[p.estado] || "neutro");
+    const quando = pr.onde_esta_data ? ` (${fmt(pr.onde_esta_data)})` : "";
+    return `<article class="projeto">
+      <header><h3>${esc(pr.nome)}</h3><a href="../${esc(pr.pasta)}/andamento.md">${esc(pr.pasta)}</a></header>
+      <div><span class="rotulo">Onde está${esc(quando)}</span>${pr.onde_esta.map((p) => `<p>${md(p)}</p>`).join("")}</div>
+      <div><span class="rotulo">Pendências · ${abertas.length}</span>
+        <ul class="mini">${abertas.map((p) => `<li><span class="ponto ${cor(p)}" aria-hidden="true"></span><span><strong>${esc(p.quem)}</strong> ${md(p.texto)}</span><span class="p">${esc(p.prazo ? fmt(p.prazo) : p.recorrente || "")}</span></li>`).join("") || '<li class="vazio">Nenhuma.</li>'}</ul>
+      </div>
+      ${pr.feito.length ? `<div><span class="rotulo">Feito</span><ul class="feito">${pr.feito.map((f) => `<li>${md(f)}</li>`).join("")}</ul></div>` : ""}
+    </article>`;
+  }).join("") || '<p class="vazio">Nenhum projeto com <code>andamento.md</code> ainda.</p>';
+  $("#conta-projetos").textContent = DADOS.projetos.length || "";
+}
+
+function renderDecisoes() {
+  const lista = [...DADOS.decisoes].reverse().slice(0, 8);
+  $("#decisoes-corpo").innerHTML = lista.map((d) => `<li>
+    <span class="data">${esc(fmt(d.data))}</span>
+    <div>
+      <div class="cab">${esc(d.quem)}${d.projeto ? ` · ${esc(d.projeto)}` : ""}${d.substitui ? ` · substitui ${esc(d.substitui)}` : ""}</div>
+      <div>${md(d.texto)}</div>
+      ${d.porque ? `<details><summary>Por quê</summary><p>${md(d.porque)}</p></details>` : ""}
+    </div>
+  </li>`).join("") || '<li class="vazio">Nenhuma decisão registrada.</li>';
+  $("#conta-decisoes").textContent = DADOS.decisoes.length ? `${Math.min(8, DADOS.decisoes.length)} de ${DADOS.decisoes.length}` : "";
+}
+
+function renderAvisos() {
+  const el = $("#avisos");
+  if (!DADOS.avisos.length) { el.hidden = true; return; }
+  el.hidden = false;
+  el.innerHTML = `<strong>${DADOS.avisos.length} linha(s) fora do formato</strong> (entraram mesmo assim, como do ${esc(EU)} e sem data): <ul>${DADOS.avisos.map((a) => `<li>${esc(a)}</li>`).join("")}</ul>`;
+}
+
+function renderFiltrado() {
+  const lista = TODAS.filter(passa);
+  renderPrazos(lista);
+  renderCobrar(lista);
+  renderDecidir(lista);
+}
+
+function montarControles() {
+  const sel = $("#filtro-quem");
+  [...new Set(TODAS.map((p) => p.quem))].sort().forEach((q) => {
+    const o = document.createElement("option"); o.value = q; o.textContent = q; sel.appendChild(o);
+  });
+  sel.value = filtro.quem;
+  sel.addEventListener("change", () => { filtro.quem = sel.value; lembrar(); renderFiltrado(); });
+
+  const busca = $("#busca");
+  busca.value = filtro.busca;
+  busca.addEventListener("input", () => { filtro.busca = busca.value.trim(); lembrar(); renderFiltrado(); });
+
+  document.querySelectorAll(".segmento button").forEach((b) => {
+    b.setAttribute("aria-pressed", String(b.dataset.modo === filtro.modo));
+    b.addEventListener("click", () => {
+      filtro.modo = b.dataset.modo;
+      document.querySelectorAll(".segmento button").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      lembrar(); renderFiltrado();
+    });
+  });
+
+  const tema = $("#tema");
+  try { const t = localStorage.getItem("painel-tema"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  tema.addEventListener("click", () => {
+    const atual = document.documentElement.dataset.theme
+      || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const novo = atual === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = novo;
+    try { localStorage.setItem("painel-tema", novo); } catch (e) {}
+  });
+}
+
+(function iniciar() {
+  const g = DADOS.gerado_em ? new Date(DADOS.gerado_em) : null;
+  if (g) {
+    const idade = Math.round((HOJE - new Date(g.getFullYear(), g.getMonth(), g.getDate())) / 86400000);
+    const hh = String(g.getHours()).padStart(2, "0"), mi = String(g.getMinutes()).padStart(2, "0");
+    $("#quando").textContent = `Gerado ${fmt(DADOS.gerado_em.slice(0, 10))} às ${hh}:${mi}` + (idade > 0 ? ` · ${rel(-idade)}, rode /painel pra atualizar` : "");
+  }
+  renderKpis();
+  renderContexto();
+  montarControles();
+  renderFiltrado();
+  renderProjetos();
+  renderDecisoes();
+  renderAvisos();
+})();
+</script>
+</body>
+</html>

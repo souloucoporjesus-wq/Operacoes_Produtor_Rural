@@ -62,6 +62,7 @@ diário de outra origem, avisa se o `agora.md` está velho.
 | de um contato ou fornecedor recorrente (não é cliente, não é time) | `_contexto/pessoas/<nome>.md` |
 | de um projeto ou cliente, pra trabalhar nele | a pasta dele: `AGENTS.md` + `contexto.md` + `andamento.md` |
 | posição de suspensos, inadimplência e churn, e o que ficou combinado com a diretoria | `retencao/contexto.md` (reuniões brutas em `retencao/reunioes/`) |
+| o que está atrasado, o que cobrar de quem, decisões a tomar, projetos: a visão de painel | `painel/index.html` (o `/painel` regenera a partir do `agora.md`, dos `andamento.md` e do `decisoes.md`) |
 | que modelos e scripts o kit traz (perfis, skills prontas, catálogos, ponte) | `sistema/templates/` e `sistema/scripts/` |
 
 Este mapa é a única fonte de caminho do sistema. **Skill nunca escreve caminho de marca, de script ou
@@ -112,7 +113,10 @@ Pedido explícito ("salva isso") é exceção, e passa pela tabela do mesmo jeit
 Formatos que não mudam: diário é `AAAA-MM-DD.md` (o dono) ou `AAAA-MM-DD-<origem>.md` (qualquer outra
 origem), sempre acrescentando embaixo, nunca reescrevendo. Decisão é uma entrada nova, datada e assinada;
 quando muda decisão velha, diz `substitui: <data>` em vez de editar a antiga. Toda entrada durável leva
-data absoluta (nunca "semana passada"). Arquivar em vez de apagar.
+data absoluta (nunca "semana passada"). Arquivar em vez de apagar. Pendência, no `agora.md` e no
+`andamento.md` de projeto, é `- [ ] Quem: o quê — até AAAA-MM-DD` (sem prazo: `— desde AAAA-MM-DD`;
+recorrente: `— toda semana`; `[tema]` opcional no fim; começa com "decidir" quando é decisão a tomar):
+é daí que o painel lê. Pendência de projeto mora no `andamento.md` do projeto, não no `agora.md`.
 
 ## 6. Contrato do robô (rotina, cron, agente autônomo, subagente)
 

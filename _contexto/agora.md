@@ -1,4 +1,4 @@
-<!-- quem alimenta: o /setup semeia; o /atualizar reescreve no fim de cada sessão. Lido em toda conversa (boot). Teto: 40 linhas; estourou, vira ponteiro pra arquivo próprio. -->
+<!-- quem alimenta: o /setup semeia; o /atualizar reescreve no fim de cada sessão. Lido em toda conversa (boot). Teto: 40 linhas; estourou, vira ponteiro pra arquivo próprio. Pendência segue o formato `- [ ] Quem: o quê — até AAAA-MM-DD` (ou `— desde AAAA-MM-DD` sem prazo, `— toda semana` se recorrente; `[tema]` opcional no fim; começa com "decidir" quando é decisão a tomar): o painel (`/painel`) lê daqui. Pendência de projeto mora no andamento.md do projeto, não aqui. -->
 # Agora · onde paramos
 
 > O contexto que muda toda semana (diferente de `estrategia.md`, que é o foco de fundo).
@@ -15,34 +15,32 @@ https://claude.ai/artifact/VaVY2LJNJxJD33fV1RznJL). Próximo passo: chamar o Wel
 
 ## Pendências
 
-- Fechamento de inadimplência pro Leandro: contextualizar o pacote que chegou (64 clientes),
-  o foco (26 contratos de maior valor, R$ 328 mil) e o que já recuperou em quantidade e valor,
-  sem nomes — 17/09/2026 de manhã
-- Mandar a análise de churn pro Diego e pra Joyce — 2026-09-17
-- Consolidar o resultado das 6 viagens de 2026 (clientes visitados, oportunidades geradas,
-  pendências por cliente) — 2026-09-17
-- Indicador semanal de clientes sem acesso, com a Pâmela, automatizado; Leandro quer ver se
-  melhora ou piora semana a semana — 2026-09-17
-- Plano de ação de churn, 3 ações a iniciar: pílulas de conhecimento por momento da safra,
-  clientes em risco tratados com produto, revisitas e agendas remotas AgriManager — 2026-09-17
-- Amanda passa a centralizar os 52 clientes suspensos sem movimento — a partir de 17/09/2026
-- Rodar `/mapear` pra criar as skills do dia a dia — 2026-09-16
-- Ler `_contexto/marca/Universo de Marca - Aliare 1.pdf` na mão (46 MB, não deu pra abrir
-  automaticamente) e preencher o `design-guide.md` quando a identidade visual entrar em pauta — 2026-09-16
-- Decidir se conecta o Supabase (MCP) ao Engenho — 2026-09-16
-- Decidir o que fazer com as pastas soltas `Ritos - Projetos/` e `Skill/` que já existiam antes do
-  setup (manter, incorporar às pastas novas ou arquivar) — 2026-09-16
-- Se achar conector (MCP) pra Hubspot, Movidesk, Track Sales, Outlook ou Teams, avisar pra instalar — 2026-09-16
-- Reunião de alinhamento com a Fazenda Pontal das Perdizes (myFarm), receio do cliente sobre o
-  sistema — 17/09/2026
-- Decisão sobre migrar o saldo do Grupo Ferrari pro myFarm — até 21/09/2026
-- Encerramento formal da Fazenda Riqueza e do SJB Group (handoff + reunião interna) — até 25/09/2026
-- Força-tarefa: 12 encerramentos de projetos myFarm anteriores a maio, 6 com a Jaqueline e 6 com
-  a Joyce — até 30/09/2026
-- Onboarding myFarm (`projetos/onboarding-myfarm/`): chamar o Wellington pro OBS do Guilherme e
-  passar o contato pro Lucas — 17/09/2026; XMLs de 2 a 3 clientes com o Lucas — até 22/09/2026;
-  trilha de vídeos do Guilherme — até 15/10/2026; validar com o Leandro se vídeo conta como
-  produtividade extra
+- [ ] Julio: conversar com a Miriam pra achar uma forma da Amanda não perder recorrência/variável
+      ao virar resolutiva dos suspensos (combinado com o Leandro) — desde 2026-09-17 [retenção]
+- [ ] Julio: reporte semanal de posição de suspensos pro Carlos (CEO), com desde quando o cliente
+      é cliente no analítico — toda semana [retenção]
+- [ ] Amanda: centralizar os 52 clientes suspensos sem movimento e dar vazão — desde 2026-09-17 [retenção]
+- [ ] Julio: mandar a análise de churn pro Diego e pra Joyce — até 2026-09-17 [churn]
+- [ ] Julio: consolidar o resultado das 6 viagens de 2026 (clientes visitados, oportunidades
+      geradas, pendências por cliente) — até 2026-09-17 [churn]
+- [ ] Pâmela: indicador semanal de clientes sem acesso, automatizado; Leandro quer ver se melhora
+      ou piora semana a semana — até 2026-09-17 [churn]
+- [ ] Julio: iniciar as 3 ações do plano de churn (pílulas de conhecimento por momento da safra,
+      clientes em risco tratados com produto, revisitas e agendas remotas AgriManager) — até 2026-09-17 [churn]
+- [ ] Julio: reunião de alinhamento com a Fazenda Pontal das Perdizes (myFarm), receio do cliente
+      sobre o sistema — até 2026-09-17 [clientes]
+- [ ] Julio: decidir se migra o saldo do Grupo Ferrari pro myFarm — até 2026-09-21 [clientes]
+- [ ] Julio: encerramento formal da Fazenda Riqueza e do SJB Group (passagem + reunião interna) — até 2026-09-25 [projetos myFarm]
+- [ ] Jaqueline e Joyce: força-tarefa de 12 encerramentos de projetos myFarm anteriores a maio,
+      6 cada — até 2026-09-30 [projetos myFarm]
+- [ ] Julio: rodar `/mapear` pra criar as skills do dia a dia — desde 2026-09-16 [sistema]
+- [ ] Julio: ler `_contexto/marca/Universo de Marca - Aliare 1.pdf` na mão (46 MB, não abre
+      automaticamente) e preencher o `design-guide.md` quando a identidade visual entrar em pauta — desde 2026-09-16 [sistema]
+- [ ] Julio: decidir se conecta o Supabase (MCP) ao Engenho — desde 2026-09-16 [sistema]
+- [ ] Julio: decidir o que fazer com as pastas soltas `Ritos - Projetos/` e `Skill/` que já
+      existiam antes do setup (manter, incorporar às pastas novas ou arquivar) — desde 2026-09-16 [sistema]
+- [ ] Agente: se achar conector (MCP) pra Hubspot, Movidesk, Track Sales, Outlook ou Teams,
+      avisar pra instalar — desde 2026-09-16 [sistema]
 
 ## Quente agora
 

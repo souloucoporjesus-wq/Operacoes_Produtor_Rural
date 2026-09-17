@@ -54,3 +54,20 @@ combinado.
 **Outros**
 - Operação assistida (treinamento de outra área, 17/09): só o Julio participa e repassa ao time;
   consultores com agenda lotada.
+
+## Reunião 17/09/2026, Leandro Xavier recapeia com o Julio a reunião dele com Carlos (CEO) → `reunioes/2026-09-17-leandro-recap-carlos.md`
+
+- Reunião foi majoritariamente sobre suspensos. Leandro levou as dificuldades da operação
+  (desconto pra fechar e jogar débito pra safra, cliente negativado sem querer acordo) e recebeu
+  autonomia explícita do CEO: **"o cliente é teu, você que resolve, ninguém tem que dizer como
+  tratar teu cliente"** — primeira vez que o Carlos falou nesse tom. Isso vale também pra área de
+  cobrança: Leandro (e por extensão o Julio) define como agir com o cliente, sem precisar de aval.
+  Se alguém fora da operação atrapalhar, escalar pro Leandro.
+- Carlos pediu reporte semanal de agenda/posição de suspensos daqui pra frente (não é só o
+  fechamento pontual de 17/09 já registrado acima).
+- No relatório analítico, incluir **desde quando o cliente é cliente** (tempo de casa) — pedido
+  do Carlos.
+- Amanda vai perder variável ao virar resolutiva dos suspensos: Leandro e Julio precisam achar com
+  a Miriam uma forma dela não perder recorrência/comissão por isso. Pendente de conversa com a Miriam.
+- Churn: só 5 minutos na pauta do Carlos, sem números novos, focado em recapitular o plano de ação
+  já combinado (ver acima).
