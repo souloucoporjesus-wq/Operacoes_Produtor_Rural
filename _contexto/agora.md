@@ -7,10 +7,14 @@
 
 ## Onde paramos
 
-Projeto de onboarding myFarm lançado em 17/09 com Guilherme e Lucas (`projetos/onboarding-myfarm/`):
-Evoluto fechada com o Leandro, Guilherme nos vídeos, Lucas no XML, Pâmela trata os dados. Luiz
-Carlos desligado no mesmo dia (corte de custos); time myFarm agora com 2 consultores. Antes disso,
-análise de churn jan a jun/2026 entregue em 16/09 (`relatorios/raio-x-churn-2026-09-16/`,
+Grupo Bocchi (`clientes/grupo-bocchi/`) entrou como piloto de evolução dos painéis Vista BI:
+protótipo de fluxo de caixa apresentado em 18/09, ajustes combinados (dólar, financiamentos,
+detalhamento geral), próxima demo mira semana de 21/09. Time de CS alinhado em 18/09: Amanda
+assume os contratos suspensos e terá a carteira myFarm redistribuída; Julio tem aval do Leandro
+pra começar automações do CS, mirando clientes myFarm de baixo toque (até R$1.500/mês). Antes
+disso, projeto de onboarding myFarm lançado em 17/09 com Guilherme e Lucas
+(`projetos/onboarding-myfarm/`): Evoluto fechada com o Leandro, Guilherme nos vídeos, Lucas no
+XML. Análise de churn jan a jun/2026 entregue em 16/09 (`relatorios/raio-x-churn-2026-09-16/`,
 https://claude.ai/artifact/VaVY2LJNJxJD33fV1RznJL). Próximo passo: chamar o Wellington e rodar `/mapear`.
 
 ## Pendências
@@ -27,8 +31,12 @@ https://claude.ai/artifact/VaVY2LJNJxJD33fV1RznJL). Próximo passo: chamar o Wel
       ou piora semana a semana — até 2026-09-17 [churn]
 - [ ] Julio: iniciar as 3 ações do plano de churn (pílulas de conhecimento por momento da safra,
       clientes em risco tratados com produto, revisitas e agendas remotas AgriManager) — até 2026-09-17 [churn]
+- [ ] Julio: destravar automações do CS (com aval do Leandro, sem esperar HubSpot), começando
+      pelos clientes myFarm de até R$1.500/mês como "baixo toque" — desde 2026-09-18 [churn]
 - [ ] Julio: reunião de alinhamento com a Fazenda Pontal das Perdizes (myFarm), receio do cliente
       sobre o sistema — até 2026-09-17 [clientes]
+- [ ] Jaqueline: marcar a apresentação do Hendow assim que a Yane informar dia e horário,
+      incluindo o Julio — até 2026-09-21 [Hendow]
 - [ ] Julio: decidir se migra o saldo do Grupo Ferrari pro myFarm — até 2026-09-21 [clientes]
 - [ ] Julio: encerramento formal da Fazenda Riqueza e do SJB Group (passagem + reunião interna) — até 2026-09-25 [projetos myFarm]
 - [ ] Jaqueline e Joyce: força-tarefa de 12 encerramentos de projetos myFarm anteriores a maio,

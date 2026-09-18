@@ -173,6 +173,8 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
 <!-- pastas de trabalho abaixo, criadas pelo /setup conforme o negócio -->
 - `clientes/` · uma pasta por cliente ou projeto de implantação (Grupo Marcondes, Agropecuária
   Amazônia, AgroJem, MOTTA, parceiro do Paraguai...)
+- `clientes/grupo-bocchi/` · piloto de evolução dos painéis Vista BI (Cicilio conduz), começando
+  pelo protótipo de painel de fluxo de caixa
 - `retencao/` · acompanhamento de clientes em suspensão, cancelamento e inadimplência
 - `equipe/` · gestão do time: OKRs, 1:1, onboarding da equipe recém-montada
 - `relatorios/` · prestação de contas pra diretoria e outros líderes

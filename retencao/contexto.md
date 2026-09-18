@@ -71,3 +71,22 @@ combinado.
   a Miriam uma forma dela não perder recorrência/comissão por isso. Pendente de conversa com a Miriam.
 - Churn: só 5 minutos na pauta do Carlos, sem números novos, focado em recapitular o plano de ação
   já combinado (ver acima).
+
+## Reunião 18/09/2026, Julio alinha com o time de CS (Andrezza, Ana Rocha, Amanda Santos) → `reunioes/2026-09-18-alinhamento-time-automacoes.md`
+
+- Mais uma demissão por redução de custos (a pessoa não foi identificada na transcrição; time
+  brincou especulando, sem confirmação).
+- Julio comunicou oficialmente ao time: **Amanda assume os contratos suspensos** internamente
+  (o item do advogado, já quente há alguns dias). Consequência: os clientes myFarm da carteira da
+  Amanda serão redistribuídos entre as outras carteiras do CS. Julio acha que o impacto é baixo
+  porque o cliente myFarm já é mais desengajado, mas reconhece que o impacto do lado interno
+  (carga do time) é grande. Providência de fundo (pedir reforço à diretoria) fica pro início do
+  ano. Segue de pé o pendente de achar com a Miriam uma forma da Amanda não perder
+  recorrência/variável nessa mudança de função.
+- Julio conversou com o Leandro (17/09) e recebeu aval pra começar a automatizar tarefas do CS,
+  sem esperar HubSpot ou outras equipes. Planejamento em conjunto com a Miriam e o head de
+  estratégia do Grupo Aliare.
+- Direção pretendida: clientes myFarm que pagam até ~R$1.500/mês viram "baixo toque" — mais
+  automação, menos contato humano direto. Início ainda no final de 2026; ritmo de "trabalho de
+  formiguinha", conduzido pelo Julio.
+- Time de CS pode ser acionado pela Amanda por informação de cliente durante a transição.

@@ -27,3 +27,7 @@ Português direto, sem enrolação.
 
 - Evitar termos em inglês sem necessidade (não tem fluência, trata como limitação de carreira).
 - Depois do `/atualizar`, rodar `/syncar` direto, sem perguntar antes.
+- Transcrição de reunião colada no chat: salvar direto na pasta do projeto/cliente certo
+  (`reunioes/AAAA-MM-DD-<assunto>.md`) e destilar no `contexto.md` dele, sem perguntar antes. Se
+  não existir pasta pro assunto, pode perguntar só o nome pra criar (o resto é automático).
+  (18/09/2026)

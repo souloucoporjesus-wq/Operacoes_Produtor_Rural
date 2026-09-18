@@ -55,3 +55,11 @@ regra de trabalho. O que não entra: tarefa feita (isso é o diário).
   cobrança/financeiro; empecilho de terceiro na operação escala direto pro Leandro. Por quê: o CEO
   reconheceu, ao ouvir as dificuldades da operação, que as regras de cobrança vinham sendo aplicadas
   sem entender o contexto de cada cliente. Em troca, quer reporte semanal de posição de suspensos.
+- **2026-09-18** (Julio): reunião que não aconteceu não se apaga da agenda do consultor; fica só
+  sem confirmação e sem liberação pro consultor. Por quê: o sistema é da empresa, vale manter o
+  histórico completo, inclusive do que não se realizou.
+- **2026-09-18** (Julio) [equipe]: com o consultor Guilherme (perfil atípico, tende a esticar
+  ligação por qualquer assunto), a orientação pra Jaqueline e Joyce é ter pulso firme e direcionar
+  pra texto ou áudio quando não for urgência real (cliente parando, por exemplo). Por quê: ligação
+  longa e recorrente consome o tempo do time sem necessidade; sem postura firme, vira prática
+  recorrente com outros consultores também.
