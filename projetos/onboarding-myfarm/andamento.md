@@ -11,7 +11,7 @@ levantar até onde os vídeos do Luiz foram; Lucas e Guilherme começam a pedir 
 - [ ] Julio: conectar a Pâmela ao Lucas assim que chegar o primeiro XML
 - [ ] Julio: validar com o Leandro se a gravação de vídeos conta como produtividade extra
 - [ ] Lucas e Guilherme: XMLs de 2 a 3 clientes em mãos — até 22/09/2026
-- [ ] Lucas: falar com Arley, Edson e Vera sobre clientes do BPO que possam entrar no piloto
+- [ ] Lucas: falar com Warlen, Edson e Vera sobre clientes do BPO que possam entrar no piloto
 - [ ] Guilherme: trilha de vídeos completa — até 15/10/2026
 - [ ] Desenhar a trilha do cliente na Evoluto (passos, formulários, vídeos por etapa)
 - [ ] Etapa 2 do XML: contas a pagar e a receber (só depois da etapa 1 validada)

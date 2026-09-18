@@ -157,6 +157,7 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
 | `/iniciar` | lê o sistema e devolve onde você parou | não escreve nada |
 | `/atualizar` | decide onde cada coisa mora e escreve | não mexe no GitHub |
 | `/syncar` | manda pro GitHub e diz o que subiu | não decide nada |
+| `/painel` | regenera o painel de acompanhamento a partir do que já está escrito e abre no navegador | não escreve em contexto, diário nem decisões |
 
 ## 9. Mapa de pastas
 
@@ -167,6 +168,8 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
 - `sistema/` · o motor do kit (scripts e modelos). Você não precisa abrir
 - `.claude/` · as habilidades (skills) deste sistema
 - `.ratosos` · a versão do kit (uma linha). Não apague: é como a atualização sabe de onde você parte
+- `painel/` · painel de acompanhamento (prazos, cobranças, decisões a tomar, projetos). `index.html`
+  é gerado pelo `/painel` a partir do `agora.md`, dos `andamento.md` e do `decisoes.md`; não editar na mão
 <!-- pastas de trabalho abaixo, criadas pelo /setup conforme o negócio -->
 - `clientes/` · uma pasta por cliente ou projeto de implantação (Grupo Marcondes, Agropecuária
   Amazônia, AgroJem, MOTTA, parceiro do Paraguai...)

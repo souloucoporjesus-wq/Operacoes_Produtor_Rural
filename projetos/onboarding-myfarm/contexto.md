@@ -21,7 +21,8 @@ contratação, lendo o XML com IA e importando cadastros e tributação.
 - **Luiz Carlos**: dono anterior do projeto de vídeos; desligado em 17/09/2026 por corte de
   custos. Os vídeos que ele gravou serão reaproveitados; o Plantar Educação sabe até onde foram
 - **Leandro Xavier** (diretor): bateu o martelo da Evoluto em 17/09/2026
-- **Arley, Edson, Vera**: possíveis fontes de clientes do BPO pro piloto de XML
+- **Warlen Andrade** (consultor de implantação myFarm), **Edson** e **Vera**: possíveis fontes de
+  clientes do BPO pro piloto de XML (a transcrição de 17/09 registrou "Arley"; o nome certo é Warlen)
 
 ## Frentes
 
