@@ -31,3 +31,8 @@ Português direto, sem enrolação.
   (`reunioes/AAAA-MM-DD-<assunto>.md`) e destilar no `contexto.md` dele, sem perguntar antes. Se
   não existir pasta pro assunto, pode perguntar só o nome pra criar (o resto é automático).
   (18/09/2026)
+- A skill `granola` (importa reuniões do Granola) roda o `/atualizar` sozinha no fim, sem mostrar
+  plano nem esperar "aplico?" — só essa skill; nas outras situações o `/atualizar` continua
+  perguntando como sempre. (22/09/2026)
+- A skill `granola` sempre traz a transcrição literal (`get_meeting_transcript`), nunca o resumo
+  de IA do Granola — mesmo em importação com muitas reuniões de uma vez. (22/09/2026)

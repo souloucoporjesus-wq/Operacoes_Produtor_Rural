@@ -84,6 +84,9 @@ tem `marca/` própria usa a dela; sem isso, vale a da raiz.
 - **Chegou material bruto** (transcrição, PDF, email exportado): vai pra pasta do projeto certo, e o
   essencial é destilado no `contexto.md` dele, **com a data e o caminho da fonte** ("reunião
   12/08 → o arquivo: o que fechou"). Guarda-se o mapa, não uma cópia. Nada de gaveta de entrada.
+- **Primeiro comando do dia** (qualquer mensagem, não só `/iniciar`; olhar se já existe arquivo de
+  hoje em `_memoria/reunioes/`): rodar a skill `granola` antes de responder — ela traz as reuniões
+  novas do Granola e distila pros projetos certos.
 
 ## 5. Tabela de destinos (aconteceu X, escreve em Y)
 
@@ -164,7 +167,8 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
 <!-- O /setup e o /novo-projeto mantêm esta lista: uma linha por pasta, com o que vai nela. -->
 
 - `_contexto/` · o que o sistema sabe do negócio. Não apagar
-- `_memoria/` · o que aconteceu e por quê: `diario/`, `decisoes.md`, `recados/`
+- `_memoria/` · o que aconteceu e por quê: `diario/`, `decisoes.md`, `recados/`, `reunioes/` (transcrições
+  brutas do Granola, ponto de entrada antes de destilar pro projeto certo)
 - `sistema/` · o motor do kit (scripts e modelos). Você não precisa abrir
 - `.claude/` · as habilidades (skills) deste sistema
 - `.ratosos` · a versão do kit (uma linha). Não apague: é como a atualização sabe de onde você parte

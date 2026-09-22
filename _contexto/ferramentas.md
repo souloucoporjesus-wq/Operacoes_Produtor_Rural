@@ -20,6 +20,7 @@
 | Evolution API (em avaliação) | centralizar WhatsApp dos consultores, hoje em celulares individuais | sem conector no catálogo, projeto ainda não decidido | não ligada | 2026-09-16 |
 | Python 3.12 + pandas/openpyxl/matplotlib/Jupyter | análise de dados (planilhas, reports), notebooks | CLI, instalado local nesta máquina (pc-aliare); na sessão de 16/09 à tarde `python` não respondia no shell do agente (só o atalho da loja), conferir PATH | ligada | 2026-09-17 |
 | Excel (automação COM) | ler e gerar planilhas .xlsx quando o Python não responde | PowerShell + COM, Excel instalado nesta máquina | ligada | 2026-09-17 |
+| Granola | transcrição de reunião (grava e transcreve automaticamente) | MCP | ligada | 2026-09-22 |
 
 ## Os sete assuntos que todo negócio tem
 
@@ -33,6 +34,6 @@
 - **Dinheiro entrando e saindo:** nenhuma ferramenta do lado do CS — a cobrança é da equipe de
   cobrança, mas o CS acaba puxando porque ela não dá conta
 - **Ficha do cliente:** Hubspot (mal implantado, sem automação nenhuma)
-- **Reunião:** Teams
+- **Reunião:** Teams pra agenda; Granola grava e transcreve
 
 Nenhuma integração entre os sistemas hoje.

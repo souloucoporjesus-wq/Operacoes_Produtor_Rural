@@ -90,3 +90,77 @@ combinado.
   automação, menos contato humano direto. Início ainda no final de 2026; ritmo de "trabalho de
   formiguinha", conduzido pelo Julio.
 - Time de CS pode ser acionado pela Amanda por informação de cliente durante a transição.
+
+## Reunião 21/09/2026, Julio com Leandro e Mirian Amaral → `reunioes/2026-09-21-cobranca-centralizada-amanda-comissao.md`
+
+- A centralização de cobrança na Amanda (decidida em 16-18/09) ganhou compensação formal: mínimo
+  garantido de R$ 1.539/mês (média do comissionamento dela) enquanto durar o trabalho de cobrança,
+  1 a 2 meses (set/out). Mirian define a verba certa com a Denise pra entrar na folha de setembro.
+- Carlos (CEO) confirmou autonomia explícita pra cobrança na unidade.
+
+## Reunião 16/09/2026 (mais cedo), Julio com Leandro e Cicilio → `reunioes/2026-09-16-floripa-absoluta-carteira-cobranca-contratos-leandro.md`
+
+- Cicilio prepara nova oferta pra Floripa Absoluta (planilha de simulação pronta).
+- ~60+ clientes inadimplentes, maioria parada no financeiro aguardando devolutiva. Julio propôs
+  ali mesmo (antes da reunião das 17h31 já registrada acima) centralizar a cobrança na Amanda,
+  com percentual de reversão como incentivo — proposta que virou decisão horas depois.
+- Leandro vai acionar o Maicon direto quando houver travamento no financeiro/jurídico (exemplo:
+  contrato da Flow ficou uma semana parado, liberado no mesmo dia após pressão).
+
+## Reunião 17/09/2026, Julio com Amanda → `reunioes/2026-09-17-clientes-suspensos-cobranca-negociacao-amanda.md`
+
+- Carteira de suspensos: 26 em Night Plans, 28 em processamento de churn (2º momento), 10 em
+  negociação ativa. Foco: clientes com valor represado (meses não faturados durante a suspensão,
+  que ficam de fora do acordo com o escritório de cobrança e geram contestação depois).
+- Diretrizes: desconto à vista até 15%; termo de confissão + quitação em 30/04; pontos do cliente
+  abatem dívida; consolidar represado + parcelas futuras. Opção "30 do 4" cancelada.
+- Achado importante: financeiro e CS negociam com o mesmo cliente sem se comunicar (um caso perdeu
+  R$17,5 mil de entrada por isso) — Julio vai acionar o Maicon pra resolver a coordenação.
+- Clientes já virados churn sem recuperação: Falcon, Roni, Luiz.
+
+## Reunião 17/09/2026, Julio revisa churn/downsell e comunica rescisão do Luiz → `reunioes/2026-09-17-rescisao-luiz-analise-churn.md`
+
+- Clientes que o controle do Ednei marcou como downsell mas que na prática são churn por queda
+  drástica de MRR (Ednei não repassa esse churn a Julio — ponto de atenção pro relatório).
+- Caso Bruno Sanches: negativado desde fevereiro, desbloqueado por intervenção de Julio/Amanda,
+  cancelou 2 meses depois devendo ~R$70 mil; alegou IA de outro sistema, mas o time acha que foi
+  financeiro.
+- Rescisão do contrato do Luiz (BPO, 5 anos de casa) por redução de custos, decisão top-down.
+
+## Reunião 17/09/2026, revisão de churn/retenção/roadmap com Fernanda, Diego e Gustavo → `reunioes/2026-09-17-churn-retencao-roadmap-myfarm-agrimanager.md`
+
+- MRR caiu de R$1.325.000 (jan) pra R$1.299.000 (jun): entradas (~R$70 mil) não cobrem
+  churn+downsell (~R$108 mil) — saldo negativo de ~R$38 mil no semestre, agravado por Isabela
+  afastada (cirurgia) e saída do Lucas.
+- 45% dos churns entrevistados foram pra outro ERP; MyFarm é usado quase só pelo módulo financeiro
+  (ação de agricultura digital só engajou 6 clientes da carteira toda).
+- Roadmap 2024 entregou só 42%, baseado em sentimento e não em dados; proposta do Diego é alinhar
+  o roadmap ao calendário sazonal do produtor. Julio ainda não fez o levantamento de clientes em
+  risco — comprometeu-se a travar agenda pra isso.
+
+## Reunião 11/09/2026, Julio com Maicon (gerente financeiro) → `reunioes/2026-09-11-cobranca-flexibilizacao-pagamentos-maicon.md`
+
+- Achado estrutural: cliente enviado ao escritório de cobrança só teve a dívida faturada
+  negociada — o período suspenso (represado) ficou de fora, e o cliente descobre depois que ainda
+  deve. Exemplos com valor alto: Alzir Pimentel (R$43 mil represados), Pedro Henrique Fadel
+  (R$35 mil).
+- Estratégia combinada com Maicon: 15% à vista, parcelamento via Dinamarca, Plano Safra (postergar
+  pra 30/03 com confissão de dívida e entrada de ~10%), pontos abatem dívida.
+
+## Reunião 11/09/2026, estrutura de débito represado x faturado → `reunioes/2026-09-11-negociacao-inadimplentes-estrutura-debito.md`
+
+- Mesmo achado do represado, detalhado: a planilha tem duas colunas (débito faturado e valor
+  represado) e só a faturada foi pro escritório (Verbaq). Clientes sazonais (grãos: liquidez a
+  partir de fev/mar; algodão: julho) são candidatos a cobrança anual/semestral em vez de mensal
+  (Romina e Fênix já operam assim).
+- Alçada de desconto de 15% ainda precisa ser formalizada (CS + Michael + Dinamarca) antes de
+  qualquer proposta ao cliente.
+
+## Reunião 10/09/2026, estratégia de cobrança e reativação → `reunioes/2026-09-10-estrategia-cobranca-inadimplentes-reativacao.md`
+
+- Leandro deu carta branca pra trabalhar os suspensos e pediu reunião semanal (sextas, ~15h30).
+- Planilha com 3 abas: inadimplentes, churn, em negociação — cada consultor pega os clientes da
+  própria carteira. Giovanna (carteira com muito suspenso) deve acompanhar a Amanda antes de
+  atuar sozinha.
+- Telemetria de acesso só existe pra MyFarm, não pra AGM; pedido de melhorar o dashboard com dados
+  de features não usadas, pra embasar campanhas de engajamento.

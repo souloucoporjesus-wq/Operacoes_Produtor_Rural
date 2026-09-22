@@ -16,6 +16,10 @@ disso, projeto de onboarding myFarm lançado em 17/09 com Guilherme e Lucas
 (`projetos/onboarding-myfarm/`): Evoluto fechada com o Leandro, Guilherme nos vídeos, Lucas no
 XML. Análise de churn jan a jun/2026 entregue em 16/09 (`relatorios/raio-x-churn-2026-09-16/`,
 https://claude.ai/artifact/VaVY2LJNJxJD33fV1RznJL). Próximo passo: chamar o Wellington e rodar `/mapear`.
+Granola ligado em 22/09: a skill `granola` traz as reuniões sozinha no primeiro comando do dia e
+fecha com `/atualizar` automático. Primeira importação (43 reuniões, 09-21/09) rendeu 8 novas em
+`retencao/contexto.md`; 28 ficaram soltas em `_memoria/reunioes/` esperando pasta (apuração
+assistida/reforma tributária, equipe, clientes pontuais sem pasta).
 
 ## Pendências
 
@@ -42,6 +46,9 @@ https://claude.ai/artifact/VaVY2LJNJxJD33fV1RznJL). Próximo passo: chamar o Wel
 - [ ] Jaqueline e Joyce: força-tarefa de 12 encerramentos de projetos myFarm anteriores a maio,
       6 cada — até 2026-09-30 [projetos myFarm]
 - [ ] Julio: rodar `/mapear` pra criar as skills do dia a dia — desde 2026-09-16 [sistema]
+- [ ] Julio: decidir se cria pastas novas (ex.: "apuração assistida" em `projetos/`, uma pasta pra
+      equipe) pra classificar as 28 reuniões do Granola que ficaram soltas em `_memoria/reunioes/`
+      — desde 2026-09-22 [sistema]
 - [ ] Julio: ler `_contexto/marca/Universo de Marca - Aliare 1.pdf` na mão (46 MB, não abre
       automaticamente) e preencher o `design-guide.md` quando a identidade visual entrar em pauta — desde 2026-09-16 [sistema]
 - [ ] Julio: decidir se conecta o Supabase (MCP) ao Engenho — desde 2026-09-16 [sistema]
