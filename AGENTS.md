@@ -58,6 +58,7 @@ diário de outra origem, avisa se o `agora.md` está velho.
 | identidade visual e como a marca fala com o cliente | `_contexto/marca/` (começa por `design-guide.md`) |
 | por que algo foi decidido, ou antes de mudar uma decisão | `_memoria/decisoes.md` |
 | o que aconteceu num dia, ou pra voltar no tempo | `_memoria/diario/` (mais de 90 dias: `_memoria/arquivo/`) |
+| o que rolou no Teams num dia útil (resumo executivo) | `resumo-teams/AAAA-MM-DD.md` (a rotina das 16:30 gera; o de segunda cobre o fim de semana) |
 | recado deixado por um robô ou por outra pessoa | `_memoria/recados/` |
 | de um contato ou fornecedor recorrente (não é cliente, não é time) | `_contexto/pessoas/<nome>.md` |
 | de um projeto ou cliente, pra trabalhar nele | a pasta dele: `AGENTS.md` + `contexto.md` + `andamento.md` |
@@ -174,6 +175,9 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
 - `.ratosos` · a versão do kit (uma linha). Não apague: é como a atualização sabe de onde você parte
 - `painel/` · painel de acompanhamento (prazos, cobranças, decisões a tomar, projetos). `index.html`
   é gerado pelo `/painel` a partir do `agora.md`, dos `andamento.md` e do `decisoes.md`; não editar na mão
+- `resumo-teams/` · resumo executivo do Microsoft Teams, um arquivo por dia útil (`AAAA-MM-DD.md`), janela
+  de 16:31 do dia útil anterior até 16:30 do dia. Quem escreve é a rotina de nuvem, que sobe direto pro
+  GitHub; o `/iniciar` traz pra máquina
 <!-- pastas de trabalho abaixo, criadas pelo /setup conforme o negócio -->
 - `clientes/` · uma pasta por cliente ou projeto de implantação (Grupo Marcondes, Agropecuária
   Amazônia, AgroJem, MOTTA, parceiro do Paraguai...)
