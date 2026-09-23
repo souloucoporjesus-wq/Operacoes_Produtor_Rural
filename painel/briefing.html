@@ -1,0 +1,358 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Briefing do dia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --fundo: #f4f6f2;
+    --superficie: #ffffff;
+    --suave: #eef1ea;
+    --tinta: #171d18;
+    --tinta-2: #55605a;
+    --tinta-3: #85908a;
+    --linha: #dde3dc;
+    --destaque: #1f6b3a;
+    --destaque-suave: #e2efe5;
+    --critico: #d03b3b;
+    --critico-suave: #fbe9e9;
+    --alerta: #fab219;
+    --serio: #ec835a;
+    --bom: #0ca30c;
+    --sombra: 0 1px 2px rgba(23, 29, 24, 0.06);
+    --fonte: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --fundo: #121513; --superficie: #1a1f1b; --suave: #232925;
+      --tinta: #edf1ec; --tinta-2: #a9b3ac; --tinta-3: #7c867f; --linha: #2c332e;
+      --destaque: #62c184; --destaque-suave: #1e3527; --critico-suave: #3a2020;
+      --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --fundo: #121513; --superficie: #1a1f1b; --suave: #232925;
+    --tinta: #edf1ec; --tinta-2: #a9b3ac; --tinta-3: #7c867f; --linha: #2c332e;
+    --destaque: #62c184; --destaque-suave: #1e3527; --critico-suave: #3a2020;
+    --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--fundo); color: var(--tinta); font-family: var(--fonte);
+    font-size: 14.5px; line-height: 1.45; padding-inline: 16px; padding-block: 0 96px;
+  }
+  a { color: var(--destaque); }
+  code { font-family: ui-monospace, "Cascadia Mono", Consolas, monospace; font-size: 0.92em; background: var(--suave); padding: 0 4px; border-radius: 3px; }
+  h1, h2, h3 { margin: 0; text-wrap: balance; }
+  h2 { font-size: 17px; font-weight: 600; }
+  h3 { font-size: 14px; font-weight: 600; }
+  ul { list-style: none; margin: 0; padding: 0; }
+  button { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
+  .rotulo { font-size: 12px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--tinta-3); }
+
+  .topo { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--fundo); margin-inline: -16px; padding-inline: 16px; border-bottom: 1px solid var(--linha); }
+  .topo-in { max-width: 1120px; margin: 0 auto; display: flex; flex-wrap: wrap; align-items: center; gap: 10px 18px; padding-block: 12px; }
+  .titulo { display: flex; flex-direction: column; gap: 2px; margin-right: auto; }
+  .titulo h1 { font-size: 20px; font-weight: 600; }
+  .titulo .quando { font-size: 12.5px; color: var(--tinta-3); }
+  .controles { display: flex; gap: 8px; align-items: center; }
+  .botao { border: 1px solid var(--linha); background: var(--superficie); border-radius: 6px; padding: 6px 10px; cursor: pointer; color: var(--tinta-2); }
+  .botao:hover { border-color: var(--tinta-3); }
+
+  main { max-width: 1120px; margin: 0 auto; display: grid; gap: 28px; padding-top: 22px; }
+  section > h2 { margin-bottom: 10px; display: flex; align-items: baseline; gap: 10px; }
+  section > h2 .conta { font-weight: 400; color: var(--tinta-3); font-size: 13.5px; }
+  .sub { color: var(--tinta-3); font-size: 13px; margin: -4px 0 10px; }
+
+  .resumo { background: var(--superficie); border: 1px solid var(--linha); border-left: 4px solid var(--destaque); border-radius: 8px; padding: 14px 18px; box-shadow: var(--sombra); }
+  .resumo ol { margin: 8px 0 0; padding-left: 20px; display: grid; gap: 6px; }
+  .resumo li { max-width: 90ch; }
+  .fontes { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+  .chip { background: var(--suave); border-radius: 999px; padding: 3px 10px; font-size: 12.5px; color: var(--tinta-2); }
+
+  .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+  .kpi { display: flex; flex-direction: column; gap: 4px; text-align: left; background: var(--superficie); border: 1px solid var(--linha); border-radius: 8px; padding: 12px 14px; cursor: pointer; box-shadow: var(--sombra); }
+  .kpi:hover { border-color: var(--tinta-3); }
+  .kpi .valor { font-size: 32px; font-weight: 600; line-height: 1.1; }
+  .kpi .rotulo { display: flex; align-items: center; gap: 6px; }
+  .ponto { width: 8px; height: 8px; border-radius: 50%; display: inline-block; flex: none; }
+  .ponto.critico { background: var(--critico); } .ponto.alerta { background: var(--alerta); }
+  .ponto.serio { background: var(--serio); } .ponto.bom { background: var(--bom); } .ponto.neutro { background: var(--tinta-3); }
+
+  .grade { display: grid; grid-template-columns: 1.55fr 1fr; gap: 24px; align-items: start; }
+  .grade aside { display: grid; gap: 28px; }
+  .grupo { margin-bottom: 18px; }
+  .grupo h3 { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; color: var(--tinta-2); }
+  .grupo h3 .conta { font-weight: 400; color: var(--tinta-3); }
+
+  .item { display: grid; grid-template-columns: 4px auto 1fr; gap: 10px; align-items: start; background: var(--superficie); border: 1px solid var(--linha); border-radius: 6px; padding: 9px 12px 9px 0; margin-bottom: 6px; overflow: hidden; }
+  .item .marca { align-self: stretch; background: var(--linha); }
+  .item[data-prioridade="critica"] .marca { background: var(--critico); }
+  .item[data-prioridade="alta"] .marca { background: var(--serio); }
+  .item[data-prioridade="media"] .marca { background: var(--alerta); }
+  .item input[type="checkbox"] { margin: 3px 0 0; width: 16px; height: 16px; accent-color: var(--destaque); cursor: pointer; }
+  .item.feito { opacity: 0.55; }
+  .item.feito .t { text-decoration: line-through; }
+  .item .t { font-weight: 500; }
+  .item .d { color: var(--tinta-2); font-size: 13.5px; margin-top: 2px; max-width: 80ch; }
+  .item .meta { display: flex; flex-wrap: wrap; gap: 4px 10px; margin-top: 5px; font-size: 12.5px; color: var(--tinta-3); font-variant-numeric: tabular-nums; }
+  .tag { display: inline-block; padding: 0 7px; border-radius: 4px; font-size: 12px; font-weight: 500; background: var(--suave); color: var(--tinta-2); }
+  .tag.parada { background: var(--critico-suave); color: var(--critico); }
+  .tag.chefe { background: var(--destaque-suave); color: var(--destaque); }
+
+  .cartao { background: var(--superficie); border: 1px solid var(--linha); border-radius: 8px; padding: 12px 14px; margin-bottom: 8px; box-shadow: var(--sombra); }
+  .cartao .cab { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .cartao .cab strong { font-weight: 600; }
+  .cartao p { margin: 6px 0 0; color: var(--tinta-2); font-size: 13.5px; max-width: 85ch; }
+  .cartao .ev { color: var(--tinta-3); font-size: 12.5px; }
+  .conf { font-size: 11.5px; font-weight: 500; padding: 0 6px; border-radius: 4px; border: 1px solid var(--linha); color: var(--tinta-2); }
+  .conf.certo { border-color: var(--bom); color: var(--bom); }
+  .conf.provavel { border-color: var(--serio); color: var(--serio); }
+  .conf.suposicao { border-color: var(--tinta-3); color: var(--tinta-3); }
+  .colunas { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: start; }
+  .vazio { color: var(--tinta-3); font-size: 13.5px; padding: 6px 0 10px; }
+
+  .barra { position: fixed; left: 0; right: 0; bottom: 0; z-index: 6; background: var(--superficie); border-top: 1px solid var(--linha); padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px)); }
+  .barra-in { max-width: 1120px; margin: 0 auto; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .barra .txt { color: var(--tinta-2); font-size: 13.5px; margin-right: auto; }
+  .barra .botao.forte { background: var(--destaque); border-color: var(--destaque); color: #fff; }
+  .barra .botao[disabled] { opacity: 0.5; cursor: default; }
+
+  footer { color: var(--tinta-3); font-size: 12.5px; max-width: 1120px; margin: 8px auto 0; }
+  footer p { margin: 4px 0; }
+
+  @media (max-width: 760px) {
+    .grade, .colunas { grid-template-columns: 1fr; }
+  }
+  @media print {
+    .topo .controles, .barra { display: none; }
+    body { background: #fff; color: #000; padding-bottom: 0; }
+    .item, .kpi, .cartao, .resumo { break-inside: avoid; box-shadow: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="topo">
+  <div class="topo-in">
+    <div class="titulo">
+      <h1 id="titulo">Briefing do dia</h1>
+      <span class="quando" id="quando"></span>
+    </div>
+    <div class="controles">
+      <a class="botao" href="index.html" style="text-decoration:none">Painel de prazos</a>
+      <button type="button" class="botao" id="tema" aria-label="Alternar tema">Tema</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="resumo" aria-labelledby="h-resumo">
+    <span class="rotulo" id="h-resumo">Resumo executivo</span>
+    <ol id="resumo"></ol>
+    <div class="fontes" id="fontes"></div>
+  </section>
+
+  <section class="kpis" aria-label="Números do dia" id="kpis"></section>
+
+  <div class="grade">
+    <section id="pendencias" aria-labelledby="h-pend">
+      <h2 id="h-pend">Pendências <span class="conta" id="conta-pend"></span></h2>
+      <p class="sub">Marque o que você já atacou e mande a lista pro Claude pela barra de baixo: eu dou baixa no sistema.</p>
+      <div id="pend-corpo"></div>
+    </section>
+    <aside>
+      <section id="chefe" aria-labelledby="h-chefe">
+        <h2 id="h-chefe">Com o Leandro <span class="conta" id="conta-chefe"></span></h2>
+        <div id="chefe-corpo"></div>
+      </section>
+      <section id="time" aria-labelledby="h-time">
+        <h2 id="h-time">Sinais do time <span class="conta" id="conta-time"></span></h2>
+        <div id="time-corpo"></div>
+      </section>
+    </aside>
+  </div>
+
+  <section id="ver" aria-labelledby="h-ver">
+    <h2 id="h-ver">O que você não está vendo <span class="conta" id="conta-ver"></span></h2>
+    <p class="sub">Padrões e situações fora do normal, com a evidência e o grau de certeza.</p>
+    <div class="colunas"><div id="padroes-corpo"></div><div id="anomalias-corpo"></div></div>
+  </section>
+
+  <section id="corrigir" aria-labelledby="h-corrigir">
+    <h2 id="h-corrigir">Pra você ajustar <span class="conta" id="conta-corrigir"></span></h2>
+    <div id="corrigir-corpo"></div>
+  </section>
+
+  <section id="aprendi" aria-labelledby="h-aprendi">
+    <h2 id="h-aprendi">O que aprendi sobre você e o time <span class="conta" id="conta-aprendi"></span></h2>
+    <p class="sub">Ainda aprendendo. Nada disso vira regra sem você confirmar; confirme ou corrija no chat.</p>
+    <div id="aprendi-corpo"></div>
+  </section>
+</main>
+
+<footer>
+  <p id="rodape-fonte"></p>
+  <p>Este arquivo é gerado por <code>painel/gerar_briefing.py</code> a partir de <code>briefing/AAAA-MM-DD.json</code>; não editar na mão.</p>
+</footer>
+
+<div class="barra" role="region" aria-label="Pendências atacadas">
+  <div class="barra-in">
+    <span class="txt" id="barra-txt">Nenhuma pendência marcada.</span>
+    <button type="button" class="botao" id="limpar" disabled>Desmarcar</button>
+    <button type="button" class="botao forte" id="copiar" disabled>Copiar pra mandar pro Claude</button>
+  </div>
+</div>
+
+<script>
+const DADOS = {"data": "2026-09-23", "gerado_em": "2026-09-23T19:50:00-03:00", "janela": {"inicio": "22/09 16:31", "fim": "23/09 19:50"}, "fontes": {"emails em Email Pendentes": 4, "emails enviados lidos": 18, "mensagens no Teams": 777, "conversas no Teams": 38, "reuniões no Granola": 15, "pendências do sistema": 19}, "resumo": ["Semana crítica no time: por informação em confidência, a Joyce já foi contratada fora e começaria segunda (28/09), e o Lucas tem entrevista na sexta. Isso atinge a força-tarefa de encerramentos até 30/09, a Fazenda Estrela e a frente de XML do onboarding, e não há sinal de que o Leandro já saiba.", "Sexta (25/09) tem fórum da diretoria: faltam validar 2 downsells e 1 churn da planilha da Amanda Scheffer (Rogério Ezequiel Ferrari, Sachetti, Girassol) com as regras novas, e alinhar com o Leandro até onde abrir os dados.", "Três casos parados custam dinheiro ou reputação: NVCorp (sem retorno da Aliare desde 08/07), Agro Aliança (distrato travado desde 04/09, já escalado ao Leandro) e Fazenda Santa Maria (cliente detrator ameaçando cancelar, com aprovação sua pedida duas vezes)."], "pendencias": [{"id": "p1", "titulo": "Planejar a passagem das pendências da Joyce", "detalhe": "Informação em confidência: ela já foi contratada por outra empresa e começaria segunda (28/09). Com ela saem 6 dos 12 encerramentos da força-tarefa até 30/09, o acompanhamento da Fazenda Estrela e a cobrança ao Produto que está em Email Pendentes. Não expor a fonte.", "quem": "Julio", "origem": "granola", "ref": "Aviso sobre saídas de Joyce e Lucas (23/09 16:22)", "desde": "2026-09-23", "prazo": "2026-09-25", "prioridade": "critica", "status": "nova", "chefe": false}, {"id": "p2", "titulo": "Conversar com o Lucas antes da entrevista de sexta", "detalhe": "Rumor de processo seletivo, com entrevista na sexta (25/09); o motivo não se sabe (hipóteses: receio depois do desligamento do Luiz, distância de Goiânia). Ele é o dono da frente de XML do onboarding myFarm e está escalado pra AGM em 2027.", "quem": "Julio", "origem": "granola", "ref": "Lucas: situação e possível saída (23/09 16:40)", "desde": "2026-09-23", "prazo": "2026-09-25", "prioridade": "critica", "status": "nova", "chefe": false}, {"id": "p3", "titulo": "Contar ao Leandro o risco no time, já com o plano de passagem", "detalhe": "Não há registro de que ele saiba das possíveis saídas da Joyce e do Lucas. Evoluto, força-tarefa de encerramentos e AGM em 2027 dependem dos dois; melhor ele saber por você.", "quem": "Julio", "origem": "granola", "ref": "reuniões de 23/09 (saídas; Evoluto)", "desde": "2026-09-23", "prazo": "2026-09-24", "prioridade": "critica", "status": "nova", "chefe": true}, {"id": "p4", "titulo": "Validar churn e downsell de agosto antes do fórum de sexta", "detalhe": "Planilha da Amanda Scheffer: 2 downsells pra validar e 1 churn pra confirmar (casos Rogério Ezequiel Ferrari, Sachetti e Girassol), já com as regras novas: por grupo econômico, churn operacional e valor cheio.", "quem": "Julio", "origem": "teams", "ref": "Amanda Scheffer, 23/09 13:27; reunião 09:31", "desde": "2026-09-23", "prazo": "2026-09-25", "prioridade": "critica", "status": "nova", "chefe": true}, {"id": "p5", "titulo": "Fechar a Fazenda Santa Maria (Jefferson Lima Braga) antes que cancele", "detalhe": "Venda de 10h que precisava de mais; o cliente virou detrator e ameaça cancelar cerca de R$400 de MRR. A Amanda pediu duas vezes a aprovação da proposta de treinamento; a bonificação de 12h ficou esperando o Gabriel falar com o cliente.", "quem": "Julio", "origem": "teams", "ref": "Amanda Santos, 23/09; email do Guilherme Job de 18/09", "desde": "2026-08-17", "prazo": null, "prioridade": "critica", "status": "parada", "chefe": false}, {"id": "p6", "titulo": "Destravar o cancelamento da NVCorp", "detalhe": "O cliente contesta a multa (cobrança de R$1.722,25) e pede distrato com quitação. A última resposta da Aliare foi em 08/07 ('vamos internalizar ao Jurídico'); ele cobrou de novo em 21/09. Cobrar Contratos e Rodrigo Mendonça com data.", "quem": "Julio", "origem": "email", "ref": "Re: Processo de cancelamento de contrato - Aliare", "desde": "2026-07-08", "prazo": null, "prioridade": "critica", "status": "parada", "chefe": false}, {"id": "p7", "titulo": "Levar ao Leandro uma saída pro distrato da Agro Aliança", "detalhe": "A cliente não aceita pagar R$4.678,37 nem assinar sem que a Siagri admita erro. Você escalou pro Maicon e pro Leandro em 03/09 e nada andou; ela cobrou de novo em 21/09. Chegar com a proposta pronta, não só com o problema.", "quem": "Julio", "origem": "email", "ref": "DISTRATO DE CONTRATO - AGRO ALIANÇA / MY FARM", "desde": "2026-09-04", "prazo": null, "prioridade": "critica", "status": "parada", "chefe": true}, {"id": "p8", "titulo": "Resolver o choque de agenda de amanhã às 10:00", "detalhe": "A apresentação do Hendow (Fazenda Decisão, com Ramona e Jaqueline) e o 1:1 com o Rodrigo Santos caem no mesmo horário. O Rodrigo pediu no Teams pra antecipar pra 9:30, mas o convite continua às 10:00.", "quem": "Julio", "origem": "agenda", "ref": "agenda de 24/09", "desde": "2026-09-23", "prazo": "2026-09-24", "prioridade": "alta", "status": "nova", "chefe": false}, {"id": "p9", "titulo": "Dar dono e limite pro caso AgroJem", "detalhe": "O cliente reclama de cobrança de horas sem proposta de atualização assinada. A decisão ficou com o Diego e o Mateus, e o Mateus seguiu esperando se continua ou não. Regra combinada: até 8h não cobra.", "quem": "Julio", "origem": "teams", "ref": "grupo AgroJem, 23/09 18:37", "desde": "2026-09-23", "prazo": null, "prioridade": "alta", "status": "nova", "chefe": false}, {"id": "p11", "titulo": "Fazer as devolutivas de 1:1 pendentes", "detalhe": "A Maria Carvalho (RH) cobrou duas vezes em 23/09; sem elas os PDIs do time não fecham. Com duas possíveis saídas, o 1:1 é a ferramenta de retenção desta semana.", "quem": "Julio", "origem": "teams", "ref": "Maria Carvalho, 23/09 11:30 e 12:02", "desde": "2026-09-23", "prazo": null, "prioridade": "alta", "status": "nova", "chefe": false}, {"id": "p12", "titulo": "Iniciar as 3 ações do plano de churn", "detalhe": "Pílulas de conhecimento por momento da safra, clientes em risco tratados com produto e revisitas/agendas remotas AgriManager. Venceu em 17/09, e a diretoria pode perguntar no fórum de sexta.", "quem": "Julio", "origem": "sistema", "ref": "_contexto/agora.md", "desde": "2026-09-16", "prazo": "2026-09-17", "prioridade": "alta", "status": "atrasada", "chefe": false}, {"id": "p13", "titulo": "Cobrar a resposta sobre a versão estável pro cliente", "detalhe": "Gustavo Silva e Francisco Rodrigues Filho não conseguem liberar a versão estável porque o Jose Izabel não respondeu sobre como tratar a branch.", "quem": "Julio", "origem": "teams", "ref": "chat da reunião, 23/09 18:09", "desde": "2026-09-23", "prazo": null, "prioridade": "alta", "status": "nova", "chefe": false}, {"id": "p14", "titulo": "Confirmar se a proposta da Motta foi assinada", "detalhe": "A Andrezza perguntou às 14:22 o que foi decidido, porque a proposta precisava ser assinada até as 12h; não há confirmação. Amanhã tem o status da integração da Motta às 14:00.", "quem": "Julio", "origem": "teams", "ref": "Andrezza Perroni, 23/09 14:22", "desde": "2026-09-23", "prazo": "2026-09-24", "prioridade": "alta", "status": "nova", "chefe": false}, {"id": "p15", "titulo": "Escalar a instabilidade do Autorize na Fazenda Potrich", "detalhe": "A Ramona voltou de férias e registrou: o cliente reclama toda semana; o caso já passou por suporte, BDS e produto sem estabilizar. Risco de churn.", "quem": "Julio", "origem": "teams", "ref": "Ramona Brito, 23/09", "desde": "2026-09-23", "prazo": null, "prioridade": "alta", "status": "nova", "chefe": false}, {"id": "p16", "titulo": "Fazer o encerramento formal da Fazenda Riqueza e do SJB Group", "detalhe": "Passagem e reunião interna; vence nesta semana.", "quem": "Julio", "origem": "sistema", "ref": "_contexto/agora.md", "desde": "2026-09-15", "prazo": "2026-09-25", "prioridade": "alta", "status": "aberta", "chefe": false}, {"id": "p17", "titulo": "Cobrar a correção da duplicação de pagamento da Cadmu", "detalhe": "Está na sprint 191, que fecha dia 25, com entrega possível até terça. Falta também apurar o erro de categoria (só adubo ou só fertilizante) que só aparece na base dela.", "quem": "Julio", "origem": "granola", "ref": "reunião com Arle, 23/09 11:42", "desde": "2026-09-23", "prazo": "2026-09-25", "prioridade": "media", "status": "nova", "chefe": false}, {"id": "p18", "titulo": "Levantar os clientes em risco", "detalhe": "Na revisão de churn de 17/09 com Fernanda, Diego e Gustavo você se comprometeu a travar agenda pra isso; não há registro de que foi feito.", "quem": "Julio", "origem": "sistema", "ref": "retencao/contexto.md", "desde": "2026-09-17", "prazo": null, "prioridade": "media", "status": "parada", "chefe": false}, {"id": "p19", "titulo": "Mandar a análise de churn pro Diego", "detalhe": "Estava prevista até 17/09 pro Diego e pra Joyce.", "quem": "Julio", "origem": "sistema", "ref": "_contexto/agora.md", "desde": "2026-09-16", "prazo": "2026-09-17", "prioridade": "media", "status": "atrasada", "chefe": false}, {"id": "p20", "titulo": "Consolidar o resultado das 6 viagens de 2026", "detalhe": "Clientes visitados, oportunidades geradas e pendências por cliente.", "quem": "Julio", "origem": "sistema", "ref": "_contexto/agora.md", "desde": "2026-09-16", "prazo": "2026-09-17", "prioridade": "media", "status": "atrasada", "chefe": false}, {"id": "p21", "titulo": "Fazer o alinhamento com a Fazenda Pontal das Perdizes", "detalhe": "Cliente myFarm com receio do sistema.", "quem": "Julio", "origem": "sistema", "ref": "_contexto/agora.md", "desde": "2026-09-16", "prazo": "2026-09-17", "prioridade": "media", "status": "atrasada", "chefe": false}, {"id": "p22", "titulo": "Decidir se migra o saldo do Grupo Ferrari pro myFarm", "detalhe": "Decisão que venceu em 21/09.", "quem": "Julio", "origem": "sistema", "ref": "_contexto/agora.md", "desde": "2026-09-16", "prazo": "2026-09-21", "prioridade": "media", "status": "atrasada", "chefe": false}, {"id": "p23", "titulo": "Confirmar o sobreaviso da oferta de nota fiscal", "detalhe": "Oferta 'só emissão de nota' no myFarm a R$290 por mês, com emissão fora do horário mediante aviso até sexta ao meio-dia; falta confirmar o valor do sobreaviso com a Flávia ou a Luciene (combinado com o Leandro e o Ângelo).", "quem": "Julio", "origem": "granola", "ref": "reunião Maxcom e Coap, 23/09 11:14", "desde": "2026-09-23", "prazo": null, "prioridade": "media", "status": "nova", "chefe": true}, {"id": "p24", "titulo": "Esclarecer o Vistra BI pro 'Elandi'", "detalhe": "Você perguntou no fim da tarde se foi liberado e quem pediu, e ficou sem resposta. A integração do 'Elan' está travada do lado do cliente.", "quem": "Julio", "origem": "teams", "ref": "chat, 23/09 18:42", "desde": "2026-09-23", "prazo": null, "prioridade": "media", "status": "nova", "chefe": false}, {"id": "p25", "titulo": "Montar o grupo com a Andresa e o Ângelo pros contatos comerciais", "detalhe": "Indicações do Vale do Araguaia (Gerson/Agritec, Cocamar).", "quem": "Julio", "origem": "granola", "ref": "reunião com Andresa, 23/09 15:01", "desde": "2026-09-23", "prazo": null, "prioridade": "media", "status": "nova", "chefe": false}, {"id": "p26", "titulo": "Fazer o reporte semanal de suspensos pro Carlos (CEO)", "detalhe": "Com desde quando cada cliente é cliente, no analítico.", "quem": "Julio", "origem": "sistema", "ref": "_contexto/agora.md", "desde": "2026-09-17", "prazo": null, "prioridade": "media", "status": "aberta", "chefe": false}, {"id": "p27", "titulo": "Entender o boleto de cerca de R$110 mil citado pelo Warlen", "detalhe": "Comentário rápido sobre um contas a pagar em São Paulo, sem contexto. Vale saber do que se trata antes da prestação de contas.", "quem": "Julio", "origem": "teams", "ref": "Warlen Andrade, 23/09", "desde": "2026-09-23", "prazo": null, "prioridade": "baixa", "status": "nova", "chefe": false}, {"id": "p28", "titulo": "Mandar o mailing atualizado de clientes myFarm pro Guilherme Pedroso", "detalhe": "Ele perguntou também se você tem o de AgriManager.", "quem": "Julio", "origem": "teams", "ref": "Guilherme Pedroso, 23/09", "desde": "2026-09-23", "prazo": null, "prioridade": "baixa", "status": "nova", "chefe": false}, {"id": "p29", "titulo": "Orientar a Giovanna no ticket 805909", "detalhe": "Ela pediu sua orientação sobre qual a melhor opção; a conversa ficou pela metade.", "quem": "Julio", "origem": "teams", "ref": "Giovanna Costa, 23/09", "desde": "2026-09-23", "prazo": null, "prioridade": "baixa", "status": "nova", "chefe": false}, {"id": "p30", "titulo": "Confirmar o envio do extrato de horas da cliente Geaine", "detalhe": "A Amanda pediu aprovação e não houve confirmação de envio.", "quem": "Julio", "origem": "teams", "ref": "Amanda Santos, 23/09 17:56", "desde": "2026-09-23", "prazo": null, "prioridade": "baixa", "status": "nova", "chefe": false}], "chefe": [{"titulo": "Saídas prováveis no time sem ele saber", "detalhe": "Joyce (segunda, 28/09) e Lucas (entrevista na sexta). Os planos combinados com ele (Evoluto, AGM em 2027, força-tarefa) dependem dos dois. Contar amanhã, já com o plano de passagem.", "evidencia": "Reuniões de 23/09 às 16:22 e 16:40; nenhum email ou mensagem sua pro Leandro sobre isso.", "confianca": "provavel"}, {"titulo": "Fórum da diretoria na sexta (25/09)", "detalhe": "Números de churn com as regras novas e o limite do que mostrar dos suspensos pra Amanda Scheffer. Alinhar com ele antes, não durante.", "evidencia": "Reunião com Amanda Scheffer (23/09 09:31) e resumo do Teams de 23/09.", "confianca": "certo"}, {"titulo": "Agro Aliança parada desde que você escalou", "detalhe": "Você mandou pra ele e pro Maicon em 03/09; em 21/09 a cliente cobrou de novo. Voltar com uma proposta de saída, pra ele só decidir.", "evidencia": "Enviados 03/09; email da cliente 21/09.", "confianca": "certo"}, {"titulo": "Valores dos itens à parte da estimativa padrão", "detalhe": "SPEDs, plano orçamentário, integração bancária e outros ficaram pra confirmar com ele, na regra de estimativa combinada com o Cecílio.", "evidencia": "Reunião com Cecílio, 23/09 10:08.", "confianca": "certo"}, {"titulo": "Sobreaviso da oferta de nota fiscal", "detalhe": "Fechado com ele e com o Ângelo: R$290 por mês e emissão fora do horário; falta o valor do sobreaviso.", "evidencia": "Reunião Maxcom e Coap, 23/09 11:14.", "confianca": "certo"}], "time": [{"pessoa": "Joyce Pereira", "sinal": "Informação em confidência: já contratada por outra empresa, começaria segunda (28/09). O desempenho dela vinha sendo questionado (lentidão, dificuldade com cliente).", "evidencia": "Reunião de 23/09 16:22; o Warlen perguntou no Teams se ela estava trabalhando hoje.", "gravidade": "alerta", "sugestao": "Conversa direta ainda esta semana, sem expor a fonte, e plano de passagem por escrito.", "confianca": "provavel"}, {"pessoa": "Lucas Nogueira", "sinal": "Rumor de processo seletivo, com entrevista na sexta. Motivo desconhecido; ele já tinha passado num processo da concorrente no passado.", "evidencia": "Reuniões de 23/09 16:22 e 16:40.", "gravidade": "alerta", "sugestao": "Conversa de retenção antes de sexta: o que está pesando, o que o prende, o que dá pra oferecer.", "confianca": "provavel"}, {"pessoa": "Andresa", "sinal": "Pediu pra ser desligada no lugar da Ramona; você recusou. Sinal de desgaste.", "evidencia": "Reunião de 23/09 15:01.", "gravidade": "atencao", "sugestao": "1:1 dedicado nos próximos dias, olhando carga e motivação.", "confianca": "certo"}, {"pessoa": "Time de implantação e CS", "sinal": "Clima pesado: desligamento do Luiz (17/09), comunicado de cerca de R$400 mil em atraso e 70 suspensos na reunião da Evoluto, e duas saídas possíveis na mesma semana.", "evidencia": "Reunião da Evoluto (23/09 17:30) e reuniões de 23/09 16:22 e 16:40.", "gravidade": "alerta", "sugestao": "Mensagem de direção pro time depois das conversas individuais: o que muda, o que não muda, critério de entrega.", "confianca": "provavel"}, {"pessoa": "Amanda Santos", "sinal": "Precisou pedir duas vezes a mesma aprovação (proposta da Fazenda Santa Maria).", "evidencia": "Teams, 23/09 17:56.", "gravidade": "atencao", "sugestao": "Responder no mesmo dia, mesmo que seja pra dizer não.", "confianca": "certo"}, {"pessoa": "Giovanna Costa", "sinal": "Perguntou de novo o valor da hora de desenvolvimento (R$265 ou R$290, que é o que o Engenho mostra).", "evidencia": "Teams, 23/09 18:01 ('novamente, a hora de desenvolvimento é 265,00?').", "gravidade": "info", "sugestao": "Corrigir o Engenho e deixar a tabela de preço acessível pro CS.", "confianca": "certo"}], "padroes": [{"padrao": "O desconto sobe quando o cliente pressiona, contra a regra que você mesmo definiu", "evidencia": "Às 10:08 combinou com o Cecílio reduzir horas em vez de baixar o preço da hora. No mesmo dia: 30% de coparticipação na Bayer/Matsumoto, 35% subindo pra 40% mais Entrada+30+60 na proposta da Ana Rocha, e 35% na Colorado em 18/09.", "implicacao": "Margem e referência de preço caindo, e o cliente aprende que chorar funciona (a Andrezza disse isso no Teams).", "confianca": "certo"}, {"padrao": "Prazo curto que vence sem revisão", "evidencia": "Seis pendências do agora.md venceram entre 17 e 21/09 e seguem abertas sem data nova.", "implicacao": "A lista perde força como ferramenta de cobrança, sua e do time.", "confianca": "certo"}, {"padrao": "Contratos e Jurídico são o gargalo que mais trava cliente", "evidencia": "NVCorp sem retorno desde 08/07; Agro Aliança desde 04/09; em ambos você escalou por email e o assunto sumiu.", "implicacao": "Risco jurídico e de reclamação pública. Precisa de dono e prazo do lado de lá, não de mais um email.", "confianca": "certo"}, {"padrao": "Decisão de preço e condição dada no chat, sem registro", "evidencia": "40% e Entrada+30+60, hora a R$265 e desconto de setembro valendo pro myFarm: nada disso está no sistema, e o Engenho mostra R$290.", "implicacao": "A mesma dúvida volta e cada analista pratica um preço.", "confianca": "certo"}, {"padrao": "Você é o funil do time", "evidencia": "777 mensagens em 38 conversas no Teams em 24 horas, aprovação pedida duas vezes, pergunta de preço repetida.", "implicacao": "Parte do volume some com alçada clara: tabela de preço, até quanto cada um aprova sem você.", "confianca": "certo"}, {"padrao": "O tempo estratégico vira reunião", "evidencia": "Amanhã o bloco de Desenvolvimento Estratégico (14:00 às 18:00) já tem Motta às 14:00 e Grupo Bocchi às 16:00; o levantamento de clientes em risco prometido em 17/09 não saiu.", "implicacao": "O trabalho que muda o churn fica sempre pra depois.", "confianca": "provavel"}], "anomalias": [{"titulo": "Duas saídas possíveis na mesma semana, logo depois de um desligamento", "detalhe": "Joyce e Lucas, uma semana depois do desligamento do Luiz e no mesmo dia do comunicado do atraso de cerca de R$400 mil.", "evidencia": "Reuniões de 23/09.", "confianca": "provavel"}, {"titulo": "Contato suspeito pedindo licença de graça (AgroJem)", "detalhe": "Vocês mesmos desconfiaram de má-fé. Não liberar nada sem validar quem é.", "evidencia": "Grupo AgroJem no Teams, 23/09.", "confianca": "provavel"}, {"titulo": "Base da Cadmu diferente das outras", "detalhe": "Cadastro só aceita 'adubo' ou 'fertilizante', nunca os dois; há suspeita de alteração direta no banco por consultores antigos.", "evidencia": "Reunião com Arle, 23/09 11:42.", "confianca": "suposicao"}, {"titulo": "Resgate de pontos em nome de terceiro fora do contrato", "detalhe": "R$1.100 em nome de uma pessoa que seria filha do cliente (Fazenda São Francisco). Problema que se repete e ainda não tem regra.", "evidencia": "Reunião de 22/09 14:33.", "confianca": "certo"}], "correcoes": [{"tema": "Registrar as decisões de preço dadas no chat", "observacao": "Desconto de 40%, parcelamento, hora a R$265 e a campanha de setembro valendo pro myFarm ficaram só no Teams.", "evidencia": "Teams, 23/09 18:00 a 18:41.", "sugestao": "Uma mensagem no canal do CS com a tabela vigente e quem aprova até quanto; registrar no sistema e corrigir o Engenho.", "confianca": "certo"}, {"tema": "Delegar com dono, limite e prazo", "observacao": "No caso AgroJem você disse 'a decisão é de vocês' pro Diego e pro Mateus, e o Mateus ficou parado esperando.", "evidencia": "Teams, 23/09 18:37.", "sugestao": "'Mateus, segue até X horas e para; acima disso só com proposta assinada. Diego acompanha.'", "confianca": "certo"}, {"tema": "Não segurar aprovação", "observacao": "A Amanda pediu duas vezes a aprovação da proposta da Fazenda Santa Maria, e o cliente está ameaçando cancelar.", "evidencia": "Teams, 23/09.", "sugestao": "Aprovar ou dizer o porquê no mesmo dia.", "confianca": "certo"}, {"tema": "Revisar a lista de pendências", "observacao": "Seis itens venceram e continuam lá; dois já estão resolvidos (conversa com a Mirian, apresentação do Hendow marcada).", "evidencia": "_contexto/agora.md.", "sugestao": "Fechar o que foi feito, renegociar data do resto no /atualizar de hoje.", "confianca": "certo"}, {"tema": "Conferir anexo em email de folha e comissão", "observacao": "O email de horas técnicas pro RH e pro Leandro saiu com o anexo errado e foi corrigido um minuto depois.", "evidencia": "Enviados, 23/09 10:55 e 10:56.", "sugestao": "Em email de pagamento, abrir o anexo antes de enviar.", "confianca": "certo"}, {"tema": "Tom em mensagem curta", "observacao": "Respostas como 'Porque?', 'Não...' e 'O que está acontecendo?' podem soar duras numa semana tensa no time.", "evidencia": "Conversa com o Warlen no Teams, 23/09 18:01.", "sugestao": "'Warlen, por enquanto não dá pra escolher o gerente do BPO. Me conta o que está pegando?'", "confianca": "provavel"}], "aprendizados": [{"sobre": "Julio", "texto": "Decide rápido no chat e, quando delega, pede pra conversar antes de a pessoa agir ('segue para conhecimento... me chama para falarmos').", "evidencia": "Email pra Giovanna, 23/09 12:29; Teams de 23/09.", "confianca": "certo"}, {"sobre": "Julio", "texto": "Email formal começa com 'Prezadas, boa tarde! Tudo bem?' e segue direto ao ponto; pedido curto vira 'Solicito a análise do item.'; reconhece erro na hora ('Perdão, os anexos foram errados').", "evidencia": "Enviados de 22 e 23/09.", "confianca": "certo"}, {"sobre": "Julio", "texto": "Regra de preço dele: reduzir horas antes de baixar o preço da hora. Critério de gestão declarado: corte por entrega, sem novos desligamentos previstos.", "evidencia": "Reuniões com Cecílio e com Andresa, 23/09.", "confianca": "certo"}, {"sobre": "Julio", "texto": "Registra quase todas as reuniões no Granola (13 só em 23/09) e trabalha fora do horário (emails às 22:07 e 22:16 de 22/09).", "evidencia": "Granola e Enviados.", "confianca": "certo"}, {"sobre": "time", "texto": "A Andrezza organiza as agendas com cliente (Bocchi, JOD, Motta); a Amanda Scheffer é a parceira dos números de churn pra diretoria; a Giovanna precisa de referência de preço à mão.", "evidencia": "Agenda de 24/09, reunião das 09:31 e Teams de 23/09.", "confianca": "provavel"}]};
+const $ = (s) => document.querySelector(s);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const md = (s) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+const DIAS = ["dom", "seg", "ter", "qua", "qui", "sex", "sáb"];
+const HOJE = (() => { const [a, m, d] = DADOS.data.split("-").map(Number); return new Date(a, m - 1, d); })();
+function parseISO(iso) { const [a, m, d] = iso.split("-").map(Number); return new Date(a, m - 1, d); }
+function fmt(iso) { const d = parseISO(iso); return `${DIAS[d.getDay()]} ${String(d.getDate()).padStart(2, "0")}/${String(d.getMonth() + 1).padStart(2, "0")}`; }
+function diasDesde(iso) { return Math.round((HOJE - parseISO(iso)) / 86400000); }
+const lista = (x) => Array.isArray(x) ? x : [];
+
+const CHAVE = `briefing-feito-${DADOS.data}`;
+let feitos = new Set();
+try { feitos = new Set(JSON.parse(localStorage.getItem(CHAVE) || "[]")); } catch (e) {}
+function guardar() { try { localStorage.setItem(CHAVE, JSON.stringify([...feitos])); } catch (e) {} }
+
+const PEND = lista(DADOS.pendencias);
+const CONF = { certo: "Certo", provavel: "Provável", suposicao: "Suposição" };
+const conf = (c) => c && CONF[c] ? `<span class="conf ${c}">${CONF[c]}</span>` : "";
+
+function metaPend(p) {
+  const partes = [];
+  if (p.quem) partes.push(`<span class="tag">${esc(p.quem)}</span>`);
+  if (p.chefe) partes.push('<span class="tag chefe">Leandro</span>');
+  if (p.status === "parada") partes.push('<span class="tag parada">parada</span>');
+  if (p.prazo) partes.push(`<span>prazo ${esc(fmt(p.prazo))}${diasDesde(p.prazo) > 0 ? ` · venceu há ${diasDesde(p.prazo)} dia(s)` : ""}</span>`);
+  if (p.desde) partes.push(`<span>desde ${esc(fmt(p.desde))} · ${diasDesde(p.desde)} dia(s)</span>`);
+  if (p.origem) partes.push(`<span>${esc(p.origem)}${p.ref ? ` · ${esc(p.ref)}` : ""}</span>`);
+  return partes.join("");
+}
+function itemPend(p) {
+  const feito = feitos.has(p.id);
+  return `<li class="item${feito ? " feito" : ""}" data-prioridade="${esc(p.prioridade || "")}">
+    <span class="marca" aria-hidden="true"></span>
+    <input type="checkbox" data-id="${esc(p.id)}" ${feito ? "checked" : ""} aria-label="Já ataquei">
+    <div><div class="t">${md(p.titulo)}</div>${p.detalhe ? `<div class="d">${md(p.detalhe)}</div>` : ""}<div class="meta">${metaPend(p)}</div></div>
+  </li>`;
+}
+const GRUPOS = [["critica", "Crítico", "critico"], ["alta", "Alta", "serio"], ["media", "Média", "alerta"], ["baixa", "Baixa", "neutro"]];
+function renderPend() {
+  let html = "";
+  for (const [chave, nome, cor] of GRUPOS) {
+    const itens = PEND.filter((p) => (p.prioridade || "baixa") === chave);
+    if (!itens.length) continue;
+    html += `<div class="grupo"><h3><span class="ponto ${cor}" aria-hidden="true"></span>${nome} <span class="conta">${itens.length}</span></h3><ul>${itens.map(itemPend).join("")}</ul></div>`;
+  }
+  $("#pend-corpo").innerHTML = html || '<p class="vazio">Nada pendente.</p>';
+  $("#conta-pend").textContent = PEND.length || "";
+  document.querySelectorAll('#pend-corpo input[type="checkbox"]').forEach((c) => c.addEventListener("change", () => {
+    if (c.checked) feitos.add(c.dataset.id); else feitos.delete(c.dataset.id);
+    c.closest(".item").classList.toggle("feito", c.checked);
+    guardar(); renderBarra();
+  }));
+}
+
+function cartao(x, titulo, corpo, extra) {
+  return `<div class="cartao"><div class="cab"><strong>${md(titulo)}</strong>${extra || ""}</div>${corpo}</div>`;
+}
+function renderChefe() {
+  const itens = lista(DADOS.chefe);
+  $("#chefe-corpo").innerHTML = itens.map((c) => cartao(c, c.titulo, `${c.detalhe ? `<p>${md(c.detalhe)}</p>` : ""}${c.evidencia ? `<p class="ev">${md(c.evidencia)}</p>` : ""}`, conf(c.confianca))).join("") || '<p class="vazio">Nada com o Leandro em aberto.</p>';
+  $("#conta-chefe").textContent = itens.length || "";
+}
+function renderTime() {
+  const ordemG = { alerta: 0, atencao: 1, info: 2 };
+  const itens = lista(DADOS.time).slice().sort((a, b) => (ordemG[a.gravidade] ?? 3) - (ordemG[b.gravidade] ?? 3));
+  const cor = { alerta: "critico", atencao: "alerta", info: "neutro" };
+  $("#time-corpo").innerHTML = itens.map((t) => cartao(t, t.pessoa,
+    `<p>${md(t.sinal)}</p>${t.evidencia ? `<p class="ev">${md(t.evidencia)}</p>` : ""}${t.sugestao ? `<p><strong>Sugestão:</strong> ${md(t.sugestao)}</p>` : ""}`,
+    `<span class="ponto ${cor[t.gravidade] || "neutro"}" aria-hidden="true"></span>${conf(t.confianca)}`)).join("") || '<p class="vazio">Nenhum sinal fora do normal.</p>';
+  $("#conta-time").textContent = itens.length || "";
+}
+function renderVer() {
+  const pad = lista(DADOS.padroes), ano = lista(DADOS.anomalias);
+  $("#padroes-corpo").innerHTML = `<span class="rotulo">Padrões</span>` + (pad.map((p) => cartao(p, p.padrao,
+    `${p.evidencia ? `<p class="ev">${md(p.evidencia)}</p>` : ""}${p.implicacao ? `<p>${md(p.implicacao)}</p>` : ""}`, conf(p.confianca))).join("") || '<p class="vazio">Nenhum padrão novo.</p>');
+  $("#anomalias-corpo").innerHTML = `<span class="rotulo">Fora do normal</span>` + (ano.map((a) => cartao(a, a.titulo,
+    `${a.detalhe ? `<p>${md(a.detalhe)}</p>` : ""}${a.evidencia ? `<p class="ev">${md(a.evidencia)}</p>` : ""}`, conf(a.confianca))).join("") || '<p class="vazio">Nada fora do normal.</p>');
+  $("#conta-ver").textContent = (pad.length + ano.length) || "";
+}
+function renderCorrigir() {
+  const itens = lista(DADOS.correcoes);
+  $("#corrigir-corpo").innerHTML = itens.map((c) => cartao(c, c.tema,
+    `<p>${md(c.observacao)}</p>${c.evidencia ? `<p class="ev">${md(c.evidencia)}</p>` : ""}${c.sugestao ? `<p><strong>Faria assim:</strong> ${md(c.sugestao)}</p>` : ""}`, conf(c.confianca))).join("") || '<p class="vazio">Nada a ajustar hoje.</p>';
+  $("#conta-corrigir").textContent = itens.length || "";
+}
+function renderAprendi() {
+  const itens = lista(DADOS.aprendizados);
+  $("#aprendi-corpo").innerHTML = itens.map((a) => cartao(a, a.sobre || "Aprendizado",
+    `<p>${md(a.texto)}</p>${a.evidencia ? `<p class="ev">${md(a.evidencia)}</p>` : ""}`, conf(a.confianca))).join("") || '<p class="vazio">Nada novo hoje.</p>';
+  $("#conta-aprendi").textContent = itens.length || "";
+}
+function renderKpis() {
+  const tiles = [
+    ["Críticas", PEND.filter((p) => p.prioridade === "critica").length, "critico", "#pendencias"],
+    ["Paradas (deixou passar)", PEND.filter((p) => p.status === "parada").length, "serio", "#pendencias"],
+    ["Com o Leandro", lista(DADOS.chefe).length, "bom", "#chefe"],
+    ["Sinais do time", lista(DADOS.time).length, "alerta", "#time"],
+    ["Pra você ajustar", lista(DADOS.correcoes).length, "neutro", "#corrigir"],
+  ];
+  $("#kpis").innerHTML = tiles.map(([rot, v, cor, alvo]) => `<button type="button" class="kpi" data-alvo="${alvo}"><span class="valor">${v}</span><span class="rotulo"><span class="ponto ${cor}" aria-hidden="true"></span>${rot}</span></button>`).join("");
+  document.querySelectorAll(".kpi").forEach((b) => b.addEventListener("click", () => { const a = document.querySelector(b.dataset.alvo); if (a) a.scrollIntoView({ block: "start" }); }));
+}
+function renderBarra() {
+  const n = [...feitos].filter((id) => PEND.some((p) => p.id === id)).length;
+  $("#barra-txt").textContent = n ? `${n} pendência(s) marcada(s) como atacada(s).` : "Nenhuma pendência marcada.";
+  $("#copiar").disabled = !n; $("#limpar").disabled = !n;
+}
+function textoAtacadas() {
+  const itens = PEND.filter((p) => feitos.has(p.id));
+  return `Já ataquei (briefing de ${fmt(DADOS.data)}):\n` + itens.map((p) => `- ${p.titulo}`).join("\n");
+}
+function copiar(txt) {
+  const fallback = () => { const t = document.createElement("textarea"); t.value = txt; document.body.appendChild(t); t.select(); try { document.execCommand("copy"); } catch (e) {} t.remove(); };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).catch(fallback); else fallback();
+  $("#barra-txt").textContent = "Copiado. Cole no chat do Claude que eu dou baixa.";
+}
+
+(function iniciar() {
+  $("#titulo").textContent = `Briefing · ${fmt(DADOS.data)}`;
+  const g = DADOS.gerado_em ? new Date(DADOS.gerado_em) : null;
+  const j = DADOS.janela || {};
+  $("#quando").textContent = [g ? `Gerado às ${String(g.getHours()).padStart(2, "0")}:${String(g.getMinutes()).padStart(2, "0")}` : "", j.inicio && j.fim ? `janela ${j.inicio} a ${j.fim}` : ""].filter(Boolean).join(" · ");
+  $("#resumo").innerHTML = lista(DADOS.resumo).map((r) => `<li>${md(r)}</li>`).join("") || '<li class="vazio">Sem resumo.</li>';
+  const f = DADOS.fontes || {};
+  $("#fontes").innerHTML = Object.entries(f).map(([k, v]) => `<span class="chip">${esc(k)}: ${esc(v)}</span>`).join("");
+  $("#rodape-fonte").textContent = `Fontes: email, Teams e Granola na janela acima, mais as pendências do sistema (_contexto/agora.md e andamento.md).`;
+  renderKpis(); renderPend(); renderChefe(); renderTime(); renderVer(); renderCorrigir(); renderAprendi(); renderBarra();
+  $("#copiar").addEventListener("click", () => copiar(textoAtacadas()));
+  $("#limpar").addEventListener("click", () => { feitos.clear(); guardar(); renderPend(); renderBarra(); });
+  const tema = $("#tema");
+  try { const t = localStorage.getItem("painel-tema"); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+  tema.addEventListener("click", () => {
+    const atual = document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    const novo = atual === "dark" ? "light" : "dark";
+    document.documentElement.dataset.theme = novo;
+    try { localStorage.setItem("painel-tema", novo); } catch (e) {}
+  });
+})();
+</script>
+</body>
+</html>

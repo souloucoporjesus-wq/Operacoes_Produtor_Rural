@@ -164,3 +164,25 @@ combinado.
   atuar sozinha.
 - Telemetria de acesso só existe pra MyFarm, não pra AGM; pedido de melhorar o dashboard com dados
   de features não usadas, pra embasar campanhas de engajamento.
+
+## Reunião 23/09/2026, Julio com Amanda Scheffer, preparação do fórum da diretoria de sexta (25/09) → `_memoria/reunioes/2026-09-23-validacao-churn-painel-recorrencia-controle-clientes-amanda.md`
+
+- Três regras novas pra contar churn:
+  - por grupo econômico, não por contrato isolado (a contabilidade olha contrato e os números não
+    batiam);
+  - categoria "churn operacional" pro downsell que na prática é churn (a controladoria só reconhece
+    churn em cancelamento formal);
+  - registrar o valor cheio do churn, não o já reduzido por downsell anterior (não mascarar o
+    número, mesmo sendo pior pra área).
+- Amanda extrai a lista de churn de agosto e manda pro Julio validar e apontar motivos. No Teams,
+  às 13:27 do mesmo dia, ela avisou que a planilha trouxe dois downsells pra validar e um churn pra
+  confirmar.
+- Julio levanta os clientes dos canais da Romina e do Jader (Paraguai, Datapar/Clover) pra montar
+  grupo e playbook próprios. Sem prazo.
+
+## Conversa 23/09/2026, Julio com Cicilio Manfroi → `_memoria/reunioes/2026-09-23-churn-contratos-vendas-elan-paineis.md`
+
+- A diretoria está cobrando visibilidade de churn e contratos nos fóruns; a Amanda organiza e alinha
+  com o Julio antes do fórum de sexta.
+- Vendas esfriaram (propostas em aberto com a Andressa); integração do "Elan" travada do lado do
+  cliente; Diego cobrado pra revisar painéis do Vista BI considerados ruins.

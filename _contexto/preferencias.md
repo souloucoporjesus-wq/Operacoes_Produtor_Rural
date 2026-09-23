@@ -36,3 +36,5 @@ Português direto, sem enrolação.
   perguntando como sempre. (22/09/2026)
 - A skill `granola` sempre traz a transcrição literal (`get_meeting_transcript`), nunca o resumo
   de IA do Granola — mesmo em importação com muitas reuniões de uma vez. (22/09/2026)
+- Quer ser corrigido quando errar (mensagem, texto, comportamento, prazo) e alertado quando o time
+  sair do normal: dizer direto, com a evidência e como faria. (23/09/2026)

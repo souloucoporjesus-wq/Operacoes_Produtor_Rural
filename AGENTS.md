@@ -63,6 +63,9 @@ diário de outra origem, avisa se o `agora.md` está velho.
 | de um contato ou fornecedor recorrente (não é cliente, não é time) | `_contexto/pessoas/<nome>.md` |
 | de um projeto ou cliente, pra trabalhar nele | a pasta dele: `AGENTS.md` + `contexto.md` + `andamento.md` |
 | posição de suspensos, inadimplência e churn, e o que ficou combinado com a diretoria | `retencao/contexto.md` (reuniões brutas em `retencao/reunioes/`) |
+| o briefing do dia (pendências, o que ficou parado, Leandro, sinais do time, ajustes pro Julio) | `painel/briefing.html`; o histórico em `briefing/AAAA-MM-DD.json` e `.md` (a skill `briefing` gera) |
+| como o Julio trabalha, escreve e decide (o que o sistema aprendeu) | `_contexto/jeito-do-julio.md` |
+| sinais do time, quem é quem, histórico de entradas e saídas (**confidencial**) | `equipe/radar.md` |
 | o que está atrasado, o que cobrar de quem, decisões a tomar, projetos: a visão de painel | `painel/index.html` (o `/painel` regenera a partir do `agora.md`, dos `andamento.md` e do `decisoes.md`) |
 | que modelos e scripts o kit traz (perfis, skills prontas, catálogos, ponte) | `sistema/templates/` e `sistema/scripts/` |
 
@@ -87,7 +90,8 @@ tem `marca/` própria usa a dela; sem isso, vale a da raiz.
   12/08 → o arquivo: o que fechou"). Guarda-se o mapa, não uma cópia. Nada de gaveta de entrada.
 - **Primeiro comando do dia** (qualquer mensagem, não só `/iniciar`; olhar se já existe arquivo de
   hoje em `_memoria/reunioes/`): rodar a skill `granola` antes de responder — ela traz as reuniões
-  novas do Granola e distila pros projetos certos.
+  novas do Granola e distila pros projetos certos. Depois, puxar o GitHub (a rotina das 9:30 pode
+  ter gravado o briefing) e abrir `painel/briefing.html`; sem briefing de hoje, rodar a skill `briefing`.
 
 ## 5. Tabela de destinos (aconteceu X, escreve em Y)
 
@@ -108,6 +112,8 @@ Pedido explícito ("salva isso") é exceção, e passa pela tabela do mesmo jeit
 | decisão com motivo | `_memoria/decisoes.md` (acrescenta; nome do projeto na linha, se for de projeto) |
 | robô quer propor ou reportar | `_memoria/recados/` (um arquivo por recado) |
 | identidade visual, jeito de falar com o cliente | `_contexto/marca/` |
+| aprendizado confirmado sobre como o Julio trabalha, escreve, decide | `_contexto/jeito-do-julio.md` |
+| sinal do time (saída, desengajamento, conflito, sobrecarga), entrada ou saída de alguém | `equipe/radar.md` (confidencial) |
 | trabalho de projeto ou cliente | a pasta do projeto |
 | chegou transcrição, material de reunião, documento | a pasta do projeto; destilar o essencial no `contexto.md` dele, com data e caminho da fonte |
 | pessoa ou empresa recorrente que não é cliente nem time | `_contexto/pessoas/<nome>.md` (a pasta nasce no primeiro arquivo) |
@@ -184,7 +190,9 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
 - `clientes/grupo-bocchi/` · piloto de evolução dos painéis Vista BI (Cicilio conduz), começando
   pelo protótipo de painel de fluxo de caixa
 - `retencao/` · acompanhamento de clientes em suspensão, cancelamento e inadimplência
-- `equipe/` · gestão do time: OKRs, 1:1, onboarding da equipe recém-montada
+- `equipe/` · gestão do time: OKRs, 1:1, onboarding da equipe recém-montada. `equipe/radar.md` é
+  confidencial: não compartilhar, não publicar, não citar fonte fora dele
+- `briefing/` · o briefing de cada dia útil (JSON + versão em texto); a página fica em `painel/briefing.html`
 - `relatorios/` · prestação de contas pra diretoria e outros líderes
 - `projetos/` · iniciativas que cruzam mais de uma área (definição de ferramentas, automações, o Engenho)
 - `projetos/onboarding-myfarm/` · entrada do cliente no myFarm: trilha de vídeos (Plantar Educação),

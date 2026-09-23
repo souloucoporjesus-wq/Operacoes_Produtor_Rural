@@ -45,6 +45,10 @@ contratação, lendo o XML com IA e importando cadastros e tributação.
   digital, dados da fazenda (formulários dentro da plataforma), vídeo de como acessar o myFarm,
   vídeo de como chamar o suporte
 - A trilha inteira ainda precisa ser desenhada
+- 23/09/2026, com o time de implantação: adoção uns 90% encaminhada, pra AGM e myFarm. Trilha
+  única, customizável por cliente; formulário com cadeado (a agenda com o consultor só é marcada
+  depois que o cliente conclui a etapa). Formulário e trilha montados junto com o time, sem prazo.
+  Treinamento intensivo com o Felipe Verzotto na 2ª semana de dezembro
 
 ### 3. Carga inicial de dados por XML (dono: Lucas, com Guilherme nos clientes)
 
@@ -69,8 +73,14 @@ contratação, lendo o XML com IA e importando cadastros e tributação.
 - Se a demanda de vídeos gera produtividade acima do normal pros consultores: Julio valida com o
   Leandro. Não decidido
 - Evoluto: ainda sem detalhe de contratação, acesso ou prazo de configuração
+- Guilherme e Lucas passam a atender também AGM a partir de 2027 (reunião de 23/09); a
+  continuidade do dono da frente de XML está em avaliação (ver `equipe/radar.md`)
+- Marco dos XMLs de clientes em mãos (22/09): sem registro de que foi cumprido
 
 ## Fontes
 
 - Reunião 17/09/2026 com Guilherme Job e Lucas Nogueira →
   `reunioes/2026-09-17-guilherme-lucas.md`: tudo acima
+- Reunião 23/09/2026 com o time de implantação sobre a Evoluto →
+  `_memoria/reunioes/2026-09-23-evoluto-plataforma-implantacao-roadmap-projetos.md`: adoção da
+  Evoluto, trilha, treinamento de dezembro e AGM a partir de 2027

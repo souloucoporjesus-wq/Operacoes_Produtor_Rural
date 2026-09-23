@@ -7,24 +7,27 @@
 
 ## Onde paramos
 
-Grupo Bocchi (`clientes/grupo-bocchi/`) entrou como piloto de evolução dos painéis Vista BI:
-protótipo de fluxo de caixa apresentado em 18/09, ajustes combinados (dólar, financiamentos,
-detalhamento geral), próxima demo mira semana de 21/09. Time de CS alinhado em 18/09: Amanda
-assume os contratos suspensos e terá a carteira myFarm redistribuída; Julio tem aval do Leandro
-pra começar automações do CS, mirando clientes myFarm de baixo toque (até R$1.500/mês). Antes
-disso, projeto de onboarding myFarm lançado em 17/09 com Guilherme e Lucas
-(`projetos/onboarding-myfarm/`): Evoluto fechada com o Leandro, Guilherme nos vídeos, Lucas no
-XML. Análise de churn jan a jun/2026 entregue em 16/09 (`relatorios/raio-x-churn-2026-09-16/`,
-https://claude.ai/artifact/VaVY2LJNJxJD33fV1RznJL). Próximo passo: chamar o Wellington e rodar `/mapear`.
-Granola ligado em 22/09: a skill `granola` traz as reuniões sozinha no primeiro comando do dia e
-fecha com `/atualizar` automático. Primeira importação (43 reuniões, 09-21/09) rendeu 8 novas em
-`retencao/contexto.md`; 28 ficaram soltas em `_memoria/reunioes/` esperando pasta (apuração
-assistida/reforma tributária, equipe, clientes pontuais sem pasta).
+Em 22 e 23/09 o sistema ganhou olhos: triagem de email com a pasta Email Pendentes (rotinas às 9:30
+e 16:30), resumo diário do Teams (16:30, em `resumo-teams/`) e o briefing executivo das 9:30 (skill
+`briefing`, página `painel/briefing.html`). As rotinas que gravam no GitHub dependem de instalar o
+app do Claude no repositório. O primeiro briefing (23/09) apontou semana crítica no time (ver
+`equipe/radar.md`), o fórum da diretoria de sexta (25/09) e três casos parados que custam dinheiro
+(NVCorp, Agro Aliança, Fazenda Santa Maria). Antes disso: Grupo Bocchi segue como piloto do Vista BI
+(alinhamento de painéis em 24/09); onboarding myFarm com a Evoluto encaminhada; Granola desde 22/09.
 
 ## Pendências
 
-- [ ] Julio: conversar com a Miriam pra achar uma forma da Amanda não perder recorrência/variável
-      ao virar resolutiva dos suspensos (combinado com o Leandro) — desde 2026-09-17 [retenção]
+- [ ] Julio: alinhar com o Leandro a continuidade do time, já com plano de passagem (ver
+      `equipe/radar.md`) — até 2026-09-24 [equipe]
+- [ ] Julio: devolutivas de 1:1 pendentes pro RH fechar os PDIs — desde 2026-09-23 [equipe]
+- [ ] Julio: resolver a Fazenda Santa Maria (aprovar ou recusar a proposta de treinamento;
+      bonificação de 12h) — desde 2026-09-23 [clientes]
+- [ ] Julio: cobrar de Contratos uma resposta pra NVCorp, sem retorno desde 08/07 — desde 2026-09-23 [retenção]
+- [ ] Julio: levar ao Leandro uma proposta de saída pro distrato da Agro Aliança — desde 2026-09-23 [retenção]
+- [ ] Julio: dar dono e limite pro caso AgroJem (horas sem proposta assinada) — desde 2026-09-23 [clientes]
+- [ ] Julio: publicar tabela de preço e alçada de desconto pro CS e corrigir o Engenho (hora
+      R$265, Engenho mostra R$290) — desde 2026-09-23 [vendas]
+- [ ] Cecílio: planilha da estimativa padrão de horas pro Julio validar — desde 2026-09-23 [implantação]
 - [ ] Julio: reporte semanal de posição de suspensos pro Carlos (CEO), com desde quando o cliente
       é cliente no analítico — toda semana [retenção]
 - [ ] Amanda: centralizar os 52 clientes suspensos sem movimento e dar vazão — desde 2026-09-17 [retenção]
@@ -39,29 +42,29 @@ assistida/reforma tributária, equipe, clientes pontuais sem pasta).
       pelos clientes myFarm de até R$1.500/mês como "baixo toque" — desde 2026-09-18 [churn]
 - [ ] Julio: reunião de alinhamento com a Fazenda Pontal das Perdizes (myFarm), receio do cliente
       sobre o sistema — até 2026-09-17 [clientes]
-- [ ] Jaqueline: marcar a apresentação do Hendow assim que a Yane informar dia e horário,
-      incluindo o Julio — até 2026-09-21 [Hendow]
 - [ ] Julio: decidir se migra o saldo do Grupo Ferrari pro myFarm — até 2026-09-21 [clientes]
 - [ ] Julio: encerramento formal da Fazenda Riqueza e do SJB Group (passagem + reunião interna) — até 2026-09-25 [projetos myFarm]
 - [ ] Jaqueline e Joyce: força-tarefa de 12 encerramentos de projetos myFarm anteriores a maio,
       6 cada — até 2026-09-30 [projetos myFarm]
+- [ ] Julio: instalar o app do Claude no repositório do GitHub, pras rotinas gravarem — desde 2026-09-23 [sistema]
+- [ ] Julio: decidir se o sistema guarda a conversa pessoal de 22/09 (não salva) e o trecho pessoal
+      da reunião com a Andresa de 23/09 — desde 2026-09-23 [sistema]
 - [ ] Julio: rodar `/mapear` pra criar as skills do dia a dia — desde 2026-09-16 [sistema]
-- [ ] Julio: decidir se cria pastas novas (ex.: "apuração assistida" em `projetos/`, uma pasta pra
-      equipe) pra classificar as 28 reuniões do Granola que ficaram soltas em `_memoria/reunioes/`
-      — desde 2026-09-22 [sistema]
+- [ ] Julio: decidir se cria pastas novas (ex.: "apuração assistida" em `projetos/`) pra
+      classificar as reuniões do Granola soltas em `_memoria/reunioes/` — desde 2026-09-22 [sistema]
 - [ ] Julio: ler `_contexto/marca/Universo de Marca - Aliare 1.pdf` na mão (46 MB, não abre
       automaticamente) e preencher o `design-guide.md` quando a identidade visual entrar em pauta — desde 2026-09-16 [sistema]
 - [ ] Julio: decidir se conecta o Supabase (MCP) ao Engenho — desde 2026-09-16 [sistema]
 - [ ] Julio: decidir o que fazer com as pastas soltas `Ritos - Projetos/` e `Skill/` que já
       existiam antes do setup (manter, incorporar às pastas novas ou arquivar) — desde 2026-09-16 [sistema]
-- [ ] Agente: se achar conector (MCP) pra Hubspot, Movidesk, Track Sales, Outlook ou Teams,
-      avisar pra instalar — desde 2026-09-16 [sistema]
+- [ ] Agente: se achar conector (MCP) pra Hubspot, Movidesk ou Track Sales, avisar pra instalar — desde 2026-09-16 [sistema]
 
 ## Quente agora
 
+- Time: possíveis saídas nesta semana (ver `equipe/radar.md`)
+- Fórum da diretoria sexta (25/09), com as regras novas de churn
 - Clientes em suspensão por pedido de cancelamento e/ou dívidas em aberto
-- Churn: análise entregue, plano de ação em 4 frentes (telemetria, produto, MyFarm, AgriManager)
+- Desconto subindo sob pressão do cliente (30 a 40% em 23/09)
 - Vendas baixas
 - Relatórios de prestação de contas pros outros líderes
-- Equipe recém-montada
 - Definição de ferramentas em andamento (Hubspot mal implantado, sem automação)
