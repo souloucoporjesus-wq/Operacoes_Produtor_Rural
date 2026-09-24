@@ -17,8 +17,12 @@ app do Claude no repositório. O primeiro briefing (23/09) apontou semana críti
 
 ## Pendências
 
-- [ ] Julio: alinhar com o Leandro a continuidade do time, já com plano de passagem (ver
-      `equipe/radar.md`) — até 2026-09-24 [equipe]
+- [ ] Julio: mandar pro Leandro os argumentos da folha de CS e serviços acima de 2025 (comissão
+      que entrou, posições de 2025 que só foram ocupadas em 2026, produtos novos do ano) pro texto
+      dele ao Carlos — desde 2026-09-24 [equipe]
+- [ ] Julio: compilar a prévia da recuperação de valores (cobrança) pro Leandro — desde 2026-09-24 [retenção]
+- [ ] Julio: dar retorno ao André (COAP): prioridade da ficha de aplicação por tanque (levada ao
+      dev em 24/09) e contorno pro frete de terceiro no custo do calcário — até 2026-10-01 [clientes]
 - [ ] Julio: devolutivas de 1:1 pendentes pro RH fechar os PDIs — desde 2026-09-23 [equipe]
 - [ ] Julio: resolver a Fazenda Santa Maria (aprovar ou recusar a proposta de treinamento;
       bonificação de 12h) — desde 2026-09-23 [clientes]

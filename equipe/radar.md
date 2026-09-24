@@ -37,6 +37,11 @@
   cerca de R$400 mil em atraso e 70 suspensos na reunião da Evoluto, e duas saídas possíveis na
   mesma semana. Pede mensagem de direção depois das conversas individuais. [Provável] Fonte:
   `_memoria/reunioes/2026-09-23-evoluto-plataforma-implantacao-roadmap-projetos.md`
+- **Quadro sob revisão de custo** (atenção, desde 2026-09-24): a controladoria questiona a folha
+  de CS (+45% sobre 2025) e de serviços; o Leandro vai tentar não cortar ninguém, e se tiver corte
+  "seria projeto". Julio disse que CS não tem como reduzir sem perder qualidade e que, se tiver que
+  escolher, prefere manter o Lucas ao Guilherme. O Leandro foi informado em 24/09 dos sinais da
+  Joyce e do Lucas. [Certo] Fonte: `_memoria/reunioes/2026-09-24-leandro-folha-cs-orcamento-saidas-time.md`
 
 ## Histórico
 
