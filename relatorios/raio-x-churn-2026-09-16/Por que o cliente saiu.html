@@ -1,0 +1,763 @@
+<title>Por que o cliente saiu</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root{
+    color-scheme: light;
+    --bg: #f9f9f7;
+    --surface: #fcfcfb;
+    --surface-2: #f3f2ee;
+    --ink: #0b0b0b;
+    --ink-2: #52514e;
+    --muted: #74726c;
+    --border: rgba(11,11,11,0.10);
+    --grid: #e1e0d9;
+    --track: #efeee9;
+    --accent: #2a78d6;
+    --accent-wash: rgba(42,120,214,0.10);
+    --g-produto: #2a78d6;
+    --g-venda: #eb6834;
+    --g-cliente: #1baf7a;
+    --g-sem: #a8a69e;
+    --shadow: 0 8px 28px rgba(11,11,11,0.12);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      color-scheme: dark;
+      --bg: #0d0d0d;
+      --surface: #1a1a19;
+      --surface-2: #212120;
+      --ink: #ffffff;
+      --ink-2: #c3c2b7;
+      --muted: #9b998f;
+      --border: rgba(255,255,255,0.10);
+      --grid: #2c2c2a;
+      --track: #252523;
+      --accent: #3987e5;
+      --accent-wash: rgba(57,135,229,0.16);
+      --g-produto: #3987e5;
+      --g-venda: #d95926;
+      --g-cliente: #199e70;
+      --g-sem: #6f6d66;
+      --shadow: 0 8px 28px rgba(0,0,0,0.5);
+    }
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --bg: #0d0d0d;
+    --surface: #1a1a19;
+    --surface-2: #212120;
+    --ink: #ffffff;
+    --ink-2: #c3c2b7;
+    --muted: #9b998f;
+    --border: rgba(255,255,255,0.10);
+    --grid: #2c2c2a;
+    --track: #252523;
+    --accent: #3987e5;
+    --accent-wash: rgba(57,135,229,0.16);
+    --g-produto: #3987e5;
+    --g-venda: #d95926;
+    --g-cliente: #199e70;
+    --g-sem: #6f6d66;
+    --shadow: 0 8px 28px rgba(0,0,0,0.5);
+  }
+
+  *{ box-sizing: border-box; }
+  body{
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 14.5px;
+    line-height: 1.5;
+    padding-inline: 16px;
+    padding-block: 40px 72px;
+  }
+  .num{ font-family: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
+  .page{ max-width: 980px; margin: 0 auto; display: flex; flex-direction: column; gap: 36px; }
+  h1, h2, h3{ text-wrap: balance; margin: 0; }
+  p{ margin: 0; }
+
+  /* cabeçalho */
+  .eyebrow{ font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); }
+  h1{ font-size: clamp(28px, 4.6vw, 40px); font-weight: 700; letter-spacing: -0.01em; margin: 8px 0 6px; }
+  .subtitle{ color: var(--ink-2); font-size: 16px; max-width: 66ch; }
+  .meta{ display: flex; flex-wrap: wrap; gap: 8px 22px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); font-size: 13px; color: var(--muted); }
+  .meta b{ color: var(--ink-2); font-weight: 600; }
+
+  /* os dois produtos lado a lado */
+  .split{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 760px){ .split{ grid-template-columns: 1fr; } }
+  .prod{ background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 18px 18px 16px; display: flex; flex-direction: column; gap: 12px; }
+  .prod-head{ display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .prod h2{ font-size: 20px; font-weight: 700; }
+  .prod .tag{ font-size: 12px; color: var(--muted); }
+  .prod .lede{ font-size: 14px; color: var(--ink-2); }
+  .stats{ display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; }
+  .stat{ background: var(--surface); padding: 12px 12px 11px; display: flex; flex-direction: column; gap: 3px; }
+  .stat .label{ font-size: 12px; color: var(--muted); font-weight: 500; }
+  .stat .value{ font-size: 22px; font-weight: 700; letter-spacing: -0.01em; line-height: 1.2; }
+  .stat .value.accent{ color: var(--accent); }
+  .stat .sub{ font-size: 12px; color: var(--ink-2); }
+  @media (max-width: 380px){ .stats{ grid-template-columns: 1fr; } }
+
+  /* leituras */
+  section{ display: flex; flex-direction: column; gap: 12px; }
+  h2.sec{ font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+  h3{ font-size: 16.5px; font-weight: 700; }
+  .lede{ color: var(--ink-2); max-width: 72ch; }
+  ul.leituras{ margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 9px; }
+  ul.leituras li{ color: var(--ink-2); line-height: 1.55; }
+  ul.leituras li b{ color: var(--ink); font-weight: 600; }
+  ul.leituras li::marker{ color: var(--accent); }
+
+  /* abas */
+  .tabs{ display: flex; gap: 4px; border-bottom: 1px solid var(--border); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-top: 6px; overflow-x: auto; }
+  .tab{ appearance: none; background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; padding: 10px 14px; font: inherit; font-weight: 600; font-size: 14px; color: var(--muted); cursor: pointer; white-space: nowrap; }
+  .tab:hover{ color: var(--ink); }
+  .tab[aria-selected="true"]{ color: var(--accent); border-bottom-color: var(--accent); }
+  .tab:focus-visible, button:focus-visible, .bar-row:focus-visible, input:focus-visible, select:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 4px; }
+  .panel{ display: flex; flex-direction: column; gap: 34px; padding-top: 8px; }
+
+  /* barra de controles */
+  .toolbar{ display: flex; flex-wrap: wrap; align-items: center; gap: 10px 16px; font-size: 13px; color: var(--muted); }
+  .seg{ display: inline-flex; border: 1px solid var(--border); border-radius: 8px; overflow: hidden; background: var(--surface); }
+  .seg button{ appearance: none; border: none; background: none; font: inherit; font-size: 13px; font-weight: 600; color: var(--ink-2); padding: 6px 14px; cursor: pointer; }
+  .seg button + button{ border-left: 1px solid var(--border); }
+  .seg button[aria-pressed="true"]{ background: var(--accent-wash); color: var(--accent); }
+
+  /* legenda e barras */
+  .legend{ display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 13px; color: var(--ink-2); }
+  .legend span{ display: inline-flex; align-items: center; gap: 7px; }
+  .sw{ width: 12px; height: 12px; border-radius: 3px; display: inline-block; flex: none; }
+  .g-produto{ background: var(--g-produto); }
+  .g-venda{ background: var(--g-venda); }
+  .g-cliente{ background: var(--g-cliente); }
+  .g-sem{ background: var(--g-sem); }
+  .bars{ display: flex; flex-direction: column; gap: 12px; }
+  .bar-row{ display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 12px; row-gap: 5px; padding: 3px 0; border-radius: 4px; cursor: default; }
+  .bar-name{ font-size: 13.5px; font-weight: 500; color: var(--ink); }
+  .bar-name .qty{ color: var(--muted); font-weight: 400; font-size: 12.5px; }
+  .bar-val{ font-size: 13px; font-weight: 600; color: var(--ink); white-space: nowrap; text-align: right; }
+  .bar-track{ grid-column: 1 / -1; height: 12px; background: var(--track); border-radius: 0 4px 4px 0; }
+  .bar-fill{ height: 100%; min-width: 3px; border-radius: 0 4px 4px 0; transition: width .25s ease; }
+  .bar-row:hover .bar-fill, .bar-row:focus-visible .bar-fill{ filter: brightness(1.08); }
+  .fill-conhecido{ background: var(--g-produto); }
+  .fill-desconhecido{ background: var(--g-sem); }
+
+  /* tooltip */
+  .tip{ position: fixed; z-index: 30; max-width: 300px; background: var(--surface); color: var(--ink); border: 1px solid var(--border); border-radius: 8px; box-shadow: var(--shadow); padding: 10px 12px; font-size: 12.5px; pointer-events: none; }
+  .tip .v{ font-weight: 700; font-size: 13.5px; }
+  .tip .l{ color: var(--ink-2); margin-top: 1px; }
+  .tip ul{ margin: 7px 0 0; padding: 7px 0 0; list-style: none; border-top: 1px solid var(--grid); color: var(--ink-2); display: flex; flex-direction: column; gap: 2px; }
+
+  /* tabelas */
+  .table-wrap{ overflow-x: auto; border: 1px solid var(--border); border-radius: 10px; background: var(--surface); }
+  table{ width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  .table-wrap table{ min-width: 620px; }
+  th{ text-align: left; font-weight: 600; color: var(--muted); font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; padding: 9px 10px; border-bottom: 1px solid var(--border); white-space: nowrap; }
+  td{ padding: 10px; border-bottom: 1px solid var(--grid); vertical-align: top; }
+  tbody tr:last-child td{ border-bottom: none; }
+  td.num, th.num{ text-align: right; white-space: nowrap; }
+  td ul{ margin: 0; padding-left: 16px; display: flex; flex-direction: column; gap: 3px; }
+  .quem{ color: var(--muted); }
+  .pill{ display: inline-block; font-size: 11px; font-weight: 600; color: var(--ink-2); background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 0 7px; margin-left: 4px; white-space: nowrap; vertical-align: 1px; }
+  .motivo{ display: inline-flex; align-items: baseline; gap: 7px; }
+  .motivo .sw{ transform: translateY(1px); }
+
+  /* destinos com nome */
+  .dest-grid{ display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+  .table-wrap.compacta table{ min-width: 0; }
+  .table-wrap.compacta td{ padding: 9px 10px; }
+  @media (max-width: 760px){ .dest-grid{ grid-template-columns: 1fr; } }
+
+  /* casos */
+  .filtros{ display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+  .filtros input, .filtros select{ font: inherit; font-size: 13.5px; color: var(--ink); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 7px 10px; min-width: 0; }
+  .filtros input{ flex: 1 1 220px; }
+  .filtros select{ flex: 0 1 260px; }
+  .contagem{ font-size: 13px; color: var(--muted); }
+  .toggle{ appearance: none; border: none; background: none; font: inherit; color: var(--ink); font-weight: 600; text-align: left; padding: 0; cursor: pointer; display: inline-flex; gap: 7px; align-items: baseline; }
+  .toggle .chev{ color: var(--muted); font-size: 11px; transition: transform .15s; display: inline-block; }
+  .toggle[aria-expanded="true"] .chev{ transform: rotate(90deg); }
+  tr.det td{ background: var(--surface-2); padding: 12px 14px 14px 30px; }
+  .det-box{ display: flex; flex-direction: column; gap: 8px; max-width: 78ch; }
+  .det-box .rot{ font-size: 11.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+  .det-box p, .det-box ul{ color: var(--ink-2); }
+
+  /* entre os produtos */
+  .duas{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 700px){ .duas{ grid-template-columns: 1fr; } }
+  .caixa{ background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .caixa h4{ margin: 0; font-size: 14px; }
+  .caixa ul{ margin: 0; padding-left: 18px; color: var(--ink-2); display: flex; flex-direction: column; gap: 4px; }
+  .nota{ font-size: 13px; color: var(--muted); max-width: 76ch; }
+
+  @media (prefers-reduced-motion: reduce){
+    .bar-fill, .toggle .chev{ transition: none; }
+  }
+  ::selection{ background: var(--accent-wash); }
+</style>
+
+<div class="page">
+
+  <header>
+    <div class="eyebrow">Churn · leitura para Produto</div>
+    <h1>Por que o cliente saiu</h1>
+    <p class="subtitle">Motivo apurado no histórico de cada cliente, o que faltou no produto e para onde ele foi, com myFarm e AgriManager separados. Pedidos de janeiro a agosto de 2026.</p>
+    <div class="meta">
+      <span><b>Base:</b> 49 cancelamentos, 27 com formulário de churn e 22 do registro de janeiro a junho</span>
+      <span><b>MRR perdido:</b> R$ 116.271</span>
+      <span><b>Gerado em:</b> 23/09/2026</span>
+    </div>
+  </header>
+
+  <div class="split">
+    <article class="prod" aria-labelledby="h-myfarm">
+      <div class="prod-head"><h2 id="h-myfarm">myFarm</h2><span class="tag">32 cancelamentos</span></div>
+      <p class="lede">Ticket médio de R$ 952. Quase metade saiu por causa do produto.</p>
+      <div class="stats">
+        <div class="stat"><span class="label">MRR perdido</span><span class="value">R$ 30.467</span><span class="sub">26% do total</span></div>
+        <div class="stat"><span class="label">Saíram por produto</span><span class="value accent">15</span><span class="sub">54% do MRR do myFarm</span></div>
+        <div class="stat"><span class="label">Foram para outro ERP</span><span class="value">3</span><span class="sub">11% do MRR</span></div>
+        <div class="stat"><span class="label">Saíram do ERP</span><span class="value">7</span><span class="sub">planilha, contabilidade, emissor, app próprio</span></div>
+      </div>
+    </article>
+    <article class="prod" aria-labelledby="h-agm">
+      <div class="prod-head"><h2 id="h-agm">AgriManager</h2><span class="tag">17 cancelamentos</span></div>
+      <p class="lede">Ticket médio de R$ 5.047. Treze foram para outro ERP.</p>
+      <div class="stats">
+        <div class="stat"><span class="label">MRR perdido</span><span class="value">R$ 85.804</span><span class="sub">74% do total</span></div>
+        <div class="stat"><span class="label">Foram para outro ERP</span><span class="value accent">13</span><span class="sub">83% do MRR do AgriManager</span></div>
+        <div class="stat"><span class="label">Sem motivo registrado</span><span class="value">7</span><span class="sub">55% do MRR, todos foram para outro ERP</span></div>
+        <div class="stat"><span class="label">Saíram por produto</span><span class="value">4</span><span class="sub">18% do MRR</span></div>
+      </div>
+    </article>
+  </div>
+
+  <section aria-labelledby="h-leituras">
+    <h2 class="sec" id="h-leituras">O que a leitura mostra</h2>
+    <ul class="leituras">
+      <li><b>AgriManager perde para outro ERP:</b> 13 dos 17 clientes, 83% do MRR perdido. Com nome: SAP (Serios e 3SB), Conecter (a confirmar), Siacon, Tron, Agro1 e Aegro. Seis foram para ERP sem nome registrado.</li>
+      <li><b>No AgriManager, o motivo falta onde está o dinheiro:</b> 7 clientes sem motivo registrado somam 55% do MRR perdido do produto. Serios e Franciosi são dois terços desse valor.</li>
+      <li><b>myFarm perde por produto:</b> 15 dos 32 saíram por erro e instabilidade, funcionalidade que faltou ou sistema pesado para a equipe, 54% do MRR. Outros 7 não chegaram a usar o sistema.</li>
+      <li><b>O concorrente do myFarm também é não ter ERP:</b> entre os que disseram para onde foram, 7 passaram para planilha, app da contabilidade, emissor de nota ou aplicativo próprio, e 3 para outro ERP.</li>
+      <li><b>A troca entre AgriManager e myFarm não segurou ninguém:</b> tentada em 6 casos. O myFarm não cobre contábil, multiempresa e armazenagem de terceiros; o AgriManager exige uma equipe que a fazenda não tem.</li>
+    </ul>
+  </section>
+
+  <div>
+    <div class="tabs" role="tablist" aria-label="Seções do relatório">
+      <button class="tab" type="button" role="tab" id="tb-myfarm" aria-controls="tab-myfarm" aria-selected="true" data-tab="myfarm">myFarm</button>
+      <button class="tab" type="button" role="tab" id="tb-agm" aria-controls="tab-agm" aria-selected="false" tabindex="-1" data-tab="agm">AgriManager</button>
+      <button class="tab" type="button" role="tab" id="tb-entre" aria-controls="tab-entre" aria-selected="false" tabindex="-1" data-tab="entre">Entre os dois produtos</button>
+    </div>
+
+    <!-- myFarm -->
+    <div class="panel" id="tab-myfarm" role="tabpanel" aria-labelledby="tb-myfarm">
+      <div class="toolbar">
+        <span>Medir por</span>
+        <div class="seg" role="group" aria-label="Medir por">
+          <button type="button" data-prod="myfarm" data-metrica="mrr" aria-pressed="true">MRR</button>
+          <button type="button" data-prod="myfarm" data-metrica="n" aria-pressed="false">Casos</button>
+        </div>
+      </div>
+
+      <section aria-labelledby="h-mf-motivo">
+        <h3 id="h-mf-motivo">Por que saíram</h3>
+        <p class="lede">Erros e instabilidade é o motivo que mais tira MRR (27%). Falta de funcionalidade e cliente que não usou empatam em casos, 7 cada.</p>
+        <div class="legend" aria-hidden="true">
+          <span><i class="sw g-produto"></i>Produto</span>
+          <span><i class="sw g-venda"></i>Venda e suporte</span>
+          <span><i class="sw g-cliente"></i>Cliente</span>
+          <span><i class="sw g-sem"></i>Sem registro</span>
+        </div>
+        <div class="bars" role="list" id="motivos-myfarm"></div>
+      </section>
+
+      <section aria-labelledby="h-mf-lacunas">
+        <h3 id="h-mf-lacunas">O que faltou no produto</h3>
+        <p class="lede">Estabilidade e desempenho aparece em 8 clientes. Octaviano e Lucival são clientes de AgriManager: estão aqui porque a falta da parte contábil e multiempresa no myFarm impediu a troca de produto.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tema</th><th class="num">Clientes</th><th class="num">MRR em jogo</th><th>O que o cliente pediu ou relatou</th></tr></thead>
+            <tbody id="lacunas-myfarm"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-mf-destino">
+        <h3 id="h-mf-destino">Para onde foram</h3>
+        <p class="lede">19 dos 32 não informaram o destino. Dos que informaram, 7 saíram do ERP e 3 foram para outro ERP.</p>
+        <div class="dest-grid">
+          <div class="bars" role="list" id="destinos-myfarm"></div>
+          <div class="table-wrap compacta">
+            <table>
+              <thead><tr><th>Destino</th><th>Clientes</th><th class="num">MRR</th></tr></thead>
+              <tbody id="nomes-myfarm"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-mf-casos">
+        <h3 id="h-mf-casos">Casos</h3>
+        <div class="filtros">
+          <input type="search" id="busca-myfarm" placeholder="Buscar cliente" aria-label="Buscar cliente no myFarm">
+          <select id="filtro-myfarm" aria-label="Filtrar por motivo no myFarm"></select>
+          <span class="contagem" id="contagem-myfarm"></span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Cliente</th><th>Mês</th><th class="num">MRR</th><th>Motivo apurado</th><th>Destino</th><th>Fonte</th></tr></thead>
+            <tbody id="casos-myfarm"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- AgriManager -->
+    <div class="panel" id="tab-agm" role="tabpanel" aria-labelledby="tb-agm" hidden>
+      <div class="toolbar">
+        <span>Medir por</span>
+        <div class="seg" role="group" aria-label="Medir por">
+          <button type="button" data-prod="agm" data-metrica="mrr" aria-pressed="true">MRR</button>
+          <button type="button" data-prod="agm" data-metrica="n" aria-pressed="false">Casos</button>
+        </div>
+        <span>Inclui Aliare Cloud e Algodoeira.</span>
+      </div>
+
+      <section aria-labelledby="h-ag-motivo">
+        <h3 id="h-ag-motivo">Por que saíram</h3>
+        <p class="lede">7 dos 17 saíram sem motivo registrado, 55% do MRR, e os 7 foram para outro ERP. Onde há motivo, ele se espalha: funcionalidade (3), mudança no negócio (2), uso só fiscal (2), implantação, suporte e sistema pesado (1 cada).</p>
+        <div class="legend" aria-hidden="true">
+          <span><i class="sw g-produto"></i>Produto</span>
+          <span><i class="sw g-venda"></i>Venda e suporte</span>
+          <span><i class="sw g-cliente"></i>Cliente</span>
+          <span><i class="sw g-sem"></i>Sem registro</span>
+        </div>
+        <div class="bars" role="list" id="motivos-agm"></div>
+      </section>
+
+      <section aria-labelledby="h-ag-lacunas">
+        <h3 id="h-ag-lacunas">O que faltou no produto</h3>
+        <p class="lede">As lacunas citadas são de plataforma e automação: abrir várias telas, operar 100% online, acesso ao banco na nuvem, lançamento automático, integração e pagamento antecipado a fornecedor.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Tema</th><th class="num">Clientes</th><th class="num">MRR em jogo</th><th>O que o cliente pediu ou relatou</th></tr></thead>
+            <tbody id="lacunas-agm"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-ag-destino">
+        <h3 id="h-ag-destino">Para onde foram</h3>
+        <p class="lede">13 dos 17 foram para outro ERP, 83% do MRR. O SAP levou R$ 20.744 em dois clientes.</p>
+        <div class="dest-grid">
+          <div class="bars" role="list" id="destinos-agm"></div>
+          <div class="table-wrap compacta">
+            <table>
+              <thead><tr><th>Destino</th><th>Clientes</th><th class="num">MRR</th></tr></thead>
+              <tbody id="nomes-agm"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-ag-casos">
+        <h3 id="h-ag-casos">Casos</h3>
+        <div class="filtros">
+          <input type="search" id="busca-agm" placeholder="Buscar cliente" aria-label="Buscar cliente no AgriManager">
+          <select id="filtro-agm" aria-label="Filtrar por motivo no AgriManager"></select>
+          <span class="contagem" id="contagem-agm"></span>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Cliente</th><th>Mês</th><th class="num">MRR</th><th>Motivo apurado</th><th>Destino</th><th>Fonte</th></tr></thead>
+            <tbody id="casos-agm"></tbody>
+          </table>
+        </div>
+      </section>
+    </div>
+
+    <!-- Entre os dois produtos -->
+    <div class="panel" id="tab-entre" role="tabpanel" aria-labelledby="tb-entre" hidden>
+
+      <section aria-labelledby="h-troca">
+        <h3 id="h-troca">A troca de produto não segurou ninguém</h3>
+        <p class="lede">6 casos, R$ 18.420 de MRR. Em todos a troca entre AgriManager e myFarm foi oferecida, avaliada ou feita, e 4 terminaram em outro ERP.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Cliente</th><th class="num">MRR</th><th>Troca</th><th>Por que não serviu</th><th>Foi para</th></tr></thead>
+            <tbody>
+              <tr><td>Lucival Portilho Arantes<span class="pill">AGM</span></td><td class="num">R$ 5.896,12</td><td>Veio do myFarm para o AgriManager em 2025</td><td>O myFarm não atendia o fiscal e o contábil do grupo; o projeto no AgriManager não entrou em produção</td><td>Siacon</td></tr>
+              <tr><td>Claudio Augusto Diniz<span class="pill">AGM</span></td><td class="num">R$ 3.408,40</td><td>myFarm oferecido</td><td>R$ 738 por mês contra R$ 209 do concorrente, para quem só emite nota</td><td>Tron</td></tr>
+              <tr><td>Agropecuária Estrela da Manhã<span class="pill">AGM</span></td><td class="num">R$ 3.313,05</td><td>myFarm avaliado</td><td>Entendeu que o myFarm não atenderia o plano futuro da empresa</td><td>Nenhum, fazendas sem operar</td></tr>
+              <tr><td>Gemiro Carafini<span class="pill">AGM</span></td><td class="num">R$ 2.581,48</td><td>myFarm oferecido</td><td>A troca de sistema já estava decidida; usava o Agro1 desde jan/2026</td><td>Agro1</td></tr>
+              <tr><td>Octaviano Raymundo Camargo Silva<span class="pill">AGM</span></td><td class="num">R$ 2.150,61</td><td>myFarm apresentado</td><td>Sem DRE por competência, balancete e visão multiempresa</td><td>Aegro</td></tr>
+              <tr><td>Pedro Alceu Bach<span class="pill">myFarm</span></td><td class="num">R$ 1.070,00</td><td>AgriManager citado</td><td>Atenderia a armazenagem de terceiros, mas pede 3 a 4 pessoas no administrativo; a fazenda tem uma</td><td>Planilhas</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-pesado">
+        <h3 id="h-pesado">Sistema pesado para equipe enxuta aparece nos dois produtos</h3>
+        <p class="lede">6 clientes: 4 de myFarm e 2 de AgriManager. Fazendas com uma ou duas pessoas no administrativo acham os dois pesados.</p>
+        <div class="duas">
+          <div class="caixa">
+            <h4>myFarm</h4>
+            <ul>
+              <li>Fravale Agropecuária: registro de atividades de campo complexo para a equipe</li>
+              <li>Paulo Ricardo Santin: no financeiro, um lançamento depende de etapas em outros módulos</li>
+              <li>Fabiano Bergoli Zamberlan: processos pedem mais esforço do que a equipe sustenta</li>
+              <li>Roque Cassol: custo por talhão exige lançamento detalhado demais</li>
+            </ul>
+          </div>
+          <div class="caixa">
+            <h4>AgriManager</h4>
+            <ul>
+              <li>Octaviano Raymundo Camargo Silva: exige equipe dedicada; estoque e frota ficaram sem lançamento</li>
+              <li>Claudio Augusto Diniz: interface e relatórios complexos para o dono</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-venda">
+        <h3 id="h-venda">Onde a venda prometeu além do produto, o cliente saiu cedo</h3>
+        <p class="lede">6 casos. Nos 5 com formulário, a mediana foi de 4,6 meses entre a assinatura e o pedido de cancelamento, contra 31,6 meses dos demais.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Cliente</th><th class="num">Meses de contrato</th><th>O que não bateu</th></tr></thead>
+            <tbody>
+              <tr><td>Mario Pinto da Silva<span class="pill">myFarm</span></td><td class="num">1,4</td><td>Lançamento de notas quase automático prometido na venda; operação de confinamento</td></tr>
+              <tr><td>Agro Aliança<span class="pill">myFarm</span></td><td class="num">2,7</td><td>Agilidade e menos trabalho manual prometidos; cerca de 28 chamados até entrar em produção</td></tr>
+              <tr><td>Pedro Alceu Bach<span class="pill">myFarm</span></td><td class="num">4,6</td><td>Armazenagem de terceiros e balança fora do que o plano contratado cobre</td></tr>
+              <tr><td>Lucival Portilho Arantes<span class="pill">AGM</span></td><td class="num">7,0</td><td>Escopo cresceu com três empresas novas; o projeto não entrou em produção</td></tr>
+              <tr><td>Marco Antonio Zuffellato<span class="pill">myFarm</span></td><td class="num">13,8</td><td>Livro caixa digital e relatórios fiscais esperados desde a venda</td></tr>
+              <tr><td>Guilherme de Araújo Prediger<span class="pill">myFarm</span></td><td class="num">sem data</td><td>Revogou a contratação antes do início do acompanhamento</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section aria-labelledby="h-muda">
+        <h3 id="h-muda">O que muda em relação ao relatório de 17/09</h3>
+        <p class="lede">Dos 12 clientes que estão nos dois relatórios, 5 mudam de leitura. Claudio Diniz e Octaviano, lidos antes como adoção e mão de obra, foram para concorrente.</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Cliente</th><th>Em 17/09</th><th>Agora</th><th>Destino</th></tr></thead>
+            <tbody>
+              <tr><td>Claudio Augusto Diniz<span class="pill">AGM</span></td><td>Baixa adoção</td><td>Usava só fiscal e financeiro</td><td>Tron</td></tr>
+              <tr><td>Octaviano Raymundo Camargo Silva<span class="pill">AGM</span></td><td>Falta de mão de obra</td><td>Sistema pesado para a equipe</td><td>Aegro</td></tr>
+              <tr><td>Evandro Vilela Barros<span class="pill">myFarm</span></td><td>Troca de ERP</td><td>Usava só fiscal e financeiro</td><td>Sistema da contabilidade</td></tr>
+              <tr><td>Paulo Ricardo Santin<span class="pill">myFarm</span></td><td>Baixa adoção</td><td>Sistema pesado para a equipe</td><td>Não informado</td></tr>
+              <tr><td>Fabiano Bergoli Zamberlan<span class="pill">myFarm</span></td><td>Falta de mão de obra</td><td>Sistema pesado para a equipe</td><td>Não informado</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="nota">Em 8 dos 21 formulários com categoria marcada, o histórico aponta outra causa principal. Este relatório usa a causa do histórico.</p>
+      </section>
+    </div>
+  </div>
+
+</div>
+
+<div class="tip" id="tip" role="tooltip" hidden></div>
+
+<script type="application/json" id="dados">{"casos":[{"chave":"30017911","cliente":"Marco Antonio Zuffellato","linha":"myFarm","fonte":"Formulário","mrr":1200.83,"grupo":"Produto","motivo_apurado":"Faltou funcionalidade","fatores":"Instabilidade em contratos, notas e painéis, pedido aberto sem prazo de entrega","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Formulário","evidencia":"Livro caixa digital tratava adiantamento e compensação como duplicidade, pedido aberto desde set/2025 sem prazo. Faltavam campos de CBS e IBS na entrada de notas.","Tipo cancelamento":"Total","mes":"08/2026"},{"chave":"30015631","cliente":"Jerlucio Fernandes de Oliveira","linha":"myFarm","fonte":"Formulário","mrr":590.2,"grupo":"Cliente","motivo_apurado":"Não usou o sistema","fatores":"Equipe da fazenda não repassa informações, troca de contabilidade","destino":"Planilhas","destino_tipo":"Planilhas","fonte_destino":"Formulário","evidencia":"A equipe da fazenda não repassava consumo de insumos nem notas, e o uso ficou em lançamentos e baixas financeiras. Recusou implantação gradual e BPO gratuito.","Tipo cancelamento":"Total","mes":"07/2026"},{"chave":"30011822","cliente":"José Arnaldo de Castro Netto","linha":"myFarm","fonte":"Formulário","mrr":296.67,"grupo":"Cliente","motivo_apurado":"Não usou o sistema","fatores":"Sem retorno aos contatos","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Formulário","evidencia":"Estava havia mais de um ano sem usar o sistema e não respondeu às tentativas de contato.","Tipo cancelamento":"Total","mes":"07/2026"},{"chave":"30015540","cliente":"Fravale Agropecuária","linha":"myFarm","fonte":"Formulário","mrr":705.61,"grupo":"Produto","motivo_apurado":"Sistema pesado para a equipe","fatores":"Usava só a emissão de NFe, lançava tudo de novo no sistema da contabilidade","destino":"Emissor de NFe mais barato","destino_tipo":"Contabilidade ou emissor fiscal","fonte_destino":"Histórico","evidencia":"O registro de atividades de campo não pegou na equipe e o uso ficou só na emissão de NFe. Contratou um emissor fiscal mais barato.","Tipo cancelamento":"Total","mes":"07/2026"},{"chave":"30017265","cliente":"Dionatan Donato","linha":"myFarm","fonte":"Formulário","mrr":438.98,"grupo":"Cliente","motivo_apurado":"Mudança no negócio do cliente","fatores":"Divisão da sociedade reduziu a área","destino":"Planilhas","destino_tipo":"Planilhas","fonte_destino":"Formulário","evidencia":"A divisão da sociedade deixou a área pequena demais para um ERP. Voltou para planilhas e disse que não foi para concorrente.","Tipo cancelamento":"Total","mes":"06/2026"},{"chave":"30017869","cliente":"Wagner Eduardo Baldin Pereira","linha":"myFarm","fonte":"Formulário","mrr":644.79,"grupo":"Cliente","motivo_apurado":"Mudança no negócio do cliente","fatores":"Arrendou a área produtiva","destino":"Nenhum, arrendou a área","destino_tipo":"Negócio vendido, parado ou encerrado","fonte_destino":"Formulário","evidencia":"Arrendou a área produtiva. Sem relação com produto ou atendimento.","Tipo cancelamento":"Total","mes":"06/2026"},{"chave":"30012735","cliente":"Gemiro Carafini","linha":"AgriManager","fonte":"Formulário","mrr":2581.48,"grupo":"Venda e suporte","motivo_apurado":"Suporte lento e entrega sem prazo","fatores":"AGM não abre várias telas e não evoluiu, já rodava outro sistema desde jan/2026","destino":"Agro1","destino_tipo":"ERP concorrente","fonte_destino":"Formulário","evidencia":"Chamado leva dias para ter retorno e o AGM não abre várias telas ao mesmo tempo. Já usava o Agro1 em paralelo desde jan/2026.","Tipo cancelamento":"Total","mes":"06/2026"},{"chave":"30017209","cliente":"Paulo Ricardo Santin","linha":"myFarm","fonte":"Formulário","mrr":937.62,"grupo":"Produto","motivo_apurado":"Sistema pesado para a equipe","fatores":"Gestão feita por duas pessoas, insatisfação com a implantação","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Formulário","evidencia":"Achou o sistema complexo: no financeiro, um lançamento depende de etapas anteriores em outros módulos. A gestão é feita por duas pessoas.","Tipo cancelamento":"Total","mes":"06/2026"},{"chave":"30017436","cliente":"Fabiano Bergoli Zamberlan","linha":"myFarm","fonte":"Formulário","mrr":963.73,"grupo":"Produto","motivo_apurado":"Sistema pesado para a equipe","fatores":"Uso parcial, planilhas em paralelo","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Formulário","evidencia":"Os processos no sistema exigiam mais esforço do que a equipe estava habituada. Usava parte das funções e mantinha planilhas.","Tipo cancelamento":"Total","mes":"06/2026"},{"chave":"30015685","cliente":"Ivan Alves Silva","linha":"myFarm","fonte":"Formulário","mrr":1202.27,"grupo":"Cliente","motivo_apurado":"Não usou o sistema","fatores":"Não comparecia às agendas","destino":"Solução própria","destino_tipo":"Solução própria","fonte_destino":"Formulário","evidencia":"O diagnóstico mostrou uso baixo em financeiro, fiscal, estoque, máquinas e produção. Informou que desenvolveu um aplicativo próprio.","Tipo cancelamento":"Total","mes":"06/2026"},{"chave":"30013465","cliente":"Celso Manica","linha":"AgriManager","fonte":"Formulário","mrr":7913.82,"grupo":"Sem registro","motivo_apurado":"Motivo não apurado","fatores":"Sem contato efetivo desde a implantação de 2022","destino":"Outro ERP, não informado","destino_tipo":"ERP concorrente","fonte_destino":"Formulário","evidencia":"Avisou por email que já usava outro sistema. Não atendeu contatos antes nem depois do pedido.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30020548","cliente":"Agro Aliança","linha":"myFarm","fonte":"Formulário","mrr":1950.0,"grupo":"Produto","motivo_apurado":"Erros e instabilidade","fatores":"Expectativa criada na venda, safra de milho próxima","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Formulário","evidencia":"Cerca de 28 chamados entre implantação e início de uso, com inconsistências em painéis de produção e na carga do histórico. Cancelou uma semana depois de entrar em produção.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30016194","cliente":"Octaviano Raymundo Camargo Silva","linha":"AgriManager","fonte":"Formulário","mrr":2150.61,"grupo":"Produto","motivo_apurado":"Sistema pesado para a equipe","fatores":"myFarm apresentado, sem os relatórios contábeis que a gestão exige","destino":"Aegro","destino_tipo":"ERP concorrente","fonte_destino":"Formulário","evidencia":"O AGM exige equipe dedicada que a fazenda não tem, e estoque e frota ficaram sem lançamento. O myFarm não tinha DRE por competência, balancete e visão multiempresa.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30006687","cliente":"Natalino Bigolin","linha":"AgriManager","fonte":"Formulário","mrr":3046.65,"grupo":"Produto","motivo_apurado":"Faltou funcionalidade","fatores":"Multa rescisória isentada, mantém AGM e AgriQ","destino":"Servidor próprio, segue com o AGM","destino_tipo":"Continua na Aliare","fonte_destino":"Formulário","evidencia":"Precisava de acesso direto ao banco de dados na nuvem para integrações. A alternativa por API ficou cara e lenta.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30013597","cliente":"Lucival Portilho Arantes","linha":"AgriManager","fonte":"Formulário","mrr":5896.12,"grupo":"Venda e suporte","motivo_apurado":"Venda ou implantação desalinhada","fatores":"Escopo cresceu com três empresas novas, atraso na infraestrutura, divergência de cobrança","destino":"Siacon","destino_tipo":"ERP concorrente","fonte_destino":"Formulário","evidencia":"Deixou o myFarm em 2025 por limitação fiscal e contábil do grupo. O projeto AGM atrasou, o escopo cresceu e ele cancelou antes de entrar em produção.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30014925","cliente":"Evandro Vilela Barros","linha":"myFarm","fonte":"Formulário","mrr":827.41,"grupo":"Cliente","motivo_apurado":"Usava só fiscal e financeiro","fatores":"Equipe de produção saiu, elogiou o produto","destino":"Sistema da contabilidade","destino_tipo":"Contabilidade ou emissor fiscal","fonte_destino":"Formulário","evidencia":"Usava só financeiro e livro caixa digital havia mais de um ano. A contabilidade já tem sistema próprio e a equipe de produção saiu.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30017230","cliente":"Edgar Gomes Filho","linha":"myFarm","fonte":"Formulário","mrr":520.9,"grupo":"Produto","motivo_apurado":"Erros e instabilidade","fatores":"Sentia que pagava sem extrair valor","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Formulário","evidencia":"Relatou inconsistências nas baixas e nas datas registradas no sistema. Sentia que pagava sem ter retorno.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30014318","cliente":"Paulo Emílio Paludo","linha":"myFarm","fonte":"Formulário","mrr":607.37,"grupo":"Produto","motivo_apurado":"Faltou funcionalidade","fatores":"Falhas em lançamento de notas e emissão de NFe, sem contato desde out/2025","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Formulário","evidencia":"Passou a precisar de contabilidade integrada ao sistema. No mesmo período houve falhas no lançamento de notas e na emissão de NFe.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30019380","cliente":"Pedro Alceu Bach","linha":"myFarm","fonte":"Formulário","mrr":1070.0,"grupo":"Produto","motivo_apurado":"Faltou funcionalidade","fatores":"Chamados sem devolutiva, AGM exigiria 3 a 4 pessoas","destino":"Planilhas","destino_tipo":"Planilhas","fonte_destino":"Formulário","evidencia":"Precisava de entrada de terceiros, descontos de armazenagem e relatórios de silo, e a balança não atendeu. Voltou para planilhas.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30018074","cliente":"Celso Leão Ribeiro","linha":"myFarm","fonte":"Formulário","mrr":900.0,"grupo":"Cliente","motivo_apurado":"Usava só fiscal e financeiro","fatores":"Corte de custos","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Formulário","evidencia":"Usava só o financeiro e cortou custos. Disse que não foi por atendimento nem por falha técnica.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30020666","cliente":"Mario Pinto da Silva","linha":"myFarm","fonte":"Formulário","mrr":1327.99,"grupo":"Produto","motivo_apurado":"Faltou funcionalidade","fatores":"Venda prometeu lançamento de notas quase automático, operação de confinamento","destino":"Katrid","destino_tipo":"ERP concorrente","fonte_destino":"Formulário","evidencia":"A venda prometeu importação e lançamento de notas quase automáticos, e no treinamento o fluxo exigia muita intervenção manual. Operação de confinamento.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30015024","cliente":"Bruno Sanches Toro","linha":"AgriManager","fonte":"Formulário","mrr":5661.05,"grupo":"Produto","motivo_apurado":"Faltou funcionalidade","fatores":"Inadimplência e bloqueio na colheita, melhoria com custo extra e prazo não cumprido","destino":"Outro ERP, não nomeado","destino_tipo":"ERP concorrente","fonte_destino":"Reunião 17/09","evidencia":"Sem rastreio de pagamento antecipado a fornecedor, não conciliava o banco. A melhoria ficou para agosto, a antecipação veio com custo e o prazo não foi cumprido.","Tipo cancelamento":"Total","mes":"05/2026"},{"chave":"30015107","cliente":"Agropecuária Estrela da Manhã","linha":"AgriManager","fonte":"Formulário","mrr":3313.05,"grupo":"Cliente","motivo_apurado":"Mudança no negócio do cliente","fatores":"Equipe treinada saiu, cancelamento parcial","destino":"Nenhum, fazendas sem operar","destino_tipo":"Negócio vendido, parado ou encerrado","fonte_destino":"Formulário","evidencia":"As fazendas ainda não operam por falta de licença e energia, e a equipe treinada saiu. Avaliou o myFarm e não seguiu.","Tipo cancelamento":"Parcial","mes":"04/2026"},{"chave":"30017941","cliente":"Augusto Cesar Andrade Maia","linha":"myFarm","fonte":"Formulário","mrr":2542.4,"grupo":"Produto","motivo_apurado":"Erros e instabilidade","fatores":"Tratativas não resolveram, muitos chamados","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Formulário","evidencia":"Relatou falhas e inconsistências recorrentes, com vários chamados. Considerou que as tratativas não resolveram.","Tipo cancelamento":"Total","mes":"04/2026"},{"chave":"30009772","cliente":"Claudio Augusto Diniz","linha":"AgriManager","fonte":"Formulário","mrr":3408.4,"grupo":"Cliente","motivo_apurado":"Usava só fiscal e financeiro","fatores":"Precisava de sistema 100% online, interface complexa para o dono","destino":"Tron","destino_tipo":"ERP concorrente","fonte_destino":"Histórico","evidencia":"Terceirizou a contabilidade e passou a usar só NFe. Fechou com o Tron por cerca de R$ 209 por mês contra R$ 738 do myFarm.","Tipo cancelamento":"Total","mes":"03/2026"},{"chave":"30011918","cliente":"Cleonesio Luiz Marx","linha":"myFarm","fonte":"Formulário","mrr":870.18,"grupo":"Produto","motivo_apurado":"Faltou funcionalidade","fatores":"Lentidão, travamento e queda de sessão","destino":"Gerente Rural","destino_tipo":"ERP concorrente","fonte_destino":"Formulário","evidencia":"Não conseguia tirar custo por safra, talhão e máquinas sem planilha. Relatou lentidão, travamento e queda de sessão durante lançamentos.","Tipo cancelamento":"Total","mes":"03/2026"},{"chave":"30017104","cliente":"Roque Cassol","linha":"myFarm","fonte":"Formulário","mrr":1010.94,"grupo":"Cliente","motivo_apurado":"Usava só fiscal e financeiro","fatores":"Alimentar custo por talhão tomava tempo demais","destino":"App da contabilidade","destino_tipo":"Contabilidade ou emissor fiscal","fonte_destino":"Formulário","evidencia":"Usava só NFe e livro caixa digital. Passou para o app do escritório de contabilidade e achou o lançamento por talhão pesado para a equipe.","Tipo cancelamento":"Total","mes":"01/2026"},{"chave":"30008363","cliente":"Serios Agropecuária","linha":"AgriManager","fonte":"Registro jan a jun","mrr":16573.14,"grupo":"Sem registro","motivo_apurado":"Motivo não apurado","fatores":"Ficou com licença de consulta","destino":"SAP","destino_tipo":"ERP concorrente","fonte_destino":"Reunião 17/09","evidencia":"Reduziu a licenças de consulta em fev e mai/2026. Projeto de SAP em andamento desde 2021.","Tipo cancelamento":null,"mes":"02/2026"},{"chave":"30006916","cliente":"Clodoveu Franciosi","linha":"AgriManager","fonte":"Registro jan a jun","mrr":15628.64,"grupo":"Sem registro","motivo_apurado":"Motivo não apurado","fatores":"Ficou com 1 licença por módulo","destino":"Conecter (a confirmar)","destino_tipo":"ERP concorrente","fonte_destino":"Reunião 17/09","evidencia":"Ficou com 1 licença por módulo por estar em migração de ERP e cancelou o Algodoeira.","Tipo cancelamento":null,"mes":"06/2026"},{"chave":"30005436","cliente":"Serra Bonita Sementes","linha":"AgriManager","fonte":"Registro jan a jun","mrr":6532.98,"grupo":"Cliente","motivo_apurado":"Mudança no negócio do cliente","fatores":"Operação de sementes vendida","destino":"Sistema do comprador","destino_tipo":"Negócio vendido, parado ou encerrado","fonte_destino":"Reunião 17/09","evidencia":"Vendeu a operação de sementes. O comprador já usa outro sistema.","Tipo cancelamento":null,"mes":"02/2026"},{"chave":"30007727","cliente":"3SB Produtos Agrícolas","linha":"AgriManager","fonte":"Registro jan a jun","mrr":4170.46,"grupo":"Produto","motivo_apurado":"Faltou funcionalidade","fatores":"Empresa vendida a grupo internacional","destino":"SAP","destino_tipo":"ERP concorrente","fonte_destino":"Reunião 17/09","evidencia":"O registro cita falta de integração com outros sistemas, de recursos e de flexibilidade, além de problemas de suporte. O grupo que comprou a empresa adotou SAP.","Tipo cancelamento":null,"mes":"02/2026"},{"chave":"30010916","cliente":"Zorzetto Assessoria e Consultoria Agronômica","linha":"AgriManager","fonte":"Registro jan a jun","mrr":2243.46,"grupo":"Sem registro","motivo_apurado":"Motivo não apurado","fatores":"Atendido por outra vertical","destino":"Outro ERP, não informado","destino_tipo":"ERP concorrente","fonte_destino":"Registro jan a jun","evidencia":"Registrado como troca de ERP, sem motivo detalhado.","Tipo cancelamento":null,"mes":"06/2026"},{"chave":"30016155","cliente":"Valquiria Marcelino Ferreira Abreu","linha":"AgriManager","fonte":"Registro jan a jun","mrr":2110.81,"grupo":"Sem registro","motivo_apurado":"Motivo não apurado","fatores":"Sem histórico de tratativa","destino":"Outro ERP, não informado","destino_tipo":"ERP concorrente","fonte_destino":"Registro jan a jun","evidencia":"Registrado como troca de ERP, sem histórico de tratativa.","Tipo cancelamento":null,"mes":"05/2026"},{"chave":"30010348","cliente":"Sementes Três Pinheiros Seeds","linha":"AgriManager","fonte":"Registro jan a jun","mrr":1875.06,"grupo":"Sem registro","motivo_apurado":"Motivo não apurado","fatores":"Sem tratativa do CS","destino":"Outro ERP, não informado","destino_tipo":"ERP concorrente","fonte_destino":"Registro jan a jun","evidencia":"Registrado como troca de ERP, sem motivo detalhado.","Tipo cancelamento":null,"mes":"01/2026"},{"chave":"30010978","cliente":"Capivary Agropastoril","linha":"AgriManager","fonte":"Registro jan a jun","mrr":1657.47,"grupo":"Cliente","motivo_apurado":"Usava só fiscal e financeiro","fatores":"Terceirizou administrativo e financeiro","destino":"Contabilidade","destino_tipo":"Contabilidade ou emissor fiscal","fonte_destino":"Registro jan a jun","evidencia":"Terceirizou o administrativo e o financeiro para a contabilidade. Ficaria com um usuário e depois cancelou.","Tipo cancelamento":null,"mes":"01/2026"},{"chave":"30016543","cliente":"Lucas Bolognini Stracci","linha":"AgriManager","fonte":"Registro jan a jun","mrr":1040.32,"grupo":"Sem registro","motivo_apurado":"Motivo não apurado","fatores":"Pedido feito em set/2025","destino":"Outro ERP, não informado","destino_tipo":"ERP concorrente","fonte_destino":"Registro jan a jun","evidencia":"Registrado como troca de ERP, pedido feito em set/2025.","Tipo cancelamento":null,"mes":"06/2026"},{"chave":"30018439","cliente":"Luis Henrique Pazini","linha":"myFarm","fonte":"Registro jan a jun","mrr":2775.55,"grupo":"Produto","motivo_apurado":"Erros e instabilidade","fatores":"Pediu cancelamento sem justificativa","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Registro jan a jun","evidencia":"Pediu o cancelamento sem justificativa. O histórico mostra insatisfação com instabilidade do sistema.","Tipo cancelamento":null,"mes":"05/2026"},{"chave":"130","cliente":"Flavio Faedo","linha":"myFarm","fonte":"Registro jan a jun","mrr":1201.82,"grupo":"Sem registro","motivo_apurado":"Motivo não apurado","fatores":"Registro cita falta de engajamento e de recursos do produto","destino":"Outro ERP, não informado","destino_tipo":"ERP concorrente","fonte_destino":"Registro jan a jun","evidencia":"Registrado como troca de ERP, com falta de engajamento e de recursos do produto, sem detalhe.","Tipo cancelamento":null,"mes":"02/2026"},{"chave":"30017239","cliente":"Acassio Teles de Castro","linha":"myFarm","fonte":"Registro jan a jun","mrr":1200.0,"grupo":"Cliente","motivo_apurado":"Não usou o sistema","fatores":"Sem equipe para operar","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Registro jan a jun","evidencia":"Sem equipe para operar o sistema.","Tipo cancelamento":null,"mes":"01/2026"},{"chave":"30016960","cliente":"Andre Luiz Coelho Guilherme","linha":"myFarm","fonte":"Registro jan a jun","mrr":1073.29,"grupo":"Cliente","motivo_apurado":"Não usou o sistema","fatores":"Sem equipe para operar","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Registro jan a jun","evidencia":"Sem equipe para operar o sistema.","Tipo cancelamento":null,"mes":"05/2026"},{"chave":"30011397","cliente":"Thiago de Almeida","linha":"myFarm","fonte":"Registro jan a jun","mrr":1067.58,"grupo":"Cliente","motivo_apurado":"Não usou o sistema","fatores":"Sem equipe para operar, pedido de ago/2025","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Registro jan a jun","evidencia":"Sem equipe para operar o sistema. Pedido feito em ago/2025.","Tipo cancelamento":null,"mes":"06/2026"},{"chave":"30012242","cliente":"Ademir José Comparim","linha":"myFarm","fonte":"Registro jan a jun","mrr":840.51,"grupo":"Cliente","motivo_apurado":"Não usou o sistema","fatores":"Sem histórico do CS","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Registro jan a jun","evidencia":"Registrado como falta de equipe para operar, sem histórico do CS.","Tipo cancelamento":null,"mes":"01/2026"},{"chave":"30011963","cliente":"Valdir Freier","linha":"myFarm","fonte":"Registro jan a jun","mrr":772.9,"grupo":"Cliente","motivo_apurado":"Dificuldade financeira do cliente","fatores":"Inadimplente, pedido de set/2025","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Registro jan a jun","evidencia":"Cliente inadimplente. Cancelamento de set/2025 sem motivo formal.","Tipo cancelamento":null,"mes":"06/2026"},{"chave":"30016676","cliente":"Rentax Agrosoluções","linha":"myFarm","fonte":"Registro jan a jun","mrr":620.27,"grupo":"Cliente","motivo_apurado":"Mudança no negócio do cliente","fatores":"Encerrou as atividades","destino":"Nenhum, empresa encerrada","destino_tipo":"Negócio vendido, parado ou encerrado","fonte_destino":"Registro jan a jun","evidencia":"Encerrou as atividades da empresa.","Tipo cancelamento":null,"mes":"01/2026"},{"chave":"PREDIGER","cliente":"Guilherme de Araújo Prediger","linha":"myFarm","fonte":"Registro jan a jun","mrr":621.26,"grupo":"Venda e suporte","motivo_apurado":"Venda ou implantação desalinhada","fatores":"Revogou antes do início do acompanhamento","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Registro jan a jun","evidencia":"Revogou a contratação antes do início do acompanhamento. Registrado como limitação do produto, sem detalhe.","Tipo cancelamento":null,"mes":"06/2026"},{"chave":"30017285","cliente":"Carlos Fernando da Silveira Bueno","linha":"myFarm","fonte":"Registro jan a jun","mrr":583.33,"grupo":"Sem registro","motivo_apurado":"Motivo não apurado","fatores":"Sem histórico","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Registro jan a jun","evidencia":"Sem histórico de motivo.","Tipo cancelamento":null,"mes":"01/2026"},{"chave":"30018091","cliente":"Eliana Gasparini Testa","linha":"myFarm","fonte":"Registro jan a jun","mrr":480.0,"grupo":"Produto","motivo_apurado":"Faltou funcionalidade","fatores":"Pecuária","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Registro jan a jun","evidencia":"O myFarm não atende leilão de animais.","Tipo cancelamento":null,"mes":"02/2026"},{"chave":"30015743","cliente":"Geraldo Augusto Martins Teixeira","linha":"myFarm","fonte":"Registro jan a jun","mrr":320.0,"grupo":"Produto","motivo_apurado":"Faltou funcionalidade","fatores":"Pecuária","destino":"Software de leite e bovinos","destino_tipo":"Software de pecuária","fonte_destino":"Registro jan a jun","evidencia":"Migrou para um software específico de produção de leite e bovinos.","Tipo cancelamento":null,"mes":"03/2026"},{"chave":"30012511","cliente":"Leinner Lima Borges","linha":"myFarm","fonte":"Registro jan a jun","mrr":302.91,"grupo":"Produto","motivo_apurado":"Erros e instabilidade","fatores":"Pedido de 2025","destino":"Não informado","destino_tipo":"Não informado","fonte_destino":"Registro jan a jun","evidencia":"Lentidão e desempenho do myFarm.","Tipo cancelamento":null,"mes":"02/2026"}],"lacunas":[{"chave":"30017911","cliente":"Marco Antonio Zuffellato","produto_da_lacuna":"myFarm","tema":"Fiscal e livro caixa","detalhe":"Livro caixa digital trata adiantamento e compensação como duplicidade","fonte":"Formulário","linha":"myFarm","mrr":1200.83},{"chave":"30017911","cliente":"Marco Antonio Zuffellato","produto_da_lacuna":"myFarm","tema":"Fiscal e livro caixa","detalhe":"Campos de CBS e IBS na entrada de notas","fonte":"Formulário","linha":"myFarm","mrr":1200.83},{"chave":"30017911","cliente":"Marco Antonio Zuffellato","produto_da_lacuna":"myFarm","tema":"Relatórios gerenciais","detalhe":"Posição de estoque em data base para exportar","fonte":"Formulário","linha":"myFarm","mrr":1200.83},{"chave":"30017911","cliente":"Marco Antonio Zuffellato","produto_da_lacuna":"myFarm","tema":"Estabilidade e desempenho","detalhe":"Instabilidade em contratos, notas e painéis financeiros","fonte":"Formulário","linha":"myFarm","mrr":1200.83},{"chave":"30015540","cliente":"Fravale Agropecuária","produto_da_lacuna":"myFarm","tema":"Integração com a contabilidade","detalhe":"Lançamento repetido no sistema da contabilidade","fonte":"Formulário","linha":"myFarm","mrr":705.61},{"chave":"30015540","cliente":"Fravale Agropecuária","produto_da_lacuna":"myFarm","tema":"Simplicidade para equipe enxuta","detalhe":"Registro de atividades de campo complexo para a equipe","fonte":"Formulário","linha":"myFarm","mrr":705.61},{"chave":"30017209","cliente":"Paulo Ricardo Santin","produto_da_lacuna":"myFarm","tema":"Simplicidade para equipe enxuta","detalhe":"Financeiro com etapas encadeadas entre módulos","fonte":"Formulário","linha":"myFarm","mrr":937.62},{"chave":"30017436","cliente":"Fabiano Bergoli Zamberlan","produto_da_lacuna":"myFarm","tema":"Simplicidade para equipe enxuta","detalhe":"Processos exigem mais esforço do que a equipe sustenta","fonte":"Formulário","linha":"myFarm","mrr":963.73},{"chave":"30020548","cliente":"Agro Aliança","produto_da_lacuna":"myFarm","tema":"Estabilidade e desempenho","detalhe":"Cerca de 28 chamados entre implantação e início de uso","fonte":"Formulário","linha":"myFarm","mrr":1950.0},{"chave":"30020548","cliente":"Agro Aliança","produto_da_lacuna":"myFarm","tema":"Relatórios gerenciais","detalhe":"Inconsistência em painéis de produção","fonte":"Formulário","linha":"myFarm","mrr":1950.0},{"chave":"30020548","cliente":"Agro Aliança","produto_da_lacuna":"myFarm","tema":"Implantação e carga de dados","detalhe":"Carga do histórico da safra anterior e matrículas da fazenda","fonte":"Formulário","linha":"myFarm","mrr":1950.0},{"chave":"30016194","cliente":"Octaviano Raymundo Camargo Silva","produto_da_lacuna":"AgriManager","tema":"Simplicidade para equipe enxuta","detalhe":"Exige equipe dedicada, estoque e frota ficaram sem lançamento","fonte":"Formulário","linha":"AgriManager","mrr":2150.61},{"chave":"30016194","cliente":"Octaviano Raymundo Camargo Silva","produto_da_lacuna":"AgriManager","tema":"Relatórios gerenciais","detalhe":"DRE por competência, desempenho de máquinas e ficha de pulverização por tanque","fonte":"Formulário","linha":"AgriManager","mrr":2150.61},{"chave":"30016194","cliente":"Octaviano Raymundo Camargo Silva","produto_da_lacuna":"myFarm","tema":"Contabilidade e multiempresa","detalhe":"Sem DRE por competência, balancete e visão multiempresa","fonte":"Formulário","linha":"AgriManager","mrr":2150.61},{"chave":"30006687","cliente":"Natalino Bigolin","produto_da_lacuna":"AgriManager","tema":"Plataforma e acesso","detalhe":"Acesso direto ao banco de dados na Aliare Cloud para integrações","fonte":"Formulário","linha":"AgriManager","mrr":3046.65},{"chave":"30013597","cliente":"Lucival Portilho Arantes","produto_da_lacuna":"myFarm","tema":"Contabilidade e multiempresa","detalhe":"Fiscal e contábil para grupo com várias empresas","fonte":"Formulário","linha":"AgriManager","mrr":5896.12},{"chave":"30017230","cliente":"Edgar Gomes Filho","produto_da_lacuna":"myFarm","tema":"Estabilidade e desempenho","detalhe":"Inconsistência em baixas financeiras e datas","fonte":"Formulário","linha":"myFarm","mrr":520.9},{"chave":"30014318","cliente":"Paulo Emílio Paludo","produto_da_lacuna":"myFarm","tema":"Contabilidade e multiempresa","detalhe":"Contabilidade integrada ao sistema","fonte":"Formulário","linha":"myFarm","mrr":607.37},{"chave":"30014318","cliente":"Paulo Emílio Paludo","produto_da_lacuna":"myFarm","tema":"Estabilidade e desempenho","detalhe":"Falhas no lançamento de notas e na emissão de NFe","fonte":"Formulário","linha":"myFarm","mrr":607.37},{"chave":"30019380","cliente":"Pedro Alceu Bach","produto_da_lacuna":"myFarm","tema":"Armazenagem de terceiros","detalhe":"Entrada de terceiros, descontos de armazenagem e controle de silo","fonte":"Formulário","linha":"myFarm","mrr":1070.0},{"chave":"30019380","cliente":"Pedro Alceu Bach","produto_da_lacuna":"myFarm","tema":"Armazenagem de terceiros","detalhe":"Integração com balança","fonte":"Formulário","linha":"myFarm","mrr":1070.0},{"chave":"30019380","cliente":"Pedro Alceu Bach","produto_da_lacuna":"myFarm","tema":"Relatórios gerenciais","detalhe":"Relatórios de armazenagem fora do plano contratado","fonte":"Formulário","linha":"myFarm","mrr":1070.0},{"chave":"30020666","cliente":"Mario Pinto da Silva","produto_da_lacuna":"myFarm","tema":"Automação de notas de entrada","detalhe":"Importação e lançamento de notas sem intervenção manual","fonte":"Formulário","linha":"myFarm","mrr":1327.99},{"chave":"30020666","cliente":"Mario Pinto da Silva","produto_da_lacuna":"myFarm","tema":"Pecuária","detalhe":"Confinamento","fonte":"Formulário","linha":"myFarm","mrr":1327.99},{"chave":"30015024","cliente":"Bruno Sanches Toro","produto_da_lacuna":"AgriManager","tema":"Financeiro e conciliação","detalhe":"Rastreio de pagamento antecipado a fornecedor e conciliação bancária","fonte":"Formulário","linha":"AgriManager","mrr":5661.05},{"chave":"30015024","cliente":"Bruno Sanches Toro","produto_da_lacuna":"AgriManager","tema":"Financeiro e conciliação","detalhe":"Operações de retorno travadas em chamado aberto","fonte":"Formulário","linha":"AgriManager","mrr":5661.05},{"chave":"30015024","cliente":"Bruno Sanches Toro","produto_da_lacuna":"AgriManager","tema":"Integração e automação","detalhe":"Lançamentos automáticos, citados como motivo da troca","fonte":"Reunião 17/09","linha":"AgriManager","mrr":5661.05},{"chave":"30017941","cliente":"Augusto Cesar Andrade Maia","produto_da_lacuna":"myFarm","tema":"Estabilidade e desempenho","detalhe":"Falhas e inconsistências recorrentes","fonte":"Formulário","linha":"myFarm","mrr":2542.4},{"chave":"30009772","cliente":"Claudio Augusto Diniz","produto_da_lacuna":"AgriManager","tema":"Plataforma e acesso","detalhe":"Operar 100% online, sem servidor físico","fonte":"Formulário","linha":"AgriManager","mrr":3408.4},{"chave":"30009772","cliente":"Claudio Augusto Diniz","produto_da_lacuna":"AgriManager","tema":"Simplicidade para equipe enxuta","detalhe":"Interface e relatórios complexos para o dono","fonte":"Formulário","linha":"AgriManager","mrr":3408.4},{"chave":"30011918","cliente":"Cleonesio Luiz Marx","produto_da_lacuna":"myFarm","tema":"Relatórios gerenciais","detalhe":"Custo por safra e talhão, abastecimento e máquinas","fonte":"Formulário","linha":"myFarm","mrr":870.18},{"chave":"30011918","cliente":"Cleonesio Luiz Marx","produto_da_lacuna":"myFarm","tema":"Estabilidade e desempenho","detalhe":"Lentidão, travamento e queda de sessão durante lançamentos","fonte":"Formulário","linha":"myFarm","mrr":870.18},{"chave":"30017104","cliente":"Roque Cassol","produto_da_lacuna":"myFarm","tema":"Simplicidade para equipe enxuta","detalhe":"Custo por talhão exige lançamento detalhado demais","fonte":"Formulário","linha":"myFarm","mrr":1010.94},{"chave":"30012735","cliente":"Gemiro Carafini","produto_da_lacuna":"AgriManager","tema":"Plataforma e acesso","detalhe":"Abrir várias telas ao mesmo tempo","fonte":"Formulário","linha":"AgriManager","mrr":2581.48},{"chave":"30007727","cliente":"3SB Produtos Agrícolas","produto_da_lacuna":"AgriManager","tema":"Integração e automação","detalhe":"Integração com outros sistemas, flexibilidade e automação","fonte":"Registro jan a jun","linha":"AgriManager","mrr":4170.46},{"chave":"30018439","cliente":"Luis Henrique Pazini","produto_da_lacuna":"myFarm","tema":"Estabilidade e desempenho","detalhe":"Instabilidade, sem detalhe no registro","fonte":"Registro jan a jun","linha":"myFarm","mrr":2775.55},{"chave":"30018091","cliente":"Eliana Gasparini Testa","produto_da_lacuna":"myFarm","tema":"Pecuária","detalhe":"Leilão de animais","fonte":"Registro jan a jun","linha":"myFarm","mrr":480.0},{"chave":"30015743","cliente":"Geraldo Augusto Martins Teixeira","produto_da_lacuna":"myFarm","tema":"Pecuária","detalhe":"Produção de leite e bovinos","fonte":"Registro jan a jun","linha":"myFarm","mrr":320.0},{"chave":"30012511","cliente":"Leinner Lima Borges","produto_da_lacuna":"myFarm","tema":"Estabilidade e desempenho","detalhe":"Lentidão e desempenho","fonte":"Registro jan a jun","linha":"myFarm","mrr":302.91}]}</script>
+<script>
+(function(){
+  "use strict";
+  var DADOS = JSON.parse(document.getElementById("dados").textContent);
+  var casos = DADOS.casos;
+  var lacunas = DADOS.lacunas;
+
+  var LINHA = { myfarm: "myFarm", agm: "AgriManager" };
+  var estado = { myfarm: { metrica: "mrr" }, agm: { metrica: "mrr" } };
+  var CLASSE_GRUPO = { "Produto": "g-produto", "Venda e suporte": "g-venda", "Cliente": "g-cliente", "Sem registro": "g-sem" };
+  var ORDEM_MOTIVO = ["Faltou funcionalidade", "Erros e instabilidade", "Sistema pesado para a equipe",
+    "Venda ou implantação desalinhada", "Suporte lento e entrega sem prazo", "Usava só fiscal e financeiro",
+    "Não usou o sistema", "Mudança no negócio do cliente", "Dificuldade financeira do cliente", "Motivo não apurado"];
+  var ORDEM_TIPO = ["ERP concorrente", "Contabilidade ou emissor fiscal", "Planilhas", "Solução própria",
+    "Software de pecuária", "Continua na Aliare", "Negócio vendido, parado ou encerrado", "Não informado"];
+
+  var nf0 = new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 });
+  var nf2 = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function brl(v){ return "R$ " + nf0.format(Math.round(v)); }
+  function brl2(v){ return "R$ " + nf2.format(v); }
+  function pct(v){ return nf0.format(Math.round(v * 100)) + "%"; }
+  function nCasos(n){ return n + (n === 1 ? " caso" : " casos"); }
+  function norm(s){ return (s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase(); }
+  function nomeDestino(d){ return d.indexOf("Outro ERP") === 0 ? "ERP sem nome registrado" : d; }
+
+  function el(tag, props, filhos){
+    var e = document.createElement(tag);
+    if (props){
+      Object.keys(props).forEach(function(k){
+        var v = props[k];
+        if (v == null) return;
+        if (k === "class") e.className = v;
+        else if (k === "text") e.textContent = v;
+        else e.setAttribute(k, v);
+      });
+    }
+    (filhos || []).forEach(function(f){
+      if (f == null) return;
+      e.appendChild(typeof f === "string" ? document.createTextNode(f) : f);
+    });
+    return e;
+  }
+
+  function agrupa(lista, chaveDe){
+    var mapa = {}, ordem = [];
+    lista.forEach(function(c){
+      var k = chaveDe(c);
+      if (!mapa[k]){ mapa[k] = { chave: k, n: 0, mrr: 0, casos: [] }; ordem.push(k); }
+      mapa[k].n += 1; mapa[k].mrr += c.mrr; mapa[k].casos.push(c);
+    });
+    return ordem.map(function(k){ return mapa[k]; });
+  }
+
+  /* tooltip */
+  var tip = document.getElementById("tip");
+  function mostraTip(row, x, y){
+    var d = row._tip; if (!d) return;
+    tip.textContent = "";
+    tip.appendChild(el("div", { "class": "v", text: d.valor }));
+    tip.appendChild(el("div", { "class": "l", text: d.rotulo }));
+    if (d.clientes && d.clientes.length){
+      var ul = el("ul");
+      d.clientes.slice(0, 8).forEach(function(n){ ul.appendChild(el("li", { text: n })); });
+      if (d.clientes.length > 8) ul.appendChild(el("li", { text: "e mais " + (d.clientes.length - 8) }));
+      tip.appendChild(ul);
+    }
+    tip.hidden = false;
+    var r = tip.getBoundingClientRect();
+    var px = Math.min(x + 14, window.innerWidth - r.width - 8);
+    var py = y + 14 + r.height > window.innerHeight - 8 ? y - r.height - 10 : y + 14;
+    tip.style.left = Math.max(8, px) + "px";
+    tip.style.top = Math.max(8, py) + "px";
+  }
+  function escondeTip(){ tip.hidden = true; }
+  document.addEventListener("pointermove", function(ev){
+    var row = ev.target.closest ? ev.target.closest(".bar-row") : null;
+    if (row) mostraTip(row, ev.clientX, ev.clientY); else escondeTip();
+  });
+  document.addEventListener("focusin", function(ev){
+    var row = ev.target.closest ? ev.target.closest(".bar-row") : null;
+    if (row){ var r = row.getBoundingClientRect(); mostraTip(row, r.left + Math.min(r.width * 0.5, 260), r.bottom - 6); }
+  });
+  document.addEventListener("focusout", escondeTip);
+  window.addEventListener("scroll", escondeTip, { passive: true });
+
+  /* barras horizontais */
+  function barras(box, itens, o){
+    box.textContent = "";
+    function val(it){ return o.metrica === "mrr" ? it.mrr : it.n; }
+    itens.sort(function(a, b){
+      return val(b) - val(a) || (o.metrica === "mrr" ? b.n - a.n : b.mrr - a.mrr);
+    });
+    var max = Math.max.apply(null, itens.map(val)) || 1;
+    itens.forEach(function(it){
+      var principal = o.metrica === "mrr"
+        ? brl(it.mrr) + " · " + pct(it.mrr / o.totMrr)
+        : nCasos(it.n) + " · " + pct(it.n / o.totN);
+      var secundario = o.metrica === "mrr" ? nCasos(it.n) : brl(it.mrr);
+      var fill = el("div", { "class": "bar-fill " + o.classe(it) });
+      fill.style.width = (val(it) / max * 100).toFixed(1) + "%";
+      var row = el("div", {
+        "class": "bar-row", role: "listitem", tabindex: "0",
+        "aria-label": it.chave + ": " + nCasos(it.n) + ", " + brl(it.mrr)
+      }, [
+        el("span", { "class": "bar-name" }, [it.chave + " ", el("span", { "class": "qty", text: "· " + secundario })]),
+        el("span", { "class": "bar-val num", text: principal }),
+        el("div", { "class": "bar-track" }, [fill])
+      ]);
+      row._tip = {
+        valor: brl(it.mrr) + " · " + nCasos(it.n),
+        rotulo: it.chave,
+        clientes: it.casos.slice().sort(function(a, b){ return b.mrr - a.mrr; }).map(function(c){ return c.cliente + " (" + brl(c.mrr) + ")"; })
+      };
+      box.appendChild(row);
+    });
+  }
+
+  function renderMotivos(k){
+    var lista = casos.filter(function(c){ return c.linha === LINHA[k]; });
+    var totN = lista.length, totMrr = lista.reduce(function(s, c){ return s + c.mrr; }, 0);
+    var itens = agrupa(lista, function(c){ return c.motivo_apurado; });
+    itens.forEach(function(it){ it.grupo = it.casos[0].grupo; });
+    barras(document.getElementById("motivos-" + k), itens, {
+      metrica: estado[k].metrica, totN: totN, totMrr: totMrr,
+      classe: function(it){ return CLASSE_GRUPO[it.grupo] || "g-sem"; }
+    });
+  }
+
+  function renderDestinos(k){
+    var lista = casos.filter(function(c){ return c.linha === LINHA[k]; });
+    var totN = lista.length, totMrr = lista.reduce(function(s, c){ return s + c.mrr; }, 0);
+    var itens = agrupa(lista, function(c){ return c.destino_tipo; });
+    barras(document.getElementById("destinos-" + k), itens, {
+      metrica: estado[k].metrica, totN: totN, totMrr: totMrr,
+      classe: function(it){ return it.chave === "Não informado" ? "fill-desconhecido" : "fill-conhecido"; }
+    });
+
+    var tb = document.getElementById("nomes-" + k);
+    tb.textContent = "";
+    var fora = { "Não informado": 1, "Negócio vendido, parado ou encerrado": 1 };
+    var nomeados = agrupa(lista.filter(function(c){ return !fora[c.destino_tipo]; }), function(c){ return nomeDestino(c.destino); });
+    nomeados.sort(function(a, b){
+      return ORDEM_TIPO.indexOf(a.casos[0].destino_tipo) - ORDEM_TIPO.indexOf(b.casos[0].destino_tipo) || b.mrr - a.mrr;
+    });
+    nomeados.forEach(function(it){
+      var reuniao = it.casos.every(function(c){ return c.fonte_destino === "Reunião 17/09"; });
+      var destinoCell = el("td", null, [
+        el("div", { text: it.chave }, reuniao ? [el("span", { "class": "pill", text: "reunião 17/09" })] : null),
+        el("div", { "class": "quem", text: it.casos[0].destino_tipo })
+      ]);
+      tb.appendChild(el("tr", null, [
+        destinoCell,
+        el("td", { text: it.casos.map(function(c){ return c.cliente; }).join(", ") }),
+        el("td", { "class": "num", text: brl(it.mrr) })
+      ]));
+    });
+  }
+
+  function renderLacunas(k){
+    var linha = LINHA[k];
+    var temas = agrupa(lacunas.filter(function(l){ return l.produto_da_lacuna === linha; }), function(l){ return l.tema; });
+    temas.forEach(function(t){
+      var vistos = {};
+      t.clientes = 0; t.valor = 0;
+      t.casos.forEach(function(l){ if (!vistos[l.chave]){ vistos[l.chave] = 1; t.clientes += 1; t.valor += l.mrr; } });
+    });
+    temas.sort(function(a, b){ return b.clientes - a.clientes || b.valor - a.valor; });
+    var tb = document.getElementById("lacunas-" + k);
+    tb.textContent = "";
+    temas.forEach(function(t){
+      var ul = el("ul");
+      t.casos.forEach(function(l){
+        var extra = [];
+        if (l.linha !== linha) extra.push(el("span", { "class": "pill", text: "cliente " + l.linha }));
+        if (l.fonte !== "Formulário") extra.push(el("span", { "class": "pill", text: l.fonte === "Reunião 17/09" ? "reunião 17/09" : "registro jan a jun" }));
+        ul.appendChild(el("li", null, [l.detalhe + " ", el("span", { "class": "quem", text: "· " + l.cliente })].concat(extra)));
+      });
+      tb.appendChild(el("tr", null, [
+        el("td", null, [el("b", { text: t.chave })]),
+        el("td", { "class": "num", text: String(t.clientes) }),
+        el("td", { "class": "num", text: brl(t.valor) }),
+        el("td", null, [ul])
+      ]));
+    });
+  }
+
+  function montaFiltro(k){
+    var sel = document.getElementById("filtro-" + k);
+    var presentes = {};
+    casos.forEach(function(c){ if (c.linha === LINHA[k]) presentes[c.motivo_apurado] = 1; });
+    sel.appendChild(el("option", { value: "", text: "Todos os motivos" }));
+    ORDEM_MOTIVO.forEach(function(m){ if (presentes[m]) sel.appendChild(el("option", { value: m, text: m })); });
+    sel.addEventListener("change", function(){ renderCasos(k); });
+    document.getElementById("busca-" + k).addEventListener("input", function(){ renderCasos(k); });
+  }
+
+  function renderCasos(k){
+    var q = norm(document.getElementById("busca-" + k).value);
+    var m = document.getElementById("filtro-" + k).value;
+    var lista = casos.filter(function(c){
+      return c.linha === LINHA[k] && (!m || c.motivo_apurado === m) && (!q || norm(c.cliente).indexOf(q) >= 0);
+    }).sort(function(a, b){ return b.mrr - a.mrr; });
+    var tb = document.getElementById("casos-" + k);
+    tb.textContent = "";
+    lista.forEach(function(c){
+      var id = "det-" + k + "-" + c.chave;
+      var btn = el("button", { type: "button", "class": "toggle", "aria-expanded": "false", "aria-controls": id }, [
+        el("span", { "class": "chev", "aria-hidden": "true", text: "▸" }), c.cliente
+      ]);
+      var destino = el("td", null, [nomeDestino(c.destino)].concat(
+        c.fonte_destino === "Reunião 17/09" ? [el("span", { "class": "pill", text: "reunião 17/09" })] : []));
+      tb.appendChild(el("tr", null, [
+        el("td", null, [btn]),
+        el("td", { "class": "num", text: c.mes || "" }),
+        el("td", { "class": "num", text: brl2(c.mrr) }),
+        el("td", null, [el("span", { "class": "motivo" }, [el("i", { "class": "sw " + (CLASSE_GRUPO[c.grupo] || "g-sem"), "aria-hidden": "true" }), c.motivo_apurado])]),
+        destino,
+        el("td", { text: c.fonte })
+      ]));
+
+      var box = el("div", { "class": "det-box" });
+      box.appendChild(el("div", { "class": "rot", text: "O que o registro diz" }));
+      box.appendChild(el("p", { text: c.evidencia || "" }));
+      var ls = lacunas.filter(function(l){ return l.chave === c.chave; });
+      if (ls.length){
+        box.appendChild(el("div", { "class": "rot", text: "Lacunas citadas" }));
+        var ul = el("ul");
+        ls.forEach(function(l){ ul.appendChild(el("li", { text: l.detalhe + " (" + l.produto_da_lacuna + ", " + l.tema.toLowerCase() + ")" })); });
+        box.appendChild(ul);
+      }
+      if (c.fatores){
+        box.appendChild(el("div", { "class": "rot", text: "Contexto" }));
+        box.appendChild(el("p", { text: c.fatores + (c["Tipo cancelamento"] === "Parcial" ? ". Cancelamento parcial." : ".") }));
+      }
+      var det = el("tr", { "class": "det", id: id }, [el("td", { colspan: "6" }, [box])]);
+      det.hidden = true;
+      tb.appendChild(det);
+      btn.addEventListener("click", function(){
+        var aberto = btn.getAttribute("aria-expanded") === "true";
+        btn.setAttribute("aria-expanded", aberto ? "false" : "true");
+        det.hidden = aberto;
+      });
+    });
+    var tot = lista.reduce(function(s, c){ return s + c.mrr; }, 0);
+    document.getElementById("contagem-" + k).textContent = nCasos(lista.length) + " · " + brl(tot);
+  }
+
+  function renderProduto(k){ renderMotivos(k); renderDestinos(k); }
+
+  Array.prototype.slice.call(document.querySelectorAll(".seg button")).forEach(function(b){
+    b.addEventListener("click", function(){
+      var k = b.getAttribute("data-prod");
+      estado[k].metrica = b.getAttribute("data-metrica");
+      Array.prototype.slice.call(b.parentNode.querySelectorAll("button")).forEach(function(x){
+        x.setAttribute("aria-pressed", x === b ? "true" : "false");
+      });
+      renderProduto(k);
+    });
+  });
+
+  ["myfarm", "agm"].forEach(function(k){
+    renderProduto(k); renderLacunas(k); montaFiltro(k); renderCasos(k);
+  });
+
+  /* abas */
+  var abas = Array.prototype.slice.call(document.querySelectorAll(".tab"));
+  var HASH = { myfarm: "myfarm", agm: "agrimanager", entre: "entre" };
+  function ativa(nome, foco){
+    abas.forEach(function(t){
+      var on = t.getAttribute("data-tab") === nome;
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      t.tabIndex = on ? 0 : -1;
+      if (on && foco) t.focus();
+      document.getElementById(t.getAttribute("aria-controls")).hidden = !on;
+    });
+    escondeTip();
+  }
+  abas.forEach(function(t, i){
+    t.addEventListener("click", function(){
+      ativa(t.getAttribute("data-tab"));
+      try { history.replaceState(null, "", "#" + HASH[t.getAttribute("data-tab")]); } catch (e) {}
+    });
+    t.addEventListener("keydown", function(e){
+      var d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (!d) return;
+      e.preventDefault();
+      ativa(abas[(i + d + abas.length) % abas.length].getAttribute("data-tab"), true);
+    });
+  });
+  var h = (location.hash || "").replace("#", "");
+  Object.keys(HASH).forEach(function(k){ if (HASH[k] === h) ativa(k); });
+})();
+</script>

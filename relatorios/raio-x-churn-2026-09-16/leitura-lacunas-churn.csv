@@ -1,0 +1,40 @@
+chave;cliente;produto_da_lacuna;tema;detalhe;fonte
+30017911;Marco Antonio Zuffellato;myFarm;Fiscal e livro caixa;Livro caixa digital trata adiantamento e compensação como duplicidade;Formulário
+30017911;Marco Antonio Zuffellato;myFarm;Fiscal e livro caixa;Campos de CBS e IBS na entrada de notas;Formulário
+30017911;Marco Antonio Zuffellato;myFarm;Relatórios gerenciais;Posição de estoque em data base para exportar;Formulário
+30017911;Marco Antonio Zuffellato;myFarm;Estabilidade e desempenho;Instabilidade em contratos, notas e painéis financeiros;Formulário
+30015540;Fravale Agropecuária;myFarm;Integração com a contabilidade;Lançamento repetido no sistema da contabilidade;Formulário
+30015540;Fravale Agropecuária;myFarm;Simplicidade para equipe enxuta;Registro de atividades de campo complexo para a equipe;Formulário
+30017209;Paulo Ricardo Santin;myFarm;Simplicidade para equipe enxuta;Financeiro com etapas encadeadas entre módulos;Formulário
+30017436;Fabiano Bergoli Zamberlan;myFarm;Simplicidade para equipe enxuta;Processos exigem mais esforço do que a equipe sustenta;Formulário
+30020548;Agro Aliança;myFarm;Estabilidade e desempenho;Cerca de 28 chamados entre implantação e início de uso;Formulário
+30020548;Agro Aliança;myFarm;Relatórios gerenciais;Inconsistência em painéis de produção;Formulário
+30020548;Agro Aliança;myFarm;Implantação e carga de dados;Carga do histórico da safra anterior e matrículas da fazenda;Formulário
+30016194;Octaviano Raymundo Camargo Silva;AgriManager;Simplicidade para equipe enxuta;Exige equipe dedicada, estoque e frota ficaram sem lançamento;Formulário
+30016194;Octaviano Raymundo Camargo Silva;AgriManager;Relatórios gerenciais;DRE por competência, desempenho de máquinas e ficha de pulverização por tanque;Formulário
+30016194;Octaviano Raymundo Camargo Silva;myFarm;Contabilidade e multiempresa;Sem DRE por competência, balancete e visão multiempresa;Formulário
+30006687;Natalino Bigolin;AgriManager;Plataforma e acesso;Acesso direto ao banco de dados na Aliare Cloud para integrações;Formulário
+30013597;Lucival Portilho Arantes;myFarm;Contabilidade e multiempresa;Fiscal e contábil para grupo com várias empresas;Formulário
+30017230;Edgar Gomes Filho;myFarm;Estabilidade e desempenho;Inconsistência em baixas financeiras e datas;Formulário
+30014318;Paulo Emílio Paludo;myFarm;Contabilidade e multiempresa;Contabilidade integrada ao sistema;Formulário
+30014318;Paulo Emílio Paludo;myFarm;Estabilidade e desempenho;Falhas no lançamento de notas e na emissão de NFe;Formulário
+30019380;Pedro Alceu Bach;myFarm;Armazenagem de terceiros;Entrada de terceiros, descontos de armazenagem e controle de silo;Formulário
+30019380;Pedro Alceu Bach;myFarm;Armazenagem de terceiros;Integração com balança;Formulário
+30019380;Pedro Alceu Bach;myFarm;Relatórios gerenciais;Relatórios de armazenagem fora do plano contratado;Formulário
+30020666;Mario Pinto da Silva;myFarm;Automação de notas de entrada;Importação e lançamento de notas sem intervenção manual;Formulário
+30020666;Mario Pinto da Silva;myFarm;Pecuária;Confinamento;Formulário
+30015024;Bruno Sanches Toro;AgriManager;Financeiro e conciliação;Rastreio de pagamento antecipado a fornecedor e conciliação bancária;Formulário
+30015024;Bruno Sanches Toro;AgriManager;Financeiro e conciliação;Operações de retorno travadas em chamado aberto;Formulário
+30015024;Bruno Sanches Toro;AgriManager;Integração e automação;Lançamentos automáticos, citados como motivo da troca;Reunião 17/09
+30017941;Augusto Cesar Andrade Maia;myFarm;Estabilidade e desempenho;Falhas e inconsistências recorrentes;Formulário
+30009772;Claudio Augusto Diniz;AgriManager;Plataforma e acesso;Operar 100% online, sem servidor físico;Formulário
+30009772;Claudio Augusto Diniz;AgriManager;Simplicidade para equipe enxuta;Interface e relatórios complexos para o dono;Formulário
+30011918;Cleonesio Luiz Marx;myFarm;Relatórios gerenciais;Custo por safra e talhão, abastecimento e máquinas;Formulário
+30011918;Cleonesio Luiz Marx;myFarm;Estabilidade e desempenho;Lentidão, travamento e queda de sessão durante lançamentos;Formulário
+30017104;Roque Cassol;myFarm;Simplicidade para equipe enxuta;Custo por talhão exige lançamento detalhado demais;Formulário
+30012735;Gemiro Carafini;AgriManager;Plataforma e acesso;Abrir várias telas ao mesmo tempo;Formulário
+30007727;3SB Produtos Agrícolas;AgriManager;Integração e automação;Integração com outros sistemas, flexibilidade e automação;Registro jan a jun
+30018439;Luis Henrique Pazini;myFarm;Estabilidade e desempenho;Instabilidade, sem detalhe no registro;Registro jan a jun
+30018091;Eliana Gasparini Testa;myFarm;Pecuária;Leilão de animais;Registro jan a jun
+30015743;Geraldo Augusto Martins Teixeira;myFarm;Pecuária;Produção de leite e bovinos;Registro jan a jun
+30012511;Leinner Lima Borges;myFarm;Estabilidade e desempenho;Lentidão e desempenho;Registro jan a jun
