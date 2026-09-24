@@ -39,7 +39,9 @@ Isso vale pro que é novo; pendência antiga continua valendo, venha de onde vie
 1. **Sistema:** `_contexto/agora.md` (pendências e onde paramos), o `andamento.md` de cada pasta de
    projeto, `_contexto/jeito-do-julio.md` e `equipe/radar.md` (o que já se sabe; use pra calibrar,
    não repita), o briefing anterior (`briefing/*.json` mais recente: o que já foi apontado e
-   continua sem movimento) e os `resumo-teams/` mais recentes.
+   continua sem movimento), os `resumo-teams/` mais recentes e os diários desde o briefing
+   anterior (`_memoria/diario/`, todos os arquivos das datas da janela). No diário fica o que o
+   Julio já atacou ("Julio atacou", "feito"): isso **não volta** como pendência, nem com outro nome.
 2. **Email (Outlook):** a pasta **Email Pendentes** inteira (tudo lá é pendência aberta; conte os
    dias parado pela data do email), a Inbox na janela e os **Enviados** na janela (pra saber o que
    ele respondeu e aprender como escreve).

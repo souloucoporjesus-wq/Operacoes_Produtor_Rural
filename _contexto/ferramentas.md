@@ -15,7 +15,7 @@
 | Qulture.Rocks | OKRs do time | sem conector no catálogo | não ligada | 2026-09-16 |
 | Outlook | email (`@aliare.co`) e agenda | MCP Microsoft 365 (na sessão e nas rotinas de nuvem); pode ler, mover entre pastas e criar pasta | ligada | 2026-09-23 |
 | Teams | conversas e reuniões | MCP Microsoft 365 (`chat_message_search`, na sessão e nas rotinas de nuvem) | ligada | 2026-09-23 |
-| GitHub | cópia do sistema (`souloucoporjesus-wq/Operacoes_Produtor_Rural`) e caminho das rotinas de nuvem pro repositório | nesta máquina, o git do GitHub Desktop (fora do PATH); conta conectada ao claude.ai, mas o app do Claude ainda não está instalado no repositório, então as rotinas só leem | ligada (rotinas só leitura) | 2026-09-23 |
+| GitHub | cópia do sistema (`souloucoporjesus-wq/Operacoes_Produtor_Rural`) e caminho das rotinas de nuvem pro repositório | nesta máquina, o git do GitHub Desktop (fora do PATH); conta conectada ao claude.ai e app do Claude instalado no repositório (24/09): as rotinas de nuvem leem e gravam | ligada | 2026-09-24 |
 | Rotinas de nuvem do Claude Code | rodar tarefa agendada com o computador desligado (triagem de email, resumo do Teams, briefing) | ferramenta de rotinas da sessão; lista em https://claude.ai/code/routines; inventário em `_contexto/automacoes.md` | ligada | 2026-09-23 |
 | Engenho (ferramenta própria) | controle de tarefas e prazos (Vercel + Supabase) | Supabase tem conector (MCP) no catálogo, combinado deixar pra depois | não ligada | 2026-09-16 |
 | Disparo em massa (ferramenta interna) | mensagem em massa pra clientes | só você, na mão | não ligada | 2026-09-16 |
