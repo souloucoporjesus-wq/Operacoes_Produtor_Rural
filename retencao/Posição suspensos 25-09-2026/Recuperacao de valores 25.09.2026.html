@@ -1,0 +1,3271 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Posição da Cobrança</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+  :root {
+    --ground: #F4F6F9; --surface: #FFFFFF; --surface-alt: #EDF1F6;
+    --ink: #172029; --ink-soft: #4A5766; --ink-faint: #6F7C8A;
+    --rule: #D8DFE8; --rule-strong: #B9C4D0; --accent: #0A5C8A;
+    --s-caixa: #1E8A3E; --s-receber: #2B63D1; --s-perda: #C8412F;
+    --s-caixa-soft: #E1F2E5; --s-receber-soft: #E3EBFA; --s-perda-soft: #F8E3DF;
+    --s-caixa-ink: #16692F; --s-receber-ink: #1F4DA8; --s-perda-ink: #A13222;
+    --bar: #4A5766; --x: #7A4FD9; --x-soft: #F0EAFC; --x-ink: #5B34B8;
+    --shadow: 0 1px 2px rgba(23,32,41,.05), 0 8px 24px rgba(23,32,41,.06);
+    --scrim: rgba(16,21,27,.52);
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #10151B; --surface: #181F27; --surface-alt: #1F2833;
+      --ink: #E4EAF1; --ink-soft: #A8B4C2; --ink-faint: #8290A0;
+      --rule: #2C3743; --rule-strong: #3D4A58; --accent: #57A8D8;
+      --s-caixa: #3AA050; --s-receber: #5B87E6; --s-perda: #E05F47;
+      --s-caixa-soft: #163323; --s-receber-soft: #1A2745; --s-perda-soft: #3A1F1A;
+      --s-caixa-ink: #6FD08A; --s-receber-ink: #93B2F5; --s-perda-ink: #F29A87;
+      --bar: #8E9BAA; --x: #9D7CF0; --x-soft: #272040; --x-ink: #C3B1F7;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+      --scrim: rgba(0,0,0,.62);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #10151B; --surface: #181F27; --surface-alt: #1F2833;
+    --ink: #E4EAF1; --ink-soft: #A8B4C2; --ink-faint: #8290A0;
+    --rule: #2C3743; --rule-strong: #3D4A58; --accent: #57A8D8;
+    --s-caixa: #3AA050; --s-receber: #5B87E6; --s-perda: #E05F47;
+    --s-caixa-soft: #163323; --s-receber-soft: #1A2745; --s-perda-soft: #3A1F1A;
+    --s-caixa-ink: #6FD08A; --s-receber-ink: #93B2F5; --s-perda-ink: #F29A87;
+    --bar: #8E9BAA; --x: #9D7CF0; --x-soft: #272040; --x-ink: #C3B1F7;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+    --scrim: rgba(0,0,0,.62);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 16px 80px; }
+  @media (min-width: 720px) { .wrap { padding-inline: 28px; } }
+  button:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-block: 22px 0; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+  .top .brand b { color: var(--ink); font-weight: 500; }
+  @media (max-width: 480px) { .top .brand span { display: none; } }
+  .btn-ghost { appearance: none; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-soft); font: 500 12.5px var(--sans); letter-spacing: 0; text-transform: none; padding: 7px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+  .btn-ghost:hover { color: var(--ink); border-color: var(--rule-strong); }
+
+  header.hero-head { padding-block: 40px 4px; }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
+  h1 { font-weight: 700; font-size: clamp(30px, 5.4vw, 46px); line-height: 1.1; letter-spacing: -.022em; margin: 0 0 18px; text-wrap: balance; max-width: 22ch; }
+  .standfirst { font-family: var(--serif); font-size: clamp(17px, 2.3vw, 19.5px); line-height: 1.55; color: var(--ink-soft); margin: 0; max-width: 62ch; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 26px; margin-top: 22px; font-family: var(--mono); font-size: 12.5px; color: var(--ink-faint); }
+
+  /* visão geral */
+  .overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 30px; }
+  @media (min-width: 820px) { .overview { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .ov { appearance: none; text-align: left; border: 1px solid var(--rule); background: var(--surface); color: inherit; font: inherit; border-radius: 10px; padding: 16px 16px 14px; cursor: pointer; display: flex; flex-direction: column; gap: 4px; min-width: 0; box-shadow: var(--shadow); transition: border-color .15s; }
+  .ov:hover { border-color: var(--rule-strong); }
+  .ov[aria-current="true"] { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+  .ov .k { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); display: flex; justify-content: space-between; gap: 8px; }
+  .ov .v { font-size: 24px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; white-space: nowrap; }
+  .ov .n { font-size: 12.5px; color: var(--ink-soft); line-height: 1.4; }
+  @media (max-width: 559px) { .ov .v { font-size: 20px; } .ov { padding: 13px 13px 12px; } .ov .k { flex-direction: column; gap: 2px; } }
+  .pn-figs .v small { display: block; font-size: 12.5px; font-weight: 400; color: var(--ink-faint); letter-spacing: 0; }
+  .ov-note { font-size: 13px; color: var(--ink-faint); margin: 12px 2px 0; }
+
+  /* abas */
+  .tabbar { position: sticky; top: 0; z-index: 20; background: var(--ground); margin-top: 34px; padding-top: 8px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--ink); overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { appearance: none; border: 1px solid var(--rule); border-bottom: none; background: var(--surface-alt); color: var(--ink-soft); font: 500 14.5px var(--sans); padding: 11px 18px; cursor: pointer; border-radius: 6px 6px 0 0; white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; }
+  .tab:hover { color: var(--ink); }
+  .tab .c { font-family: var(--mono); font-size: 11.5px; padding: 1px 6px; border-radius: 4px; background: var(--surface); color: var(--ink-faint); }
+  .tab[aria-selected="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+  .tab[aria-selected="true"] .c { background: rgba(255,255,255,.16); color: var(--ground); }
+  @media (max-width: 560px) { .tab { padding: 10px 12px; font-size: 13.5px; } }
+  .tabpanel[hidden] { display: none; }
+
+  section { padding-top: 52px; }
+  .tabpanel > section:first-child { padding-top: 32px; }
+  .sec-mark { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 8px; }
+  h2 { font-size: clamp(21px, 3vw, 25px); font-weight: 600; letter-spacing: -.015em; margin: 0 0 8px; text-wrap: balance; }
+  .sec-lead { color: var(--ink-soft); margin: 0 0 24px; max-width: 66ch; }
+  p { margin: 0 0 14px; }
+
+  /* bloco de resultado */
+  .result { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; }
+  .result-main { display: grid; gap: 28px; padding: 28px 22px 26px; }
+  @media (min-width: 860px) { .result-main { grid-template-columns: 1.05fr 2fr; padding: 34px 32px 30px; gap: 36px; } }
+  .hero-k { font-size: 14px; color: var(--ink-soft); margin: 0 0 6px; font-weight: 500; }
+  .hero-v { font-size: clamp(46px, 8vw, 62px); font-weight: 600; letter-spacing: -.03em; line-height: 1; margin: 0 0 12px; white-space: nowrap; }
+  .hero-v small { font-size: .42em; font-weight: 500; letter-spacing: -.01em; color: var(--ink-soft); margin-left: 4px; }
+  .hero-n { font-size: 14.5px; color: var(--ink-soft); line-height: 1.5; margin: 0; }
+  .hero-n strong { color: var(--ink); font-weight: 600; }
+  .tiles { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; align-self: start; }
+  @media (min-width: 560px) { .tiles { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  @media (min-width: 860px) { .tiles { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .tile { background: var(--surface); padding: 16px 16px 15px; display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .tile .k { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--ink-soft); font-weight: 500; }
+  .tile .v { font-size: 25px; font-weight: 600; letter-spacing: -.02em; line-height: 1.15; white-space: nowrap; }
+  .tile .n { font-size: 12.5px; color: var(--ink-faint); line-height: 1.4; }
+  @media (max-width: 559px) { .tile .v { font-size: 21px; } .tile { padding: 14px 13px 13px; } }
+  .sw { width: 10px; height: 10px; border-radius: 3px; flex: none; display: inline-block; }
+  .sw.caixa { background: var(--s-caixa); } .sw.receber { background: var(--s-receber); } .sw.perda { background: var(--s-perda); }
+  .sw.base { background: var(--ink-faint); border-radius: 50%; }
+  .result-bar { border-top: 1px solid var(--rule); padding: 22px 22px 24px; }
+  @media (min-width: 860px) { .result-bar { padding: 24px 32px 28px; } }
+  .bar-title { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin: 0 0 12px; }
+  .bar-title h3 { font-size: 15px; font-weight: 600; margin: 0; }
+  .bar-title span { font-family: var(--mono); font-size: 12.5px; color: var(--ink-faint); }
+  .sbar { display: flex; gap: 2px; width: 100%; }
+  .sbar .seg { height: 100%; min-width: 3px; position: relative; }
+  .sbar .seg:first-child { border-radius: 4px 0 0 4px; } .sbar .seg:last-child { border-radius: 0 4px 4px 0; } .sbar .seg:only-child { border-radius: 4px; }
+  .sbar .seg.caixa { background: var(--s-caixa); } .sbar .seg.receber { background: var(--s-receber); } .sbar .seg.perda { background: var(--s-perda); }
+  .sbar.big { height: 34px; }
+  .sbar.big .seg .in { position: absolute; inset: 0; display: flex; align-items: center; padding-left: 10px; font-family: var(--mono); font-size: 12px; font-weight: 500; color: #fff; white-space: nowrap; }
+  .legend { display: flex; flex-wrap: wrap; gap: 8px 24px; margin-top: 14px; font-size: 13.5px; color: var(--ink-soft); }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  .legend b { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+
+  /* achados */
+  .findings { display: grid; gap: 14px; }
+  @media (min-width: 760px) { .findings { grid-template-columns: 1fr 1fr; } }
+  .finding { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .finding .num { font-size: 30px; font-weight: 600; letter-spacing: -.02em; line-height: 1; }
+  .finding h3 { font-size: 17px; font-weight: 600; margin: 0; line-height: 1.35; }
+  .finding p { font-size: 14.5px; color: var(--ink-soft); margin: 0; line-height: 1.55; }
+  .finding .kicker { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+  .dots { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 2px; }
+  .dots i { width: 14px; height: 14px; border-radius: 4px; display: block; }
+  .dots i.caixa { background: var(--s-caixa); } .dots i.receber { background: var(--s-receber); } .dots i.perda { background: var(--s-perda); }
+
+  /* filtros */
+  .filters { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin: 0 0 14px; }
+  .chips { display: inline-flex; flex-wrap: wrap; gap: 6px; }
+  .chip { appearance: none; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-soft); font: 500 13.5px var(--sans); padding: 7px 13px; border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: 7px; min-height: 36px; }
+  .chip:hover { color: var(--ink); border-color: var(--rule-strong); }
+  .chip[aria-pressed="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+  .chip .c { font-family: var(--mono); font-size: 12px; opacity: .75; }
+  .filters .sep { width: 1px; height: 22px; background: var(--rule); }
+  @media (max-width: 560px) { .filters .sep { display: none; } }
+
+  /* listas */
+  .list { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; }
+  .list-head, .row, .list-foot { display: grid; align-items: center; gap: 6px 18px; grid-template-columns: minmax(0, 1fr) auto; padding: 14px 16px; }
+  @media (min-width: 760px) {
+    .list-head, .row, .list-foot { grid-template-columns: minmax(0, 1.25fr) minmax(170px, 1.2fr) 118px 118px 18px; padding: 14px 20px; }
+    .cart .list-head, .cart .row, .cart .list-foot { grid-template-columns: minmax(0, 1.5fr) minmax(140px, 1fr) 126px 126px 18px; }
+  }
+  .list-head { font-family: var(--mono); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-faint); background: var(--surface-alt); border-bottom: 1px solid var(--rule); padding-block: 10px; }
+  .r { text-align: right; }
+  @media (max-width: 759px) { .list-head { display: none; } }
+  .row { appearance: none; width: 100%; border: 0; border-bottom: 1px solid var(--rule); background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; }
+  .list > .row:last-of-type { border-bottom: 0; }
+  .row:hover { background: var(--surface-alt); }
+  .row:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .row .who { min-width: 0; }
+  .row .nm { font-weight: 600; font-size: 15.5px; line-height: 1.3; display: block; }
+  .row .sub { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; margin-top: 5px; font-size: 12.5px; color: var(--ink-faint); }
+  .row .barcell { min-width: 0; }
+  .row .sbar, .row .hb { height: 12px; }
+  .hb { display: block; background: var(--bar); border-radius: 0 4px 4px 0; min-width: 3px; opacity: .8; }
+  .row .val { font-variant-numeric: tabular-nums; font-weight: 600; font-size: 15px; white-space: nowrap; }
+  .row .val small { display: block; font-weight: 400; font-size: 12px; color: var(--ink-faint); }
+  .row .sec { font-variant-numeric: tabular-nums; color: var(--ink-soft); font-size: 14.5px; white-space: nowrap; }
+  .row .sec small { display: block; font-size: 12px; color: var(--ink-faint); }
+  .row .chev { color: var(--ink-faint); }
+  .row .bartxt { font-size: 13px; color: var(--ink-soft); }
+  @media (max-width: 759px) {
+    .row .barcell { grid-column: 1 / -1; grid-row: 2; }
+    .row .sec, .row .chev { display: none; }
+    .row .val { grid-column: 2; grid-row: 1; }
+    .list-foot .hide-m { display: none; }
+  }
+  .list-foot { background: var(--surface-alt); border-top: 1px solid var(--rule); font-size: 14px; font-weight: 600; }
+  .list-foot .r { font-variant-numeric: tabular-nums; }
+  .empty { padding: 28px 20px; color: var(--ink-faint); text-align: center; }
+  .hint { font-size: 13px; color: var(--ink-faint); margin: 10px 2px 0; }
+
+  .tag { display: inline-flex; align-items: center; gap: 5px; font-family: var(--mono); font-size: 11px; letter-spacing: .03em; padding: 2px 8px 2px 6px; border-radius: 4px; white-space: nowrap; font-weight: 500; }
+  .tag svg { width: 12px; height: 12px; flex: none; }
+  .tag.quitado { background: var(--s-caixa-soft); color: var(--s-caixa-ink); }
+  .tag.acordo { background: var(--s-receber-soft); color: var(--s-receber-ink); }
+  .tag.cancelou { background: var(--s-perda-soft); color: var(--s-perda-ink); }
+  .tag.neutro { background: var(--surface-alt); color: var(--ink-soft); border: 1px solid var(--rule); }
+  .prod { font-family: var(--mono); font-size: 11px; letter-spacing: .04em; color: var(--ink-faint); }
+
+  /* cartões */
+  .grid2 { display: grid; gap: 14px; }
+  @media (min-width: 860px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 22px; }
+  .card h3 { font-size: 16px; font-weight: 600; margin: 0 0 12px; line-height: 1.35; }
+  .card p { font-size: 14.5px; color: var(--ink-soft); }
+  .card p:last-child { margin-bottom: 0; }
+  .card .kicker { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 8px; }
+  .facts { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .facts li { display: grid; grid-template-columns: 22px minmax(0, 1fr); gap: 8px; font-size: 14.5px; color: var(--ink-soft); line-height: 1.5; }
+  .facts li b { color: var(--ink); font-weight: 600; }
+  .facts .ix { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); padding-top: 2px; }
+  .conc { list-style: none; margin: 0; padding: 0; }
+  .conc li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 16px; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .conc li:first-child { padding-top: 0; } .conc li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .conc .nm { font-weight: 600; font-size: 14.5px; }
+  .conc .st { grid-column: 1 / -1; font-size: 13px; color: var(--ink-faint); }
+  .conc .vv { font-variant-numeric: tabular-nums; font-weight: 600; font-size: 14.5px; white-space: nowrap; }
+  .conc .hbar { height: 8px; border-radius: 0 4px 4px 0; background: var(--bar); grid-column: 1 / -1; opacity: .55; }
+  .link-btn { appearance: none; border: 0; background: none; padding: 0; color: var(--accent); font: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+
+  /* barras horizontais de etapa */
+  .hchart { display: grid; gap: 10px; }
+  .hrow { display: grid; grid-template-columns: minmax(150px, 230px) minmax(0, 1fr) auto; gap: 14px; align-items: center; cursor: default; border-radius: 6px; }
+  .hrow .l { font-size: 14px; color: var(--ink); line-height: 1.3; }
+  .hrow .l small { display: block; font-size: 12px; color: var(--ink-faint); }
+  .hrow .track { height: 18px; display: flex; align-items: center; }
+  .hrow .fill { height: 18px; background: var(--bar); border-radius: 0 4px 4px 0; min-width: 3px; }
+  .hrow .v { font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 600; white-space: nowrap; min-width: 92px; text-align: right; }
+  .hrow .v small { display: block; font-size: 12px; font-weight: 400; color: var(--ink-faint); }
+  .hrow.hl .fill { background: var(--ink); }
+  @media (max-width: 560px) { .hrow { grid-template-columns: minmax(0, 1fr) auto; } .hrow .track { grid-column: 1 / -1; grid-row: 2; } }
+
+  /* extras da central e receita mensal */
+  .sw.extra { background: var(--x); } .sw.bar { background: var(--bar); }
+  .tag.extra { background: var(--x-soft); color: var(--x-ink); border: 1px solid color-mix(in srgb, var(--x) 35%, transparent); }
+  .row.extra { background: var(--x-soft); box-shadow: inset 4px 0 0 var(--x); }
+  .row.extra:hover { background: color-mix(in srgb, var(--x-soft) 70%, var(--surface-alt)); }
+  .hrow.mrr { cursor: pointer; padding: 2px 4px; }
+  .hrow.mrr:hover { background: var(--surface-alt); }
+  .hrow.mrr .fill.extra { background: var(--x); opacity: 1; }
+  .hrow.mrr .l { display: flex; flex-direction: column; gap: 3px; }
+  .hrow.mrr .l .tag { align-self: flex-start; }
+  .mrr-wrap { border-top: 1px solid var(--rule); padding: 22px 22px 24px; }
+  @media (min-width: 860px) { .mrr-wrap { padding: 24px 32px 28px; } }
+  .mrr-note { font-size: 13.5px; color: var(--ink-soft); margin: 16px 0 0; }
+  @media (max-width: 759px) {
+    #list .row .sec { display: block; grid-column: 1 / -1; grid-row: 3; text-align: left; font-size: 13px; }
+    #list .row .sec:empty { display: none; }
+    #list .row .sec small { display: inline; margin-left: 6px; }
+  }
+
+  /* calendário */
+  .agenda { padding: 24px 22px 8px; }
+  @media (min-width: 760px) { .agenda { padding: 28px 28px 10px; } }
+  .agenda-chart { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; align-items: end; height: 230px; border-bottom: 1px solid var(--rule-strong); position: relative; }
+  .agenda-chart .gl { position: absolute; left: 0; right: 0; border-top: 1px solid var(--rule); pointer-events: none; }
+  .agenda-chart .gl span { position: absolute; right: 0; top: -9px; font-family: var(--mono); font-size: 10.5px; color: var(--ink-faint); background: var(--surface); padding-left: 6px; }
+  .acol { display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; position: relative; z-index: 1; }
+  .acol .lbl { font-variant-numeric: tabular-nums; font-size: 12.5px; font-weight: 600; margin-bottom: 6px; white-space: nowrap; }
+  .acol .col { width: min(24px, 60%); border-radius: 4px 4px 0 0; background: var(--s-receber); min-height: 3px; }
+  .acol.semdata .col { background: var(--ink-faint); }
+  .acol.vazio .col { background: transparent; }
+  .agenda-x { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); gap: 6px; margin-top: 8px; }
+  .agenda-x span { text-align: center; font-family: var(--mono); font-size: 11.5px; color: var(--ink-soft); line-height: 1.3; }
+  .agenda-x span em { display: block; font-style: normal; font-size: 10.5px; color: var(--ink-faint); }
+  .agenda-list { margin-top: 22px; border-top: 1px solid var(--rule); }
+  .agenda-list .it, .marco { display: grid; grid-template-columns: 110px minmax(0, 1fr) auto; gap: 4px 16px; padding: 12px 0; border-bottom: 1px solid var(--rule); align-items: baseline; }
+  .agenda-list .it:last-child { border-bottom: 0; }
+  .agenda-list .d, .marco .d { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); }
+  .agenda-list .t, .marco .t { font-size: 14.5px; }
+  .agenda-list .t span, .marco .t span { display: block; font-size: 12.5px; color: var(--ink-faint); margin-top: 1px; }
+  .agenda-list .v, .marco .v { font-variant-numeric: tabular-nums; font-weight: 600; font-size: 14.5px; white-space: nowrap; }
+  .marcos { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 4px 20px; }
+  .marco:last-child { border-bottom: 0; }
+  @media (max-width: 560px) {
+    .agenda-list .it, .marco { grid-template-columns: minmax(0, 1fr) auto; }
+    .agenda-list .d, .marco .d { grid-column: 1 / -1; }
+    .acol .lbl { font-size: 10.5px; } .agenda-x span { font-size: 10px; }
+  }
+
+  /* tabela completa */
+  details.full { margin-top: 52px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; }
+  details.full summary { cursor: pointer; padding: 16px 20px; font-weight: 600; font-size: 15px; list-style: none; display: flex; justify-content: space-between; align-items: center; gap: 12px; }
+  details.full summary::-webkit-details-marker { display: none; }
+  details.full summary::after { content: "+"; font-family: var(--mono); font-size: 18px; color: var(--ink-faint); }
+  details.full[open] summary::after { content: "×"; }
+  .tbl-wrap { overflow-x: auto; border-top: 1px solid var(--rule); }
+  table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 860px; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--rule); vertical-align: top; }
+  th { font-family: var(--mono); font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-faint); font-weight: 500; background: var(--surface-alt); white-space: nowrap; }
+  td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  tfoot td { font-weight: 600; background: var(--surface-alt); border-bottom: 0; }
+
+  footer.foot { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--rule); font-size: 12.5px; color: var(--ink-faint); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px 24px; }
+
+  .tip { position: fixed; z-index: 60; pointer-events: none; background: var(--ink); color: var(--ground); padding: 8px 11px; border-radius: 6px; font-size: 13px; line-height: 1.35; box-shadow: var(--shadow); opacity: 0; transform: translateY(4px); transition: opacity .12s, transform .12s; max-width: 280px; }
+  .tip.on { opacity: 1; transform: none; }
+  .tip b { display: block; font-weight: 600; font-variant-numeric: tabular-nums; }
+
+  /* painel */
+  dialog.panel { border: 0; padding: 0; margin: 0 0 0 auto; height: 100%; max-height: 100%; width: min(560px, 100%); max-width: 100%; background: var(--surface); color: var(--ink); box-shadow: -12px 0 40px rgba(0,0,0,.18); }
+  dialog.panel::backdrop { background: var(--scrim); }
+  dialog.panel[open] { animation: slide .22s ease-out; }
+  @keyframes slide { from { transform: translateX(24px); opacity: .4; } to { transform: none; opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { dialog.panel[open] { animation: none; } .tip { transition: none; } }
+  @media (max-width: 640px) {
+    dialog.panel { margin: auto 0 0 0; height: auto; max-height: 92vh; width: 100%; border-radius: 14px 14px 0 0; }
+    @keyframes slide { from { transform: translateY(24px); opacity: .4; } to { transform: none; opacity: 1; } }
+  }
+  .pn { display: flex; flex-direction: column; height: 100%; max-height: inherit; }
+  .pn-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--rule); }
+  .pn-top .pos { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); }
+  .pn-nav { display: flex; gap: 6px; }
+  .icon-btn { appearance: none; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-soft); width: 36px; height: 36px; border-radius: 8px; cursor: pointer; display: grid; place-items: center; }
+  .icon-btn:hover { color: var(--ink); border-color: var(--rule-strong); }
+  .icon-btn svg { width: 16px; height: 16px; }
+  .pn-body { overflow-y: auto; padding: 22px 22px 30px; outline: none; }
+  .pn-body:focus-visible { outline: none; }
+  @media (min-width: 641px) { .pn-body { padding: 26px 28px 36px; } }
+  .pn-body h2 { font-size: 23px; margin: 10px 0 6px; line-height: 1.2; }
+  .pn-sub { font-family: var(--mono); font-size: 12px; color: var(--ink-faint); margin: 0 0 20px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .pn-figs { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; margin-bottom: 14px; }
+  .pn-figs > div { background: var(--surface); padding: 13px 14px; min-width: 0; }
+  .pn-figs .k { font-size: 12.5px; color: var(--ink-soft); display: flex; align-items: center; gap: 7px; }
+  .pn-figs .v { font-size: 20px; font-weight: 600; letter-spacing: -.015em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .pn-figs .wide { grid-column: 1 / -1; } .pn-figs .wide .v { font-size: 26px; }
+  .pn-figs .odd-last:last-child { grid-column: 1 / -1; }
+  .pn-body .sbar { height: 14px; margin: 4px 0 6px; }
+  .pn-h { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); margin: 26px 0 10px; }
+  .comp { list-style: none; margin: 0; padding: 0; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+  .comp li { display: flex; justify-content: space-between; gap: 16px; padding: 10px 14px; border-bottom: 1px solid var(--rule); font-size: 14.5px; }
+  .comp li:last-child { border-bottom: 0; }
+  .comp.tot li:last-child { background: var(--surface-alt); font-weight: 600; }
+  .comp li span:last-child { font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+  .comp li small { display: block; font-size: 12.5px; color: var(--ink-faint); font-weight: 400; }
+  .story { font-family: var(--serif); font-size: 16.5px; line-height: 1.6; margin: 0; }
+  .next { border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; font-size: 15px; margin: 0; }
+  .note-inline { margin-top: 16px; font-size: 13.5px; color: var(--ink-soft); background: var(--surface-alt); border: 1px solid var(--rule); border-radius: 8px; padding: 10px 14px; }
+  .timeline { list-style: none; margin: 0; padding: 0; }
+  .timeline li { display: grid; grid-template-columns: 18px 100px minmax(0, 1fr) auto; gap: 12px; align-items: baseline; padding: 8px 0; position: relative; }
+  .timeline li::before { content: ""; position: absolute; left: 5px; top: 22px; bottom: -8px; width: 2px; background: var(--rule); }
+  .timeline li:last-child::before { display: none; }
+  .timeline .pt { width: 12px; height: 12px; border-radius: 50%; align-self: center; box-shadow: 0 0 0 2px var(--surface); position: relative; z-index: 1; }
+  .timeline .pt.pago { background: var(--s-caixa); } .timeline .pt.previsto { background: var(--surface); border: 2px solid var(--s-receber); }
+  .timeline .pt.info { background: var(--ink-faint); } .timeline .pt.perda { background: var(--s-perda); }
+  .timeline .d { font-family: var(--mono); font-size: 12.5px; color: var(--ink-soft); }
+  .timeline .t { font-size: 14.5px; } .timeline .v { font-variant-numeric: tabular-nums; font-weight: 600; font-size: 14.5px; white-space: nowrap; }
+  .profile { display: grid; gap: 8px; font-size: 14.5px; color: var(--ink-soft); }
+  .profile div { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 12px; }
+  .profile b { font-weight: 500; color: var(--ink-faint); font-size: 13px; }
+
+  @media print {
+    body { background: #fff; }
+    .no-print, .tip, dialog, .tabbar { display: none !important; }
+    .tabpanel[hidden] { display: block !important; }
+    .tabpanel { break-before: page; }
+    .wrap { max-width: none; padding: 0; }
+    section { padding-top: 26px; break-inside: avoid; }
+    .result, .finding, .card, .list, .marcos, details.full, .ov { box-shadow: none; }
+    .row { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand"><b>Aliare</b> <span>Operações Produtor Rural</span></div>
+    <div class="no-print" style="display:flex;gap:8px">
+      <button class="btn-ghost" id="btn-print" type="button">Imprimir</button>
+      <button class="btn-ghost" id="btn-theme" type="button" aria-label="Alternar tema claro e escuro">Tema escuro</button>
+    </div>
+  </div>
+
+  <header class="hero-head">
+    <p class="eyebrow">Posição da cobrança · Contratos suspensos</p>
+    <h1>Posição da cobrança dos contratos suspensos</h1>
+    <p class="standfirst" id="standfirst"></p>
+    <div class="meta">
+      <span>Posição de 25/09/2026</span>
+      <span id="meta-n"></span>
+      <span>AgriManager, myFarm e Aliare Cloud</span>
+    </div>
+    <div class="overview no-print" id="overview"></div>
+    <p class="ov-note">Cada cliente aparece em uma única aba, mesmo quando consta em mais de uma planilha. Tellus e Theodoro, que pagaram o faturado e cancelaram, estão em Recuperação. A Alvorada aparece pelo contrato myFarm, para onde migrou.</p>
+  </header>
+
+  <div class="tabbar no-print">
+    <div class="tabs" role="tablist" aria-label="Seções do relatório" id="tabs"></div>
+  </div>
+
+  <!-- ============ RECUPERAÇÃO ============ -->
+  <div class="tabpanel" id="p-recuperacao" role="tabpanel" aria-labelledby="t-recuperacao">
+    <section aria-labelledby="h-mrr">
+      <p class="sec-mark">Recuperação · Receita mensal</p>
+      <h2 id="h-mrr">Receita mensal que voltou a ser faturada em setembro</h2>
+      <p class="sec-lead" id="mrr-lead"></p>
+      <div class="result">
+        <div class="result-main">
+          <div>
+            <p class="hero-k">MRR recuperado, com contratos anuais divididos por 12</p>
+            <p class="hero-v" id="mrr-hero"></p>
+            <p class="hero-n" id="mrr-hero-n"></p>
+          </div>
+          <div class="tiles" id="mrr-tiles"></div>
+        </div>
+        <div class="mrr-wrap">
+          <div class="bar-title"><h3>MRR recuperado por contrato</h3><span>Clique para ver o detalhe</span></div>
+          <div class="hchart" id="mrr-chart"></div>
+          <div class="legend"><span><i class="sw bar"></i>Da carteira de cobrança</span><span><i class="sw extra"></i>Extra, fora das planilhas de cobrança</span></div>
+          <p class="mrr-note" id="mrr-note"></p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-res">
+      <p class="sec-mark">Recuperação · Dívida</p>
+      <h2 id="h-res">Dívida recuperada nos contratos negociados</h2>
+      <p class="sec-lead" id="rec-lead"></p>
+      <div class="result">
+        <div class="result-main">
+          <div>
+            <p class="hero-k">Valor recuperado, entre pagamentos e acordos</p>
+            <p class="hero-v" id="hero-v"></p>
+            <p class="hero-n" id="hero-n"></p>
+          </div>
+          <div class="tiles" id="tiles"></div>
+        </div>
+        <div class="result-bar">
+          <div class="bar-title"><h3>Para onde foi a dívida tratada</h3><span id="bar-total"></span></div>
+          <div class="sbar big" id="bar-main" role="img"></div>
+          <div class="legend" id="legend-main"></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-find">
+      <p class="sec-mark">O que os números mostram</p>
+      <h2 id="h-find">O valor represado define quem fica e quem sai</h2>
+      <p class="sec-lead">Os onze contratos se dividem em dois grupos: os que deviam apenas mensalidades faturadas e os que tinham também parcelas represadas durante a suspensão.</p>
+      <div class="findings">
+        <article class="finding">
+          <div class="kicker">7 contratos sem represado</div>
+          <div class="num" id="f1-num"></div>
+          <h3>Todos os clientes que deviam só o faturado pagaram ou fecharam acordo</h3>
+          <p>Cinco quitaram o valor integral, um aceitou 15% de desconto para pagamento à vista e um parcelou em três vezes. Nenhum cancelou.</p>
+          <div class="dots" id="f1-dots" aria-hidden="true"></div>
+        </article>
+        <article class="finding">
+          <div class="kicker">4 contratos com represado</div>
+          <div class="num" id="f2-num"></div>
+          <h3>Metade aceitou negociar o represado; a outra metade pagou o faturado e cancelou</h3>
+          <p>Os dois que cancelaram quitaram o faturado, mas não aceitaram pagar os meses represados da suspensão. Com eles saem R$&nbsp;26,3&nbsp;mil de represado e R$&nbsp;3,1&nbsp;mil de receita mensal.</p>
+          <div class="dots" id="f2-dots" aria-hidden="true"></div>
+        </article>
+        <article class="finding">
+          <div class="kicker">Parcelas até dezembro</div>
+          <div class="num" id="f3-num"></div>
+          <h3 id="f3-h"></h3>
+          <p>Três acordos concentram o saldo a receber: parcelas entre outubro e dezembro e o represado de um contrato em 30/03/2027. O maior tem entrada de R$&nbsp;10&nbsp;mil já paga e três parcelas de R$&nbsp;8.209,93.</p>
+        </article>
+        <article class="finding">
+          <div class="kicker">Plano Safra</div>
+          <div class="num" id="f4-num"></div>
+          <h3>Primeiro acordo fechado no Plano Safra</h3>
+          <p>O represado de junho a setembro de um contrato AgriManager vence em 30/03/2027. O cliente segue pagando as mensalidades e o acordo anterior. Desconto foi usado em um único contrato, R$&nbsp;207,20.</p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-cli">
+      <p class="sec-mark">Cliente a cliente</p>
+      <h2 id="h-cli">Quanto foi cobrado, como foi negociado e quanto voltou por mês</h2>
+      <p class="sec-lead">Clique em um cliente para ver a composição do valor cobrado, as condições do acordo, as datas de pagamento e a reativação. Em roxo, os contratos recuperados que não estavam nas planilhas de cobrança.</p>
+      <div class="filters no-print" id="rec-filters">
+        <div class="chips" id="f-status"></div>
+        <span class="sep" aria-hidden="true"></span>
+        <div class="chips" id="f-prod"></div>
+      </div>
+      <div class="list" id="list"></div>
+      <p class="hint no-print">Barras na mesma escala: o comprimento representa a dívida cobrada de cada contrato. Contratos só reativados pela central não têm dívida nas planilhas.</p>
+    </section>
+
+    <section aria-labelledby="h-agenda">
+      <p class="sec-mark">Calendário de recebimento</p>
+      <h2 id="h-agenda">Quando entra o valor a receber</h2>
+      <p class="sec-lead" id="agenda-lead"></p>
+      <div class="card agenda">
+        <div class="agenda-chart" id="agenda-chart" role="img"></div>
+        <div class="agenda-list" id="agenda-list"></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-next">
+      <p class="sec-mark">Próximos marcos</p>
+      <h2 id="h-next">O que acompanhar nas próximas semanas</h2>
+      <div class="marcos" id="marcos-lista"></div>
+    </section>
+
+    <details class="full" id="full">
+      <summary id="tbl-sum">Tabela completa</summary>
+      <div class="tbl-wrap">
+        <table id="tbl">
+          <thead><tr><th>Cliente</th><th>Contrato</th><th>Produto</th><th class="n">Faturado</th><th class="n">Represado</th><th class="n">Valor cobrado</th><th class="n">Em caixa</th><th class="n">A receber</th><th class="n">Não recuperado</th><th class="n">MRR recuperado</th><th>Situação</th></tr></thead>
+          <tbody></tbody><tfoot></tfoot>
+        </table>
+      </div>
+    </details>
+  </div>
+
+  <!-- ============ EM ABERTO ============ -->
+  <div class="tabpanel" id="p-aberto" role="tabpanel" aria-labelledby="t-aberto" hidden>
+    <section aria-labelledby="h-ab">
+      <p class="sec-mark">Em aberto · Carteira interna</p>
+      <h2 id="h-ab">Inadimplência ainda sem desfecho</h2>
+      <p class="sec-lead" id="ab-lead"></p>
+      <div class="result">
+        <div class="result-main">
+          <div>
+            <p class="hero-k">Dívida em aberto na carteira interna</p>
+            <p class="hero-v" id="ab-hero"></p>
+            <p class="hero-n" id="ab-hero-n"></p>
+          </div>
+          <div class="tiles" id="ab-tiles"></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-ab-list">
+      <p class="sec-mark">Contrato a contrato</p>
+      <h2 id="h-ab-list">Onde está cada negociação</h2>
+      <p class="sec-lead">Clique em um cliente para ver a composição da dívida, a situação e o próximo passo.</p>
+      <div class="list cart" id="ab-list"></div>
+    </section>
+
+    <section aria-labelledby="h-safra">
+      <p class="sec-mark">Plano Safra</p>
+      <h2 id="h-safra">O que ficou para 30/03/2027</h2>
+      <p class="sec-lead">O Plano Safra leva o pagamento do valor negociado para 30/03/2027, quando o produtor de grãos já recebeu pela colheita da soja.</p>
+      <div class="grid2">
+        <div class="card">
+          <p class="kicker">Como funciona</p>
+          <ul class="facts">
+            <li><span class="ix">01</span><span>O cliente assina <b>termo de confissão de dívida</b> e o boleto vence em <b>30/03/2027</b>.</span></li>
+            <li><span class="ix">02</span><span>A data fica antes de 30/04, quando vence a maior parte das compras de insumos. A Aliare recebe antes dos outros credores.</span></li>
+            <li><span class="ix">03</span><span>O represado e as mensalidades de outubro a dezembro podem entrar no mesmo boleto.</span></li>
+            <li><span class="ix">04</span><span>A mensalidade volta a ser faturada no mês seguinte ao acordo, e o contrato é reativado.</span></li>
+            <li><span class="ix">05</span><span>Pede entrada ou parcela intermediária antes da virada do ano, e justificativa de plantio.</span></li>
+          </ul>
+        </div>
+        <div class="card">
+          <p class="kicker">Onde está</p>
+          <ul class="conc" id="safra-list"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-neg">
+      <p class="sec-mark">Negociação comercial</p>
+      <h2 id="h-neg">Suspensos por renovação, migração ou pendência de projeto</h2>
+      <p class="sec-lead" id="neg-lead"></p>
+      <div class="list cart" id="neg-list"></div>
+      <p class="hint" id="sem-note"></p>
+    </section>
+  </div>
+
+  <!-- ============ ESCRITÓRIO ============ -->
+  <div class="tabpanel" id="p-escritorio" role="tabpanel" aria-labelledby="t-escritorio" hidden>
+    <section aria-labelledby="h-es">
+      <p class="sec-mark">Escritório de cobrança</p>
+      <h2 id="h-es">Dívidas entregues ao escritório terceirizado</h2>
+      <p class="sec-lead" id="es-lead"></p>
+      <div class="result">
+        <div class="result-main">
+          <div>
+            <p class="hero-k">Dívida no escritório de cobrança</p>
+            <p class="hero-v" id="es-hero"></p>
+            <p class="hero-n" id="es-hero-n"></p>
+          </div>
+          <div class="tiles" id="es-tiles"></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-es-list">
+      <p class="sec-mark">Contrato a contrato</p>
+      <h2 id="h-es-list">Situação de cada dívida no escritório</h2>
+      <p class="sec-lead">Confirmado: as duas planilhas registram a dívida no escritório. A confirmar: a planilha do CS indica o escritório e a do financeiro ainda registra a carteira interna.</p>
+      <div class="list cart" id="es-list"></div>
+    </section>
+
+    <section aria-labelledby="h-es-acordo">
+      <p class="sec-mark">Acordos do faturado</p>
+      <h2 id="h-es-acordo">Contratos em que o escritório negociou só o faturado</h2>
+      <p class="sec-lead">Nesses casos o escritório fechou acordo das mensalidades faturadas. As parcelas represadas ficaram fora e seguem em negociação na carteira interna, na aba Em aberto.</p>
+      <div class="card"><ul class="conc" id="es-acordos"></ul></div>
+    </section>
+  </div>
+
+  <!-- ============ CHURN ============ -->
+  <div class="tabpanel" id="p-churn" role="tabpanel" aria-labelledby="t-churn" hidden>
+    <section aria-labelledby="h-ch">
+      <p class="sec-mark">Churn · Cancelamentos</p>
+      <h2 id="h-ch">Contratos com cancelamento pedido ou em distrato</h2>
+      <p class="sec-lead" id="ch-lead"></p>
+      <div class="result">
+        <div class="result-main">
+          <div>
+            <p class="hero-k">Receita mensal dos contratos em churn</p>
+            <p class="hero-v" id="ch-hero"></p>
+            <p class="hero-n" id="ch-hero-n"></p>
+          </div>
+          <div class="tiles" id="ch-tiles"></div>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-ch-etapa">
+      <p class="sec-mark">Etapa do encerramento</p>
+      <h2 id="h-ch-etapa">Onde cada cancelamento está parado</h2>
+      <p class="sec-lead">Quantidade de contratos por etapa e receita mensal envolvida. Clique em uma etapa para filtrar a lista.</p>
+      <div class="card"><div class="hchart" id="ch-chart"></div></div>
+    </section>
+
+    <section aria-labelledby="h-ch-find">
+      <p class="sec-mark">O que os números mostram</p>
+      <h2 id="h-ch-find">A maior parte depende de uma resposta do cliente</h2>
+      <div class="findings" id="ch-findings"></div>
+    </section>
+
+    <section aria-labelledby="h-ch-list">
+      <p class="sec-mark">Contrato a contrato</p>
+      <h2 id="h-ch-list">Contrato a contrato em churn</h2>
+      <div class="filters no-print" id="ch-filters">
+        <div class="chips" id="ch-f-etapa"></div>
+        <span class="sep" aria-hidden="true"></span>
+        <div class="chips" id="ch-f-prod"></div>
+      </div>
+      <div class="list cart" id="ch-list"></div>
+    </section>
+  </div>
+
+  <footer class="foot">
+    <span>Fontes: planilha de inadimplência do financeiro, relatório de inadimplentes do CS e recuperação mensal da central de cobrança, posição de 25/09/2026.</span>
+    <span>Valores em reais.</span>
+  </footer>
+</div>
+
+<div class="tip" id="tip" role="status" aria-live="polite"></div>
+
+<dialog class="panel" id="panel" aria-labelledby="pn-title">
+  <div class="pn">
+    <div class="pn-top">
+      <span class="pos" id="pn-pos"></span>
+      <div class="pn-nav">
+        <button class="icon-btn" id="pn-prev" type="button" aria-label="Anterior"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3 5 8l5 5"/></svg></button>
+        <button class="icon-btn" id="pn-next" type="button" aria-label="Próximo"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg></button>
+        <button class="icon-btn" id="pn-close" type="button" aria-label="Fechar"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></button>
+      </div>
+    </div>
+    <div class="pn-body" id="pn-body" tabindex="-1"></div>
+  </div>
+</dialog>
+
+<script>
+const CLIENTES = [
+ {
+  "id": "vitor",
+  "nome": "Vitor Marcio Dumoncel e outros",
+  "contrato": "30005234-5",
+  "produto": "AgriManager",
+  "mensal": 4876.6,
+  "faturado": 0,
+  "represado": 9753.2,
+  "pcsRep": 2,
+  "saldoAnterior": 24876.59,
+  "base": 34629.79,
+  "caixa": 10000,
+  "receber": 24629.79,
+  "baixado": 0,
+  "desconto": 0,
+  "status": "acordo",
+  "statusTxt": "Acordo em parcelas",
+  "fica": true,
+  "compRep": "Parcelas represadas de agosto e setembro de 2026",
+  "negociacao": "O cliente já tinha um acordo em andamento. As duas parcelas represadas, que ficavam fora dele, foram somadas ao saldo desse acordo e consolidadas em um novo acordo, sem desconto: entrada de R$ 10.000,00, paga e confirmada em 23/09, e três parcelas de R$ 8.209,93 com vencimento em 25/10, 25/11 e 25/12.",
+  "perfil": "Primeira renegociação realizada",
+  "risco": "Alto",
+  "atraso": 145,
+  "linha": [
+   {
+    "d": "23/09/2026",
+    "t": "Entrada paga e confirmada",
+    "v": 10000,
+    "s": "pago"
+   },
+   {
+    "d": "25/10/2026",
+    "t": "Parcela 1 de 3",
+    "v": 8209.93,
+    "s": "previsto",
+    "venc": "2026-10-25"
+   },
+   {
+    "d": "25/11/2026",
+    "t": "Parcela 2 de 3",
+    "v": 8209.93,
+    "s": "previsto",
+    "venc": "2026-11-25"
+   },
+   {
+    "d": "25/12/2026",
+    "t": "Parcela 3 de 3",
+    "v": 8209.93,
+    "s": "previsto",
+    "venc": "2026-12-25"
+   }
+  ]
+ },
+ {
+  "id": "tellus",
+  "nome": "Tellus Agropecuaria Ltda",
+  "contrato": "30003178-5",
+  "produto": "AgriManager",
+  "mensal": 2202.97,
+  "faturado": 2067.47,
+  "represado": 22029.7,
+  "pcsRep": 10,
+  "base": 24097.17,
+  "caixa": 2067.47,
+  "receber": 0,
+  "baixado": 22029.7,
+  "desconto": 0,
+  "status": "cancelou",
+  "statusTxt": "Pagou o faturado e cancelou",
+  "fica": false,
+  "compRep": "Parcelas represadas durante a suspensão",
+  "negociacao": "O cliente pagou o débito faturado de R$ 2.067,47 e não aceitou negociar as dez parcelas represadas. Solicitou o cancelamento do contrato, e as notas referentes ao período represado estão em processo de cancelamento.",
+  "perfil": "No geral, pagamentos em dia",
+  "risco": "Baixo",
+  "atraso": 378,
+  "linha": [
+   {
+    "d": "Set/2026",
+    "t": "Débito faturado quitado",
+    "v": 2067.47,
+    "s": "pago"
+   },
+   {
+    "d": "Set/2026",
+    "t": "Cancelamento solicitado; notas do represado em cancelamento",
+    "v": 22029.7,
+    "s": "perda"
+   }
+  ]
+ },
+ {
+  "id": "luiz",
+  "nome": "Luiz Moreira Rocha",
+  "contrato": "30006200-5",
+  "produto": "myFarm",
+  "mensal": 2500,
+  "faturado": 20862.9,
+  "represado": 0,
+  "pcsRep": 0,
+  "base": 20862.9,
+  "caixa": 6258.78,
+  "receber": 14603.82,
+  "baixado": 0,
+  "desconto": 0.3,
+  "status": "acordo",
+  "statusTxt": "Acordo em parcelas",
+  "fica": true,
+  "negociacao": "O cliente recebeu proposta de quitação à vista com 15% de desconto e optou pelo parcelamento em três vezes, sem desconto: entrada de R$ 6.258,78, paga e confirmada, e duas parcelas de R$ 7.301,91 em 14/10 e 14/11.",
+  "perfil": "Inadimplência recorrente, pouco tempo em atraso",
+  "risco": null,
+  "atraso": 64,
+  "linha": [
+   {
+    "d": "16/09/2026",
+    "t": "Entrada paga e confirmada",
+    "v": 6258.78,
+    "s": "pago"
+   },
+   {
+    "d": "14/10/2026",
+    "t": "Parcela 1 de 2",
+    "v": 7301.91,
+    "s": "previsto",
+    "venc": "2026-10-14"
+   },
+   {
+    "d": "14/11/2026",
+    "t": "Parcela 2 de 2",
+    "v": 7301.91,
+    "s": "previsto",
+    "venc": "2026-11-14"
+   }
+  ],
+  "perdaTxt": "Diferença de arredondamento"
+ },
+ {
+  "id": "marcos",
+  "nome": "Marcos Aurelio Sinopoli",
+  "contrato": "30002424-5",
+  "produto": "AgriManager",
+  "mensal": 3380.27,
+  "faturado": 0,
+  "represado": 13521.08,
+  "pcsRep": 4,
+  "base": 13521.08,
+  "caixa": 0,
+  "receber": 13521.08,
+  "baixado": 0,
+  "desconto": 0,
+  "status": "acordo",
+  "statusTxt": "Acordo no Plano Safra",
+  "fica": true,
+  "compRep": "Parcelas represadas de junho a setembro de 2026",
+  "negociacao": "O débito faturado já estava em acordo e segue sendo cumprido. As quatro parcelas represadas, de junho a setembro, ficavam fora desse acordo. Em 18/09 foi fechado o acordo delas no Plano Safra: o cliente segue pagando as mensalidades e o acordo anterior, e o represado de R$ 13.521,08 vence em 30/03/2027.",
+  "perfil": "Histórico de renegociações não cumpridas",
+  "risco": "Alto",
+  "atraso": 96,
+  "linha": [
+   {
+    "d": "18/09/2026",
+    "t": "Acordo fechado; mensalidades e acordo anterior seguem em dia",
+    "v": null,
+    "s": "info"
+   },
+   {
+    "d": "30/03/2027",
+    "t": "Represado no Plano Safra",
+    "v": 13521.08,
+    "s": "previsto",
+    "venc": "2027-03-30",
+    "safra": true
+   }
+  ]
+ },
+ {
+  "id": "theodoro",
+  "nome": "Theodoro Ricardo de Andrade",
+  "contrato": "30005717-5",
+  "produto": "myFarm",
+  "mensal": 850,
+  "faturado": 1700,
+  "represado": 4250,
+  "pcsRep": 5,
+  "base": 5950,
+  "caixa": 1700,
+  "receber": 0,
+  "baixado": 4250,
+  "desconto": 0,
+  "status": "cancelou",
+  "statusTxt": "Pagou o faturado e cancelou",
+  "fica": false,
+  "compRep": "Parcelas represadas durante a suspensão",
+  "negociacao": "O cliente pagou integralmente o débito faturado em 16/09. Mesmo com condições especiais para o valor represado, alinhadas com o financeiro, não aceitou negociar a cobrança referente ao período em que esteve com o acesso bloqueado. Formalizou o cancelamento e informou que pretende tratar o valor restante judicialmente.",
+  "perfil": "Primeiro atraso, com uma parcela pulada",
+  "risco": null,
+  "atraso": 409,
+  "linha": [
+   {
+    "d": "16/09/2026",
+    "t": "Débito faturado quitado",
+    "v": 1700,
+    "s": "pago"
+   },
+   {
+    "d": "Set/2026",
+    "t": "Represado não aceito; cancelamento formalizado",
+    "v": 4250,
+    "s": "perda"
+   }
+  ]
+ },
+ {
+  "id": "moacyr",
+  "nome": "Moacyr Brunetta",
+  "contrato": "30001803-5",
+  "produto": "myFarm",
+  "mensal": 1398.65,
+  "faturado": 2797.3,
+  "represado": 0,
+  "pcsRep": 0,
+  "base": 2797.3,
+  "caixa": 2797.3,
+  "receber": 0,
+  "baixado": 0,
+  "desconto": 0,
+  "status": "quitado",
+  "statusTxt": "Quitado",
+  "fica": true,
+  "negociacao": "Pagamento integral do débito via pix em 24/09, sem desconto.",
+  "perfil": "Primeiro atraso",
+  "risco": null,
+  "atraso": 37,
+  "linha": [
+   {
+    "d": "24/09/2026",
+    "t": "Pagamento integral via pix",
+    "v": 2797.3,
+    "s": "pago"
+   }
+  ]
+ },
+ {
+  "id": "juarez",
+  "nome": "Juarez Carlos Silva Filho",
+  "contrato": "30006056-5",
+  "produto": "myFarm",
+  "mensal": 650,
+  "faturado": 2600,
+  "represado": 0,
+  "pcsRep": 0,
+  "base": 2600,
+  "caixa": 2600,
+  "receber": 0,
+  "baixado": 0,
+  "desconto": 0,
+  "status": "quitado",
+  "statusTxt": "Quitado",
+  "fica": true,
+  "negociacao": "Pagamento integral do débito via pix em 14/09, sem desconto.",
+  "perfil": "Inadimplência recorrente",
+  "risco": null,
+  "atraso": 96,
+  "linha": [
+   {
+    "d": "14/09/2026",
+    "t": "Pagamento integral via pix",
+    "v": 2600,
+    "s": "pago"
+   }
+  ]
+ },
+ {
+  "id": "ana",
+  "nome": "Ana Paula Bandeira de Lima",
+  "contrato": "30007162-5",
+  "produto": "myFarm",
+  "mensal": 565,
+  "faturado": 2531.68,
+  "represado": 0,
+  "pcsRep": 0,
+  "base": 2531.68,
+  "caixa": 2531.68,
+  "receber": 0,
+  "baixado": 0,
+  "desconto": 0,
+  "status": "quitado",
+  "statusTxt": "Quitado",
+  "fica": true,
+  "negociacao": "Pagamento integral do débito via pix, sem desconto.",
+  "perfil": "No geral, pagamentos em dia, com uma parcela pulada",
+  "risco": null,
+  "atraso": 100,
+  "linha": [
+   {
+    "d": "Set/2026",
+    "t": "Pagamento integral via pix",
+    "v": 2531.68,
+    "s": "pago"
+   }
+  ]
+ },
+ {
+  "id": "paulo",
+  "nome": "Paulo Massayoshi Mizote",
+  "contrato": "30000710-5",
+  "produto": "AgriManager",
+  "mensal": 1261.92,
+  "faturado": 2523.84,
+  "represado": 0,
+  "pcsRep": 0,
+  "base": 2523.84,
+  "caixa": 2523.84,
+  "receber": 0,
+  "baixado": 0,
+  "desconto": 0,
+  "status": "quitado",
+  "statusTxt": "Quitado",
+  "fica": true,
+  "negociacao": "Pagamento total do débito, correspondente a duas mensalidades, sem desconto.",
+  "perfil": "Primeiro atraso",
+  "risco": "Baixo",
+  "atraso": 59,
+  "linha": [
+   {
+    "d": "Set/2026",
+    "t": "Pagamento total do débito",
+    "v": 2523.84,
+    "s": "pago"
+   }
+  ]
+ },
+ {
+  "id": "pablo",
+  "nome": "Pablo Rafael Scnheider",
+  "contrato": "30006069-5",
+  "produto": "AgriManager",
+  "mensal": 1200,
+  "faturado": 2400,
+  "represado": 0,
+  "pcsRep": 0,
+  "base": 2400,
+  "caixa": 2400,
+  "receber": 0,
+  "baixado": 0,
+  "desconto": 0,
+  "status": "quitado",
+  "statusTxt": "Quitado",
+  "fica": true,
+  "negociacao": "O cliente havia combinado cobrança semestral, mas a assinatura foi faturada mensalmente, o que gerou o atraso. Pagou o débito integral, e o ajuste da cobrança para semestral está em andamento.",
+  "perfil": "Primeiro atraso",
+  "risco": "Baixo",
+  "atraso": 53,
+  "linha": [
+   {
+    "d": "Set/2026",
+    "t": "Débito integral pago",
+    "v": 2400,
+    "s": "pago"
+   },
+   {
+    "d": "Em andamento",
+    "t": "Ajuste da cobrança para semestral",
+    "v": null,
+    "s": "info"
+   }
+  ]
+ },
+ {
+  "id": "joao",
+  "nome": "João Everton Paulino Ramos Alves",
+  "contrato": "30004027-5",
+  "produto": "myFarm",
+  "mensal": 427.11,
+  "faturado": 1381.31,
+  "represado": 0,
+  "pcsRep": 0,
+  "base": 1381.31,
+  "caixa": 1174.11,
+  "receber": 0,
+  "baixado": 0,
+  "desconto": 207.2,
+  "status": "quitado",
+  "statusTxt": "Quitado com desconto",
+  "fica": true,
+  "negociacao": "O cliente aceitou a proposta de 15% de desconto para pagamento à vista e quitou R$ 1.174,11.",
+  "perfil": "Inadimplência recorrente",
+  "risco": null,
+  "atraso": 105,
+  "linha": [
+   {
+    "d": "18/09/2026",
+    "t": "Pagamento à vista com 15% de desconto",
+    "v": 1174.11,
+    "s": "pago"
+   }
+  ]
+ }
+];
+const CENTRAL = [
+ {
+  "contrato": "30002492",
+  "liga": null,
+  "extra": true,
+  "produto": "myFarm",
+  "periodicidade": "Anual",
+  "valorCadastro": 8000,
+  "mrr": 666.67,
+  "entrada": "2026-08-11",
+  "recuperacao": "2026-09-04",
+  "dias": 23,
+  "tentativas": 1,
+  "forma": "Retorno automático do contrato",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": null,
+  "nome": "Neimar Walker",
+  "narr": "Contrato anual de R$ 8.000,00, suspenso no momento da renovação. Entrou na central em 11/08, recebeu contato do comercial para renovar e voltou a ativo em 04/09."
+ },
+ {
+  "contrato": "30006200",
+  "liga": "luiz",
+  "extra": false,
+  "produto": "myFarm",
+  "periodicidade": "Mensal",
+  "valorCadastro": 5000,
+  "mrr": 5000,
+  "entrada": "2026-09-18",
+  "recuperacao": "2026-09-22",
+  "dias": 3,
+  "tentativas": 1,
+  "forma": "Reativação registrada na central",
+  "situacao": "Em cobrança novamente desde 27/08/2026",
+  "mantida": false,
+  "obs": "CLIENTE REALIZOU NEGOCIAÇÃO, SENDO DIVIDIDO EM 3X ENTRADA PAGA DIA 16/10 NO VALOR DE R4 6.258,78 + PARCELA 1 R$ 7.301,91 PARA 14/10 E PARCELA 2 PARA 14/11 NO VALOR DE R$ 7.301,91",
+  "nome": null,
+  "narr": null
+ },
+ {
+  "contrato": "30005234",
+  "liga": "vitor",
+  "extra": false,
+  "produto": "AgriManager",
+  "periodicidade": "Mensal",
+  "valorCadastro": 4876.6,
+  "mrr": 4876.6,
+  "entrada": "2026-08-21",
+  "recuperacao": "2026-09-24",
+  "dias": 33,
+  "tentativas": 2,
+  "forma": "Reativação registrada na central",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": null,
+  "nome": null,
+  "narr": null
+ },
+ {
+  "contrato": "30002424",
+  "liga": "marcos",
+  "extra": false,
+  "produto": "AgriManager",
+  "periodicidade": "Mensal",
+  "valorCadastro": 3529.65,
+  "mrr": 3529.65,
+  "entrada": "2026-08-28",
+  "recuperacao": "2026-09-22",
+  "dias": 24,
+  "tentativas": 1,
+  "forma": "Reativação registrada na central",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": "ACORDO REALIZADO COM A CLIENTE 18/09. CLIENTE CONTINUARÁ PAGANDO AS MENSALIDADES + NEGOCIAÇÃO QUE HAVIA FEITO ANTERIORMENTE, E OS DÉBITOS REPRESADOS O PGTO FICOU PARA 30/03 - PLANO SAFRA",
+  "nome": null,
+  "narr": null
+ },
+ {
+  "contrato": "30004920",
+  "liga": null,
+  "extra": true,
+  "produto": "AgriManager",
+  "periodicidade": "Mensal",
+  "valorCadastro": 2230.23,
+  "mrr": 2230.23,
+  "entrada": "2026-08-27",
+  "recuperacao": "2026-09-04",
+  "dias": 7,
+  "tentativas": 1,
+  "forma": "Retorno automático do contrato",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": null,
+  "nome": "Agropecuária Mano Velho Ltda",
+  "narr": "Entrou na central em 27/08 por estar suspenso. O contato por WhatsApp foi feito no mesmo dia, e o contrato voltou a ativo em 04/09."
+ },
+ {
+  "contrato": "30004903",
+  "liga": null,
+  "extra": true,
+  "produto": "myFarm",
+  "periodicidade": "Anual",
+  "valorCadastro": 1765.17,
+  "mrr": 147.1,
+  "entrada": "2026-08-28",
+  "recuperacao": "2026-09-04",
+  "dias": 6,
+  "tentativas": 0,
+  "forma": "Retorno automático do contrato",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": null,
+  "nome": "Bruno Marques Guidi",
+  "narr": "Contrato anual de R$ 1.765,17. Entrou na central em 28/08 e voltou a ativo em 04/09, sem necessidade de contato."
+ },
+ {
+  "contrato": "30003505",
+  "liga": null,
+  "extra": false,
+  "produto": "myFarm",
+  "periodicidade": "Mensal",
+  "valorCadastro": 1457.26,
+  "mrr": 1457.26,
+  "entrada": "2026-08-27",
+  "recuperacao": "2026-09-22",
+  "dias": 25,
+  "tentativas": 1,
+  "forma": "Reativação registrada na central",
+  "situacao": "Em cobrança novamente desde 25/09/2026",
+  "mantida": false,
+  "obs": "CLIENTE ADIMPLENTE - PRÓXIMO VENCIMENTO APENAS EM 16/10/2026 CONFORME INFORMADO PELA DINAMARA.",
+  "nome": "Anderson Peixoto Cordeiro",
+  "narr": "Cliente adimplente: segundo o financeiro, o próximo vencimento é só em 16/10/2026. Reativado pela central em 22/09."
+ },
+ {
+  "contrato": "30007726",
+  "liga": null,
+  "extra": false,
+  "produto": "myFarm",
+  "periodicidade": "Mensal",
+  "valorCadastro": 1400,
+  "mrr": 1400,
+  "entrada": "2026-06-22",
+  "recuperacao": "2026-09-04",
+  "dias": 73,
+  "tentativas": 4,
+  "forma": "Retorno automático do contrato",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": null,
+  "nome": "Agropecuária Alvorada Ltda",
+  "narr": "Cliente migrou do AgriManager para o myFarm e estava em período de teste desde julho. O pagamento foi tratado direto com o financeiro, e o contrato myFarm voltou a ativo em 04/09. O contrato AgriManager anterior, 30004481, segue em distrato."
+ },
+ {
+  "contrato": "30001803",
+  "liga": "moacyr",
+  "extra": false,
+  "produto": "myFarm",
+  "periodicidade": "Mensal",
+  "valorCadastro": 1398.65,
+  "mrr": 1398.65,
+  "entrada": "2026-08-28",
+  "recuperacao": "2026-09-24",
+  "dias": 26,
+  "tentativas": 1,
+  "forma": "Reativação registrada na central",
+  "situacao": "Em cobrança novamente desde 25/09/2026",
+  "mantida": false,
+  "obs": "CLIENTE REALIZOU O PGTO DE R$ 2.797,30 VIA PIX EM 24/09/2026",
+  "nome": null,
+  "narr": null
+ },
+ {
+  "contrato": "30006069",
+  "liga": "pablo",
+  "extra": false,
+  "produto": "AgriManager",
+  "periodicidade": "Mensal",
+  "valorCadastro": 1200,
+  "mrr": 1200,
+  "entrada": "2026-08-27",
+  "recuperacao": "2026-09-18",
+  "dias": 22,
+  "tentativas": 1,
+  "forma": "Retorno automático do contrato",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": null,
+  "nome": null,
+  "narr": null
+ },
+ {
+  "contrato": "30007323",
+  "liga": null,
+  "extra": true,
+  "produto": "myFarm",
+  "periodicidade": "Mensal",
+  "valorCadastro": 847.18,
+  "mrr": 847.18,
+  "entrada": "2026-08-11",
+  "recuperacao": "2026-09-04",
+  "dias": 23,
+  "tentativas": 1,
+  "forma": "Retorno automático do contrato",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": null,
+  "nome": "Sandro Sia e Outros",
+  "narr": "Cliente em implantação que não estava recebendo os boletos; o time de projetos já acompanhava o caso. Entrou na central em 11/08 e voltou a ativo em 04/09."
+ },
+ {
+  "contrato": "30007333",
+  "liga": null,
+  "extra": false,
+  "produto": "myFarm",
+  "periodicidade": "Mensal",
+  "valorCadastro": 705.99,
+  "mrr": 705.99,
+  "entrada": "2026-08-11",
+  "recuperacao": "2026-09-15",
+  "dias": 34,
+  "tentativas": 3,
+  "forma": "Reativação registrada na central",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": null,
+  "nome": "Knap Soluções Contábeis Ltda",
+  "narr": "Contrato em análise contratual. A coordenação de operações fez a cobrança por WhatsApp em 28/08, e o cliente foi reativado pela central em 15/09."
+ },
+ {
+  "contrato": "30006056",
+  "liga": "juarez",
+  "extra": false,
+  "produto": "myFarm",
+  "periodicidade": "Mensal",
+  "valorCadastro": 650,
+  "mrr": 650,
+  "entrada": "2026-08-27",
+  "recuperacao": "2026-09-18",
+  "dias": 22,
+  "tentativas": 1,
+  "forma": "Retorno automático do contrato",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": null,
+  "nome": null,
+  "narr": null
+ },
+ {
+  "contrato": "30007162",
+  "liga": "ana",
+  "extra": false,
+  "produto": "myFarm",
+  "periodicidade": "Mensal",
+  "valorCadastro": 565,
+  "mrr": 565,
+  "entrada": "2026-08-27",
+  "recuperacao": "2026-09-11",
+  "dias": 15,
+  "tentativas": 2,
+  "forma": "Retorno automático do contrato",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": null,
+  "nome": null,
+  "narr": null
+ },
+ {
+  "contrato": "30004027",
+  "liga": "joao",
+  "extra": false,
+  "produto": "myFarm",
+  "periodicidade": "Mensal",
+  "valorCadastro": 427.11,
+  "mrr": 427.11,
+  "entrada": "2026-08-27",
+  "recuperacao": "2026-09-18",
+  "dias": 22,
+  "tentativas": 2,
+  "forma": "Retorno automático do contrato",
+  "situacao": "Ativo",
+  "mantida": true,
+  "obs": null,
+  "nome": null,
+  "narr": null
+ }
+];
+
+const MARCOS = [
+ {
+  "d": "25/09",
+  "t": "Reunião com Alzir Pimentel Aguiar Neto",
+  "s": "Negociação das parcelas represadas",
+  "v": 43792.2
+ },
+ {
+  "d": "14/10",
+  "t": "Parcela 1 do acordo Luiz Moreira Rocha",
+  "s": "Primeira de duas parcelas",
+  "v": 7301.91
+ },
+ {
+  "d": "16/10",
+  "t": "Vencimento de Anderson Peixoto Cordeiro",
+  "s": "Primeiro vencimento após a reativação",
+  "v": null
+ },
+ {
+  "d": "25/10",
+  "t": "Parcela 1 do acordo Vitor Marcio Dumoncel",
+  "s": "Primeira de três parcelas",
+  "v": 8209.93
+ },
+ {
+  "d": "14/11",
+  "t": "Parcela 2 do acordo Luiz Moreira Rocha",
+  "s": "Última parcela do acordo",
+  "v": 7301.91
+ },
+ {
+  "d": "25/11",
+  "t": "Parcela 2 do acordo Vitor Marcio Dumoncel",
+  "s": "Segunda de três parcelas",
+  "v": 8209.93
+ },
+ {
+  "d": "25/12",
+  "t": "Parcela 3 do acordo Vitor Marcio Dumoncel",
+  "s": "Última parcela do acordo",
+  "v": 8209.93
+ },
+ {
+  "d": "30/03/2027",
+  "t": "Plano Safra de Marcos Aurelio Sinopoli",
+  "s": "Represado de junho a setembro de 2026",
+  "v": 13521.08
+ },
+ {
+  "d": "Em andamento",
+  "t": "Cobrança semestral de Pablo Rafael Scnheider",
+  "s": "Ajuste de faturamento",
+  "v": null
+ }
+];
+
+const CARTEIRA = [
+ {
+  "id": "30001494",
+  "nome": "Pedro Jose Bertuol",
+  "produto": "AgriManager",
+  "grupo": "churn",
+  "sub": "Aguardando assinatura do distrato",
+  "etapa": "distrato",
+  "mensal": 3927.73,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": "2026-04-01",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento por email em 01/04/2026, há quase seis meses. O CS parou na etapa de retenção e o financeiro registra o contrato aguardando assinatura do distrato. Receita mensal perdida de R$ 3.927,73.",
+  "prox": "CS encerrar a tentativa de retenção e contratos colher a assinatura do distrato.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30001698",
+  "nome": "Joao Batista Consentini Filho",
+  "produto": "AgriManager",
+  "grupo": "aberto",
+  "sub": "Represado fora do acordo",
+  "etapa": null,
+  "mensal": 4204.55,
+  "fat": 0,
+  "rep": 10688.86,
+  "total": 10688.86,
+  "juros": 11020.56,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Acordo de renegociação em cumprimento, com reativação prevista só após quitação total. As parcelas de 08/2026 e 09/2026, R$ 10.688,86, estão represadas fora do acordo. Cliente recorrente em renegociações não cumpridas, risco alto: 17 ações judiciais e R$ 389,33 milhões em anotações negativas.",
+  "prox": "Cobrança negociar a inclusão dos R$ 10.688,86 represados, retorno pedido pela área de negócio em 09/07/2026. Financeiro recomenda não propor flexibilização 2027.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30001840",
+  "nome": "Marcia Angelica Barboza Coradini",
+  "produto": "myFarm",
+  "grupo": "escritorio",
+  "sub": "No escritório, a validar",
+  "etapa": null,
+  "mensal": 118.46,
+  "fat": 346.02,
+  "rep": 355.38,
+  "total": 701.4,
+  "juros": 701.4,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": false,
+  "resumo": "Inadimplência recorrente, 127 dias de atraso e sem previsão de pagamento. Negativação feita após o cliente não retornar ao contato; suspensão da plataforma pedida em 30/06/2026. Dívida de R$ 701,40, sendo R$ 346,02 faturados e R$ 355,38 represados.",
+  "prox": "Financeiro confirmar se a dívida foi entregue ao escritório de cobrança e atualizar o estágio na planilha.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30001886",
+  "nome": "Roni Cesar Ferreira Alves Machado",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Empresa fechada, sem contato",
+  "etapa": "sem_registro",
+  "mensal": 423.01,
+  "fat": 1678.29,
+  "rep": 0,
+  "total": 1678.29,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "CS lista o contrato como cancelamento: empresa fechada, ligada a grupo em recuperação judicial, sem sucesso nas tentativas de contato. Financeiro mantém cobrança de R$ 1.678,29 faturados, com 217 dias de atraso e aval para negativação pedido em 20/07/2026 sem resposta.",
+  "prox": "Contratos formalizar o encerramento; jurídico avaliar habilitação do crédito de R$ 1.678,29 na recuperação judicial.",
+  "fontes": [
+   "CS · inadimplentes",
+   "CS · churn",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30002073",
+  "nome": "Marino Bortolas Neto",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Cancelamento sem etapa registrada",
+  "etapa": "sem_registro",
+  "mensal": 235.2,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "CS lista o contrato na aba de cancelamentos, com receita mensal perdida de R$ 235,20. Não há data do pedido, observação nem etapa do distrato registradas.",
+  "prox": "CS registrar data do pedido e etapa do distrato; financeiro incluir o contrato na base de cancelamentos.",
+  "fontes": [
+   "CS · churn"
+  ]
+ },
+ {
+  "id": "30002284",
+  "nome": "Jose Dias de Melo Neto",
+  "produto": "AgriManager",
+  "grupo": "churn",
+  "sub": "Distrato em andamento",
+  "etapa": "distrato",
+  "mensal": 1597.39,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Contrato em processo de cancelamento, com distrato em andamento no financeiro. Receita mensal perdida de R$ 1.597,39. Sem data do pedido registrada.",
+  "prox": "Contratos concluir o distrato e CS registrar data e motivo do pedido.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30002312",
+  "nome": "Adriana Cristina Guizelini",
+  "produto": "myFarm",
+  "grupo": "negociacao",
+  "sub": "Renovação sem retorno do cliente",
+  "etapa": null,
+  "mensal": 408.28,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Suspenso por negociação da renovação anual myFarm de 08/2026. Cliente não responde WhatsApp, email nem ligação. Sem dívida registrada; mensalidade de R$ 408,28.",
+  "prox": "Comercial definir prazo de retomada da renovação; sem retorno, avaliar tratamento como cancelamento.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · em negociação"
+  ]
+ },
+ {
+  "id": "30002744",
+  "nome": "Petras de Lima Telles",
+  "produto": "AgriManager",
+  "grupo": "aberto",
+  "sub": "Sem retorno do cliente",
+  "etapa": null,
+  "mensal": 4467.33,
+  "fat": 0,
+  "rep": 58075.29,
+  "total": 58075.29,
+  "juros": 58088.29,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Parcelas faturadas já regularizadas com o escritório de cobrança. Restam 13 parcelas represadas desde 09/2025, R$ 58.075,29, com 366 dias de atraso, e o cliente parou de responder. Risco alto: R$ 61,88 milhões em anotações negativas e 8 ações judiciais; não negativado.",
+  "prox": "Área de negócio retomar contato para negociar o represado, conforme pedido de 31/08/2026. Financeiro recomenda não propor flexibilização 2027.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30002988",
+  "nome": "Rogerio Ezequiel Ferrari",
+  "produto": "AgriManager",
+  "grupo": "sem",
+  "sub": "Contrato cedido a terceiro",
+  "etapa": null,
+  "mensal": null,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Contrato cedido a outro titular, que segue no contrato 30007586. Sem débito registrado.",
+  "prox": "Contratos encerrar este contrato, que sai da lista de suspensos, e confirmar o contrato 30007586 ativo.",
+  "fontes": [
+   "CS · inadimplentes"
+  ]
+ },
+ {
+  "id": "30003080",
+  "nome": "Luciano Jayme Guimaraes",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando confirmação do distrato",
+  "etapa": "distrato",
+  "mensal": 702.06,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento pelo chamado 800613 e o distrato está em fase de assinatura. Receita mensal perdida de R$ 702,06.",
+  "prox": "Contratos confirmar a assinatura do distrato e CS registrar o motivo do cancelamento.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30003130",
+  "nome": "Gemiro Carafini",
+  "produto": "AgriManager",
+  "grupo": "churn",
+  "sub": "Aguardando pagamento da multa",
+  "etapa": "multa_pagto",
+  "mensal": 2581.48,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento e o distrato aguarda o pagamento da multa de cancelamento. Mensalidade de R$ 2.581,48.",
+  "prox": "Financeiro cobrar a multa de cancelamento para concluir o distrato.",
+  "fontes": [
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30003232",
+  "nome": "Alzir Pimentel Aguiar Neto",
+  "produto": "AgriManager",
+  "grupo": "aberto",
+  "sub": "Reunião marcada em 25/09",
+  "etapa": null,
+  "mensal": 8758.44,
+  "fat": 0,
+  "rep": 43792.200000000004,
+  "total": 43792.2,
+  "juros": 43792.2,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cumpre acordo antigo de 10 parcelas, mas 5 mensalidades represadas de 05/2026 a 09/2026, R$ 43.792,20, ficaram fora do acordo. Atraso de 219 dias, suspenso desde 30/03/2026. Risco alto: R$ 54,06 milhões em anotações negativas e histórico de renegociações não cumpridas.",
+  "prox": "Registrar o resultado da reunião de 25/09 às 15h e fechar proposta para o represado sem flexibilização para 2027, conforme recomendação do financeiro.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30003342",
+  "nome": "Nova Fronteira Agropecuária Ltda",
+  "produto": "AgriManager",
+  "grupo": "aberto",
+  "sub": "Sem retorno do cliente",
+  "etapa": null,
+  "mensal": 1784.94,
+  "fat": 4955.97,
+  "rep": 0,
+  "total": 4955.97,
+  "juros": 4955.97,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Dívida de R$ 4.955,97 em mensalidades faturadas, 44 dias de atraso, suspenso desde 25/08/2026. Cobrança reiterada por email e mensagem, sem retorno. Em 02/07/2026 a cobrança pediu aval para negativação; inadimplência recorrente.",
+  "prox": "Decidir a negativação pedida em 02/07/2026 e oferecer flexibilização para 2027 com entrada de 20%, R$ 991,19, conforme recomendação do financeiro.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30003425",
+  "nome": "Fabio Giovanni Martins Carrapateira",
+  "produto": "AgriManager",
+  "grupo": "churn",
+  "sub": "Aguardando retorno sobre multa",
+  "etapa": "multa_disc",
+  "mensal": 1654.4,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": "2025-12-01",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente encerrou as atividades e pediu cancelamento em 12/2025, sem renovar a assinatura. Pagava por resgate e, ao voltar a pagar pelo sistema, optou por sair. Distrato em andamento, aguardando retorno do cliente sobre a multa; mensalidade perdida de R$ 1.654,40.",
+  "prox": "Cobrar retorno do cliente sobre a multa rescisória e colher a assinatura do distrato.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30003568",
+  "nome": "Henrique Reges de Carvalho",
+  "produto": "myFarm",
+  "grupo": "escritorio",
+  "sub": "No escritório, a validar",
+  "etapa": null,
+  "mensal": 491.6,
+  "fat": 1474.8,
+  "rep": 491.6,
+  "total": 1966.4,
+  "juros": 2458,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": false,
+  "resumo": "Dívida de R$ 1.966,40 (R$ 1.474,80 faturado e R$ 491,60 represado), R$ 2.458,00 com juros, 96 dias de atraso. Sem retorno do cliente; bloqueio da plataforma pedido em 10/08/2026. CS informa que o débito está com o escritório de cobrança terceirizado.",
+  "prox": "Confirmar com o financeiro se o débito foi entregue ao escritório terceirizado e atualizar o estágio na planilha.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30003665",
+  "nome": "Tiago Godoy Vilela e Outro",
+  "produto": "AgriManager",
+  "grupo": "churn",
+  "sub": "Aguardando pagamento de boletos",
+  "etapa": "boletos",
+  "mensal": 2144.87,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu o cancelamento do contrato; distrato em andamento. Aguarda pagamento de boletos em aberto para concluir. Mensalidade perdida de R$ 2.144,87; data do pedido e valor dos boletos não informados.",
+  "prox": "Acompanhar o pagamento dos boletos e, com a quitação, colher a assinatura do distrato.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30003714",
+  "nome": "Nativa Agricultura Sustentável Ltda",
+  "produto": "AgriManager",
+  "grupo": "churn",
+  "sub": "Sem registro de etapa",
+  "etapa": "sem_registro",
+  "mensal": null,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Consta como cancelamento no relatório do CS, com mensalidade perdida zerada. Não há anotação de etapa, data do pedido nem débito.",
+  "prox": "CS registrar a data do pedido e a etapa do distrato, e confirmar com o financeiro se há débito ou multa pendente.",
+  "fontes": [
+   "CS · churn"
+  ]
+ },
+ {
+  "id": "30003756",
+  "nome": "Geraldo Roberto Mossignato",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando comprovante de pagamento",
+  "etapa": "acordo",
+  "mensal": 549.62,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": "2026-08-28",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento em 28/08/2026. O valor em aberto e a chave PIX foram enviados ao cliente, que ainda não mandou o comprovante. Mensalidade de R$ 549,62.",
+  "prox": "Cobrar o comprovante do PIX, confirmar o pagamento com o financeiro e formalizar o distrato.",
+  "fontes": [
+   "CS · inadimplentes",
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30003798",
+  "nome": "José Wilian Bahdur",
+  "produto": "myFarm",
+  "grupo": "negociacao",
+  "sub": "Aguardando retorno do comercial",
+  "etapa": null,
+  "mensal": 312.52,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Contrato de 2024 sem projeto aberto e sem uso do sistema. Suspenso pelo faturamento, aguardando a negociação do comercial. CS informa que o cliente nunca respondeu contatos nem cobranças e que o telefone cadastrado provavelmente mudou; mensalidade de R$ 312,52.",
+  "prox": "Comercial confirmar se há contato ativo com o cliente; sem retorno, avaliar o encerramento do contrato.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · em negociação"
+  ]
+ },
+ {
+  "id": "30003885",
+  "nome": "Marcelo Benedito Lara",
+  "produto": "myFarm",
+  "grupo": "escritorio",
+  "sub": "Quitado, tratar renovação",
+  "etapa": null,
+  "mensal": 373,
+  "fat": 2611,
+  "rep": 1865,
+  "total": 4476,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": true,
+  "confirmado": true,
+  "resumo": "CS informa que os débitos foram quitados integralmente (linha marcada como paga). A dívida registrada no financeiro era de R$ 4.476,00, com 327 dias de atraso e suspensão desde 01/06/2025. Próxima etapa é a renovação.",
+  "prox": "Financeiro confirmar a baixa do pagamento, retirar do escritório terceirizado e baixar a negativação, se houver; CS conduzir a renovação para reativar o contrato.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30003903",
+  "nome": "Pedro Henrique Pinto Fadel",
+  "produto": "AgriManager",
+  "grupo": "aberto",
+  "sub": "Proposta em análise",
+  "etapa": null,
+  "mensal": 3098.61,
+  "fat": 0,
+  "rep": 35736.48,
+  "total": 35736.48,
+  "juros": 35736.48,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Dívida de R$ 35.736,48 em 8 parcelas represadas desde 02/2026, 194 dias de atraso, sem negativação; o cliente alega dificuldade financeira e contesta o valor, pois já havia pedido redução da mensalidade, e reduziu licenças em julho. Proposta em análise pelo cliente: 5 parcelas de R$ 3.573,64 até fevereiro e saldo de R$ 17.868,28 em 30/03/2027. Risco alto: R$ 89,29 milhões em anotações negativas e 8 execuções judiciais.",
+  "prox": "Obter a resposta do cliente à proposta e alinhar com o financeiro, que recomenda não flexibilizar para 2027, antes de fechar o acordo.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30004420",
+  "nome": "Almir Dal Rovere",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Encerramento por não renovação",
+  "etapa": "sem_registro",
+  "mensal": 924.66,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Após pesquisa, o cliente decidiu não renovar o contrato e o faturamento suspendeu. Mensalidade perdida de R$ 924,66. Sem data do pedido e sem débito informado.",
+  "prox": "Formalizar o encerramento por não renovação e atualizar o substatus no sistema para cancelamento.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30004447",
+  "nome": "Ivan Alves Silva",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando pagamento da multa",
+  "etapa": "multa_pagto",
+  "mensal": 1202.27,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": "2026-06-01",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Inadimplente desde 12/2025, pediu cancelamento em 06/2026 e não pagou a multa. Distrato parado à espera do pagamento. Mensalidade de R$ 1.202,27.",
+  "prox": "Definir com o financeiro o valor da multa e dos débitos desde 12/2025 e cobrar para concluir o distrato; sem pagamento, avaliar envio ao escritório de cobrança.",
+  "fontes": [
+   "CS · inadimplentes",
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30004487",
+  "nome": "Gizelly Santos",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando pagamento dos boletos",
+  "etapa": "boletos",
+  "mensal": 410.95,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu o cancelamento e o distrato está em assinatura. Pendente o pagamento dos boletos em aberto para encerrar. Mensalidade perdida de R$ 410,95.",
+  "prox": "Cobrar os boletos em aberto e concluir a assinatura do distrato para baixa do contrato.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30004798",
+  "nome": "José Valdir Martins Vieira",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando assinatura do distrato",
+  "etapa": "distrato",
+  "mensal": 528.11,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu o cancelamento. Distrato enviado e aguardando assinatura do cliente. Mensalidade perdida de R$ 528,11.",
+  "prox": "Cobrar a assinatura do distrato e encerrar o contrato.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30005102",
+  "nome": "José Rosa dos Santos",
+  "produto": "myFarm",
+  "grupo": "escritorio",
+  "sub": "No escritório, a validar",
+  "etapa": null,
+  "mensal": 565.06,
+  "fat": 6780.76,
+  "rep": 565.1,
+  "total": 7345.86,
+  "juros": 7345.86,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": true,
+  "resumo": "Dívida de R$ 7.345,86 com 357 dias de atraso, entregue ao escritório de cobrança terceirizado. Suspenso desde 01/10/2025, sem previsão de pagamento e com histórico de inadimplência recorrente. Em 15/01/2026 foi pedido aval para negativação.",
+  "prox": "Validar com o escritório a situação da cobrança e obter o aval da vertical para negativação.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30005113",
+  "nome": "Diego Mora Macena",
+  "produto": "myFarm",
+  "grupo": "negociacao",
+  "sub": "Renovação em negociação",
+  "etapa": null,
+  "mensal": 493.08,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Contrato suspenso porque o cliente não renovou. O cliente informou que cotou outros ERPs e o comercial tenta reter na rodada de renovações anuais do myFarm de 08/2026. Mensalidade de R$ 493,08.",
+  "prox": "Comercial apresentar proposta de renovação e definir prazo de retomada. Risco de perda para concorrente.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · em negociação"
+  ]
+ },
+ {
+  "id": "30005114",
+  "nome": "Liseu José Scherer",
+  "produto": "myFarm",
+  "grupo": "negociacao",
+  "sub": "Renovação em negociação",
+  "etapa": null,
+  "mensal": 936.91,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Contrato suspenso por negociação comercial na rodada de renovações anuais do myFarm de 08/2026. Sem débito informado. Mensalidade de R$ 936,91.",
+  "prox": "Comercial concluir a renovação e definir prazo de retomada do acesso.",
+  "fontes": [
+   "financeiro · em negociação"
+  ]
+ },
+ {
+  "id": "30005162",
+  "nome": "Vinicius da Silva Soares",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Cancelamento em andamento",
+  "etapa": "sem_registro",
+  "mensal": 422.4,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente em processo de cancelamento, suspenso por inadimplência. Não há registro da etapa do distrato nem do valor em aberto. Mensalidade perdida de R$ 422,40.",
+  "prox": "Confirmar a etapa do distrato e levantar se há débito a cobrar antes da baixa.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30005213",
+  "nome": "Fernando Lunardi e Outros",
+  "produto": "AgriManager",
+  "grupo": "churn",
+  "sub": "Cliente recusa pagar multa",
+  "etapa": "multa_disc",
+  "mensal": 1890.33,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": "2025-10-10",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu o cancelamento e reforçou o pedido várias vezes. Contrato segue suspenso porque o cliente se recusa a pagar a multa contratual. Mensalidade perdida de R$ 1.890,33.",
+  "prox": "Definir se a multa será flexibilizada para fechar o distrato ou cobrada por via formal.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30005366",
+  "nome": "Alex Roberto dos Santos Arruda",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando pagamento dos boletos",
+  "etapa": "boletos",
+  "mensal": 2217.92,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu o cancelamento e o distrato está em assinatura. Pendente o pagamento dos boletos em aberto. Mensalidade perdida de R$ 2.217,92.",
+  "prox": "Cobrar os boletos em aberto e concluir o distrato para baixa do contrato.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30005572",
+  "nome": "Leandro Gai Anversa",
+  "produto": "Aliare Cloud",
+  "grupo": "churn",
+  "sub": "Aguardando pagamento dos boletos",
+  "etapa": "boletos",
+  "mensal": 1201.62,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu o cancelamento pelo chamado 795460 e o distrato está em assinatura. Pendente o pagamento dos boletos em aberto. Mensalidade de R$ 1.201,62.",
+  "prox": "Cobrar os boletos em aberto e concluir o distrato.",
+  "fontes": [
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30005679",
+  "nome": "Eldon Ricardo Beckmamm",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando retorno sobre multa",
+  "etapa": "multa_disc",
+  "mensal": 780.82,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu o cancelamento e o distrato está em assinatura. Aguardando retorno do cliente sobre o pagamento da multa contratual. Mensalidade perdida de R$ 780,82.",
+  "prox": "Cobrar retorno do cliente sobre a multa e fechar o distrato.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30005737",
+  "nome": "Ordata Ltda",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Distrato em negociação",
+  "etapa": "distrato",
+  "mensal": 1422.9,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Contrato em cancelamento nas duas planilhas, com distrato em negociação. Mensalidade perdida de R$ 1.422,90. Sem data do pedido e sem débito registrado.",
+  "prox": "CS registrar data e motivo do pedido e concluir a negociação do distrato.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30005742",
+  "nome": "Giliarde Rodrigues da Silva",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando retorno sobre multa",
+  "etapa": "multa_disc",
+  "mensal": 1200,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento; o financeiro aguarda retorno do cliente sobre a multa rescisória. Mensalidade perdida de R$ 1.200,00. Sem data do pedido registrada.",
+  "prox": "CS cobrar retorno do cliente sobre a multa e fechar o distrato.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30005762",
+  "nome": "William Cardoso dos Santos",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando retorno do CS",
+  "etapa": "distrato",
+  "mensal": 500,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento, tratado em chamado de atendimento. Distrato em fase de assinatura, financeiro aguarda retorno do CS. Mensalidade de R$ 500,00.",
+  "prox": "CS dar retorno ao financeiro e concluir a assinatura do distrato.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · em negociação"
+  ]
+ },
+ {
+  "id": "30005780",
+  "nome": "Agro Santa Clara Ltda",
+  "produto": "AgriManager",
+  "grupo": "churn",
+  "sub": "Aguardando retorno de contratos",
+  "etapa": "multa_disc",
+  "mensal": 4594.51,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": "2026-06-22",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento por email em 22/06/2026, alegando descumprimento do acordo pela empresa, e pede isenção da multa. Mensalidade de R$ 4.594,51.",
+  "prox": "Contratos decidir sobre o pedido de isenção da multa; CS formalizar o distrato com o cliente e dar retorno ao financeiro.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30005811",
+  "nome": "Augusto Cesar Andrade Maia",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando pagamento da multa",
+  "etapa": "multa_pagto",
+  "mensal": 2542.4,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": 12712,
+  "data": "2026-04-08",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento por email em 08/04/2026, citando falhas e inconsistências recorrentes no sistema. Débito de R$ 12.712,00 com juros. Distrato aguarda pagamento da multa.",
+  "prox": "Cobrança acompanhar o pagamento da multa e do débito para liberar o distrato.",
+  "fontes": [
+   "CS · inadimplentes",
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30005824",
+  "nome": "Christopher Terrengui",
+  "produto": "myFarm",
+  "grupo": "escritorio",
+  "sub": "No escritório, a validar",
+  "etapa": null,
+  "mensal": 890.53,
+  "fat": 14877.45,
+  "rep": 1781.06,
+  "total": 16658.51,
+  "juros": 16777.85,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": false,
+  "resumo": "Dívida de R$ 16.658,51 sem juros (R$ 14.877,45 faturado e R$ 1.781,06 represado), com 406 dias de atraso. Cliente questionou os valores, recebeu planilha detalhada e parou de responder. CS indica envio ao escritório de cobrança.",
+  "prox": "Financeiro confirmar se a dívida já está com o escritório e resolver a pendência de projeto que impede a negativação.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30005886",
+  "nome": "Waldyrene Barros Silva",
+  "produto": "myFarm",
+  "grupo": "negociacao",
+  "sub": "Implantação pausada pela cliente",
+  "etapa": null,
+  "mensal": 419.25,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pausou a implantação por um projeto pessoal e informou que não deseja cancelar. Contrato suspenso por pendência de projeto. Mensalidade de R$ 419,25.",
+  "prox": "CS confirmar com a cliente a permanência, definir data de retomada da implantação e ajustar o status no sistema.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · em negociação"
+  ]
+ },
+ {
+  "id": "30005913",
+  "nome": "Beatriz Costa Franco",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Acordo de débito em cobrança",
+  "etapa": "acordo",
+  "mensal": 950,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente em processo de cancelamento. Débito negociado em 2 parcelas de R$ 1.000,00 e repassado ao contas a receber. Mensalidade de R$ 950,00.",
+  "prox": "Contas a receber acompanhar o pagamento das 2 parcelas; contratos emitir o distrato após a quitação.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30005923",
+  "nome": "Cooperativa Agropecuária Primavera (COAP)",
+  "produto": "myFarm",
+  "grupo": "negociacao",
+  "sub": "Renovação em negociação",
+  "etapa": null,
+  "mensal": 5946.19,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Contrato suspenso durante a renovação anual de 08/2026, com orientação de não cobrar. O cliente segue em atendimento, com demanda de produto levada ao desenvolvimento em 24/09/2026.",
+  "prox": "Comercial concluir a renovação e alinhar com o CS a baixa do registro de cancelamento.",
+  "fontes": [
+   "CS · inadimplentes",
+   "CS · churn",
+   "financeiro · em negociação"
+  ]
+ },
+ {
+  "id": "30005936",
+  "nome": "Silvano Roger da Silva",
+  "produto": "myFarm",
+  "grupo": "escritorio",
+  "sub": "No escritório, a validar",
+  "etapa": null,
+  "mensal": 750,
+  "fat": 9000,
+  "rep": 6000,
+  "total": 15000,
+  "juros": 15000,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": true,
+  "resumo": "Dívida de R$ 15.000,00 (R$ 9.000,00 faturado e R$ 6.000,00 represado em 8 parcelas), com 333 dias de atraso. Cliente sem retorno após 3 contatos; bloqueio da plataforma solicitado em 26/12/2025. Dívida entregue ao escritório de cobrança.",
+  "prox": "Financeiro validar com o escritório o andamento da cobrança e trazer posição atualizada.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30005970",
+  "nome": "Volmir Antonio Faveiro",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando pagamento de boletos",
+  "etapa": "boletos",
+  "mensal": 896,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento; distrato em fase de assinatura. Encerramento depende do pagamento dos boletos em aberto. Mensalidade de R$ 896,00.",
+  "prox": "Cobrança acompanhar o pagamento dos boletos; contratos concluir o distrato.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30006028",
+  "nome": "Lucival Portilho Arantes",
+  "produto": "AgriManager e Aliare Cloud",
+  "grupo": "churn",
+  "sub": "Pago, aguardando distrato",
+  "etapa": "acordo",
+  "mensal": 5896.12,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": "2026-05-23",
+  "pago": 15000,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Dois contratos: AgriManager, com mensalidade de R$ 4.248,62, e Aliare Cloud, com R$ 1.647,50. O cliente pediu cancelamento por email em 23/05/2026 e pagou R$ 15.000,00 em 16/09/2026 referentes aos débitos. O distrato do AgriManager aguarda emissão, e o do Aliare Cloud aguarda o pagamento da multa.",
+  "prox": "Financeiro confirmar se o pagamento quitou débitos e multas dos dois contratos; contratos emitir os dois distratos.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ],
+  "contratos": [
+   "30006028",
+   "30006243"
+  ],
+  "partes": [
+   {
+    "produto": "AgriManager",
+    "mensal": 4248.62,
+    "contrato": "30006028"
+   },
+   {
+    "produto": "Aliare Cloud",
+    "mensal": 1647.5,
+    "contrato": "30006243"
+   }
+  ]
+ },
+ {
+  "id": "30006051",
+  "nome": "Fyllipe Carvalho Freitas Barros",
+  "produto": "myFarm",
+  "grupo": "escritorio",
+  "sub": "No escritório, a validar",
+  "etapa": null,
+  "mensal": 902.5,
+  "fat": 9610,
+  "rep": 6317.5,
+  "total": 15927.5,
+  "juros": 15927.5,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": true,
+  "resumo": "Dívida de R$ 15.927,50 entregue ao escritório de cobrança terceirizado: R$ 9.610,00 faturados e R$ 6.317,50 represados em 7 parcelas. Nenhuma parcela paga, 278 dias de atraso, plataforma suspensa em 28/01/2026 e negativação liberada em 17/02/2026. Cliente sem retorno nas tentativas de contato.",
+  "prox": "Cobrança validar com o escritório a situação do caso e se existe acordo em andamento, conforme anotação do financeiro.",
+  "fontes": [
+   "CS · inadimplentes",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30006062",
+  "nome": "Falcon Agricola Ltda",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando retorno de contratos",
+  "etapa": "contratos",
+  "mensal": 1580,
+  "fat": 5959.02,
+  "rep": 7900,
+  "total": 13859.02,
+  "juros": null,
+  "data": "2026-09-15",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento por email em 15/09/2026, alegando que não usa o sistema há muito tempo, e pediu revisão dos débitos. Dívida de R$ 13.859,02 na carteira interna: R$ 5.959,02 faturados e R$ 7.900,00 represados em 5 parcelas, 125 dias de atraso. Suspenso desde 13/03/2026, negativação liberada em 19/03/2026, histórico de inadimplência recorrente.",
+  "prox": "Contratos retornar sobre o distrato e a revisão dos débitos pedida pelo cliente; cobrança definir o valor final a cobrar no encerramento.",
+  "fontes": [
+   "CS · inadimplentes",
+   "CS · churn",
+   "financeiro · inadimplência"
+  ]
+ },
+ {
+  "id": "30006175",
+  "nome": "Claudio Moizes Decares",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando pagamento dos boletos",
+  "etapa": "boletos",
+  "mensal": 550,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": null,
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu o cancelamento do contrato e o distrato está em assinatura. Mensalidade perdida de R$ 550,00. O encerramento depende do pagamento dos boletos em aberto, cujo valor não consta nas planilhas.",
+  "prox": "Cobrança acompanhar o pagamento dos boletos; contratos concluir a assinatura do distrato após a quitação.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30006190",
+  "nome": "Joao Miguel Giongo Freitas",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Cancelamento em andamento",
+  "etapa": "sem_registro",
+  "mensal": 590,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": "2026-07",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Inadimplente desde janeiro de 2026, pediu cancelamento em julho de 2026 e o processo está em andamento. Mensalidade perdida de R$ 590,00. Valor da dívida não informado nas planilhas.",
+  "prox": "Contratos formalizar o distrato; cobrança levantar o débito acumulado desde janeiro de 2026 para cobrar no encerramento.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30007041",
+  "nome": "Marco Antonio Giacon",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Acordo de pagamento em acompanhamento",
+  "etapa": "acordo",
+  "mensal": 700,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": "2026-06",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Inadimplente desde fevereiro de 2026, pediu cancelamento em junho de 2026, depois de ser cobrado. Existe acordo de pagamento em acompanhamento. Mensalidade perdida de R$ 700,00; valor da dívida não informado.",
+  "prox": "Cobrança acompanhar o cumprimento do acordo; contratos concluir o distrato ao fim do acordo.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30007127",
+  "nome": "Agro Alianca Ltda",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando retorno de contratos",
+  "etapa": "contratos",
+  "mensal": 1950,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": "2026-05-28",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento por email, alegando inconsistências e falhas recorrentes no sistema. Distrato em assinatura, aguardando retorno de contratos. Mensalidade de R$ 1.950,00.",
+  "prox": "Contratos dar retorno ao cliente sobre o distrato; comercial avaliar se a negociação registrada pelo financeiro ainda permite reversão.",
+  "fontes": [
+   "CS · inadimplentes",
+   "CS · churn",
+   "financeiro · churn"
+  ]
+ },
+ {
+  "id": "30007136",
+  "nome": "Fernando Vieira Peres",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando retorno de contratos",
+  "etapa": "contratos",
+  "mensal": 1670.87,
+  "fat": null,
+  "rep": null,
+  "total": null,
+  "juros": null,
+  "data": "2026-08-14",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento por email em 14/08/2026, ainda em implantação; a tentativa de reversão não teve sucesso. Ordens de serviço e saldo restante foram enviados a contratos, sem retorno até agora. Inadimplente desde maio de 2026, sem valor de dívida nas planilhas; mensalidade perdida de R$ 1.670,87.",
+  "prox": "Contratos retornar com o cálculo do saldo e das ordens de serviço; financeiro e CS fechar a decisão entre reativar e encerrar e acionar a cobrança.",
+  "fontes": [
+   "CS · churn",
+   "financeiro · em negociação"
+  ]
+ },
+ {
+  "id": "30007418",
+  "nome": "Luiz Espindula Cardoso Neto",
+  "produto": "myFarm",
+  "grupo": "churn",
+  "sub": "Aguardando retorno de contratos",
+  "etapa": "contratos",
+  "mensal": 1500,
+  "fat": 9000,
+  "rep": 0,
+  "total": 9000,
+  "juros": null,
+  "data": "2026-09-22",
+  "pago": null,
+  "naRecup": false,
+  "quitado": false,
+  "confirmado": null,
+  "resumo": "Cliente pediu cancelamento ao time de projetos ainda em implantação e deixou de responder; formalizou por email em 22/09/2026, alegando dificuldade de uso, erros e limitações do sistema. Dívida de R$ 9.000,00 em mensalidades faturadas, sem represado, 60 dias de atraso nas primeiras parcelas. Suspenso desde 27/08/2026.",
+  "prox": "Contratos responder ao pedido formal e fechar o distrato; cobrança incluir os R$ 9.000,00 faturados no acerto do encerramento.",
+  "fontes": [
+   "CS · inadimplentes",
+   "CS · churn",
+   "financeiro · inadimplência"
+  ]
+ }
+];
+
+const brl = new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" });
+const nf1 = new Intl.NumberFormat("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+const R = v => brl.format(v);
+const K = v => "R$ " + nf1.format(v / 1000) + " mil";
+const pct = (a, b) => Math.round(a / b * 100) + "%";
+const sum = (arr, f) => Math.round(arr.reduce((s, c) => s + (f(c) || 0), 0) * 100) / 100;
+const perda = c => c.baixado + c.desconto;
+const recup = c => c.caixa + c.receber;
+const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+const dataBR = iso => iso.length === 7 ? iso.split("-").reverse().join("/") : iso.split("-").reverse().join("/");
+const DIA = Date.UTC(2026, 8, 25);
+const diasDesde = iso => iso && iso.length === 10 ? Math.round((DIA - Date.UTC(+iso.slice(0, 4), +iso.slice(5, 7) - 1, +iso.slice(8, 10))) / 864e5) : null;
+const CHEV = '<span class="chev" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3 5 5-5 5"/></svg></span>';
+
+const ICON = {
+  quitado: '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 6.3 5 8.6l4.5-5"/></svg>',
+  acordo: '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"><circle cx="6" cy="6" r="4.3"/><path d="M6 3.6V6l1.6 1.2"/></svg>',
+  cancelou: '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M3.3 3.3l5.4 5.4M8.7 3.3 3.3 8.7"/></svg>',
+  neutro: '<svg viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="2.4"/></svg>',
+  extra: '<svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 2.6v6.8M2.6 6h6.8"/></svg>'
+};
+ICON.reativado = ICON.quitado;
+const tagHtml = (cls, txt) => `<span class="tag ${cls === "reativado" ? "quitado" : cls}">${ICON[cls]}${esc(txt)}</span>`;
+const tag = c => tagHtml(c.status, c.statusTxt) + (c.extra ? tagHtml("extra", "Extra") : "");
+
+/* ---------- recuperação ---------- */
+const T = { base: sum(CLIENTES, c => c.base), caixa: sum(CLIENTES, c => c.caixa), receber: sum(CLIENTES, c => c.receber), perda: sum(CLIENTES, perda), baixado: sum(CLIENTES, c => c.baixado), desconto: sum(CLIENTES, c => c.desconto) };
+T.recup = Math.round((T.caixa + T.receber) * 100) / 100;
+const REC = [
+  ...CLIENTES.map(c => ({ ...c, central: CENTRAL.find(x => x.liga === c.id) || null })),
+  ...CENTRAL.filter(x => !x.liga).map(x => ({ id: "k" + x.contrato, nome: x.nome, contrato: x.contrato, produto: x.produto, status: "reativado", statusTxt: "Reativado", base: 0, caixa: 0, receber: 0, baixado: 0, desconto: 0, faturado: 0, represado: 0, mensal: x.mrr, fica: true, negociacao: x.narr, linha: [], central: x }))
+];
+REC.forEach(c => { c.extra = !!(c.central && c.central.extra); });
+const mrrOf = c => c.central ? c.central.mrr : 0;
+const M = { total: sum(CENTRAL, x => x.mrr), extra: sum(CENTRAL.filter(x => x.extra), x => x.mrr), mantida: sum(CENTRAL.filter(x => x.mantida), x => x.mrr) };
+M.base = Math.round((M.total - M.extra) * 100) / 100;
+const mediana = a => { const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; };
+const SAFRA_V = sum(CLIENTES.flatMap(c => c.linha.filter(l => l.safra)), l => l.v);
+const perdaLabel = c => c.perdaTxt || (c.baixado ? "Represado não recuperado" : "Desconto concedido");
+
+/* ---------- carteira ---------- */
+const G = g => CARTEIRA.filter(x => x.grupo === g);
+const CH = G("churn"), ES = G("escritorio"), AB = G("aberto"), NG = G("negociacao"), SEM = G("sem");
+const ES_ABERTO = ES.filter(x => !x.quitado);
+const nContr = x => x.partes ? x.partes.length : 1;
+const nCH = CH.reduce((a, x) => a + nContr(x), 0);
+const temProd = (x, p) => x.partes ? x.partes.some(q => q.produto === p) : x.produto === p;
+const ETAPAS = [
+  { id: "multa_pagto", l: "Aguardando pagamento da multa", s: "cliente" },
+  { id: "multa_disc", l: "Multa em discussão com o cliente", s: "cliente" },
+  { id: "boletos", l: "Aguardando pagamento de boletos", s: "cliente" },
+  { id: "distrato", l: "Distrato em assinatura", s: "cliente" },
+  { id: "contratos", l: "Aguardando retorno de contratos", s: "interno" },
+  { id: "acordo", l: "Pagamento ou acordo feito", s: "acordo" },
+  { id: "sem_registro", l: "Sem etapa registrada", s: "registro" }
+];
+const etapaL = id => (ETAPAS.find(e => e.id === id) || {}).l || "";
+
+function segs(c) {
+  return [
+    { k: "caixa", v: c.caixa, l: "Em caixa" },
+    { k: "receber", v: c.receber, l: "A receber em acordo" },
+    { k: "perda", v: perda(c), l: perdaLabel(c) }
+  ].filter(p => p.v > 0).map(p => {
+    const w = p.v / c.base * 100;
+    return `<span class="seg ${p.k}" style="flex:${p.v} 1 0" data-tip="${esc(p.l + "|" + R(p.v) + " · " + nf1.format(w) + "% do cobrado")}"></span>`;
+  }).join("");
+}
+
+function tilesHtml(list) {
+  return list.map(t => `<div class="tile"><div class="k">${t.sw ? `<i class="sw ${t.sw}"></i>` : ""}${t.k}</div><div class="v">${t.v}</div><div class="n">${t.n}</div></div>`).join("");
+}
+const heroK = v => `${K(v).replace(" mil", "")}<small>mil</small>`;
+
+/* ---------- visão geral e abas ---------- */
+const TABS = [
+  { id: "recuperacao", l: "Recuperação", n: REC.length },
+  { id: "aberto", l: "Em aberto", n: AB.length + NG.length + SEM.length },
+  { id: "escritorio", l: "Escritório de cobrança", n: ES.length },
+  { id: "churn", l: "Churn", n: CH.length }
+];
+
+function renderHeader() {
+  const chMensal = sum(CH, x => x.mensal), nTot = REC.length + CARTEIRA.reduce((a, x) => a + nContr(x), 0);
+  document.getElementById("meta-n").textContent = `${nTot} contratos nas planilhas do CS, do financeiro e da central de cobrança`;
+  document.getElementById("standfirst").textContent =
+    `As três planilhas somam ${nTot} contratos, cada um contado uma vez. Em setembro, ${K(M.total)} por mês de receita voltaram a ser faturados em ${CENTRAL.length} contratos, e ${K(T.recup)} de dívida foram recuperados entre pagamentos e acordos. Seguem ${K(sum(AB, x => x.total))} em aberto na carteira interna, ${K(sum(ES_ABERTO, x => x.total))} no escritório de cobrança e ${nCH} contratos em churn, com ${K(chMensal)} de receita mensal.`;
+  const ov = [
+    { id: "recuperacao", k: "Recuperação", c: `${REC.length} contratos`, v: `${K(M.total)}`, n: `por mês de MRR, e ${K(T.recup)} de dívida` },
+    { id: "aberto", k: "Em aberto", c: `${AB.length} contratos`, v: K(sum(AB, x => x.total)), n: `mais ${NG.length} em negociação comercial` },
+    { id: "escritorio", k: "Escritório", c: `${ES_ABERTO.length} contratos`, v: K(sum(ES_ABERTO, x => x.total)), n: `e 1 contrato quitado pelo escritório` },
+    { id: "churn", k: "Churn", c: `${nCH} contratos`, v: `${K(chMensal)}`, n: "de receita mensal em cancelamento" }
+  ];
+  document.getElementById("overview").innerHTML = ov.map(o => `<button class="ov" type="button" data-go="${o.id}"><span class="k"><span>${o.k}</span><span>${o.c}</span></span><span class="v">${o.v}</span><span class="n">${o.n}</span></button>`).join("");
+  document.getElementById("tabs").innerHTML = TABS.map(t => `<button class="tab" role="tab" type="button" id="t-${t.id}" aria-controls="p-${t.id}" data-tab="${t.id}" aria-selected="false">${t.l}<span class="c">${t.n}</span></button>`).join("");
+}
+
+let tabAtual = "recuperacao";
+function showTab(id, scroll) {
+  tabAtual = id;
+  TABS.forEach(t => {
+    const on = t.id === id;
+    document.getElementById("t-" + t.id).setAttribute("aria-selected", on);
+    document.getElementById("t-" + t.id).tabIndex = on ? 0 : -1;
+    document.getElementById("p-" + t.id).hidden = !on;
+  });
+  document.querySelectorAll(".ov").forEach(b => b.setAttribute("aria-current", b.dataset.go === id));
+  const tabsEl = document.getElementById("tabs"), btn = document.getElementById("t-" + id);
+  tabsEl.scrollLeft = Math.max(0, btn.offsetLeft - tabsEl.offsetLeft - 16);
+  if (scroll) document.querySelector(".tabbar").scrollIntoView({ behavior: "smooth", block: "start" });
+  try { if (!panel.open) history.replaceState(null, "", id === "recuperacao" ? location.pathname : "#" + id); } catch (e) {}
+}
+document.getElementById("overview").addEventListener("click", e => { const b = e.target.closest("[data-go]"); if (b) showTab(b.dataset.go, true); });
+document.getElementById("tabs").addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b) showTab(b.dataset.tab, false); });
+document.getElementById("tabs").addEventListener("keydown", e => {
+  if (!["ArrowRight", "ArrowLeft"].includes(e.key)) return;
+  const i = TABS.findIndex(t => t.id === tabAtual), n = TABS[(i + (e.key === "ArrowRight" ? 1 : TABS.length - 1)) % TABS.length].id;
+  showTab(n, false); document.getElementById("t-" + n).focus();
+});
+
+/* ---------- aba recuperação ---------- */
+function renderRecuperacao() {
+  const n = CLIENTES.length;
+  document.getElementById("rec-lead").textContent = `Onze contratos tiveram a dívida negociada até 25/09: ${K(T.recup)} voltaram entre pagamentos e acordos, ${K(T.caixa)} já em caixa, e nove dos onze clientes seguem na base.`;
+  document.getElementById("hero-v").innerHTML = heroK(T.recup);
+  document.getElementById("hero-n").innerHTML = `<strong>${pct(T.recup, T.base)}</strong> de ${K(T.base)} em dívida tratada nos ${n} contratos. Valor exato: ${R(T.recup)}.`;
+  document.getElementById("tiles").innerHTML = tilesHtml([
+    { sw: "caixa", k: "Em caixa", v: K(T.caixa), n: `${pct(T.caixa, T.recup)} do recuperado` },
+    { sw: "receber", k: "A receber em acordo", v: K(T.receber), n: "3 acordos, de outubro a março/2027" },
+    { sw: "perda", k: "Não recuperado", v: K(T.perda), n: "Represado de 2 contratos cancelados" },
+    { sw: "receber", k: "No Plano Safra", v: K(SAFRA_V), n: "1 acordo, vencimento em 30/03/2027" }
+  ]);
+  renderMRR();
+  document.getElementById("bar-total").textContent = `Dívida tratada ${R(T.base)}`;
+  const bar = document.getElementById("bar-main");
+  bar.innerHTML = [{ k: "caixa", v: T.caixa, l: "Em caixa" }, { k: "receber", v: T.receber, l: "A receber em acordo" }, { k: "perda", v: T.perda, l: "Não recuperado" }].map(p => {
+    const w = p.v / T.base * 100;
+    return `<span class="seg ${p.k}" style="flex:${p.v} 1 0" tabindex="0" data-tip="${esc(p.l + "|" + R(p.v) + " · " + nf1.format(w) + "% da dívida tratada")}"><span class="in">${nf1.format(w)}%</span></span>`;
+  }).join("");
+  bar.setAttribute("aria-label", `Dívida tratada de ${R(T.base)}: ${R(T.caixa)} em caixa, ${R(T.receber)} a receber em acordo, ${R(T.perda)} não recuperado.`);
+  document.getElementById("legend-main").innerHTML = [["caixa", "Em caixa", T.caixa], ["receber", "A receber em acordo", T.receber], ["perda", "Não recuperado", T.perda]].map(([k, l, v]) => `<span><i class="sw ${k}"></i>${l} <b>${R(v)}</b></span>`).join("");
+
+  const semRep = CLIENTES.filter(c => c.represado === 0), comRep = CLIENTES.filter(c => c.represado > 0);
+  document.getElementById("f1-num").textContent = `${semRep.length} de ${semRep.length}`;
+  document.getElementById("f2-num").textContent = `2 de ${comRep.length}`;
+  document.getElementById("f3-num").textContent = K(T.receber);
+  document.getElementById("f3-h").textContent = `${pct(T.receber, T.recup)} do valor recuperado ainda entra em parcelas`;
+  document.getElementById("f4-num").textContent = K(SAFRA_V);
+  const dot = c => `<i class="${c.status === "cancelou" ? "perda" : c.receber > 0 ? "receber" : "caixa"}"></i>`;
+  document.getElementById("f1-dots").innerHTML = semRep.map(dot).join("");
+  document.getElementById("f2-dots").innerHTML = comRep.map(dot).join("");
+}
+
+let mrrList = [];
+function renderMRR() {
+  const n = CENTRAL.length, nx = CENTRAL.filter(x => x.extra).length, nm = CENTRAL.filter(x => x.mantida).length;
+  const auto = CENTRAL.filter(x => /autom/i.test(x.forma)).length;
+  document.getElementById("mrr-lead").textContent = `A central de cobrança reativou ${n} contratos em setembro. ${nx} deles não estavam nas planilhas de cobrança e entram como extra na recuperação. Os contratos anuais entram com o valor dividido por 12.`;
+  document.getElementById("mrr-hero").innerHTML = `${K(M.total).replace(" mil", "")}<small>mil por mês</small>`;
+  document.getElementById("mrr-hero-n").innerHTML = `<strong>${n} contratos</strong> reativados em setembro. Em 12 meses, ${K(M.total * 12)}. Valor exato: ${R(M.total)} por mês.`;
+  document.getElementById("mrr-tiles").innerHTML = tilesHtml([
+    { sw: "bar", k: "Da carteira de cobrança", v: K(M.base), n: `${n - nx} contratos já nas planilhas` },
+    { sw: "extra", k: "Extra, fora das planilhas", v: K(M.extra), n: `${nx} contratos` },
+    { k: "Seguem ativos hoje", v: `${nm} de ${n}`, n: `${K(M.mantida)} por mês; ${n - nm} voltaram para a central` },
+    { k: "Tempo até recuperar", v: `${mediana(CENTRAL.map(x => x.dias))} dias`, n: "mediana entre a entrada na central e a reativação" }
+  ]);
+  mrrList = REC.filter(c => c.central).sort((a, b) => mrrOf(b) - mrrOf(a));
+  const max = Math.max(...mrrList.map(mrrOf));
+  document.getElementById("mrr-chart").innerHTML = mrrList.map((c, i) => {
+    const x = c.central, obs = x.periodicidade === "Anual" ? `anual de ${R(x.valorCadastro)} ÷ 12` : !x.mantida ? "voltou para a central" : "";
+    return `<div class="hrow mrr" role="button" tabindex="0" data-i="${i}" data-tip="${esc(c.nome + "|" + R(x.mrr) + " por mês")}" aria-label="${esc(c.nome)}: ${R(x.mrr)} por mês. Abrir detalhes.">
+      <span class="l">${esc(c.nome)}${c.extra ? tagHtml("extra", "Extra") : ""}</span>
+      <span class="track"><span class="fill ${c.extra ? "extra" : ""}" style="width:${x.mrr / max * 100}%"></span></span>
+      <span class="v">${R(x.mrr)}${obs ? `<small>${obs}</small>` : ""}</span></div>`;
+  }).join("");
+  document.getElementById("mrr-note").textContent = `${auto} reativações foram automáticas, quando o contrato voltou a ativo, e ${n - auto} foram registradas pela central. Nenhum dos ${n} contratos passou pelo escritório de cobrança. Os ${n - nm} que voltaram para a central têm parcela de acordo ou vencimento em aberto.`;
+}
+document.getElementById("mrr-chart").addEventListener("click", e => { const r = e.target.closest(".hrow"); if (r) openPanel(mrrList, +r.dataset.i, renderRecPanel); });
+document.getElementById("mrr-chart").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.closest(".hrow")) { e.preventDefault(); e.target.click(); } });
+
+const recState = { status: "todos", prod: "todos" };
+let recVisible = [];
+function renderRecFilters() {
+  const st = [["todos", "Todos"], ["quitado", "Quitados"], ["acordo", "Em acordo"], ["reativado", "Reativados"], ["cancelou", "Cancelados"], ["extra", "Extras"]];
+  const pr = [["todos", "Todos os produtos"], ["AgriManager", "AgriManager"], ["myFarm", "myFarm"]];
+  const count = (key, val) => REC.filter(c => val === "todos" || (val === "extra" ? c.extra : c[key] === val)).length;
+  document.getElementById("f-status").innerHTML = st.map(([v, l]) => `<button class="chip" type="button" data-f="status" data-v="${v}" aria-pressed="${recState.status === v}">${l}<span class="c">${count("status", v)}</span></button>`).join("");
+  document.getElementById("f-prod").innerHTML = pr.map(([v, l]) => `<button class="chip" type="button" data-f="prod" data-v="${v}" aria-pressed="${recState.prod === v}">${l}<span class="c">${count("produto", v)}</span></button>`).join("");
+}
+function renderRecList() {
+  recVisible = REC.filter(c => (recState.status === "todos" || (recState.status === "extra" ? c.extra : c.status === recState.status)) && (recState.prod === "todos" || c.produto === recState.prod))
+    .sort((a, b) => (mrrOf(b) - mrrOf(a)) || (b.base - a.base));
+  const max = Math.max(...REC.map(c => c.base));
+  const list = document.getElementById("list");
+  if (!recVisible.length) { list.innerHTML = '<div class="empty">Nenhum contrato neste filtro.</div>'; return; }
+  const mrrSub = c => !c.central ? (c.fica ? "fora da central" : "contrato cancelado") : c.central.periodicidade === "Anual" ? "anual ÷ 12" : !c.central.mantida ? "voltou para a central" : "por mês";
+  const head = `<div class="list-head" aria-hidden="true"><span>Cliente</span><span>Destino da dívida cobrada</span><span class="r">Dívida recuperada</span><span class="r">MRR recuperado</span><span></span></div>`;
+  const rows = recVisible.map((c, i) => `
+    <button class="row${c.extra ? " extra" : ""}" type="button" data-i="${i}" aria-label="${esc(c.nome)}, ${esc(c.statusTxt)}${c.extra ? ", extra" : ""}, dívida recuperada ${R(recup(c))}, MRR recuperado ${R(mrrOf(c))}. Abrir detalhes.">
+      <span class="who"><span class="nm">${esc(c.nome)}</span><span class="sub">${tag(c)}<span class="prod">${c.produto}</span></span></span>
+      <span class="barcell">${c.base ? `<span class="sbar" style="width:${Math.max(c.base / max * 100, 4)}%">${segs(c)}</span>` : `<span class="bartxt">Sem dívida nas planilhas de cobrança</span>`}</span>
+      <span class="sec r">${c.base ? small(R(recup(c)), recup(c) ? pct(recup(c), c.base) + " do cobrado" : "nada recuperado") : ""}</span>
+      <span class="val r">${small(c.central ? R(mrrOf(c)) : "", mrrSub(c))}</span>
+      ${CHEV}
+    </button>`).join("");
+  const foot = `<div class="list-foot"><span>${recVisible.length} ${recVisible.length === 1 ? "contrato" : "contratos"}</span><span class="hide-m"></span><span class="r hide-m">${R(sum(recVisible, recup))}</span><span class="r">${R(sum(recVisible, mrrOf))}</span><span class="hide-m"></span></div>`;
+  list.innerHTML = head + rows + foot;
+}
+document.getElementById("rec-filters").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  recState[b.dataset.f] = b.dataset.v; renderRecFilters(); renderRecList();
+});
+document.getElementById("list").addEventListener("click", e => { const r = e.target.closest(".row"); if (r) openPanel(recVisible, +r.dataset.i, renderRecPanel); });
+
+const MES = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+function renderAgenda() {
+  const itens = [];
+  CLIENTES.forEach(c => c.linha.filter(l => l.s === "previsto" && l.v).forEach(l => itens.push({ c, t: l.t, v: l.v, venc: l.venc || null, safra: !!l.safra })));
+  itens.sort((a, b) => (a.venc || "9999") < (b.venc || "9999") ? -1 : 1);
+  const datados = itens.filter(i => i.venc), semData = itens.filter(i => !i.venc);
+  const buckets = [];
+  if (datados.length) {
+    let [y, m] = datados[0].venc.split("-").map(Number);
+    const [ly, lm] = datados[datados.length - 1].venc.split("-").map(Number);
+    while (y < ly || (y === ly && m <= lm)) {
+      const key = `${y}-${String(m).padStart(2, "0")}`, its = datados.filter(i => i.venc.startsWith(key));
+      buckets.push({ lbl: `${MES[m - 1]}/${String(y).slice(2)}`, its, v: sum(its, i => i.v), safra: its.some(i => i.safra) });
+      m++; if (m > 12) { m = 1; y++; }
+    }
+  }
+  if (semData.length) buckets.push({ lbl: "Sem data", its: semData, v: sum(semData, i => i.v), sem: true });
+  const max = Math.max(...buckets.map(b => b.v), 1);
+  const step = [5000, 10000, 20000, 25000, 50000].find(s => max / s <= 4) || 50000, top = Math.ceil(max / step) * step;
+  const grid = []; for (let g = step; g <= top; g += step) grid.push(`<div class="gl" style="bottom:${g / top * 100}%"><span>${nf1.format(g / 1000)} mil</span></div>`);
+  const chart = document.getElementById("agenda-chart");
+  chart.innerHTML = grid.join("") + buckets.map(b => {
+    const quem = [...new Set(b.its.map(i => i.c.nome.split(" ").slice(0, 2).join(" ")))].join(", ");
+    const tipTxt = b.v ? `${b.sem ? "Sem data definida" : b.lbl} · ${quem}|${R(b.v)}` : "";
+    return `<div class="acol ${b.sem ? "semdata" : b.v ? "" : "vazio"}"${b.v ? ` tabindex="0" data-tip="${esc(tipTxt)}"` : ""}>${b.v ? `<span class="lbl">${K(b.v).replace("R$ ", "")}</span>` : ""}<span class="col" style="height:${b.v / top * 100}%"></span></div>`;
+  }).join("");
+  const xs = document.createElement("div"); xs.className = "agenda-x"; xs.setAttribute("aria-hidden", "true");
+  xs.innerHTML = buckets.map(b => `<span>${b.lbl}${b.safra ? "<em>Plano Safra</em>" : b.sem ? "<em>a definir</em>" : ""}</span>`).join("");
+  document.querySelectorAll(".agenda-x").forEach(n => n.remove()); chart.after(xs);
+  chart.setAttribute("aria-label", "Valor a receber por mês: " + buckets.filter(b => b.v).map(b => `${b.sem ? "sem data definida" : b.lbl}, ${R(b.v)}`).join("; "));
+  const ateDez = sum(datados.filter(i => i.venc <= "2026-12-31"), i => i.v), safra = sum(datados.filter(i => i.safra), i => i.v);
+  const partes = [];
+  if (ateDez) partes.push(`${K(ateDez)} vencem até dezembro de 2026`);
+  if (safra) partes.push(`${K(safra)} ficaram para 30/03/2027, no Plano Safra`);
+  if (semData.length) partes.push(`${K(sum(semData, i => i.v))} ainda sem data definida`);
+  document.getElementById("agenda-lead").textContent = `Dos ${K(T.receber)} a receber em acordo, ${partes.join("; ").replace(/; ([^;]*)$/, " e $1")}.`;
+  document.getElementById("agenda-list").innerHTML = itens.map(i => `<div class="it"><span class="d">${i.venc ? dataBR(i.venc) : "A definir"}</span><span class="t">${esc(i.c.nome)}<span>${esc(i.t)}${i.safra ? " · Plano Safra" : ""}</span></span><span class="v">${R(i.v)}</span></div>`).join("");
+}
+function renderMarcos() {
+  document.getElementById("marcos-lista").innerHTML = MARCOS.map(m => `<div class="marco"><span class="d">${m.d}</span><span class="t">${esc(m.t)}<span>${esc(m.s)}</span></span><span class="v">${m.v ? R(m.v) : ""}</span></div>`).join("");
+}
+function renderTable() {
+  const ord = [...REC].sort((a, b) => (b.base - a.base) || (mrrOf(b) - mrrOf(a)));
+  const d = (c, v) => c.base ? R(v) : "";
+  document.getElementById("tbl-sum").textContent = `Tabela completa dos ${REC.length} contratos recuperados`;
+  document.querySelector("#tbl tbody").innerHTML = ord.map(c => `<tr${c.extra ? ' style="background:var(--x-soft)"' : ""}><td>${esc(c.nome)}${c.extra ? " (extra)" : ""}</td><td>${c.contrato}</td><td>${c.produto}</td><td class="n">${d(c, c.faturado)}</td><td class="n">${d(c, c.represado)}</td><td class="n">${d(c, c.base)}</td><td class="n">${d(c, c.caixa)}</td><td class="n">${d(c, c.receber)}</td><td class="n">${d(c, perda(c))}</td><td class="n">${c.central ? R(mrrOf(c)) : ""}</td><td>${esc(c.statusTxt)}</td></tr>`).join("");
+  document.querySelector("#tbl tfoot").innerHTML = `<tr><td colspan="3">Total</td><td class="n">${R(sum(CLIENTES, c => c.faturado))}</td><td class="n">${R(sum(CLIENTES, c => c.represado))}</td><td class="n">${R(T.base)}</td><td class="n">${R(T.caixa)}</td><td class="n">${R(T.receber)}</td><td class="n">${R(T.perda)}</td><td class="n">${R(M.total)}</td><td></td></tr>`;
+}
+
+/* ---------- listas da carteira ---------- */
+function cartTag(x) {
+  if (x.quitado) return tagHtml("quitado", "Quitado");
+  if (x.grupo === "churn") return tagHtml(x.etapa === "acordo" ? (x.pago && !x.naRecup ? "quitado" : "acordo") : "neutro", x.sub);
+  if (x.grupo === "escritorio") return tagHtml("neutro", x.confirmado ? "No escritório, confirmado" : "No escritório, a confirmar");
+  return tagHtml(x.sub === "Proposta em análise" || x.sub.startsWith("Reunião") ? "acordo" : "neutro", x.sub);
+}
+function cartList(elId, itens, opts) {
+  const el = document.getElementById(elId);
+  if (!itens.length) { el.innerHTML = '<div class="empty">Nenhum contrato neste filtro.</div>'; return; }
+  const max = Math.max(...itens.map(opts.bar), 1);
+  const head = `<div class="list-head" aria-hidden="true"><span>Cliente</span><span>${opts.barLbl}</span><span class="r">${opts.secLbl}</span><span class="r">${opts.valLbl}</span><span></span></div>`;
+  const rows = itens.map((x, i) => {
+    const bv = opts.bar(x);
+    return `<button class="row" type="button" data-i="${i}" aria-label="${esc(x.nome)}, ${esc(x.sub)}. Abrir detalhes.">
+      <span class="who"><span class="nm">${esc(x.nome)}</span><span class="sub">${cartTag(x)}<span class="prod">${x.produto}</span>${x.naRecup ? '<span class="prod">também em Recuperação</span>' : ""}</span></span>
+      <span class="barcell">${bv ? `<span class="hb" style="width:${Math.max(bv / max * 100, 3)}%" data-tip="${esc(opts.barLbl + "|" + R(bv))}"></span>` : `<span class="bartxt">${opts.semBar || ""}</span>`}</span>
+      <span class="sec r">${opts.sec(x)}</span>
+      <span class="val r">${opts.val(x)}</span>
+      ${CHEV}</button>`;
+  }).join("");
+  const foot = opts.foot ? `<div class="list-foot">${opts.foot(itens)}</div>` : "";
+  el.innerHTML = head + rows + foot;
+  el.onclick = e => { const r = e.target.closest(".row"); if (r) openPanel(itens, +r.dataset.i, renderCartPanel); };
+}
+const small = (v, s) => `${v}${s ? `<small>${s}</small>` : ""}`;
+
+/* ---------- aba em aberto ---------- */
+function renderAberto() {
+  const tot = sum(AB, x => x.total), rep = sum(AB, x => x.rep);
+  const ord = [...AB].sort((a, b) => b.total - a.total), top3 = ord.slice(0, 3), t3 = sum(top3, x => x.total);
+  const fadel = AB.find(x => x.id === "30003903");
+  document.getElementById("ab-lead").textContent = `${AB.length} contratos da carteira interna seguem sem acordo. Quase toda a dívida é represada: parcelas que ficaram fora dos acordos do faturado ou que nunca foram faturadas durante a suspensão.`;
+  document.getElementById("ab-hero").innerHTML = heroK(tot);
+  document.getElementById("ab-hero-n").innerHTML = `<strong>${AB.length} contratos</strong>, todos AgriManager. Valor exato: ${R(tot)}.`;
+  document.getElementById("ab-tiles").innerHTML = tilesHtml([
+    { k: "Valor represado", v: K(rep), n: `${pct(rep, tot)} da dívida em aberto` },
+    { k: "Três maiores contratos", v: K(t3), n: `${pct(t3, tot)} do total em aberto` },
+    { k: "Plano Safra", v: "1 proposta", n: `${R(17868.28)} para 30/03/2027, em análise; 1 acordo já fechado na Recuperação` },
+    { k: "Negociação comercial", v: `${NG.length} contratos`, n: `${K(sum(NG, x => x.mensal))} de mensalidade` }
+  ]);
+  cartList("ab-list", ord, {
+    barLbl: "Dívida em aberto", bar: x => x.total, secLbl: "Mensalidade", valLbl: "Dívida",
+    sec: x => small(x.mensal ? R(x.mensal) : "", ""), val: x => small(R(x.total), x.rep ? `${pct(x.rep, x.total)} represado` : "só faturado"),
+    foot: l => `<span>${l.length} contratos</span><span class="hide-m"></span><span class="r hide-m">${R(sum(l, x => x.mensal))}</span><span class="r">${R(sum(l, x => x.total))}</span><span class="hide-m"></span>`
+  });
+  const safra = [
+    { nm: "Marcos Aurelio Sinopoli", v: 13521.08, st: "Acordo fechado em 18/09: o represado de junho a setembro vence em 30/03/2027. O cliente segue pagando as mensalidades e o acordo anterior. Detalhe na aba Recuperação.", rec: "marcos" },
+    { nm: "Pedro Henrique Pinto Fadel", v: 35736.48, st: "Proposta enviada, em análise pelo cliente: 5 parcelas de R$ 3.573,64 até fevereiro e saldo de R$ 17.868,28 em 30/03/2027." , id: "30003903" },
+    { nm: "Alzir Pimentel Aguiar Neto", v: 43792.20, st: "Represado em negociação. Reunião em 25/09 às 15h para tratar dos débitos.", id: "30003232" },
+    { nm: "Petras de Lima Telles", v: 58075.29, st: "Represado sem negociação: cliente sem retorno. Plano Safra é a alternativa prevista quando houver contato.", id: "30002744" },
+    { nm: "Nova Fronteira Agropecuária Ltda", v: 4955.97, st: "Flexibilização para 2027 indicada, com entrada de 20%. Cliente sem retorno.", id: "30003342" }
+  ];
+  document.getElementById("safra-list").innerHTML = safra.map(s => `<li><span class="nm"><button class="link-btn" type="button" ${s.rec ? `data-open-rec="${s.rec}"` : `data-open="${s.id}"`}>${esc(s.nm)}</button>${s.rec ? " " + tagHtml("acordo", "Acordo fechado") : ""}</span><span class="vv">${R(s.v)}</span><span class="st">${esc(s.st)}</span></li>`).join("");
+  document.getElementById("neg-lead").textContent = `${NG.length} contratos estão suspensos sem cobrança de dívida: renovação anual do myFarm, migração de produto, pendência de projeto ou análise contratual. Somam ${K(sum(NG, x => x.mensal))} de mensalidade.`;
+  cartList("neg-list", [...NG].sort((a, b) => (b.mensal || 0) - (a.mensal || 0)), {
+    barLbl: "Mensalidade", bar: x => x.mensal || 0, semBar: "Mensalidade a confirmar", secLbl: "", valLbl: "Mensalidade",
+    sec: () => "", val: x => small(x.mensal ? R(x.mensal) : "A confirmar", "")
+  });
+  const s = SEM[0];
+  document.getElementById("sem-note").textContent = s ? `Fora da cobrança: ${s.nome}, contrato cedido a outro titular, sem débito. Sai da lista de suspensos.` : "";
+}
+
+/* ---------- aba escritório ---------- */
+function renderEscritorio() {
+  const tot = sum(ES_ABERTO, x => x.total), conf = ES_ABERTO.filter(x => x.confirmado), aconf = ES_ABERTO.filter(x => !x.confirmado), q = ES.find(x => x.quitado);
+  document.getElementById("es-lead").textContent = `${ES_ABERTO.length} contratos myFarm têm a dívida no escritório de cobrança terceirizado, e um já foi quitado por lá. Nenhum deles pediu cancelamento.`;
+  document.getElementById("es-hero").innerHTML = heroK(tot);
+  document.getElementById("es-hero-n").innerHTML = `<strong>${ES_ABERTO.length} contratos</strong>, todos myFarm. Valor exato: ${R(tot)}.`;
+  document.getElementById("es-tiles").innerHTML = tilesHtml([
+    { k: "Confirmados nas duas planilhas", v: K(sum(conf, x => x.total)), n: `${conf.length} contratos` },
+    { k: "A confirmar com o financeiro", v: K(sum(aconf, x => x.total)), n: `${aconf.length} contratos indicados pelo CS` },
+    { k: "Quitado pelo escritório", v: "1 contrato", n: q ? `${q.nome}, dívida registrada de ${R(q.total)}` : "" },
+    { k: "Valor represado", v: K(sum(ES_ABERTO, x => x.rep)), n: `${pct(sum(ES_ABERTO, x => x.rep), tot)} da dívida no escritório` }
+  ]);
+  const ord = [...ES].sort((a, b) => (a.quitado - b.quitado) || (b.confirmado - a.confirmado) || (b.total - a.total));
+  cartList("es-list", ord, {
+    barLbl: "Dívida registrada", bar: x => x.quitado ? 0 : x.total, semBar: "Quitado", secLbl: "Com juros", valLbl: "Dívida",
+    sec: x => small(x.juros ? R(x.juros) : "", ""), val: x => small(R(x.total), x.quitado ? "quitada" : `${x.fat ? R(x.fat) + " faturado" : ""}`),
+    foot: l => `<span>${ES_ABERTO.length} contratos em cobrança</span><span class="hide-m"></span><span class="r hide-m"></span><span class="r">${R(tot)}</span><span class="hide-m"></span>`
+  });
+  const ac = [
+    { id: "30003232", nm: "Alzir Pimentel Aguiar Neto", st: "Faturado em acordo de 10 parcelas com o escritório, em cumprimento. Represado de R$ 43.792,20 fora do acordo, em aberto.", v: 43792.20 },
+    { id: "30002744", nm: "Petras de Lima Telles", st: "Faturado regularizado com o escritório. Represado de R$ 58.075,29 fora do acordo, em aberto.", v: 58075.29 }
+  ];
+  document.getElementById("es-acordos").innerHTML = ac.map(a => `<li><span class="nm"><button class="link-btn" type="button" data-open="${a.id}">${esc(a.nm)}</button></span><span class="vv">${R(a.v)}</span><span class="st">${esc(a.st)}</span></li>`).join("");
+}
+
+/* ---------- aba churn ---------- */
+const chState = { etapa: "todas", prod: "todos" };
+function renderChurn() {
+  const mensal = sum(CH, x => x.mensal), clientes = CH.length;
+  const partes = CH.flatMap(x => x.partes || [{ produto: x.produto, mensal: x.mensal }]);
+  const prods = ["AgriManager", "myFarm", "Aliare Cloud"].map(p => ({ p, l: partes.filter(q => q.produto === p) }));
+  const pagoChurn = sum(CH.filter(x => !x.naRecup), x => x.pago);
+  const deb = CH.filter(x => !x.naRecup && (x.total || x.juros));
+  const debV = sum(deb, x => x.total || x.juros);
+  document.getElementById("ch-lead").textContent = `${nCH} contratos de ${clientes} clientes pediram cancelamento ou estão em distrato. Somam ${K(mensal)} de receita mensal. A maioria aguarda pagamento de multa, de boletos ou a assinatura do distrato. Tellus e Theodoro, que pagaram o faturado antes de cancelar, estão na aba Recuperação.`;
+  document.getElementById("ch-hero").innerHTML = heroK(mensal);
+  document.getElementById("ch-hero-n").innerHTML = `<strong>${nCH} contratos</strong> de ${clientes} clientes. Valor exato: ${R(mensal)} por mês.`;
+  document.getElementById("ch-tiles").innerHTML = tilesHtml([
+    ...prods.map(o => ({ k: o.p, v: K(sum(o.l, x => x.mensal)), n: `${o.l.length} contratos` })),
+    { k: "Recebido em contratos de churn", v: K(pagoChurn), n: `em 16/09, além de acordo de ${R(2000)} em 2 parcelas` }
+  ]);
+
+  const rows = ETAPAS.map(e => { const l = CH.filter(x => x.etapa === e.id); return { ...e, n: l.length, v: sum(l, x => x.mensal) }; }).sort((a, b) => b.n - a.n || b.v - a.v);
+  const maxN = Math.max(...rows.map(r => r.n));
+  document.getElementById("ch-chart").innerHTML = rows.map(r => `
+    <div class="hrow${chState.etapa === r.id ? " hl" : ""}" role="button" tabindex="0" data-etapa="${r.id}" data-tip="${esc(r.l + "|" + r.n + " clientes · " + R(r.v) + " por mês")}" aria-label="${esc(r.l)}: ${r.n} clientes, ${R(r.v)} por mês. Filtrar a lista.">
+      <span class="l">${esc(r.l)}</span>
+      <span class="track"><span class="fill" style="width:${r.n / maxN * 100}%"></span></span>
+      <span class="v">${r.n} ${r.n === 1 ? "cliente" : "clientes"}<small>${K(r.v)} por mês</small></span>
+    </div>`).join("");
+
+  const cli = ["multa_pagto", "multa_disc", "boletos", "distrato"], nCli = CH.filter(x => cli.includes(x.etapa)).length;
+  const antigos = CH.filter(x => diasDesde(x.data) > 150).sort((a, b) => a.data < b.data ? -1 : 1);
+  const comMotivo = ["30005811", "30007127", "30007418", "30006062", "30003425", "30005780", "30004420", "30007136"];
+  const sistema = ["30005811", "30007127", "30007418"];
+  const semReg = CH.filter(x => x.etapa === "sem_registro");
+  document.getElementById("ch-findings").innerHTML = [
+    { k: "Aguardam o cliente", num: `${nCli} de ${CH.length}`, h: "A maior parte dos distratos espera pagamento de multa, de boletos ou a assinatura do cliente", p: `${CH.filter(x => x.etapa.startsWith("multa")).length} clientes param na multa, ${CH.filter(x => x.etapa === "boletos").length} nos boletos em aberto e ${CH.filter(x => x.etapa === "distrato").length} na assinatura do distrato. Juntos somam ${K(sum(CH.filter(x => cli.includes(x.etapa)), x => x.mensal))} de receita mensal.` },
+    { k: "Pedidos antigos", num: `${antigos.length} pedidos`, h: "Há cancelamentos pedidos há mais de cinco meses ainda sem distrato", p: antigos.map(x => `${x.nome.split(" ").slice(0, 2).join(" ")} (${dataBR(x.data)})`).join(", ") + `. Dos ${CH.length} clientes, só ${CH.filter(x => x.data).length} têm a data do pedido registrada.` },
+    { k: "Motivo declarado", num: `${sistema.length} de ${comMotivo.length}`, h: "Onde há motivo registrado, falhas e limitações do sistema aparecem com mais frequência", p: `Os outros cinco citam fim das atividades, falta de uso, descumprimento de acordo, não renovação e desistência durante a implantação. A base é pequena: ` + (CH.length - comMotivo.length) + ` dos ${CH.length} clientes não têm motivo registrado.` },
+    { k: "Débitos a acertar", num: K(debV), h: `${deb.length} contratos em churn têm débito registrado a acertar no encerramento`, p: `${deb.map(x => x.nome.split(" ").slice(0, 2).join(" ")).join(", ")}. Além disso, ${semReg.length} contratos não têm etapa do distrato registrada.` }
+  ].map(f => `<article class="finding"><div class="kicker">${f.k}</div><div class="num">${f.num}</div><h3>${f.h}</h3><p>${esc(f.p)}</p></article>`).join("");
+  renderChFilters(); renderChList();
+}
+function renderChFilters() {
+  const et = [["todas", "Todas as etapas", CH.length], ...ETAPAS.map(e => [e.id, e.l, CH.filter(x => x.etapa === e.id).length])];
+  const pr = [["todos", "Todos os produtos"], ["AgriManager", "AgriManager"], ["myFarm", "myFarm"], ["Aliare Cloud", "Aliare Cloud"]];
+  document.getElementById("ch-f-etapa").innerHTML = et.map(([v, l, n]) => `<button class="chip" type="button" data-f="etapa" data-v="${v}" aria-pressed="${chState.etapa === v}">${l}<span class="c">${n}</span></button>`).join("");
+  document.getElementById("ch-f-prod").innerHTML = pr.map(([v, l]) => `<button class="chip" type="button" data-f="prod" data-v="${v}" aria-pressed="${chState.prod === v}">${l}<span class="c">${CH.filter(x => v === "todos" || temProd(x, v)).length}</span></button>`).join("");
+  document.querySelectorAll("#ch-chart .hrow").forEach(r => r.classList.toggle("hl", r.dataset.etapa === chState.etapa));
+}
+function renderChList() {
+  const l = CH.filter(x => (chState.etapa === "todas" || x.etapa === chState.etapa) && (chState.prod === "todos" || temProd(x, chState.prod))).sort((a, b) => (b.mensal || 0) - (a.mensal || 0));
+  cartList("ch-list", l, {
+    barLbl: "Receita mensal", bar: x => x.mensal || 0, semBar: "Mensalidade não registrada", secLbl: "Pedido", valLbl: "Mensalidade",
+    sec: x => small(x.data ? dataBR(x.data) : "", x.data && diasDesde(x.data) !== null ? `há ${diasDesde(x.data)} dias` : ""),
+    val: x => small(x.mensal ? R(x.mensal) : "", ""),
+    foot: l => `<span>${l.length} ${l.length === 1 ? "cliente" : "clientes"}, ${l.reduce((a, x) => a + nContr(x), 0)} contratos</span><span class="hide-m"></span><span class="r hide-m"></span><span class="r">${R(sum(l, x => x.mensal))}</span><span class="hide-m"></span>`
+  });
+}
+document.getElementById("ch-filters").addEventListener("click", e => {
+  const b = e.target.closest(".chip"); if (!b) return;
+  chState[b.dataset.f] = b.dataset.v; renderChFilters(); renderChList();
+});
+document.getElementById("ch-chart").addEventListener("click", e => {
+  const r = e.target.closest(".hrow"); if (!r) return;
+  chState.etapa = chState.etapa === r.dataset.etapa ? "todas" : r.dataset.etapa; renderChFilters(); renderChList();
+  document.getElementById("h-ch-list").scrollIntoView({ behavior: "smooth", block: "start" });
+});
+document.getElementById("ch-chart").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.closest(".hrow")) { e.preventDefault(); e.target.click(); } });
+document.addEventListener("click", e => {
+  const br = e.target.closest("[data-open-rec]");
+  if (br) { const c = REC.find(x => x.id === br.dataset.openRec); if (c) openPanel([c], 0, renderRecPanel); return; }
+  const b = e.target.closest("[data-open]"); if (!b) return;
+  const i = CARTEIRA.findIndex(x => x.id === b.dataset.open);
+  if (i >= 0) openPanel([CARTEIRA[i]], 0, renderCartPanel);
+});
+
+/* ---------- painel ---------- */
+const panel = document.getElementById("panel");
+const ctx = { list: [], i: 0, render: null };
+function openPanel(list, i, render) {
+  ctx.list = list; ctx.i = i; ctx.render = render;
+  document.getElementById("pn-pos").textContent = list.length > 1 ? `${i + 1} de ${list.length}` : "";
+  document.getElementById("pn-prev").disabled = list.length < 2;
+  document.getElementById("pn-next").disabled = list.length < 2;
+  const x = list[i];
+  document.getElementById("pn-body").innerHTML = render(x);
+  const body = document.getElementById("pn-body");
+  if (!panel.open) panel.showModal();
+  body.scrollTop = 0; body.focus({ preventScroll: true });
+  try { history.replaceState(null, "", "#" + (x.contrato ? x.id : "c" + x.id)); } catch (e) {}
+}
+function step(d) { if (ctx.list.length > 1) openPanel(ctx.list, (ctx.i + d + ctx.list.length) % ctx.list.length, ctx.render); }
+document.getElementById("pn-prev").addEventListener("click", () => step(-1));
+document.getElementById("pn-next").addEventListener("click", () => step(1));
+document.getElementById("pn-close").addEventListener("click", () => panel.close());
+panel.addEventListener("click", e => { if (e.target === panel) panel.close(); });
+panel.addEventListener("keydown", e => { if (e.key === "ArrowRight") { e.preventDefault(); step(1); } if (e.key === "ArrowLeft") { e.preventDefault(); step(-1); } });
+panel.addEventListener("close", () => { try { history.replaceState(null, "", tabAtual === "recuperacao" ? location.pathname : "#" + tabAtual); } catch (e) {} });
+
+function centralHtml(c) {
+  const x = c.central;
+  if (!x) return c.fica ? `<p class="note-inline">Este contrato não aparece na recuperação mensal da central de cobrança.</p>` : "";
+  const sit = x.mantida ? "Ativo" : x.situacao.replace("Em cobrança novamente", "De volta à central");
+  return `<p class="pn-h">Reativação na central de cobrança</p>
+    <div class="pn-figs">
+      <div class="wide"><div class="k"><i class="sw ${c.extra ? "extra" : "bar"}"></i>MRR recuperado</div><div class="v">${R(x.mrr)} por mês${x.periodicidade === "Anual" ? `<small>contrato anual de ${R(x.valorCadastro)}, dividido por 12</small>` : ""}</div></div>
+      <div><div class="k">Entrada na central</div><div class="v">${dataBR(x.entrada)}</div></div>
+      <div><div class="k">Reativação</div><div class="v">${dataBR(x.recuperacao)}<small>${x.dias} dias na central</small></div></div>
+      <div><div class="k">Como voltou</div><div class="v" style="font-size:15px;white-space:normal">${esc(x.forma)}</div></div>
+      <div><div class="k">Situação hoje</div><div class="v" style="font-size:15px;white-space:normal">${esc(sit)}</div></div>
+    </div>
+    ${c.extra ? `<p class="note-inline">Contrato fora das planilhas de cobrança do financeiro e do CS: entra como extra na recuperação.</p>` : ""}`;
+}
+
+function renderRecPanel(c) {
+  if (!c.base) {
+    return `${tag(c)}
+      <h2 id="pn-title">${esc(c.nome)}</h2>
+      <p class="pn-sub"><span>Contrato ${c.contrato}</span><span>${c.produto}</span><span>Reativado em setembro</span></p>
+      ${centralHtml(c)}
+      <p class="pn-h">Como foi recuperado</p><p class="story">${esc(c.negociacao)}</p>`;
+  }
+  const comp = [];
+  if (c.faturado) comp.push(`<li><span>Débito faturado<small>Mensalidades faturadas e não pagas</small></span><span>${R(c.faturado)}</span></li>`);
+  if (c.represado) comp.push(`<li><span>Valor represado<small>${esc(c.compRep)} (${c.pcsRep} ${c.pcsRep === 1 ? "parcela" : "parcelas"})</small></span><span>${R(c.represado)}</span></li>`);
+  if (c.saldoAnterior) comp.push(`<li><span>Saldo do acordo anterior<small>Consolidado no novo acordo</small></span><span>${R(c.saldoAnterior)}</span></li>`);
+  comp.push(`<li><span>Valor cobrado</span><span>${R(c.base)}</span></li>`);
+  const perdaLbl = perdaLabel(c);
+  const linha = c.linha.map(l => `<li><span class="pt ${l.s}" aria-hidden="true"></span><span class="d">${l.d}</span><span class="t">${esc(l.t)}${l.s === "previsto" ? ' <span style="color:var(--ink-faint);font-size:12.5px">(previsto)</span>' : ""}</span><span class="v">${l.v ? R(l.v) : ""}</span></li>`).join("");
+  return `${tag(c)}
+    <h2 id="pn-title">${esc(c.nome)}</h2>
+    <p class="pn-sub"><span>Contrato ${c.contrato}</span><span>${c.produto}</span><span>${c.fica ? "Segue na base" : "Contrato cancelado"}</span></p>
+    <div class="pn-figs">
+      <div class="wide"><div class="k">Recuperado</div><div class="v">${R(recup(c))}</div></div>
+      <div><div class="k"><i class="sw caixa"></i>Em caixa</div><div class="v">${R(c.caixa)}</div></div>
+      <div><div class="k"><i class="sw receber"></i>A receber</div><div class="v">${R(c.receber)}</div></div>
+      <div><div class="k"><i class="sw perda"></i>${perda(c) ? perdaLbl : "Não recuperado"}</div><div class="v">${R(perda(c))}</div></div>
+      <div><div class="k">Mensalidade</div><div class="v">${R(c.mensal)}</div></div>
+    </div>
+    <div class="sbar" role="img" aria-label="Destino do valor cobrado">${segs(c)}</div>
+    <p class="pn-h">Valor cobrado</p><ul class="comp tot">${comp.join("")}</ul>
+    <p class="pn-h">Como foi negociado</p><p class="story">${esc(c.negociacao)}</p>
+    <p class="pn-h">Pagamentos e datas</p><ul class="timeline">${linha}</ul>
+    ${centralHtml(c)}
+    <p class="pn-h">Perfil do cliente</p>
+    <div class="profile"><div><b>Histórico</b><span>${esc(c.perfil)}</span></div>${c.risco ? `<div><b>Risco financeiro</b><span>${c.risco}</span></div>` : ""}<div><b>Atraso na posição</b><span>${c.atraso} dias</span></div></div>`;
+}
+
+const GRUPO_TXT = { churn: "Churn", escritorio: "Escritório de cobrança", aberto: "Em aberto", negociacao: "Negociação comercial", sem: "Sem pendência" };
+function renderCartPanel(x) {
+  const figs = [];
+  if (x.total) figs.push([x.quitado ? "Dívida registrada, quitada" : "Dívida registrada", R(x.total)]);
+  if (x.fat) figs.push(["Débito faturado", R(x.fat)]);
+  if (x.rep) figs.push(["Valor represado", R(x.rep)]);
+  if (x.juros && x.juros !== x.total) figs.push(["Dívida com juros", R(x.juros)]);
+  if (x.mensal) figs.push([x.grupo === "churn" ? "Receita mensal" : "Mensalidade", R(x.mensal)]);
+  if (x.data) figs.push(["Pedido de cancelamento", dataBR(x.data) + (diasDesde(x.data) !== null ? `<small>há ${diasDesde(x.data)} dias</small>` : "")]);
+  if (x.pago) figs.push(["Valor recebido", R(x.pago)]);
+  const figHtml = figs.length ? `<div class="pn-figs">${figs.map((f, i) => `<div class="${i === 0 && figs.length % 2 === 1 ? "wide" : ""}"><div class="k">${f[0]}</div><div class="v">${f[1]}</div></div>`).join("")}</div>` : "";
+  const onde = x.fontes.map(f => `<li><span>${esc(f.replace("CS ·", "Planilha do CS ·").replace("financeiro ·", "Planilha do financeiro ·"))}</span><span></span></li>`).join("");
+  return `${cartTag(x)}
+    <h2 id="pn-title">${esc(x.nome)}</h2>
+    <p class="pn-sub"><span>${x.contratos ? "Contratos " + x.contratos.join(" e ") : "Contrato " + x.id}</span><span>${x.produto}</span><span>${GRUPO_TXT[x.grupo]}</span>${x.etapa ? `<span>${esc(etapaL(x.etapa))}</span>` : ""}</p>
+    ${figHtml}
+    <p class="pn-h">Situação</p><p class="story">${esc(x.resumo)}</p>
+    <p class="pn-h">Próximo passo</p><p class="next">${esc(x.prox)}</p>
+    ${x.naRecup ? `<p class="note-inline">Este contrato também aparece na aba Recuperação, onde está o detalhe do pagamento do faturado.</p>` : ""}
+    <p class="pn-h">Onde aparece</p><ul class="comp">${onde}</ul>`;
+}
+
+/* ---------- tooltip ---------- */
+const tip = document.getElementById("tip");
+function showTip(el, x, y) {
+  const [l, v] = el.dataset.tip.split("|");
+  tip.innerHTML = `${esc(l)}<b>${esc(v || "")}</b>`; tip.classList.add("on");
+  const r = tip.getBoundingClientRect();
+  let left = x + 14, top = y - r.height - 12;
+  if (left + r.width > innerWidth - 8) left = x - r.width - 14;
+  if (top < 8) top = y + 18;
+  tip.style.left = Math.max(8, left) + "px"; tip.style.top = top + "px";
+}
+const hideTip = () => tip.classList.remove("on");
+document.addEventListener("pointermove", e => { const el = e.target.closest && e.target.closest("[data-tip]"); if (el) showTip(el, e.clientX, e.clientY); else hideTip(); });
+document.addEventListener("focusin", e => { const el = e.target.closest && e.target.closest("[data-tip]"); if (el) { const r = el.getBoundingClientRect(); showTip(el, r.left + r.width / 2, r.top); } else hideTip(); });
+document.addEventListener("scroll", hideTip, { passive: true });
+
+/* ---------- tema e impressão ---------- */
+const themeBtn = document.getElementById("btn-theme");
+const currentTheme = () => document.documentElement.dataset.theme || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+const syncThemeBtn = () => { themeBtn.textContent = currentTheme() === "dark" ? "Tema claro" : "Tema escuro"; };
+try { const saved = localStorage.getItem("rv-tema"); if (saved) document.documentElement.dataset.theme = saved; } catch (e) {}
+themeBtn.addEventListener("click", () => { const n = currentTheme() === "dark" ? "light" : "dark"; document.documentElement.dataset.theme = n; try { localStorage.setItem("rv-tema", n); } catch (e) {} syncThemeBtn(); });
+document.getElementById("btn-print").addEventListener("click", () => print());
+const full = document.getElementById("full"); let wasOpen = false;
+addEventListener("beforeprint", () => { wasOpen = full.open; full.open = true; });
+addEventListener("afterprint", () => { full.open = wasOpen; });
+
+/* ---------- início ---------- */
+renderHeader();
+renderRecuperacao(); renderRecFilters(); renderRecList(); renderAgenda(); renderMarcos(); renderTable();
+renderAberto(); renderEscritorio(); renderChurn();
+syncThemeBtn();
+(() => {
+  const h = location.hash.slice(1);
+  if (TABS.some(t => t.id === h)) return showTab(h, false);
+  showTab("recuperacao", false);
+  const ri = recVisible.findIndex(c => c.id === h);
+  if (ri >= 0) return openPanel(recVisible, ri, renderRecPanel);
+  const ci = CARTEIRA.findIndex(x => "c" + x.id === h);
+  if (ci >= 0) { const x = CARTEIRA[ci], t = { churn: "churn", escritorio: "escritorio" }[x.grupo] || "aberto"; showTab(t, false); openPanel([x], 0, renderCartPanel); }
+})();
+</script>
+</body>
+</html>
