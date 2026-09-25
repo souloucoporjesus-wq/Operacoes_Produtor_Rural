@@ -7,20 +7,26 @@
 
 ## Onde paramos
 
-Em 22 e 23/09 o sistema ganhou olhos: triagem de email com a pasta Email Pendentes (rotinas às 9:30
-e 16:30), resumo diário do Teams (16:30, em `resumo-teams/`) e o briefing executivo das 9:30 (skill
-`briefing`, página `painel/briefing.html`). As rotinas que gravam no GitHub dependem de instalar o
-app do Claude no repositório. O primeiro briefing (23/09) apontou semana crítica no time (ver
-`equipe/radar.md`), o fórum da diretoria de sexta (25/09) e três casos parados que custam dinheiro
-(NVCorp, Agro Aliança, Fazenda Santa Maria). Antes disso: Grupo Bocchi segue como piloto do Vista BI
-(alinhamento de painéis em 24/09); onboarding myFarm com a Evoluto encaminhada; Granola desde 22/09.
+Em 25/09 ficou pronto o status report da cobrança dos suspensos para a diretoria (página com abas
+Recuperação, Em aberto, Escritório e Churn, em `retencao/Posição suspensos 25-09-2026/`), cruzando
+as planilhas do financeiro, do CS e da central de cobrança: R$ 25,1 mil por mês de MRR recuperado em
+setembro e R$ 86,8 mil de dívida recuperada, com o primeiro acordo no Plano Safra (Marcos Aurelio).
+Depois de um novo login do Claude nesta máquina, Teams, Outlook e Granola ficaram desconectados.
+Antes disso: em 22 e 23/09 o sistema ganhou triagem de email, resumo do Teams e briefing das 9:30; o
+primeiro briefing apontou semana crítica no time (ver `equipe/radar.md`) e casos parados que custam
+dinheiro (NVCorp, Agro Aliança, Fazenda Santa Maria); Grupo Bocchi segue como piloto do Vista BI.
 
 ## Pendências
 
 - [ ] Julio: mandar pro Leandro os argumentos da folha de CS e serviços acima de 2025 (comissão
       que entrou, posições de 2025 que só foram ocupadas em 2026, produtos novos do ano) pro texto
       dele ao Carlos — desde 2026-09-24 [equipe]
-- [ ] Julio: compilar a prévia da recuperação de valores (cobrança) pro Leandro — desde 2026-09-24 [retenção]
+- [ ] Julio: enviar ao Leandro o status report da cobrança (página e `descobertas.md` em
+      `retencao/Posição suspensos 25-09-2026/`) — desde 2026-09-25 [retenção]
+- [ ] Julio: decidir se soma ao total recuperado Lucival (R$ 15 mil pagos em 16/09), Beatriz
+      (acordo de R$ 2 mil) e Marcelo Lara (quitado, sem valor informado) — desde 2026-09-25 [retenção]
+- [ ] Julio: alinhar com o financeiro o Plano Safra de clientes marcados "não propor flexibilização
+      2027" (Marcos já fechado, Pedro Fadel em proposta) — desde 2026-09-25 [retenção]
 - [ ] Julio: dar retorno ao André (COAP): prioridade da ficha de aplicação por tanque (levada ao
       dev em 24/09) e contorno pro frete de terceiro no custo do calcário — até 2026-10-01 [clientes]
 - [ ] Julio: devolutivas de 1:1 pendentes pro RH fechar os PDIs — desde 2026-09-23 [equipe]
@@ -51,6 +57,8 @@ app do Claude no repositório. O primeiro briefing (23/09) apontou semana críti
 - [ ] Jaqueline e Joyce: força-tarefa de 12 encerramentos de projetos myFarm anteriores a maio,
       6 cada — até 2026-09-30 [projetos myFarm]
 - [ ] Julio: instalar o app do Claude no repositório do GitHub, pras rotinas gravarem — desde 2026-09-23 [sistema]
+- [ ] Julio: reconectar Microsoft 365 (Teams, Outlook) e Granola no Claude desta máquina, depois do
+      novo login — desde 2026-09-25 [sistema]
 - [ ] Julio: decidir se o sistema guarda a conversa pessoal de 22/09 (não salva) e o trecho pessoal
       da reunião com a Andresa de 23/09 — desde 2026-09-23 [sistema]
 - [ ] Julio: rodar `/mapear` pra criar as skills do dia a dia — desde 2026-09-16 [sistema]
@@ -68,6 +76,7 @@ app do Claude no repositório. O primeiro briefing (23/09) apontou semana críti
 - Time: possíveis saídas nesta semana (ver `equipe/radar.md`)
 - Fórum da diretoria sexta (25/09), com as regras novas de churn
 - Clientes em suspensão por pedido de cancelamento e/ou dívidas em aberto
+- Status report da cobrança pronto pra diretoria (25/09): MRR recuperado, dívida, escritório e churn
 - Desconto subindo sob pressão do cliente (30 a 40% em 23/09)
 - Vendas baixas
 - Relatórios de prestação de contas pros outros líderes

@@ -98,3 +98,10 @@ regra de trabalho. O que não entra: tarefa feita (isso é o diário).
   área, começando por Projetos e depois Consultoria, sincronizado com o HubSpot; o upgrade pago do
   Supabase (R$150 por mês) fica pra decisão no mês seguinte. Por quê: cortar custo de linha (cerca
   de R$60 por linha por mês) sem perder o histórico.
+- **2026-09-25** (Julio) [retenção]: o MRR recuperado conta o contrato anual dividido por 12. Por quê:
+  a planilha da central de cobrança soma o valor anual cheio como MRR e infla o número (setembro:
+  R$ 34.052,84 na planilha contra R$ 25.101,44 com o anual dividido).
+- **2026-09-25** (Julio) [retenção]: no status report da cobrança, cada cliente aparece em uma única
+  aba; quem pagou o faturado e cancelou (Tellus, Theodoro) fica em Recuperação; o recuperado que não
+  estava nas planilhas de cobrança entra como "extra", destacado em outra cor. Por quê: não contar o
+  mesmo cliente duas vezes na apresentação à diretoria e separar o que a central trouxe além da lista.

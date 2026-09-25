@@ -186,3 +186,28 @@ combinado.
   com o Julio antes do fórum de sexta.
 - Vendas esfriaram (propostas em aberto com a Andressa); integração do "Elan" travada do lado do
   cliente; Diego cobrado pra revisar painéis do Vista BI considerados ruins.
+
+## Posição 25/09/2026, três planilhas (financeiro, CS e central de cobrança) → `Posição suspensos 25-09-2026/descobertas.md`
+
+Status report para a diretoria na mesma pasta: `Recuperacao de valores 25.09.2026.html`.
+- MRR recuperado em setembro (central de cobrança): R$ 25.101,44 por mês em 15 contratos, com o
+  anual dividido por 12 (a planilha mostra R$ 34.052,84 somando o anual cheio). 4 extras fora das
+  planilhas de cobrança (Neimar Walker, Agropecuária Mano Velho, Bruno Marques Guidi, Sandro Sia):
+  R$ 3.891,18. 12 de 15 seguem ativos; mediana de 23 dias na central até a reativação.
+- Dívida recuperada: R$ 86.807,87 em 11 contratos (R$ 34.053,18 em caixa, R$ 52.754,69 a receber
+  até 30/03/2027). Tellus e Theodoro pagaram só o faturado e cancelaram; o represado deles
+  (R$ 26.279,70) não volta.
+- Acordos confirmados pela central: Luiz Moreira Rocha com entrada de R$ 6.258,78 e 2 x R$ 7.301,91
+  (14/10 e 14/11); Marcos Aurelio com o represado de R$ 13.521,08 no Plano Safra (30/03/2027),
+  mensalidades e acordo anterior seguem.
+- Carteira em 25/09: em aberto R$ 153.248,80 em 5 contratos AgriManager, 97% represado (Petras,
+  Alzir e Pedro Fadel somam 90%); escritório R$ 57.599,67 em 6 contratos myFarm (3 confirmados nas
+  duas planilhas, 3 a confirmar) e Marcelo Lara quitado; churn 35 contratos de 34 clientes,
+  R$ 49.937,64 por mês, 21 esperando o cliente (multa, boletos ou assinatura do distrato).
+- Plano Safra: Marcos é o primeiro acordo fechado; Pedro Fadel tem proposta (5 x R$ 3.573,64 até
+  fevereiro e R$ 17.868,28 em 30/03/2027). A planilha do financeiro marca "Não propor Flexibilização
+  2027" para os 6 AgriManager de risco alto (inclui os dois) e fala em entrada de 20%; na reunião de
+  11/09 a entrada citada foi de cerca de 10%.
+- Correção de leitura: o "Opção 30 do 4 cancelada" registrado na reunião de 17/09 com a Amanda (acima)
+  foi provavelmente a proibição do financeiro que caiu, não a opção: a fala do Julio é "esquece, isso
+  já caiu", logo antes de citar a autonomia dada pelo Leandro.
