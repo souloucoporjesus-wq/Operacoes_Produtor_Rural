@@ -1,31 +1,23 @@
-"""Gera analise-tickets-clientes.xlsx a partir dos brutos em dados/. Regras e pesos: ver analise-tickets.ipynb."""
+"""Gera a planilha "Analise Clientes - Volumetria de Tickets" a partir dos brutos em dados/. Regras e pesos: ver analise-tickets.ipynb."""
 import warnings
 from pathlib import Path
 
 import pandas as pd
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
+from openpyxl.comments import Comment
 from openpyxl.formatting.rule import CellIsRule, ColorScaleRule, DataBarRule, FormulaRule
 from openpyxl.styles import Alignment, Font, PatternFill
 from openpyxl.utils import get_column_letter
 from openpyxl.workbook.defined_name import DefinedName
 from openpyxl.worksheet.datavalidation import DataValidation
 
+from definicoes_planilha import CATEGORIAS, ERRO_PRODUTO, montar_notas
+
 warnings.filterwarnings("ignore")
 
 PASTA = Path(__file__).parent
-SAIDA = PASTA / "analise-tickets-clientes.xlsx"
+SAIDA = PASTA.parent.parent / "retencao" / "usuarios-por-produto-2026-09-24" / "Analise Clientes - Volumetria de Tickets.xlsx"
 
-ERRO_PRODUTO = "Erro de produto"
-CATEGORIAS = {
-    ERRO_PRODUTO: ("C0392B", "F5B7B1", "Bug, Solução de contorno e Problema com causa \"Bug no Produto / ERP\". É o que o desenvolvimento corrige."),
-    "Problema de configuração": ("E67E22", "FAD7A0", "Problema com causa \"Configuração\"."),
-    "Erro de uso": ("B7950B", "FCF3CF", "Problema com causa \"Erro operacional\" (uso incorreto do sistema)."),
-    "Externo ou sem causa definida": ("7F8C8D", "D5DBDB", "Problema com causa SEFAZ ou aplicativo de terceiros, não identificada, resolvido pelo próprio usuário ou sem causa registrada."),
-    "Dúvida": ("2E86C1", "AED6F1", "Categoria \"Dúvida\"."),
-    "Melhoria no produto": ("1E8449", "ABEBC6", "Adequação com necessidade \"Melhoria\" ou \"Sugestão Roadmap (Ideia)\"."),
-    "Adequação à legislação": ("8E44AD", "D7BDE2", "Adequação com necessidade \"Legislação\"."),
-    "Solicitação de serviço": ("C2185B", "F8BBD0", "Categoria \"Solicitação de serviço\" (instalação, atualização, licença, balança)."),
-}
 URGENCIA = {"Crítica": ("C0392B", "FFFFFF"), "Alta": ("E67E22", "FFFFFF"), "Média": ("F7DC6F", "000000"), "Baixa": ("D5F5E3", "000000")}
 PARAMETROS = {
     "PesoValor": ("Peso do valor pago", 0.40, "0%"),
@@ -257,6 +249,12 @@ ws_base.sheet_properties.tabColor = "5D6D7E"
 B = {k: f"'Base de tickets'!${c}$2:${c}${UB}" for k, c in {"abertura": "B", "grupo": "C", "cat": "K", "entra": "L", "aberto": "M"}.items()}
 
 # ---------- Score dos clientes ----------
+marcados_cs = set()
+if SAIDA.exists():
+    linhas_ant = load_workbook(SAIDA, read_only=True)["Score dos clientes"].iter_rows(values_only=True)
+    cab_ant = next(linhas_ant)
+    i_prio, i_id = cab_ant.index("Prioridade CS"), cab_ant.index("ID grupo econômico")
+    marcados_cs = {lin[i_id] for lin in linhas_ant if str(lin[i_prio]).strip().lower() == "sim"}
 n = len(por_cliente)
 US = n + 1
 FATORES = [f"Fator {c} (auxiliar)" for c in CATEGORIAS]
@@ -287,7 +285,7 @@ for r, gid in enumerate(por_cliente.index, 2):
     x, tot, err, sc_ = f"${L['ID grupo econômico']}{r}", f"{L['Total de tickets']}{r}", f"{L[ERRO_PRODUTO]}{r}", f"{L['Score']}{r}"
     fatores = f"{FAT1}{r}:{FATN}{r}"
     f = {
-        "Prioridade CS": "Não",
+        "Prioridade CS": "Sim" if int(gid) in marcados_cs else "Não",
         "Cliente (grupo econômico)": nome,
         "Valor mensal": f'=SUMIFS({C_VALOR},{C_GRUPO},{x},{C_SIT},"ATIVO")',
         "Score": f"=100*(PesoValor*PERCENTRANK({col('Valor mensal')},{L['Valor mensal']}{r},6)+PesoErros*PERCENTRANK({col(ERRO_PRODUTO)},{err},6)+PesoVolume*PERCENTRANK({col('Total de tickets')},{tot},6))",
@@ -385,5 +383,17 @@ for nome, (forte, clara, desc) in CATEGORIAS.items():
     regras_urgencia(ws, f"H5:H{u}")
     regra_sim(ws, "I", f"B5:C{u}", 5)
 
+# ---------- notas explicando cada coluna ----------
+participacao = tk["cat_analise"].value_counts(normalize=True).to_dict()
+for nota in montar_notas(participacao):
+    ws = wb[nota["aba"]]
+    linhas = [nota["linha"]] if nota["linha"] else range(1, ws.max_row + 1)
+    achada = next((c for r in linhas for c in ws[r] if c.value == nota["procurar"]), None)
+    if achada is None:
+        raise ValueError(f"nota sem coluna: {nota['aba']} / {nota['procurar']}")
+    texto = nota["nota"]
+    altura = sum(max(1, -(-len(p) // 55)) for p in texto.split("\n")) * 13 + 14
+    ws.cell(achada.row, achada.column + nota["deslocamento"]).comment = Comment(texto, "Análise de tickets", height=altura, width=330)
+
 wb.save(SAIDA)
-print(f"ok: {SAIDA.name} | clientes={n} | tickets base={UB - 1} | contratos={UC - 1}")
+print(f"ok: {SAIDA.name} | clientes={n} | tickets base={UB - 1} | contratos={UC - 1} | Prioridade CS mantidos={len(marcados_cs)}")

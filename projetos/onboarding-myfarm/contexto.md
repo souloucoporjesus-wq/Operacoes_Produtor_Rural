@@ -77,8 +77,27 @@ contratação, lendo o XML com IA e importando cadastros e tributação.
   continuidade do dono da frente de XML está em avaliação (ver `equipe/radar.md`)
 - Marco dos XMLs de clientes em mãos (22/09): sem registro de que foi cumprido
 
+## Como a implantação myFarm roda hoje (conversa com a Jaqueline, 25/09/2026)
+
+- Início do projeto: reunião de abertura, cronograma e primeira agenda; o levantamento fica com o
+  consultor. No myFarm não se manda a planilha de tributação
+- Marcos de implantação (financeiro, produção e plantio, colheita, armazém, relatórios) estão
+  desenhados mas nunca foram aplicados: falta ferramenta pra controlar e alguém pra cobrar. A
+  Evoluto é a aposta pra isso
+- Horas de gerenciamento: a regra atual tira 5 h de projeto acima de 25 h e bonifica abaixo de 20 h;
+  houve projeto de 15 h com 5 tiradas (sobram 10 pro cliente). Visão do Julio: hora de gerenciamento
+  não serve pra nada; vender só as horas do cliente e registrar o gerenciamento como bonificado sem
+  produtividade. Não decidido
+- Falta um playbook de implantação escrito (a Jaqueline já fez um passo a passo em Word no ano passado)
+- Riscos na entrada: Jefferson (cliente novo) pediu cancelamento mesmo com horas bonificadas
+  oferecidas; Bruno Capelesso (migração do myFarm pro AgriManager, projeto de 92 h) só quer emitir
+  nota, sem equipe nem processo, com várias fazendas numa inscrição só na Bahia
+
 ## Fontes
 
+- Conversa 25/09/2026 com a Jaqueline Martins →
+  `_memoria/reunioes/2026-09-25-myfarm-implantacao-marcos-playbook-jaqueline.md`: rito de início,
+  marcos, horas de gerenciamento, riscos de entrada
 - Reunião 17/09/2026 com Guilherme Job e Lucas Nogueira →
   `reunioes/2026-09-17-guilherme-lucas.md`: tudo acima
 - Reunião 23/09/2026 com o time de implantação sobre a Evoluto →

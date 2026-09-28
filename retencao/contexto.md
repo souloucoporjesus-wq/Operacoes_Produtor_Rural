@@ -218,3 +218,53 @@ Status report para a diretoria na mesma pasta: `Recuperacao de valores 25.09.202
 - Correção de leitura: o "Opção 30 do 4 cancelada" registrado na reunião de 17/09 com a Amanda (acima)
   foi provavelmente a proibição do financeiro que caiu, não a opção: a fala do Julio é "esquece, isso
   já caiu", logo antes de citar a autonomia dada pelo Leandro.
+
+## Status de cobranças com a Amanda, 25/09/2026 → `_memoria/reunioes/2026-09-25-status-cobrancas-amanda-processo-churn.md`
+
+- A Amanda cruzou os inadimplentes da central de cobrança com a planilha da Dinamara: a maior parte
+  dos "suspensos" já está em processo de churn (36 clientes nessa situação). Sem pedido de
+  cancelamento e fora do escritório de cobrança sobram uns 13.
+- Pagos e negociados ficam marcados em verde na planilha; os outros seguem na planilha dela.
+  Clientes do escritório ainda não tentados (amarelo): combinado tentar.
+- Cuidado registrado: a Agro Aliança (carteira da Andrezza) pediu indenização e acionou jurídico;
+  não cobrar cliente em processo de churn sem checar antes.
+
+## Alzir Pimentel, negociação de 25/09/2026 → `_memoria/reunioes/2026-09-25-alzir-pimentel-negociacao-downsell-debito.md`
+
+- Contrato de R$ 8.758 por mês. Cliente em crise (dívidas, vendeu ativos, operação reduzida a uma
+  fazenda no CPF), diz que não quer sair e oferece pagar R$ 3.500 com downsell pra 3 usuários e os
+  atrasados em março.
+- O financeiro (Dinamara) condiciona levar à diretoria ao pagamento do acordo com o escritório de
+  advocacia: 10 parcelas, só a entrada paga, embora a planilha do financeiro dissesse "acordo em
+  andamento".
+- Posição do Julio: em vez de cortar licenças, "voto de confiança" com parcela de R$ 4.500 a R$ 5.000
+  mantendo os usuários; pontos que o cliente tenha (Bayer, Basf) podem virar entrada. Levantar com a
+  Dinamara o valor real do acordo com o escritório. Julio leva ao Leandro; a análise está sendo
+  montada no HubSpot.
+
+## Conferência dos recuperados de setembro, 25/09/2026 → `_memoria/reunioes/2026-09-25-recuperacao-clientes-pagamentos-ajustes-contratuais.md`
+
+- Knappe pagou o atrasado e ficou inadimplente de novo no boleto seguinte; Sandro Sia no mesmo
+  cenário. Anderson Peixoto aparece como recuperado sem tratativa localizada.
+- Confirmados pagantes: Neimar Walker, Luiz Moreira Rocha, Vitor Márcio, Sinopólio, Mano Velho,
+  Vilmair, Moacir Bruneta, Pablo Rafael Schneider (falta mudar o contrato pra semestral; cliente
+  sumiu), Juarez, Ana Paula Bandeira e João Everton.
+
+## 1:1 do Julio com o Leandro, 25/09/2026, parte de churn → `_memoria/reunioes/2026-09-25-1-1-leandro-avaliacao-carga-estrutura-projetos.md`
+
+- Leandro: relatório de churn não pode levar uma semana; tem que sair quase automático, com uma
+  validação por cima. Rever método e ferramenta (hoje é Excel), com apoio da Amanda.
+- Em 25/09 a controladoria ainda não tinha entregue julho e agosto; todo mês aparece churn ou
+  downsell que o CS não tratou e não sabe de onde veio.
+- Lucival (AgriManager, perdido pra Siacon): o Leandro acha que insistir na cobrança da criação das
+  empresas novas pesou, e que dava pra ter flexibilizado.
+- Base citada pelo Julio: 488 clientes fora as parcerias (uns 230 AgriManager e 250 myFarm); 5 CS com
+  uns 40 AgriManager e 60 myFarm cada.
+
+## Vendas de parceria fora do HubSpot, 28/09/2026 → `_memoria/reunioes/2026-09-28-vendas-parceria-fora-hubspot-cadastro.md`
+
+- Vendas de parceria (tipo Romina, no Paraguai) vão direto pro time de contratos sem registro no
+  HubSpot; 3 empresas nessa situação, 1 já cadastrada e 2 sem cadastro.
+- Combinado: o CS pode cadastrar seguindo o padrão (com treinamento se precisar), e é preciso alinhar
+  com o Ângelo o passo a passo pra venda de parceria entrar no HubSpot. Continua o item de 23/09
+  sobre os clientes da Romina e do Jader.

@@ -113,3 +113,10 @@ regra de trabalho. O que não entra: tarefa feita (isso é o diário).
   causa "Bug no Produto/ERP", não erro de configuração nem de uso. Por quê: separar o que é
   assunto de desenvolvimento (defeito) do que é assunto de CS e treinamento (dúvida, uso,
   configuração), sem deixar o cliente grande dominar o ranking sozinho por volume.
+- **2026-09-24** (Julio) [integração Bayer AGM]: proposta da integração reapresentada com 40% de
+  desconto, parcelada em até 10x e com uso de pontos do cliente. Por quê: o cliente cogitou levar só
+  o armazém pro AGB (Agribusiness), que já integra com a Bayer; dividir o estoque entre dois sistemas
+  dá retrabalho (notas e romaneios em dobro) e o AGB não trata nota de produtor pessoa física.
+- **2026-09-25** (Leandro) [equipe]: volta a agenda mensal de OKRs e iniciativas e entra uma semanal
+  de entregáveis, às terças. Por quê: o acompanhamento estava solto e a operação consome tudo; o
+  Leandro assumiu que faltou disciplina de acompanhamento dele.

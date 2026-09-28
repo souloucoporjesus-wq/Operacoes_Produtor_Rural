@@ -1,3 +1,5 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Por que o cliente saiu</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -64,6 +66,7 @@
   }
 
   *{ box-sizing: border-box; }
+  [hidden]{ display: none !important; }
   body{
     margin: 0;
     background: var(--bg);
@@ -113,7 +116,7 @@
   ul.leituras li::marker{ color: var(--accent); }
 
   /* abas */
-  .tabs{ display: flex; gap: 4px; border-bottom: 1px solid var(--border); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-top: 6px; overflow-x: auto; }
+  .tabs{ display: flex; flex-wrap: wrap; gap: 4px; border-bottom: 1px solid var(--border); position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5; background: var(--bg); padding-top: 6px; }
   .tab{ appearance: none; background: none; border: none; border-bottom: 2px solid transparent; margin-bottom: -1px; padding: 10px 14px; font: inherit; font-weight: 600; font-size: 14px; color: var(--muted); cursor: pointer; white-space: nowrap; }
   .tab:hover{ color: var(--ink); }
   .tab[aria-selected="true"]{ color: var(--accent); border-bottom-color: var(--accent); }

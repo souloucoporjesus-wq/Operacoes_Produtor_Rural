@@ -42,6 +42,24 @@
   "seria projeto". Julio disse que CS não tem como reduzir sem perder qualidade e que, se tiver que
   escolher, prefere manter o Lucas ao Guilherme. O Leandro foi informado em 24/09 dos sinais da
   Joyce e do Lucas. [Certo] Fonte: `_memoria/reunioes/2026-09-24-leandro-folha-cs-orcamento-saidas-time.md`
+  Atualização 2026-09-25 (1:1): o Leandro perguntou onde cortaria mais uma pessoa; Julio respondeu
+  projetos (consultoria e implantação "já no osso", CS sem quem desligar). Alternativa anotada pelo
+  Leandro, sem decisão: trocar as duas analistas de projeto (somam perto de R$ 9,2 mil) por um
+  gerente de projetos (uns R$ 6,5 mil, com comissão ligada a projeto finalizado), desligando uma já
+  e a outra depois, com calma. [Certo] Fonte:
+  `_memoria/reunioes/2026-09-25-1-1-leandro-avaliacao-carga-estrutura-projetos.md`
+- **Joyce Pereira**, atualização (2026-09-25): ausente desde 24/09, atestado subido no sistema em
+  25/09. O Leandro, no 1:1: "já viu que vai ter que perder". [Certo] Fontes: o 1:1 acima e
+  `_memoria/reunioes/2026-09-25-myfarm-implantacao-marcos-playbook-jaqueline.md`
+- **Ramona Brito** (atenção, desde 2026-09-25): foco maior em vendas do que em retenção; o Julio já
+  alinhou com ela. O Leandro pensa em dar mais peso à retenção na comissão do CS em 2027. [Certo]
+  Fonte: o 1:1 de 25/09
+- **Leonardo Mendonça** (capacidade, desde 2026-09-24): afastado de 29/10 a 02/11, volta em 03/11;
+  o atendimento de 29/10 foi remanejado com a Jaqueline. [Certo] (conversa não salva)
+- **Carga do Julio** (atenção, desde 2026-09-25): no 1:1 o Julio disse que a carga está muito alta,
+  principalmente o CS, e que aceita alguém acima dele. O Leandro acha 13 pessoas pouco pra justificar
+  e aponta centralização: delegar mais pra Andrezza e Amanda, que ele vê como diferenciadas.
+  Avaliação do Julio: "forte potencial" (Leandro e Miriam). [Certo] Fonte: o 1:1 de 25/09
 
 ## Histórico
 

@@ -7,14 +7,14 @@
 
 ## Onde paramos
 
-Em 25/09 ficou pronto o status report da cobrança dos suspensos para a diretoria (página com abas
-Recuperação, Em aberto, Escritório e Churn, em `retencao/Posição suspensos 25-09-2026/`), cruzando
-as planilhas do financeiro, do CS e da central de cobrança: R$ 25,1 mil por mês de MRR recuperado em
-setembro e R$ 86,8 mil de dívida recuperada, com o primeiro acordo no Plano Safra (Marcos Aurelio).
-Depois de um novo login do Claude nesta máquina, Teams, Outlook e Granola ficaram desconectados.
-Antes disso: em 22 e 23/09 o sistema ganhou triagem de email, resumo do Teams e briefing das 9:30; o
-primeiro briefing apontou semana crítica no time (ver `equipe/radar.md`) e casos parados que custam
-dinheiro (NVCorp, Agro Aliança, Fazenda Santa Maria); Grupo Bocchi segue como piloto do Vista BI.
+Em 28/09 ficou pronto o relatório de churn para Produto, "Por que o cliente saiu"
+(`relatorios/raio-x-churn-2026-09-16/`, link privado publicado): 49 cancelamentos lidos um a um,
+myFarm e AgriManager separados, com motivo apurado, lacunas de produto e ERP de destino. No mesmo
+dia: análise de tickets x clientes pro dev, apresentada ao CS, e 14 reuniões do Granola de 24 a
+28/09 importadas (1:1 com o Leandro em 25/09, Bocchi, cobrança, Alzir, parcerias fora do HubSpot).
+Antes disso, em 25/09, o status report da cobrança dos suspensos pra diretoria (R$ 25,1 mil por mês
+de MRR recuperado em setembro e R$ 86,8 mil de dívida recuperada). Time sob revisão de custo, com
+possível corte em projetos (ver `equipe/radar.md`).
 
 ## Pendências
 
@@ -41,7 +41,28 @@ dinheiro (NVCorp, Agro Aliança, Fazenda Santa Maria); Grupo Bocchi segue como p
 - [ ] Julio: reporte semanal de posição de suspensos pro Carlos (CEO), com desde quando o cliente
       é cliente no analítico — toda semana [retenção]
 - [ ] Amanda: centralizar os 52 clientes suspensos sem movimento e dar vazão — desde 2026-09-17 [retenção]
-- [ ] Julio: mandar a análise de churn pro Diego e pra Joyce — até 2026-09-17 [churn]
+- [ ] Julio: compartilhar com o Diego e a Joyce o relatório "Por que o cliente saiu" (link privado:
+      liberar pelo menu Share da página, ou mandar o HTML) — desde 2026-09-23 [churn]
+- [ ] Julio: confirmar o ERP de destino da Franciosi (Conecter, citado na reunião de 17/09 com o
+      Leandro; no relatório está "a confirmar") — desde 2026-09-28 [churn]
+- [ ] Julio: levar ao Leandro a proposta do Alzir Pimentel (parcela de R$ 4.500 a R$ 5.000 mantendo
+      os usuários, atrasados em março, pontos como entrada) — desde 2026-09-25 [retenção]
+- [ ] Amanda: levantar com a Dinamara o valor real do acordo do Alzir com o escritório (10 parcelas,
+      só a entrada paga) — desde 2026-09-25 [retenção]
+- [ ] Julio: levar à diretoria desconto ou isenção da hora de atualização da Motta depois das 20h
+      (pedido do Elias) — desde 2026-09-24 [clientes]
+- [ ] Giovanna: reapresentar ao cliente da integração Bayer a proposta com 40% de desconto, até 10x
+      e uso de pontos — desde 2026-09-24 [clientes]
+- [ ] Andrezza: remarcar com o João Osório a continuação da apresentação do Vistra (financeiro e
+      fluxo de caixa), com os 2 painéis bonificados prometidos e o painel de limites de crédito pedido
+      pelo Vinícius — desde 2026-09-24 [vendas]
+- [ ] Julio: alinhar com o Ângelo o passo a passo pra venda de parceria entrar no HubSpot (CS
+      cadastra as 2 empresas sem cadastro) — desde 2026-09-28 [vendas]
+- [ ] Julio: agenda com o Leandro às terças (OKRs e iniciativas por mês, entregáveis da semana) —
+      toda semana [equipe]
+- [ ] Julio: passar o registro dos OKRs pro CS — desde 2026-09-25 [equipe]
+- [ ] Julio: PDI, preparar um conteúdo de 2 a 3 horas pros líderes com o que está vendo na pós
+      (gestão de serviços, fechamento contábil) — desde 2026-09-25 [equipe]
 - [ ] Julio: consolidar o resultado das 6 viagens de 2026 (clientes visitados, oportunidades
       geradas, pendências por cliente) — até 2026-09-17 [churn]
 - [ ] Pâmela: indicador semanal de clientes sem acesso, automatizado; Leandro quer ver se melhora
@@ -59,11 +80,13 @@ dinheiro (NVCorp, Agro Aliança, Fazenda Santa Maria); Grupo Bocchi segue como p
 - [ ] Julio: instalar o app do Claude no repositório do GitHub, pras rotinas gravarem — desde 2026-09-23 [sistema]
 - [ ] Julio: reconectar Microsoft 365 (Teams, Outlook) e Granola no Claude desta máquina, depois do
       novo login — desde 2026-09-25 [sistema]
-- [ ] Julio: decidir se o sistema guarda a conversa pessoal de 22/09 (não salva) e o trecho pessoal
-      da reunião com a Andresa de 23/09 — desde 2026-09-23 [sistema]
+- [ ] Julio: decidir se o sistema guarda a conversa pessoal de 22/09 (não salva), o trecho pessoal
+      da reunião com a Andresa de 23/09 e a conversa com o Léo de 24/09 (assunto de saúde, não
+      salva) — desde 2026-09-23 [sistema]
 - [ ] Julio: rodar `/mapear` pra criar as skills do dia a dia — desde 2026-09-16 [sistema]
 - [ ] Julio: decidir se cria pastas novas (ex.: "apuração assistida" em `projetos/`) pra
-      classificar as reuniões do Granola soltas em `_memoria/reunioes/` — desde 2026-09-22 [sistema]
+      classificar as reuniões do Granola soltas em `_memoria/reunioes/`; de 24 a 28/09 ficaram sem
+      pasta João Osório, Vera, Motta, integração Bayer e Rendo — desde 2026-09-22 [sistema]
 - [ ] Julio: ler `_contexto/marca/Universo de Marca - Aliare 1.pdf` na mão (46 MB, não abre
       automaticamente) e preencher o `design-guide.md` quando a identidade visual entrar em pauta — desde 2026-09-16 [sistema]
 - [ ] Julio: decidir se conecta o Supabase (MCP) ao Engenho — desde 2026-09-16 [sistema]
@@ -73,8 +96,8 @@ dinheiro (NVCorp, Agro Aliança, Fazenda Santa Maria); Grupo Bocchi segue como p
 
 ## Quente agora
 
-- Time: possíveis saídas nesta semana (ver `equipe/radar.md`)
-- Fórum da diretoria sexta (25/09), com as regras novas de churn
+- Time: possíveis saídas e possível corte em projetos (ver `equipe/radar.md`)
+- Clientes críticos por ticket levados ao dev (28/09)
 - Clientes em suspensão por pedido de cancelamento e/ou dívidas em aberto
 - Status report da cobrança pronto pra diretoria (25/09): MRR recuperado, dívida, escritório e churn
 - Desconto subindo sob pressão do cliente (30 a 40% em 23/09)

@@ -31,6 +31,12 @@ do time, análise de churn/CS, propostas
 - Produtos que aparecem na base além de AGM e myFarm: Vistra BI, Aliare Cloud, Agrimanager
   Algodoeira, Agrimanager Autorize; AgriManager Web em prova de conceito (2026-09-16)
 - Base da vertical produtor rural: ~480 clientes ativos e MRR de ~R$ 1,3 milhão por mês
-  (jan a jun/2026, planilha de churn)
+  (jan a jun/2026, planilha de churn). Em 2026-09-25: 488 clientes fora as parcerias, uns 230
+  AgriManager e 250 myFarm; cada um dos 5 CS com uns 100 clientes (40 AgriManager e 60 myFarm)
+- CS em set/2026: Amanda Santos, Andrezza Perroni, Ana Rocha, Ramona Brito e Giovanna Costa (a mais
+  nova, entrou em set/2026)
+- Rendo: produto da Aliare de apuração fiscal pra reforma tributária (apuração assistida de IBS e
+  CBS, auditoria do XML); clientes AgriManager e myFarm vão consumir a apuração assistida dentro
+  dele. Marcondes e mais um cliente começaram a testar em set/2026
 - 6 viagens a clientes AgriManager em 2026: Goiás (região de Formosa; Rio Verde e Mineiros),
   Mato Grosso (Sapezal; Sorriso), Maranhão (Balsas), Bahia (Luís Eduardo Magalhães)
