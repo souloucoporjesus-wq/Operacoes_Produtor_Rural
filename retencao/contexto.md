@@ -5,6 +5,13 @@ Acompanhamento de clientes em suspensão, cancelamento (churn) e inadimplência 
 produtor rural. Relatórios prontos ficam em `relatorios/`; aqui fica o que se sabe e o que ficou
 combinado.
 
+## Planilha 24/09/2026, usuários por produto → `usuarios-por-produto-2026-09-24/`
+
+- Extração bruta (11.971 linhas) de usuários por produto/oferta, com a coluna "Vigência da
+  Subscrção" indicando se a subscrição está ativa ou finalizada. Separada em duas planilhas:
+  `...- Ativos.xlsx` (3.373 linhas) e `...- Finalizados.xlsx` (8.598 linhas), pra facilitar
+  análise de base ativa x encerrada por conta/produto.
+
 ## Reunião 16/09/2026 com Leandro Xavier e Cicilio Manfroi → `reunioes/2026-09-16-leandro-inadimplencia-churn.md`
 
 **Inadimplência (posição da semana de 08 a 16/09)**

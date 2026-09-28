@@ -197,3 +197,7 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
 - `projetos/` · iniciativas que cruzam mais de uma área (definição de ferramentas, automações, o Engenho)
 - `projetos/onboarding-myfarm/` · entrada do cliente no myFarm: trilha de vídeos (Plantar Educação),
   plataforma Evoluto e carga inicial de cadastros por XML com a Pâmela
+- `projetos/onboarding-agm-nfe/` · roteiro padrão pra habilitar a automação de entrada de notas
+  fiscais (NF-e) no AGM Web: itens necessários, responsáveis (Gustavo Silva, Mateus Pires)
+- `projetos/clientes-alto-volume-tickets/` · levantamento pedido pelo dev: clientes que abrem
+  muitos tickets, pra priorizar atenção de desenvolvimento (dados em `dados/`)

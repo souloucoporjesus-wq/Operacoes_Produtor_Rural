@@ -105,3 +105,11 @@ regra de trabalho. O que não entra: tarefa feita (isso é o diário).
   aba; quem pagou o faturado e cancelou (Tellus, Theodoro) fica em Recuperação; o recuperado que não
   estava nas planilhas de cobrança entra como "extra", destacado em outra cor. Por quê: não contar o
   mesmo cliente duas vezes na apresentação à diretoria e separar o que a central trouxe além da lista.
+- **2026-09-28** (Julio) [dev, clientes com alto volume de tickets]: score de priorização por
+  cliente com peso 40% valor pago, 40% erros de produto, 20% volume total de tickets; urgência
+  Crítica a partir de 85 pontos, Alta a partir de 70 (ou cliente entre os 10% com mais erro de
+  produto, mesmo com score menor), Média a partir de 45. Só entram tickets abertos pelo próprio
+  cliente (sem internos, cancelados e pesquisas de satisfação); "erro de produto" conta só bug e
+  causa "Bug no Produto/ERP", não erro de configuração nem de uso. Por quê: separar o que é
+  assunto de desenvolvimento (defeito) do que é assunto de CS e treinamento (dúvida, uso,
+  configuração), sem deixar o cliente grande dominar o ranking sozinho por volume.
