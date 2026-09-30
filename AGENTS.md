@@ -63,6 +63,7 @@ diário de outra origem, avisa se o `agora.md` está velho.
 | de um contato ou fornecedor recorrente (não é cliente, não é time) | `_contexto/pessoas/<nome>.md` |
 | de um projeto ou cliente, pra trabalhar nele | a pasta dele: `AGENTS.md` + `contexto.md` + `andamento.md` |
 | posição de suspensos, inadimplência e churn, e o que ficou combinado com a diretoria | `retencao/contexto.md` (reuniões brutas em `retencao/reunioes/`) |
+| o NPS de produto e serviços (bases da Track, notebook, apresentação pra diretoria): a pasta do NPS | `relatorios/Atualização de NPS/` (a skill `analise_NPS` conduz) |
 | o briefing do dia (pendências, o que ficou parado, Leandro, sinais do time, ajustes pro Julio) | `painel/briefing.html`; o histórico em `briefing/AAAA-MM-DD.json` e `.md` (a skill `briefing` gera) |
 | como o Julio trabalha, escreve e decide (o que o sistema aprendeu) | `_contexto/jeito-do-julio.md` |
 | sinais do time, quem é quem, histórico de entradas e saídas (**confidencial**) | `equipe/radar.md` |
@@ -194,6 +195,9 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
   confidencial: não compartilhar, não publicar, não citar fonte fora dele
 - `briefing/` · o briefing de cada dia útil (JSON + versão em texto); a página fica em `painel/briefing.html`
 - `relatorios/` · prestação de contas pra diretoria e outros líderes
+- `relatorios/Atualização de NPS/` · NPS de produto e serviços: bases exportadas da Track (ano
+  corrente e anterior), notebook, motivo real de cada nota e a apresentação em arquivo único (a
+  skill `analise_NPS` conduz a atualização)
 - `projetos/` · iniciativas que cruzam mais de uma área (definição de ferramentas, automações, o Engenho)
 - `projetos/onboarding-myfarm/` · entrada do cliente no myFarm: trilha de vídeos (Plantar Educação),
   plataforma Evoluto e carga inicial de cadastros por XML com a Pâmela

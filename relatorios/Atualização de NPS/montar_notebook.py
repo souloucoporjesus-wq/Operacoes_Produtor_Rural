@@ -262,7 +262,9 @@ tratados. A coluna `status` continua com o valor original da Track; a apresenta�
 `status_painel`.""")
 
 code("""PENDENTES = ["Pendente Atuacao", "Pendente Atuacao Siagri", "Pendente Aguardando Cliente"]
-nps["status_painel"] = np.where((nps["ano"] == 2026) & nps["status"].isin(PENDENTES), "Tratado pelo CS (loop sem atualizar na Track)", nps["status"])
+CONFIRMADO_ATE = pd.Timestamp("2026-09-29 23:59")  # data da confirmação do Julio; pendente novo precisa de confirmação nova
+nps["status_painel"] = np.where((nps["ano"] == 2026) & (nps["data"] <= CONFIRMADO_ATE) & nps["status"].isin(PENDENTES),
+                                "Tratado pelo CS (loop sem atualizar na Track)", nps["status"])
 n26["status_painel"] = nps.loc[n26.index, "status_painel"]
 TRATADO = ["Resolvido Satisfeito", "Esclarecimentos efetuados", "Nao Satisfeito com os esclarecimentos", "Resolvido Insatisfeito",
            "Tratado pelo CS (loop sem atualizar na Track)"]
