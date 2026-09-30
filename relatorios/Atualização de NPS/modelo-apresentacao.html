@@ -306,6 +306,12 @@
   .resp .hd { font-size: 12.5px; color: var(--ink-faint); font-family: var(--mono); }
   .resp .tx { font-family: var(--serif); font-size: 15px; line-height: 1.5; margin: 0; overflow-wrap: anywhere; }
 
+  /* NPS por consultor */
+  .cons { display: grid; gap: 14px; }
+  .cons .card-head { margin-bottom: 4px; }
+  .cons-div { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); padding-top: 18px; }
+  .drow.poucas .val { color: var(--ink-faint); }
+
   @media (prefers-reduced-motion: no-preference) { .fill, .sbar i { transition: width .3s ease; } }
 </style>
 </head>
@@ -366,6 +372,7 @@
       <button class="tab" role="tab" id="t-projecao" aria-controls="p-projecao" data-tab="projecao">Projeção</button>
       <button class="tab" role="tab" id="t-motivos" aria-controls="p-motivos" data-tab="motivos">Motivos</button>
       <button class="tab" role="tab" id="t-comentarios" aria-controls="p-comentarios" data-tab="comentarios">Comentários</button>
+      <button class="tab" role="tab" id="t-consultores" aria-controls="p-consultores" data-tab="consultores">Consultores</button>
       <button class="tab iso" role="tab" id="t-clientes" aria-controls="p-clientes" data-tab="clientes">Cliente a cliente</button>
     </div>
   </div>
@@ -558,6 +565,21 @@
       <p class="count" id="c-count"></p>
       <div class="clist" id="c-list"></div>
       <button class="btn-ghost more" id="c-more" type="button" hidden>Mostrar mais</button>
+    </section>
+  </div>
+
+  <!-- ============ CONSULTORES ============ -->
+  <div class="tabpanel" id="p-consultores" role="tabpanel" aria-labelledby="t-consultores" hidden>
+    <section aria-labelledby="h-cons">
+      <p class="sec-mark">Serviços · NPS por consultor</p>
+      <h2 id="h-cons">Como o cliente avaliou cada consultor</h2>
+      <p class="sec-lead">Cada linha junta as respostas das pesquisas de serviço (implantação, apoio técnico e treinamento, monitoria AgroScore) do consultor que atendeu o cliente, com o ano corrente e o anterior em quadros separados. O número à direita é o NPS; em cinza claro, consultor com menos de 10 respostas, base pequena para comparar. Os filtros de campanha e produto valem aqui; o de período não.</p>
+      <div class="cons" id="cons"></div>
+      <div class="legend">
+        <span><i class="sw" style="background:var(--det)"></i>Detratores</span>
+        <span><i class="sw" style="background:var(--neu)"></i>Neutros</span>
+        <span><i class="sw" style="background:var(--pro)"></i>Promotores</span>
+      </div>
     </section>
   </div>
 
@@ -1166,6 +1188,29 @@ function renderDetalhe(c) {
   ch.innerHTML = s + `</svg>`;
 }
 
+/* ---------- NPS por consultor (serviços) ---------- */
+const SEM_CONS = "Sem consultor informado";
+function quadroConsultores(rr, titulo) {
+  const c = calc(rr);
+  if (!c) return `<div class="card"><div class="card-head"><h3>${titulo}</h3></div><p class="empty">Nenhuma resposta de serviço neste ano no recorte escolhido.</p></div>`;
+  const m = new Map();
+  rr.forEach((r) => { const k = r.consultor || SEM_CONS; if (!m.has(k)) m.set(k, []); m.get(k).push(r); });
+  const itens = [...m.entries()].map(([k, lr]) => ({ k, c: calc(lr), camps: [...new Set(lr.map((r) => r.campanha))] }));
+  const cheios = itens.filter((x) => x.k !== SEM_CONS && x.c.n >= 10).sort((a, b) => b.c.nps - a.c.nps || b.c.n - a.c.n);
+  const poucos = itens.filter((x) => x.k !== SEM_CONS && x.c.n < 10).sort((a, b) => b.c.n - a.c.n || b.c.nps - a.c.nps);
+  const sem = itens.filter((x) => x.k === SEM_CONS);
+  const linha = (x) => linhaDist(x.k, `${x.c.n} ${x.c.n > 1 ? "respostas" : "resposta"} · ${x.camps.join(", ")}`, x.c).replace('class="drow"', `class="drow${x.c.n < 10 ? " poucas" : ""}"`);
+  const nCons = itens.length - sem.length;
+  return `<div class="card"><div class="card-head"><h3>${titulo}</h3><span>${c.n} respostas · NPS ${fmtN(c.nps)} · ${nCons} ${nCons > 1 ? "consultores" : "consultor"}</span></div>
+    <div class="dist">${cheios.map(linha).join("")}${poucos.length ? `<div class="cons-div">Menos de 10 respostas</div>` + poucos.map(linha).join("") : ""}${sem.map(linha).join("")}</div></div>`;
+}
+function renderConsultores() {
+  const base = semPeriodo().filter((r) => r.grupo === "Serviços");
+  $("cons").innerHTML = base.length
+    ? quadroConsultores(base.filter((r) => r.ano === ANO_ATUAL), `${ANO_ATUAL} · ${txtAteMes}`) + quadroConsultores(base.filter((r) => r.ano === ANO_ATUAL - 1), `${ANO_ATUAL - 1} · ano todo`)
+    : `<p class="empty">Esta aba mostra as pesquisas de serviço. Escolha "Todas as campanhas" ou uma campanha de serviço no filtro de cima.</p>`;
+}
+
 /* ---------- tooltip genérico ---------- */
 function mostrarTip(cx, cy) {
   const tip = $("tip"); tip.hidden = false;
@@ -1184,7 +1229,7 @@ document.addEventListener("pointermove", (ev) => {
 });
 
 /* ---------- abas ---------- */
-const TABS = ["geral", "evolucao", "comparacao", "projecao", "motivos", "comentarios", "clientes"];
+const TABS = ["geral", "evolucao", "comparacao", "projecao", "motivos", "comentarios", "consultores", "clientes"];
 let aba = "geral";
 let projVisivel = store.get("nps-proj") === "1";
 function abrir(t, foco) {
@@ -1220,6 +1265,7 @@ function renderAba() {
   if (aba === "projecao") renderProjecao();
   if (aba === "motivos") renderMotivos();
   if (aba === "comentarios") renderComentarios(rows);
+  if (aba === "consultores") renderConsultores();
   if (aba === "clientes") renderClientes(rows);
 }
 function render() { renderOverview(filtrados()); renderAba(); }

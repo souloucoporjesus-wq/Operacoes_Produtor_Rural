@@ -101,7 +101,20 @@ CAMP = {
     "Pesquisa CeS MyFarm (Farmer) - Apoio Técnico e Treinamentos": "Apoio técnico e treinamento myFarm",
     "Pesquisa CeS AgroScore Siagri AgriManager": "Monitoria AgroScore AgriManager",
 }
-LINHA = {"MYFARM": "myFarm", "SIAGRI AGRIMANAGER": "AgriManager"}""")
+LINHA = {"MYFARM": "myFarm", "SIAGRI AGRIMANAGER": "AgriManager"}
+
+CONSULTORES = set(pd.concat([d["Consultor"] for (g, a), d in bruto.items() if g == "Serviços"]).dropna().str.strip())
+PARTICULAS = {"de", "da", "do", "dos", "das", "e"}
+
+def nome_consultor(r):
+    # na monitoria AgroScore o nome vem em Consultor Responsável; em algumas respostas a Track grava o
+    # consultor em Gerente de Projeto, que só vale quando o nome é de um consultor da base
+    for col in ("Consultor", "Consultor Responsável", "Gerente de Projeto"):
+        v = str(r.get(col, "") or "").strip()
+        if v and v != "nan" and (col != "Gerente de Projeto" or v in CONSULTORES):
+            return " ".join(p if p in PARTICULAS else p.capitalize() for p in v.lower().split()), col
+    return None, "sem consultor"
+""")
 
 code("""partes = []
 for (grupo, ano), d in bruto.items():
@@ -122,6 +135,7 @@ for (grupo, ano), d in bruto.items():
     elif serv:
         x["comentario"] = d["Comentário"].str.strip()
         cliente = d["Justificativas"].map(lista)
+        x["consultor"], x["consultor_origem"] = zip(*[nome_consultor(r) for _, r in d.iterrows()])
     else:
         x["comentario"] = d["Comentário"].str.strip()
         cliente = pd.Series([[]] * len(d), index=d.index)
@@ -511,13 +525,26 @@ elogio[["grupo", "conta", "nota", "data", "comentario"]].sort_values("nota", asc
 
 md(ref("q_positivos"))
 
+md("""## Qual é o NPS de cada consultor nos serviços, em 2025 e em 2026?
+Cada resposta de serviço traz o consultor que atendeu o cliente. Primeiro, de que campo da Track veio
+o nome; depois, o NPS de cada consultor, um ano de cada vez, com o número de respostas ao lado.""")
+
+code("""serv_c = nps[nps["grupo"] == "Serviços"].assign(consultor=lambda t: t["consultor"].fillna("Sem consultor informado"))
+serv_c.groupby(["ano", "consultor_origem"]).size().to_frame("respostas")""")
+
+code("""serv_c[serv_c["ano"] == 2026].groupby("consultor")[["classe"]].apply(calc_nps).sort_values("respostas", ascending=False)""")
+
+code("""serv_c[serv_c["ano"] == 2025].groupby("consultor")[["classe"]].apply(calc_nps).sort_values("respostas", ascending=False)""")
+
+md(ref("q_consultor"))
+
 md("""## Exportar a base pra apresentação
 A página lê este JSON embutido; os filtros de tela recalculam tudo a partir das respostas. O
 `resumo-nps.json` leva os números citados no texto da visão geral.""")
 
 code("""saida = nps.assign(data=nps["data"].dt.strftime("%Y-%m-%d"), mes=nps["mes"].astype(str))
 cols = ["id", "ano", "grupo", "campanha", "linha", "data", "mes", "nota", "nota_anterior", "classe", "conta", "cliente",
-        "respondente", "uf", "status_painel", "comentario", "tem_texto", "marcados", "motivo_real"]
+        "respondente", "uf", "status_painel", "comentario", "tem_texto", "marcados", "motivo_real", "consultor"]
 registros = json.loads(saida[cols].to_json(orient="records", force_ascii=False))
 json.dump(registros, open("dados-nps.json", "w", encoding="utf-8"), ensure_ascii=False)
 len(registros)""")

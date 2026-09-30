@@ -139,6 +139,19 @@ ainda é levemente negativo; os destaques são reais, mas não compensam sozinho
 No texto, o cliente reconhece o acompanhamento: "a equipe de Sucesso do Cliente está mais próxima,
 atenta às nossas necessidades" (Parceria Agrícola S EPP Nova, nota 9)."""
 
+q_consultor = """**Resultado:** [Certo] em 2026 só dois consultores têm base para ler o NPS: Guilherme Job
+(28 respostas, NPS 61, implantação e apoio técnico myFarm) e Leonardo Borges (16 respostas, NPS 81,
+apoio técnico AgriManager e monitoria AgroScore). Os outros cinco somam 12 respostas, de 1 a 5 cada:
+com essa base, uma nota muda o NPS em 20 pontos ou mais, então não serve para comparar pessoas. Em
+2025 a base era mais espalhada: quatro consultores passaram de 10 respostas, todos entre 76 e 80, e o
+Leonardo é o único com base nos dois anos (77 em 2025, 81 em 2026). [Provável] seis respostas de 2026
+vieram sem o campo Consultor; em cinco delas o nome de um consultor estava em Gerente de Projeto e a
+resposta ficou com ele (três do Guilherme, com notas 7, 8 e 3; uma do Leonardo; uma do Felipe). Sem
+essa atribuição o Guilherme teria 25 respostas e NPS 72. A outra ficou como sem consultor informado.
+[Certo] a exportação de serviços de 2026 ainda está sem 5 promotores (ver acima); até a
+reexportação, o NPS por consultor de 2026 pode estar um pouco abaixo do real, sem como saber de quem
+são as respostas que faltam."""
+
 conclusao = """## Resumo
 - **NPS acumulado em setembro de 2026:** serviços 59 no arquivo (62 na Track), myFarm 41, AgriManager 2.
 - **Contra 2025 no mesmo ponto:** os três abaixo (AgriManager 4 pontos, myFarm 12, serviços 16).
@@ -147,6 +160,8 @@ conclusao = """## Resumo
 - **AgriManager:** perto de zero o ano todo, mesmo perfil de detrator de 2025 (falhas, recursos,
   suporte), com 37% menos respostas.
 - **Serviços:** maior NPS da operação, sustentado pelo consultor; a crítica é a condução da implantação.
+- **Por consultor:** em 2026 só Guilherme Job (28 respostas, NPS 61) e Leonardo Borges (16, NPS 81)
+  têm base; os demais têm de 1 a 5 respostas. Em 2025, quatro consultores com base, entre 76 e 80.
 - **Meta (superar 2025 em cada grupo):** nenhum grupo chega lá em nenhum cenário; AgriManager
   precisaria de NPS 38 e myFarm de 67 de outubro a dezembro.
 - **Motivo real (um por resposta, comentário primeiro):** AgriManager perde por erros e falhas do

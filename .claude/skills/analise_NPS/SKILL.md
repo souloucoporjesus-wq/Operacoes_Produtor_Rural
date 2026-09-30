@@ -5,10 +5,11 @@ description: >-
   myFarm e serviços de implantação, apoio técnico e monitoria) a partir das exportações da Track:
   confere os totais com o painel da Track, lê os comentários novos, define o motivo real de cada
   nota, roda o notebook, gera a apresentação em arquivo único (visão geral, evolução acumulada,
-  2025 × 2026, projeção contra a meta, motivos, comentários, cliente a cliente) e republica no
-  mesmo link. Use sempre que o usuário chamar /analise_NPS ou falar em NPS, nota de NPS,
-  detratores, promotores, motivo da nota, comentários da pesquisa, campanha ou exportação da
-  Track, NPS do mês, NPS por produto ou por serviço, comparação com o ano anterior, meta ou
+  2025 × 2026, projeção contra a meta, motivos, comentários, NPS por consultor de serviços, cliente
+  a cliente) e republica no mesmo link. Use sempre que o usuário chamar /analise_NPS ou falar em
+  NPS, nota de NPS, detratores, promotores, motivo da nota, comentários da pesquisa, campanha ou
+  exportação da Track, NPS do mês, NPS por produto, por serviço ou por consultor, comparação com o
+  ano anterior, meta ou
   projeção de NPS, ou apresentação de NPS para a diretoria ou o CEO, mesmo sem dizer "skill".
 ---
 
@@ -74,7 +75,9 @@ Na pasta do NPS: `python montar_notebook.py`. Ler os resultados de verdade, pass
 crítica da `analise_dados_senior` (o `n` visível, base pequena não é tendência, associação não é
 causa) e atualizar `reflexoes.py` com a interpretação do que mudou, com as tags [Certo],
 [Provável] e [Suposição]. Rodar de novo até não sobrar "(a preencher depois de ler o output)" e sem
-célula com erro.
+célula com erro. Na pergunta do NPS por consultor, a primeira tabela diz de que campo da Track veio
+cada nome: se cresceu o número de respostas vindas de `Gerente de Projeto` ou de "sem consultor",
+reescrever a reflexão `q_consultor` e avisar o Julio.
 
 ## Passo 5. Gerar a página e revisar o texto fixo
 
@@ -111,6 +114,10 @@ Regras que o Julio pediu para a apresentação:
   data. Exemplo: os detratores de 2026 que a Track mostrava como pendentes até 29/09/2026 foram
   confirmados como tratados (a Track não atualizou os loops); isso está em `CONFIRMADO_ATE`, no
   `montar_notebook.py`. Pendente novo precisa de confirmação nova, perguntada ao Julio.
+- **Consultor com nome.** A aba Consultores mostra o nome como vem da Track. Antes de apresentar,
+  dizer ao Julio no chat quem tem base pequena, quantas respostas foram atribuídas pelo Gerente de
+  Projeto e se a exportação de serviços ainda está incompleta (resposta faltando não tem consultor
+  conhecido).
 - **A foto inteira vai para o Julio no chat.** O que a página não mostra, mas o CEO pode perguntar
   (quantos baixaram a nota, tendência pequena demais para chamar de melhora, queda que está só nas
   outras abas), é dito a ele antes da reunião.
@@ -130,6 +137,16 @@ Regras que o Julio pediu para a apresentação:
 - **Motivo real.** Um por resposta: o comentário manda; sem comentário útil, vale o motivo marcado
   na ordem de prioridade do grupo e da classe; "Outro" sozinho conta como sem motivo informado.
   Grupo com menos de 10 respostas aparece em contagem.
+- **NPS por consultor (aba Consultores).** Só serviços, com o ano corrente e o anterior em quadros
+  separados; os filtros de campanha e produto valem, o de período não. O nome sai de `Consultor`;
+  na monitoria AgroScore vem em `Consultor Responsável`; quando os dois estão vazios e o
+  `Gerente de Projeto` traz o nome de alguém que aparece como consultor na base, a resposta fica
+  com ele (a Track às vezes grava o consultor ali; o gerente de projeto de verdade, como Jaqueline
+  Martins e Yuri Coelho, nunca entra). Sem nenhum dos três, "Sem consultor informado". A regra está
+  em `nome_consultor`, no `montar_notebook.py`. Consultor com menos de 10 respostas aparece em
+  cinza, abaixo de "Menos de 10 respostas": não se compara pessoa com essa base. Em 30/09/2026,
+  5 respostas de 2026 foram atribuídas pelo Gerente de Projeto (3 do Guilherme Job, que sem elas
+  teria NPS 72 em vez de 61); isso vai para o Julio no chat sempre que o número mudar.
 - **Cliente a cliente.** A conta pode ter vários usuários. Primeira e última nota saem pela data e
   hora; o JSON da página guarda só a data, e respostas do mesmo dia podem empatar.
 - **Resposta interna.** Nome de alguém da Aliare como respondente (já apareceu o do diretor na base
