@@ -60,6 +60,15 @@
   principalmente o CS, e que aceita alguém acima dele. O Leandro acha 13 pessoas pouco pra justificar
   e aponta centralização: delegar mais pra Andrezza e Amanda, que ele vê como diferenciadas.
   Avaliação do Julio: "forte potencial" (Leandro e Miriam). [Certo] Fonte: o 1:1 de 25/09
+- **Guilherme Job** (alerta, desde 2026-09-29): advertência verbal do Julio em 29/09 por conduta
+  (saída às 17:17 no dia 28/09 com ponto das 17:35; registro de ponto fora da janela de 7:30 às
+  17:30; relato de combinado não autorizado com o Yuri pra não pegar atendimento na quarta à tarde,
+  que ele nega; online em horário de trabalho fora de casa sem ponto registrado). Próxima vez:
+  advertência por escrito ou desligamento. Ele se comprometeu a só trabalhar com ponto registrado
+  e disse que ele mesmo pede o desligamento se repetir. Disse que se sente "injustiçado" e
+  "inferiorizado" e pediu uma conversa separada sobre expectativa de carreira: o Julio adiou pra
+  outro momento, sem data. [Certo] Fonte: reunião do Granola de 29/09 (transcrição não salva no
+  sistema; id 9870f93f-0145-4ba6-be5b-c587b9712661)
 
 ## Histórico
 

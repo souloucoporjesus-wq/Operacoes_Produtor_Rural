@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NPS Produto e Serviços 2026</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&display=swap">
+<style>
+  /* Mesmo sistema dos relatórios de diretoria (cobrança 25/09): coluna única de leitura, abas fixas no topo, filtros numa linha acima de tudo. */
+  :root {
+    --ground: #F4F6F9; --surface: #FFFFFF; --surface-alt: #EDF1F6;
+    --ink: #172029; --ink-soft: #4A5766; --ink-faint: #6F7C8A;
+    --rule: #D8DFE8; --rule-strong: #B9C4D0; --accent: #0A5C8A;
+    --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --y25: #8A94A3;
+    --det: #d03b3b; --neu: #AAB5C2; --pro: #0ca30c;
+    --det-soft: #F8E3DF; --pro-soft: #E1F2E5; --neu-soft: #EDF1F6;
+    --det-ink: #A13222; --pro-ink: #16692F;
+    --st-ok: #0ca30c; --st-warn: #fab219; --st-serious: #ec835a; --st-crit: #d03b3b; --st-info: #2a78d6; --st-none: #AAB5C2; --st-pend: #8a7fe0;
+    --shadow: 0 1px 2px rgba(23,32,41,.05), 0 8px 24px rgba(23,32,41,.06);
+    --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    --serif: "IBM Plex Serif", Georgia, "Times New Roman", serif;
+    --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #10151B; --surface: #181F27; --surface-alt: #1F2833;
+      --ink: #E4EAF1; --ink-soft: #A8B4C2; --ink-faint: #8290A0;
+      --rule: #2C3743; --rule-strong: #3D4A58; --accent: #57A8D8;
+      --s1: #3987e5; --s2: #d95926; --s3: #199e70; --y25: #7C8898;
+      --det: #E05F47; --neu: #5B6878; --pro: #3AA050;
+      --det-soft: #3A1F1A; --pro-soft: #163323; --neu-soft: #1F2833;
+      --det-ink: #F29A87; --pro-ink: #6FD08A;
+      --st-none: #5B6878;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #10151B; --surface: #181F27; --surface-alt: #1F2833;
+    --ink: #E4EAF1; --ink-soft: #A8B4C2; --ink-faint: #8290A0;
+    --rule: #2C3743; --rule-strong: #3D4A58; --accent: #57A8D8;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --y25: #7C8898;
+    --det: #E05F47; --neu: #5B6878; --pro: #3AA050;
+    --det-soft: #3A1F1A; --pro-soft: #163323; --neu-soft: #1F2833;
+    --det-ink: #F29A87; --pro-ink: #6FD08A;
+    --st-none: #5B6878;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.28);
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { -webkit-text-size-adjust: 100%; }
+  body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 16px 80px; }
+  @media (min-width: 720px) { .wrap { padding-inline: 28px; } }
+  button:focus-visible, select:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .top { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding-block: 22px 0; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+  .top .brand b { color: var(--ink); font-weight: 500; }
+  @media (max-width: 480px) { .top .brand span { display: none; } }
+  .btn-ghost { appearance: none; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-soft); font: 500 12.5px var(--sans); letter-spacing: 0; text-transform: none; padding: 7px 12px; border-radius: 6px; cursor: pointer; white-space: nowrap; }
+  .btn-ghost:hover { color: var(--ink); border-color: var(--rule-strong); }
+  .top-acts { display: flex; align-items: center; gap: 8px; }
+  .btn-ico { appearance: none; width: 26px; height: 26px; padding: 0; display: grid; place-items: center; border: 1px solid var(--rule); background: var(--surface); color: var(--ink-faint); border-radius: 6px; cursor: pointer; }
+  .btn-ico svg { width: 14px; height: 14px; display: block; }
+  .btn-ico:hover { color: var(--ink); border-color: var(--rule-strong); }
+  .btn-ico[aria-pressed="true"] { color: var(--accent); border-color: var(--accent); }
+
+  header.hero-head { padding-block: 40px 4px; }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin: 0 0 14px; }
+  h1 { font-weight: 700; font-size: clamp(30px, 5.4vw, 46px); line-height: 1.1; letter-spacing: -.022em; margin: 0 0 18px; text-wrap: balance; max-width: 22ch; }
+  .standfirst { font-family: var(--serif); font-size: clamp(17px, 2.3vw, 19.5px); line-height: 1.55; color: var(--ink-soft); margin: 0; max-width: 66ch; }
+  .meta { display: flex; flex-wrap: wrap; gap: 6px 26px; margin-top: 22px; font-family: var(--mono); font-size: 12.5px; color: var(--ink-faint); }
+
+  /* filtros globais */
+  .gfilters { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; margin-top: 28px; padding: 14px 16px; background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; }
+  .fld { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+  .fld label { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); }
+  .fld select, .fld input[type="search"] { appearance: none; font: 500 14px var(--sans); color: var(--ink); background: var(--surface-alt); border: 1px solid var(--rule); border-radius: 6px; padding: 8px 30px 8px 10px; min-height: 38px; max-width: 100%; background-image: linear-gradient(45deg, transparent 50%, var(--ink-faint) 50%), linear-gradient(135deg, var(--ink-faint) 50%, transparent 50%); background-position: calc(100% - 15px) 16px, calc(100% - 10px) 16px; background-size: 5px 5px; background-repeat: no-repeat; }
+  .fld input[type="search"] { background-image: none; padding-right: 10px; min-width: 220px; }
+  @media (max-width: 520px) { .fld, .fld select, .fld input[type="search"] { width: 100%; min-width: 0; } .fld.half { width: calc(50% - 7px); } }
+  .fld.grow { flex: 1 1 240px; }
+  .fld.grow select { width: 100%; }
+  .gfilters .btn-ghost { min-height: 38px; }
+  .fstate { font-size: 13px; color: var(--ink-faint); margin: 10px 2px 0; }
+
+  /* painel de NPS */
+  .overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-top: 14px; }
+  @media (min-width: 820px) { .overview { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .ov { border: 1px solid var(--rule); background: var(--surface); border-radius: 10px; padding: 16px 16px 14px; display: flex; flex-direction: column; gap: 6px; min-width: 0; box-shadow: var(--shadow); }
+  .ov .k { font-family: var(--mono); font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); display: flex; align-items: center; gap: 8px; }
+  .ov .v { font-size: 34px; font-weight: 600; letter-spacing: -.02em; line-height: 1.05; white-space: nowrap; }
+  .ov .v small { font-size: 13px; font-weight: 500; color: var(--ink-faint); letter-spacing: 0; margin-left: 6px; }
+  .ov .n { font-size: 12.5px; color: var(--ink-soft); line-height: 1.4; }
+  .ov .cmp { font-size: 12.5px; line-height: 1.4; color: var(--ink-soft); }
+  .ov .mini { height: 8px; display: flex; gap: 2px; border-radius: 4px; overflow: hidden; margin-top: 2px; }
+  .ov .mini i { display: block; height: 100%; }
+  @media (max-width: 559px) { .ov .v { font-size: 26px; } .ov { padding: 13px 13px 12px; } }
+  .sw { width: 10px; height: 10px; border-radius: 3px; display: inline-block; flex: none; }
+  .up { color: var(--pro-ink); font-weight: 600; white-space: nowrap; }
+  .down { color: var(--det-ink); font-weight: 600; white-space: nowrap; }
+  .eq { color: var(--ink-faint); font-weight: 600; white-space: nowrap; }
+
+  /* abas */
+  .tabbar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--ground); margin-top: 30px; padding-top: 8px; }
+  .tabs { display: flex; gap: 4px; border-bottom: 2px solid var(--ink); overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tab { appearance: none; border: 1px solid var(--rule); border-bottom: none; background: var(--surface-alt); color: var(--ink-soft); font: 500 14.5px var(--sans); padding: 11px 16px; cursor: pointer; border-radius: 6px 6px 0 0; white-space: nowrap; display: inline-flex; align-items: center; gap: 8px; }
+  .tab:hover { color: var(--ink); }
+  .tab[aria-selected="true"] { background: var(--ink); color: var(--ground); border-color: var(--ink); }
+  .tab.iso { margin-left: auto; }
+  @media (max-width: 560px) { .tab { padding: 10px 12px; font-size: 13.5px; } .tab.iso { margin-left: 0; } }
+
+  section { padding-top: 48px; }
+  .tabpanel > section:first-child { padding-top: 30px; }
+  .sec-mark { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 8px; }
+  h2 { font-size: clamp(21px, 3vw, 25px); font-weight: 600; letter-spacing: -.015em; margin: 0 0 8px; text-wrap: balance; }
+  h3 { text-wrap: balance; }
+  .sec-lead { color: var(--ink-soft); margin: 0 0 22px; max-width: 70ch; }
+  p { margin: 0 0 14px; }
+  .card { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; box-shadow: var(--shadow); padding: 22px 20px; min-width: 0; }
+  @media (min-width: 720px) { .card { padding: 26px 28px; } }
+  .card-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; margin-bottom: 16px; }
+  .card-head h3 { font-size: 16px; font-weight: 600; margin: 0; }
+  .card-head span { font-size: 13px; color: var(--ink-faint); }
+
+  /* projeção em destaque */
+  .hero-proj { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; box-shadow: var(--shadow); overflow: hidden; }
+  .hero-proj .hp-head { padding: 24px 22px 6px; }
+  @media (min-width: 720px) { .hero-proj .hp-head { padding: 28px 28px 8px; } }
+  .hero-proj h3 { font-size: clamp(19px, 2.6vw, 23px); font-weight: 600; margin: 6px 0 0; line-height: 1.3; letter-spacing: -.01em; }
+  .hp-cols { display: grid; gap: 1px; background: var(--rule); border-top: 1px solid var(--rule); margin-top: 18px; }
+  @media (min-width: 820px) { .hp-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .hp-col { background: var(--surface); padding: 18px 22px 20px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  @media (min-width: 720px) { .hp-col { padding: 20px 28px 22px; } }
+  .hp-col .nm { font-weight: 600; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+  .hp-row { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--ink-soft); border-bottom: 1px solid var(--rule); padding-bottom: 6px; }
+  .hp-row:last-of-type { border-bottom: 0; }
+  .hp-row b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .hp-foot { font-size: 12.5px; color: var(--ink-faint); padding: 12px 22px 16px; border-top: 1px solid var(--rule); margin: 0; }
+  @media (min-width: 720px) { .hp-foot { padding-inline: 28px; } }
+  .pill { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; font-weight: 600; padding: 3px 10px; border-radius: 999px; white-space: nowrap; align-self: flex-start; }
+  .pill.nao { background: var(--det-soft); color: var(--det-ink); }
+  .pill.sim { background: var(--pro-soft); color: var(--pro-ink); }
+  .pill.nd { background: var(--neu-soft); color: var(--ink-soft); }
+
+  /* achados */
+  .findings { display: grid; gap: 14px; margin-top: 14px; }
+  @media (min-width: 760px) { .findings { grid-template-columns: 1fr 1fr; } }
+  .finding { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 22px 22px 20px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+  .finding .num { font-size: 30px; font-weight: 600; letter-spacing: -.02em; line-height: 1; display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap; }
+  .finding .num small { font-size: 14px; font-weight: 500; color: var(--ink-faint); letter-spacing: 0; }
+  .finding h3 { font-size: 17px; font-weight: 600; margin: 0; line-height: 1.35; }
+  .finding p { font-size: 14.5px; color: var(--ink-soft); margin: 0; line-height: 1.55; }
+  .finding .kicker { font-family: var(--mono); font-size: 11.5px; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-faint); display: flex; align-items: center; gap: 8px; }
+  .vcard { margin-top: 14px; }
+  .vlist { list-style: none; margin: 0; padding: 0; display: grid; }
+  @media (min-width: 760px) { .vlist { grid-template-columns: 1fr 1fr; column-gap: 32px; } }
+  .vlist li { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; gap: 2px 14px; align-items: baseline; padding: 10px 0; border-bottom: 1px solid var(--rule); }
+  .vlist .vg { grid-column: 1 / -1; display: flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; color: var(--ink-faint); }
+  .vlist b { font-weight: 600; font-size: 15px; min-width: 0; overflow-wrap: anywhere; }
+  .vlist .vn { font-weight: 600; font-variant-numeric: tabular-nums; white-space: nowrap; color: var(--pro-ink); }
+  .vlist .vd { font-size: 12.5px; color: var(--ink-faint); white-space: nowrap; }
+  .vfoot { font-size: 13.5px; color: var(--ink-soft); margin: 14px 0 0; }
+
+  /* distribuição */
+  .dist { display: grid; gap: 0; }
+  .drow { display: grid; grid-template-columns: minmax(0, 1fr) 64px; gap: 6px 16px; align-items: center; padding: 12px 0; border-bottom: 1px solid var(--rule); }
+  .drow:last-child { border-bottom: 0; }
+  @media (min-width: 760px) { .drow { grid-template-columns: minmax(0, 1.1fr) minmax(0, 2fr) 84px; } }
+  .drow .nm { font-weight: 600; font-size: 15px; line-height: 1.3; }
+  .drow .sub { font-size: 12.5px; color: var(--ink-faint); font-family: var(--mono); }
+  .drow .bar { grid-column: 1 / -1; }
+  @media (min-width: 760px) { .drow .bar { grid-column: auto; grid-row: 1; grid-column-start: 2; } .drow .val { grid-column-start: 3; grid-row: 1; } }
+  .drow .val { text-align: right; font-size: 22px; font-weight: 600; letter-spacing: -.02em; white-space: nowrap; }
+  @media (max-width: 759px) { .drow .val { grid-row: 1; grid-column-start: 2; } }
+  .sbar { display: flex; gap: 2px; height: 14px; border-radius: 4px; overflow: hidden; background: var(--surface-alt); }
+  .sbar i { display: block; height: 100%; min-width: 0; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 13px; color: var(--ink-soft); margin-top: 14px; }
+  .legend span { display: inline-flex; align-items: center; gap: 7px; }
+  .legend .hollow { width: 11px; height: 11px; border-radius: 50%; border: 2px solid var(--ink-soft); background: var(--surface); display: inline-block; }
+  .legend .full { width: 11px; height: 11px; border-radius: 50%; background: var(--ink-soft); display: inline-block; }
+  .legend .ln { width: 18px; height: 0; border-top: 2px solid var(--ink-soft); display: inline-block; }
+  .legend .ln.dash { border-top-style: dashed; }
+  .legend .ln.y25 { border-top-color: var(--y25); }
+  .legend .band { width: 18px; height: 10px; border-radius: 2px; background: var(--ink-soft); opacity: .22; display: inline-block; }
+
+  /* gráficos */
+  .chart { position: relative; width: 100%; }
+  .chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .chart text { font-family: var(--sans); }
+  .tip { position: fixed; z-index: 50; pointer-events: none; background: var(--surface); color: var(--ink); border: 1px solid var(--rule-strong); border-radius: 8px; box-shadow: var(--shadow); padding: 10px 12px; font-size: 13px; line-height: 1.45; min-width: 190px; max-width: 300px; }
+  .tip b { font-weight: 600; }
+  .tip .tl { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+  .tip .tl span:first-child { display: inline-flex; align-items: center; gap: 7px; }
+  .tip .muted { color: var(--ink-faint); font-size: 12px; }
+  .seg { display: inline-flex; border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; background: var(--surface); }
+  .seg button { appearance: none; border: 0; background: transparent; color: var(--ink-soft); font: 500 13.5px var(--sans); padding: 8px 14px; cursor: pointer; min-height: 36px; }
+  .seg button + button { border-left: 1px solid var(--rule); }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--ground); }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .hint { font-size: 13px; color: var(--ink-faint); }
+
+  .tbl-wrap { overflow-x: auto; margin-top: 18px; border: 1px solid var(--rule); border-radius: 8px; }
+  table { border-collapse: collapse; width: 100%; font-size: 14px; }
+  th, td { padding: 9px 12px; text-align: left; border-bottom: 1px solid var(--rule); white-space: nowrap; }
+  th { font-family: var(--mono); font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--ink-faint); font-weight: 500; background: var(--surface-alt); }
+  th.grp { text-align: center; border-left: 1px solid var(--rule); }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  td.bl, th.bl { border-left: 1px solid var(--rule); }
+  tr:last-child td { border-bottom: 0; }
+  td .nsm { color: var(--ink-faint); font-size: 12px; margin-left: 4px; }
+  td .dl { font-size: 12.5px; margin-left: 8px; }
+
+  /* pequenos múltiplos */
+  .sm { display: grid; gap: 14px; }
+  @media (min-width: 980px) { .sm { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .sm .card { padding: 18px 18px 16px; }
+  .sm .card-head { margin-bottom: 8px; }
+  .sm .card-head h3 { display: flex; align-items: center; gap: 8px; }
+  .pstats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; margin-top: 12px; }
+  .pstats div { background: var(--surface); padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .pstats .k { font-size: 12px; color: var(--ink-faint); line-height: 1.3; }
+  .pstats .v { font-size: 20px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; }
+  .pstats .v small { font-size: 12px; font-weight: 500; color: var(--ink-faint); margin-left: 4px; }
+  .cen { margin-top: 12px; font-size: 13px; }
+  .cen div { display: flex; justify-content: space-between; gap: 10px; padding: 5px 0; border-bottom: 1px solid var(--rule); color: var(--ink-soft); }
+  .cen div:last-child { border-bottom: 0; }
+  .cen b { color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* motivos: um painel por grupo */
+  .sub-h { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 14px; margin: 30px 0 12px; }
+  .sub-h h3 { font-size: 17px; font-weight: 600; margin: 0; }
+  .sub-h span { font-size: 13px; color: var(--ink-faint); }
+  .pm { display: grid; gap: 14px; }
+  @media (min-width: 900px) { .pm { grid-template-columns: repeat(3, minmax(0, 1fr)); align-items: start; } }
+  .pm .card { padding: 18px 20px 12px; }
+  .pm .ph { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; }
+  .pm .pb { font-size: 12.5px; color: var(--ink-faint); margin: 2px 0 10px; line-height: 1.4; }
+  .mrow { padding: 8px 0 9px; border-top: 1px solid var(--rule); }
+  .mrow .mtop { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; font-size: 14px; line-height: 1.35; }
+  .mrow .mtop span { min-width: 0; }
+  .mrow .mtop b { font-variant-numeric: tabular-nums; white-space: nowrap; font-weight: 600; }
+  .mrow .mtop b small { font-weight: 400; color: var(--ink-faint); font-size: 12px; margin-left: 5px; }
+  .mrow .trk { height: 8px; background: var(--surface-alt); border-radius: 4px; margin-top: 7px; overflow: hidden; }
+  .mrow .trk i { display: block; height: 100%; border-radius: 0 4px 4px 0; }
+  .mrow .trk.seg { display: flex; gap: 2px; }
+  .mrow .trk.seg i { border-radius: 0; }
+  .mrow .mprev { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 10px; margin-top: 4px; }
+  .mrow .mprev .trk { margin-top: 0; }
+  .mrow .trk.fina { height: 5px; }
+  .mrow .mprev span { font-size: 12px; color: var(--ink-faint); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .msem { border-top: 1px solid var(--rule); padding: 9px 0 4px; font-size: 12.5px; color: var(--ink-faint); }
+  .empty { color: var(--ink-faint); font-size: 14px; padding: 18px 0; }
+
+  /* comentários */
+  .cfilters { display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end; margin-bottom: 16px; }
+  .check { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ink-soft); min-height: 38px; cursor: pointer; }
+  .check input { width: 16px; height: 16px; accent-color: var(--accent); }
+  .count { font-size: 13.5px; color: var(--ink-faint); margin: 0 0 12px; }
+  .clist { display: grid; gap: 10px; }
+  .cm { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; padding: 16px 18px; display: grid; grid-template-columns: 46px minmax(0, 1fr); gap: 4px 14px; }
+  .nota { width: 46px; height: 46px; border-radius: 10px; display: grid; place-items: center; font-size: 20px; font-weight: 600; grid-row: span 3; }
+  .nota.Detrator { background: var(--det-soft); color: var(--det-ink); }
+  .nota.Neutro { background: var(--neu-soft); color: var(--ink-soft); }
+  .nota.Promotor { background: var(--pro-soft); color: var(--pro-ink); }
+  .cm .hd { display: flex; flex-wrap: wrap; gap: 2px 12px; align-items: baseline; }
+  .cm .hd b { font-size: 15px; font-weight: 600; }
+  .cm .hd span { font-size: 12.5px; color: var(--ink-faint); font-family: var(--mono); }
+  .cm .tx { font-family: var(--serif); font-size: 16px; line-height: 1.55; color: var(--ink); margin: 2px 0 0; overflow-wrap: anywhere; }
+  .cm .tx.none { font-family: var(--sans); font-size: 13.5px; color: var(--ink-faint); font-style: italic; }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .tag { font-size: 12px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--rule); color: var(--ink-soft); background: transparent; white-space: nowrap; }
+  .tag.real { background: var(--surface-alt); border-color: var(--rule-strong); color: var(--ink); font-weight: 600; }
+  .more { margin-top: 14px; }
+
+  /* cliente a cliente */
+  .cli-layout { display: grid; gap: 14px; }
+  @media (min-width: 900px) { .cli-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr); align-items: start; } }
+  .clist2 { background: var(--surface); border: 1px solid var(--rule); border-radius: 10px; overflow: hidden; max-height: 760px; overflow-y: auto; }
+  .crow { appearance: none; width: 100%; border: 0; border-bottom: 1px solid var(--rule); background: transparent; color: inherit; font: inherit; text-align: left; cursor: pointer; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 12px; align-items: center; padding: 12px 16px; }
+  .crow:hover { background: var(--surface-alt); }
+  .crow[aria-current="true"] { background: var(--surface-alt); box-shadow: inset 3px 0 0 var(--accent); }
+  .crow .nm { font-weight: 600; font-size: 14.5px; line-height: 1.3; overflow-wrap: anywhere; }
+  .crow .sub { font-size: 12px; color: var(--ink-faint); display: flex; flex-wrap: wrap; gap: 2px 10px; }
+  .crow .mv { font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 600; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+  .mvpill { font-size: 11.5px; font-weight: 500; padding: 1px 8px; border-radius: 999px; }
+  .mvpill.Caiu { background: var(--det-soft); color: var(--det-ink); }
+  .mvpill.Subiu { background: var(--pro-soft); color: var(--pro-ink); }
+  .mvpill.Estavel { background: var(--neu-soft); color: var(--ink-soft); }
+  .mvpill.Unica { background: transparent; color: var(--ink-faint); border: 1px solid var(--rule); }
+  .detail { position: sticky; top: 70px; }
+  .dstats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; margin: 14px 0 18px; }
+  @media (min-width: 560px) { .dstats { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .dstats div { background: var(--surface); padding: 12px 14px; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .dstats .k { font-size: 12px; color: var(--ink-faint); }
+  .dstats .v { font-size: 21px; font-weight: 600; letter-spacing: -.01em; white-space: nowrap; }
+  .dtitle { font-size: 20px; font-weight: 600; margin: 0; line-height: 1.25; overflow-wrap: anywhere; }
+  .dsub { font-size: 13px; color: var(--ink-faint); margin: 4px 0 0; }
+  .resp { border-top: 1px solid var(--rule); padding: 12px 0; display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 2px 12px; }
+  .resp .nota { width: 40px; height: 40px; font-size: 17px; border-radius: 8px; grid-row: span 3; }
+  .resp .hd { font-size: 12.5px; color: var(--ink-faint); font-family: var(--mono); }
+  .resp .tx { font-family: var(--serif); font-size: 15px; line-height: 1.5; margin: 0; overflow-wrap: anywhere; }
+
+  @media (prefers-reduced-motion: no-preference) { .fill, .sbar i { transition: width .3s ease; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top">
+    <div class="brand"><b>Aliare</b> <span>Operações Produtor Rural</span></div>
+    <div class="top-acts">
+      <button class="btn-ico" id="btn-proj" type="button" aria-pressed="false" aria-label="Mostrar projeções"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 12.5 6 8.5 9 10.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/><path d="M9 10.5 14 4.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-dasharray="1.8 2.2"/></svg></button>
+      <button class="btn-ghost" id="btn-theme" type="button" aria-label="Alternar tema claro e escuro">Tema escuro</button>
+    </div>
+  </div>
+
+  <header class="hero-head">
+    <p class="eyebrow">NPS · Produto e serviços · 2026</p>
+    <h1>Percepção do cliente em produto e serviços</h1>
+    <p class="standfirst">Até setembro, o NPS acumulado de 2026 é {{sv_hoje}} em serviços, {{mf_hoje}} no myFarm e {{agm_hoje}} no AgriManager. Dois em cada três clientes de serviço e do myFarm são promotores, e o AgriManager melhorou a cada trimestre do ano. <span id="sf-proj"></span></p>
+    <div class="meta">
+      <span id="meta-periodo"></span>
+      <span id="meta-n"></span>
+      <span id="meta-alvo">Meta 2026: superar o NPS de 2025 em cada grupo</span>
+    </div>
+
+    <div class="gfilters" role="group" aria-label="Filtros da apresentação">
+      <div class="fld grow">
+        <label for="f-camp">Campanha</label>
+        <select id="f-camp"></select>
+      </div>
+      <div class="fld">
+        <label for="f-linha">Produto</label>
+        <select id="f-linha">
+          <option value="todas">AgriManager e myFarm</option>
+          <option value="AgriManager">Só AgriManager</option>
+          <option value="myFarm">Só myFarm</option>
+        </select>
+      </div>
+      <div class="fld half">
+        <label for="f-de">De</label>
+        <select id="f-de"></select>
+      </div>
+      <div class="fld half">
+        <label for="f-ate">Até</label>
+        <select id="f-ate"></select>
+      </div>
+      <button class="btn-ghost" id="f-limpar" type="button">Limpar filtros</button>
+    </div>
+    <p class="fstate" id="fstate"></p>
+
+    <div class="overview" id="overview"></div>
+  </header>
+
+  <div class="tabbar">
+    <div class="tabs" role="tablist" aria-label="Seções da apresentação" id="tabs">
+      <button class="tab" role="tab" id="t-geral" aria-controls="p-geral" data-tab="geral">Visão geral</button>
+      <button class="tab" role="tab" id="t-evolucao" aria-controls="p-evolucao" data-tab="evolucao">Evolução</button>
+      <button class="tab" role="tab" id="t-comparacao" aria-controls="p-comparacao" data-tab="comparacao">2025 × 2026</button>
+      <button class="tab" role="tab" id="t-projecao" aria-controls="p-projecao" data-tab="projecao">Projeção</button>
+      <button class="tab" role="tab" id="t-motivos" aria-controls="p-motivos" data-tab="motivos">Motivos</button>
+      <button class="tab" role="tab" id="t-comentarios" aria-controls="p-comentarios" data-tab="comentarios">Comentários</button>
+      <button class="tab iso" role="tab" id="t-clientes" aria-controls="p-clientes" data-tab="clientes">Cliente a cliente</button>
+    </div>
+  </div>
+
+  <!-- ============ VISÃO GERAL ============ -->
+  <div class="tabpanel" id="p-geral" role="tabpanel" aria-labelledby="t-geral">
+    <section aria-labelledby="h-find">
+      <p class="sec-mark">O que os números mostram · janeiro a setembro de 2026</p>
+      <h2 id="h-find">Destaques de 2026</h2>
+      <p class="sec-lead">Os pontos abaixo usam todas as campanhas, de janeiro a setembro de 2026. Os filtros de cima mudam os painéis e gráficos, não este resumo.</p>
+      <div class="findings">
+        <article class="finding">
+          <div class="kicker"><i class="sw" style="background:var(--s3)"></i>Serviços</div>
+          <div class="num">{{sv_hoje}} <small>NPS de 2026, o maior da operação</small></div>
+          <h3>O atendimento do consultor sustenta a nota de serviços</h3>
+          <p>{{sv_pro}}% das respostas de serviço são de promotores, e para {{sv_pro_cons}}% deles o motivo é o atendimento do consultor. {{sv_elogio}} dos {{sv_coment}} comentários de 2026 elogiam o consultor, como o da Fazendas LR Konageski: “recomendo ele sempre, muito prestativo”.</p>
+        </article>
+        <article class="finding">
+          <div class="kicker"><i class="sw" style="background:var(--s2)"></i>Produto myFarm</div>
+          <div class="num">{{mf_pro}}% <small>das respostas de 2026 são de promotores</small></div>
+          <h3>Dois em cada três clientes do myFarm recomendam o sistema</h3>
+          <p>São {{mf_pro_n}} promotores em {{mf_n}} respostas, com o melhor mês em {{mf_best_mes}} (NPS {{mf_best}}). A conta de Fabricio Krzyzanski, por exemplo, foi de 2 em janeiro para 10 em abril. A frente de melhoria já mapeada é o desempenho do sistema: dos detratores que explicaram a nota, {{mf_lent26}} de {{mf_inf26}} falam de lentidão.</p>
+        </article>
+        <article class="finding">
+          <div class="kicker"><i class="sw" style="background:var(--s1)"></i>Produto AgriManager</div>
+          <div class="num">{{agm_t1}} → {{agm_t2}} → {{agm_t3}} <small>NPS por trimestre de 2026</small></div>
+          <h3>O AgriManager melhorou a cada trimestre de 2026</h3>
+          <p>Para {{agm_pro_ader}}% dos promotores, o motivo é a aderência do sistema ao negócio. No Condomínio Itaguassu, a mesma usuária foi de 5 em março para 10 em setembro, citando o suporte. O Condomínio Três Coqueiros, que vinha de 3, deu 8 e escreveu: “acredito que o Leandro e equipe estão conseguindo transformar o ERP”.</p>
+        </article>
+        <article class="finding">
+          <div class="kicker"><i class="sw" style="background:var(--pro)"></i>Acompanhamento do CS</div>
+          <div class="num">{{det_tratado}} <small>de {{det_total}} detratores de 2026 tratados pelo CS</small></div>
+          <h3>O CS está mais perto do cliente; o desafio é trazer o cliente para a conversa</h3>
+          <p>“A equipe de Sucesso do Cliente está mais próxima, atenta às nossas necessidades”, escreveu a Parceria Agrícola S EPP Nova em janeiro, com nota 9. O que mais pede esforço é o contato: em {{det_semcontato}} casos o cliente não atendeu às tentativas do CS, e no myFarm só {{mf_inf26}} dos {{mf_det26}} detratores contaram o motivo da nota.</p>
+        </article>
+      </div>
+      <div class="card vcard">
+        <div class="card-head"><h3>Contas que foram de detrator a promotor em 2026</h3><span>{{viraram_n}} contas · primeira e última nota do ano</span></div>
+        <ul class="vlist">{{viraram_html}}</ul>
+        <p class="vfoot">Pela nota anterior registrada na Track, {{promovidos}} respondentes que davam nota de detrator ou neutro passaram a promotores em 2026.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-dist">
+      <p class="sec-mark">Composição das notas no período filtrado</p>
+      <h2 id="h-dist">Promotores, neutros e detratores em cada campanha</h2>
+      <p class="sec-lead">Detrator dá nota de 0 a 6, neutro 7 ou 8, promotor 9 ou 10. O NPS é a fatia de promotores menos a de detratores.</p>
+      <div class="card">
+        <div class="dist" id="dist"></div>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--det)"></i>Detratores</span>
+          <span><i class="sw" style="background:var(--neu)"></i>Neutros</span>
+          <span><i class="sw" style="background:var(--pro)"></i>Promotores</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ EVOLUÇÃO ============ -->
+  <div class="tabpanel" id="p-evolucao" role="tabpanel" aria-labelledby="t-evolucao" hidden>
+    <section aria-labelledby="h-evo">
+      <p class="sec-mark">Evolução do NPS no período filtrado</p>
+      <h2 id="h-evo"></h2>
+      <p class="sec-lead" id="evo-lead"></p>
+      <div class="card">
+        <div class="toolbar">
+          <div class="seg" role="group" aria-label="Como somar as respostas" id="evo-modo">
+            <button type="button" data-m="acum" aria-pressed="true">Acumulado no ano</button>
+            <button type="button" data-m="mes" aria-pressed="false">Só o mês</button>
+            <button type="button" data-m="tri" aria-pressed="false">Por trimestre</button>
+          </div>
+          <span class="hint">Passe o mouse para ver NPS e respostas</span>
+        </div>
+        <div class="chart" id="line"></div>
+        <div class="legend" id="line-legend"></div>
+        <div class="tbl-wrap"><table id="evo-table"></table></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-comp">
+      <p class="sec-mark">Composição no período</p>
+      <h2 id="h-comp">Como se dividiram as notas em cada mês</h2>
+      <p class="sec-lead">Só as respostas de cada mês, somando todas as campanhas filtradas.</p>
+      <div class="card">
+        <div class="dist" id="dist-mes"></div>
+        <div class="legend">
+          <span><i class="sw" style="background:var(--det)"></i>Detratores</span>
+          <span><i class="sw" style="background:var(--neu)"></i>Neutros</span>
+          <span><i class="sw" style="background:var(--pro)"></i>Promotores</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ 2025 × 2026 ============ -->
+  <div class="tabpanel" id="p-comparacao" role="tabpanel" aria-labelledby="t-comparacao" hidden>
+    <section aria-labelledby="h-cmp">
+      <p class="sec-mark">2026 contra 2025</p>
+      <h2 id="h-cmp">Mês a mês, onde 2026 está em relação a 2025</h2>
+      <p class="sec-lead" id="cmp-lead"></p>
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Como somar as respostas" id="cmp-modo">
+          <button type="button" data-m="acum" aria-pressed="true">Acumulado no ano</button>
+          <button type="button" data-m="mes" aria-pressed="false">Só o mês</button>
+        </div>
+        <div class="legend" style="margin:0"><span><i class="ln y25"></i>2025</span><span><i class="ln"></i>2026, na cor do grupo</span><span><i class="hollow"></i>Menos de 10 respostas</span></div>
+      </div>
+      <div class="sm" id="cmp-sm"></div>
+      <div class="tbl-wrap"><table id="cmp-table"></table></div>
+    </section>
+  </div>
+
+  <!-- ============ PROJEÇÃO ============ -->
+  <div class="tabpanel" id="p-projecao" role="tabpanel" aria-labelledby="t-projecao" hidden>
+    <section aria-labelledby="h-proj0">
+      <p class="sec-mark">Projeção para dezembro · meta: superar 2025</p>
+      <div class="hero-proj">
+        <div class="hp-head">
+          <h3 id="h-proj0"></h3>
+        </div>
+        <div class="hp-cols" id="hp-cols"></div>
+        <p class="hp-foot">Projeção com o volume de respostas de julho a setembro de 2026. Os filtros de campanha e produto valem aqui; o de período não.</p>
+      </div>
+    </section>
+
+    <section aria-labelledby="h-prj">
+      <p class="sec-mark">Cenários por grupo</p>
+      <h2 id="h-prj">Onde cada grupo deve fechar o ano, contra a meta de superar 2025</h2>
+      <p class="sec-lead">Linha cheia: acumulado real de 2026. Tracejada: o ritmo de julho a setembro se repete até dezembro. Faixa: do pior ao melhor de três cenários (ritmo atual, repetir o fim de 2025, repetir o melhor trimestre de 2026), sempre com o volume de respostas de julho a setembro. Linha cinza: 2025. Os filtros de campanha e produto valem aqui; o de período não.</p>
+      <div class="sm" id="prj-sm"></div>
+    </section>
+  </div>
+
+  <!-- ============ MOTIVOS ============ -->
+  <div class="tabpanel" id="p-motivos" role="tabpanel" aria-labelledby="t-motivos" hidden>
+    <section aria-labelledby="h-mot">
+      <p class="sec-mark">Motivo real da nota, por produto e serviço</p>
+      <h2 id="h-mot">Por que o cliente deu a nota</h2>
+      <p class="sec-lead">Cada resposta tem um motivo principal: o que o cliente escreveu no comentário e, sem comentário, o motivo que ele marcou na pesquisa. Cada painel soma 100% das respostas que disseram o porquê; embaixo, quantas não disseram. Grupo com menos de 10 respostas aparece em contagem.</p>
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Ano" id="mot-ano"></div>
+        <div class="seg" role="group" aria-label="Classe da nota" id="mot-classe">
+          <button type="button" data-v="Detrator" aria-pressed="true">Detratores</button>
+          <button type="button" data-v="Neutro" aria-pressed="false">Neutros</button>
+          <button type="button" data-v="Promotor" aria-pressed="false">Promotores</button>
+          <button type="button" data-v="todas" aria-pressed="false">Todas</button>
+        </div>
+      </div>
+      <div class="legend" id="mot-legend" style="margin:0 0 14px"></div>
+      <div class="pm" id="mot-pm"></div>
+    </section>
+
+    <section aria-labelledby="h-trat">
+      <p class="sec-mark">Acompanhamento do detrator</p>
+      <h2 id="h-trat">Como o CS tratou quem deu nota de detrator</h2>
+      <p class="sec-lead" id="trat-lead"></p>
+      <div class="card">
+        <div class="dist" id="trat"></div>
+        <div class="legend" id="trat-legend"></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ============ COMENTÁRIOS ============ -->
+  <div class="tabpanel" id="p-comentarios" role="tabpanel" aria-labelledby="t-comentarios" hidden>
+    <section aria-labelledby="h-com">
+      <p class="sec-mark">Voz do cliente</p>
+      <h2 id="h-com">Cada resposta, com nota, motivo e comentário</h2>
+      <p class="sec-lead">Os filtros de cima continuam valendo; amplie o período para ver 2025. Aqui dá para recortar por classe e pelo motivo real da nota, e buscar por palavra ou cliente. Em cada resposta, a etiqueta cheia é o motivo real; as de contorno são o que foi marcado na pesquisa ou na tratativa.</p>
+      <div class="cfilters">
+        <div class="fld">
+          <label for="c-classe">Classe</label>
+          <select id="c-classe">
+            <option value="todas">Todas</option>
+            <option value="Detrator">Detratores</option>
+            <option value="Neutro">Neutros</option>
+            <option value="Promotor">Promotores</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label for="c-motivo">Motivo real da nota</label>
+          <select id="c-motivo"></select>
+        </div>
+        <div class="fld grow">
+          <label for="c-busca">Buscar</label>
+          <input type="search" id="c-busca" placeholder="Palavra do comentário ou nome do cliente">
+        </div>
+        <label class="check" for="c-so"><input type="checkbox" id="c-so" checked>Só com comentário escrito</label>
+      </div>
+      <p class="count" id="c-count"></p>
+      <div class="clist" id="c-list"></div>
+      <button class="btn-ghost more" id="c-more" type="button" hidden>Mostrar mais</button>
+    </section>
+  </div>
+
+  <!-- ============ CLIENTE A CLIENTE ============ -->
+  <div class="tabpanel" id="p-clientes" role="tabpanel" aria-labelledby="t-clientes" hidden>
+    <section aria-labelledby="h-cli">
+      <p class="sec-mark">Cliente a cliente</p>
+      <h2 id="h-cli">Como a nota de cada cliente mudou ao longo do tempo</h2>
+      <p class="sec-lead" id="cli-lead"></p>
+      <div class="cfilters">
+        <div class="fld grow">
+          <label for="k-busca">Buscar cliente</label>
+          <input type="search" id="k-busca" placeholder="Nome da conta ou da fazenda">
+        </div>
+        <div class="fld">
+          <label for="k-ordem">Ordenar por</label>
+          <select id="k-ordem">
+            <option value="queda">Maior queda</option>
+            <option value="ultima">Pior última nota</option>
+            <option value="respostas">Mais respostas</option>
+            <option value="nome">Nome</option>
+          </select>
+        </div>
+        <div class="fld">
+          <label for="k-mov">Movimento</label>
+          <select id="k-mov">
+            <option value="todos">Todos</option>
+            <option value="Caiu">Caiu</option>
+            <option value="Estavel">Estável</option>
+            <option value="Subiu">Subiu</option>
+          </select>
+        </div>
+        <label class="check" for="k-multi"><input type="checkbox" id="k-multi" checked>Só quem respondeu mais de uma vez</label>
+      </div>
+      <p class="count" id="k-count"></p>
+      <div class="cli-layout">
+        <div class="clist2" id="k-list" role="list"></div>
+        <div class="card detail" id="k-detail"></div>
+      </div>
+    </section>
+  </div>
+
+</div>
+<div class="tip" id="tip" hidden></div>
+
+<script>
+const D = /*__DADOS__*/[];
+
+const GRUPOS = ["Produto AgriManager", "Produto myFarm", "Serviços"];
+const COR = { "Produto AgriManager": "var(--s1)", "Produto myFarm": "var(--s2)", "Serviços": "var(--s3)" };
+const CLS = { Detrator: "var(--det)", Neutro: "var(--neu)", Promotor: "var(--pro)" };
+const CAMPS = ["Produto AgriManager", "Produto myFarm", "Implantação myFarm", "Implantação AgriManager", "Apoio técnico e treinamento AgriManager", "Apoio técnico e treinamento myFarm", "Monitoria AgroScore AgriManager"];
+const MESES = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+const STATUS = [
+  { k: "Tratado pelo CS", c: "var(--st-ok)", s: ["Resolvido Satisfeito", "Esclarecimentos efetuados", "Nao Satisfeito com os esclarecimentos", "Resolvido Insatisfeito", "Tratado pelo CS (loop sem atualizar na Track)"] },
+  { k: "Em andamento", c: "var(--st-info)", s: ["Acoes em andamento"] },
+  { k: "Cliente não atendeu o contato", c: "var(--st-serious)", s: ["Encerrado sem sucesso nos contatos"] },
+  { k: "Pendente", c: "var(--st-pend)", s: ["Pendente Atuacao", "Pendente Atuacao Siagri", "Pendente Aguardando Cliente"] },
+  { k: "Outros", c: "var(--st-none)", s: [] },
+];
+
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s == null ? "" : s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const fmtN = (x) => (x == null || isNaN(x)) ? "sem base" : (Math.round(x) < 0 ? "−" + Math.abs(Math.round(x)) : String(Math.round(x)));
+const fmt1 = (x) => (x < 0 ? "−" : "") + Math.abs(x).toFixed(1).replace(".", ",");
+const fmtP = (x) => Math.round(x) + "%";
+const mesNum = (m) => +m.slice(5, 7);
+const mesLabel = (m) => MESES[mesNum(m) - 1] + "/" + m.slice(2, 4);
+const triOf = (m) => m.slice(0, 4) + "-T" + Math.ceil(mesNum(m) / 3);
+const triLabel = (t) => t.split("-T")[1] + "º tri/" + t.slice(2, 4);
+const dataBR = (d) => { const [a, m, dd] = d.split("-"); return dd + "/" + m + "/" + a; };
+const store = { get(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }, set(k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+function delta(v, prev) {
+  if (v == null || prev == null) return "";
+  const d = Math.round(v - prev);
+  if (d > 0) return `<span class="up">▲ ${d}</span>`;
+  if (d < 0) return `<span class="down">▼ ${Math.abs(d)}</span>`;
+  return `<span class="eq">= 0</span>`;
+}
+
+function calc(rows) {
+  const n = rows.length; if (!n) return null;
+  let p = 0, d = 0;
+  for (const r of rows) { if (r.classe === "Promotor") p++; else if (r.classe === "Detrator") d++; }
+  return { n, p: p / n * 100, d: d / n * 100, ne: (n - p - d) / n * 100, nps: (p - d) / n * 100, cp: p, cd: d, cn: n - p - d, liq: p - d };
+}
+function statusGrupo(s) { for (const g of STATUS) if (g.s.includes(s)) return g.k; return "Outros"; }
+
+/* ---------- filtros globais ---------- */
+const MESES_BASE = [...new Set(D.map((r) => r.mes))].sort();
+const ULT = MESES_BASE[MESES_BASE.length - 1];
+const ANO_ATUAL = +ULT.slice(0, 4);
+const F = { camp: "todas", linha: "todas", de: ANO_ATUAL + "-01", ate: ULT };
+
+function montarFiltros() {
+  const sc = $("f-camp");
+  sc.innerHTML = `<option value="todas">Todas as campanhas</option>
+    <optgroup label="Produto"><option value="c:Produto AgriManager">Produto AgriManager</option><option value="c:Produto myFarm">Produto myFarm</option></optgroup>
+    <optgroup label="Serviços"><option value="g:Serviços">Todos os serviços</option>${CAMPS.slice(2).map((c) => `<option value="c:${esc(c)}">${esc(c)}</option>`).join("")}</optgroup>`;
+  const opts = MESES_BASE.map((m) => `<option value="${m}">${mesLabel(m)}</option>`).join("");
+  $("f-de").innerHTML = opts; $("f-ate").innerHTML = opts;
+  $("f-de").value = F.de; $("f-ate").value = F.ate;
+  const on = () => {
+    F.camp = sc.value; F.linha = $("f-linha").value; F.de = $("f-de").value; F.ate = $("f-ate").value;
+    if (F.de > F.ate) { const t = F.de; F.de = F.ate; F.ate = t; $("f-de").value = F.de; $("f-ate").value = F.ate; }
+    render();
+  };
+  ["f-camp", "f-linha", "f-de", "f-ate"].forEach((id) => $(id).addEventListener("change", on));
+  $("f-limpar").addEventListener("click", () => {
+    sc.value = "todas"; $("f-linha").value = "todas"; $("f-de").value = ANO_ATUAL + "-01"; $("f-ate").value = ULT; on();
+  });
+}
+function passaFiltro(r) {
+  if (F.linha !== "todas" && r.linha !== F.linha) return false;
+  if (F.camp.startsWith("g:") && r.grupo !== F.camp.slice(2)) return false;
+  if (F.camp.startsWith("c:") && r.campanha !== F.camp.slice(2)) return false;
+  return true;
+}
+function semPeriodo() { return D.filter(passaFiltro); }
+function filtrados() { return D.filter((r) => r.mes >= F.de && r.mes <= F.ate && passaFiltro(r)); }
+function periodoTxt(de, ate) { return de === ate ? mesLabel(de) : mesLabel(de) + " a " + mesLabel(ate); }
+function descreverFiltro(rows) {
+  const partes = [];
+  if (F.camp !== "todas") partes.push(F.camp.slice(2));
+  if (F.linha !== "todas") partes.push("só " + F.linha);
+  partes.push(periodoTxt(F.de, F.ate));
+  return `Recorte: ${partes.join(" · ")} · ${rows.length} respostas`;
+}
+
+/* ---------- painel do topo ---------- */
+function melhorMes(rr) {
+  let best = null;
+  [...new Set(rr.map((r) => r.mes))].forEach((m) => { const c = calc(rr.filter((r) => r.mes === m)); if (c && c.n >= 10 && (!best || c.nps > best.c.nps)) best = { m, c }; });
+  return best;
+}
+function renderOverview(rows) {
+  const tiles = GRUPOS.map((g) => {
+    const rg = rows.filter((r) => r.grupo === g), c = calc(rg);
+    if (!c) return `<div class="ov"><div class="k"><i class="sw" style="background:${COR[g]}"></i>${g}</div><div class="v" style="color:var(--ink-faint)">sem base</div><div class="n">Nenhuma resposta no recorte</div></div>`;
+    const b = melhorMes(rg);
+    return `<div class="ov"><div class="k"><i class="sw" style="background:${COR[g]}"></i>${g}</div>
+      <div class="v">${fmtN(c.nps)}<small>NPS</small></div>
+      <div class="mini" aria-hidden="true"><i style="width:${c.d}%;background:var(--det)"></i><i style="width:${c.ne}%;background:var(--neu)"></i><i style="width:${c.p}%;background:var(--pro)"></i></div>
+      <div class="n">${c.n} respostas · ${fmtP(c.p)} de promotores</div>${b ? `<div class="cmp">Melhor mês: ${mesLabel(b.m)}, NPS ${fmtN(b.c.nps)}</div>` : ""}</div>`;
+  });
+  const t = calc(rows);
+  tiles.push(`<div class="ov"><div class="k">Operação, tudo junto</div><div class="v">${t ? fmtN(t.nps) : "sem base"}<small>NPS</small></div>
+    <div class="n">${rows.length} respostas de ${new Set(rows.map((r) => r.cliente)).size} clientes</div>${t ? `<div class="cmp">${fmtP(t.p)} das respostas são de promotores</div>` : ""}</div>`);
+  $("overview").innerHTML = tiles.join("");
+  $("fstate").textContent = descreverFiltro(rows);
+}
+
+/* ---------- barras de composição ---------- */
+function linhaDist(nome, sub, c) {
+  if (!c) return "";
+  const tip = `${c.cd} detratores (${fmtP(c.d)}) · ${c.cn} neutros (${fmtP(c.ne)}) · ${c.cp} promotores (${fmtP(c.p)})`;
+  return `<div class="drow"><div><div class="nm">${esc(nome)}</div><div class="sub">${sub}</div></div>
+    <div class="bar"><div class="sbar" data-tip="${esc(nome)}|${esc(tip)}"><i style="width:${c.d}%;background:var(--det)"></i><i style="width:${c.ne}%;background:var(--neu)"></i><i style="width:${c.p}%;background:var(--pro)"></i></div></div>
+    <div class="val">${fmtN(c.nps)}</div></div>`;
+}
+function renderDist(rows) {
+  const html = CAMPS.map((cp) => { const c = calc(rows.filter((r) => r.campanha === cp)); return c ? linhaDist(cp, `${c.n} respostas · ${fmtP(c.p)} promotores · ${fmtP(c.d)} detratores`, c) : ""; }).join("");
+  $("dist").innerHTML = html || `<p class="empty">Nenhuma resposta no recorte escolhido.</p>`;
+}
+
+/* ---------- motor de gráfico de linhas ---------- */
+/* cfg: labels[], series[{nome, cor, pts[{v,n}|null], tracejado, fina, semPontos}], faixa{cor, lo[], hi[]}, ref{v, rotulo}, divisores[{i, rotulo}], dica(i), rotulos, H, faixaY[lo,hi] */
+function desenharLinhas(el, cfg) {
+  const W = Math.max(300, el.clientWidth || 900), H = cfg.H || (W < 560 ? 250 : 320);
+  const lbl = cfg.rotulos && W >= 720, mL = 40, mR = cfg.mR != null ? cfg.mR : (lbl ? 150 : 16), mT = 16, mB = 34;
+  const n = cfg.labels.length;
+  const vals = [];
+  cfg.series.forEach((s) => s.pts.forEach((p) => { if (p && p.v != null) vals.push(p.v); }));
+  if (cfg.faixa) cfg.faixa.lo.forEach((v) => { if (v != null) vals.push(v); });
+  if (cfg.ref) vals.push(cfg.ref.v);
+  const lo = cfg.faixaY ? cfg.faixaY[0] : Math.min(0, Math.floor(Math.min(...vals, 0) / 20) * 20), hi = cfg.faixaY ? cfg.faixaY[1] : 100;
+  const x = (i) => mL + (n === 1 ? (W - mL - mR) / 2 : i * (W - mL - mR) / (n - 1));
+  const y = (v) => mT + (hi - v) * (H - mT - mB) / (hi - lo);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(cfg.aria || "NPS por período")}">`;
+  for (let v = lo; v <= hi; v += 20) {
+    s += `<line x1="${mL}" x2="${W - mR}" y1="${y(v)}" y2="${y(v)}" stroke="${v === 0 ? "var(--rule-strong)" : "var(--rule)"}" stroke-width="1"/>`;
+    s += `<text x="${mL - 8}" y="${y(v) + 4}" text-anchor="end" font-size="11.5" fill="var(--ink-faint)" style="font-variant-numeric:tabular-nums">${fmtN(v)}</text>`;
+  }
+  (cfg.divisores || []).forEach((d) => {
+    const xx = (x(d.i - 1) + x(d.i)) / 2;
+    s += `<line x1="${xx}" x2="${xx}" y1="${mT}" y2="${H - mB}" stroke="var(--rule-strong)" stroke-width="1"/><text x="${xx + 6}" y="${mT + 11}" font-size="11.5" fill="var(--ink-faint)">${d.rotulo}</text>`;
+  });
+  const passo = W < 560 && n > 7 ? 2 : (n > 16 ? 2 : 1);
+  cfg.labels.forEach((p, i) => { if (i % passo === 0) s += `<text x="${x(i)}" y="${H - 10}" text-anchor="middle" font-size="12" fill="var(--ink-faint)">${p}</text>`; });
+  if (cfg.faixa) {
+    const idx = cfg.faixa.lo.map((v, i) => v == null ? null : i).filter((i) => i != null);
+    if (idx.length > 1) {
+      const top = idx.map((i) => `${x(i)} ${y(cfg.faixa.hi[i])}`).join(" L");
+      const bot = [...idx].reverse().map((i) => `${x(i)} ${y(cfg.faixa.lo[i])}`).join(" L");
+      s += `<path d="M${top} L${bot} Z" fill="${cfg.faixa.cor}" opacity=".16"/>`;
+    }
+  }
+  if (cfg.ref) {
+    s += `<line x1="${mL}" x2="${W - mR}" y1="${y(cfg.ref.v)}" y2="${y(cfg.ref.v)}" stroke="var(--ink-soft)" stroke-width="1"/>`;
+    const [r1, r2] = cfg.ref.rotulo.split("|");
+    s += `<text x="${W - mR + 8}" y="${y(cfg.ref.v) - 2}" font-size="11" fill="var(--ink-soft)">${esc(r1)}</text>`;
+    if (r2) s += `<text x="${W - mR + 8}" y="${y(cfg.ref.v) + 11}" font-size="12" font-weight="600" fill="var(--ink)">${esc(r2)}</text>`;
+  }
+  const ends = [];
+  for (const q of cfg.series) {
+    let d = "", pen = false;
+    q.pts.forEach((pt, i) => { if (!pt || pt.v == null) { pen = false; return; } d += (pen ? "L" : "M") + x(i) + " " + y(pt.v) + " "; pen = true; });
+    s += `<path d="${d}" fill="none" stroke="${q.cor}" stroke-width="${q.fina ? 1.75 : 2.25}" stroke-linejoin="round" stroke-linecap="round"${q.tracejado ? ' stroke-dasharray="6 5"' : ""}/>`;
+    if (!q.semPontos) q.pts.forEach((pt, i) => {
+      if (!pt || pt.v == null) return;
+      const cheio = pt.n >= 10;
+      s += `<circle cx="${x(i)}" cy="${y(pt.v)}" r="${q.fina ? 3.5 : 4.5}" fill="${cheio ? q.cor : "var(--surface)"}" stroke="${cheio ? "var(--surface)" : q.cor}" stroke-width="2"/>`;
+    });
+    const li = q.pts.map((p, i) => p && p.v != null ? i : -1).filter((i) => i >= 0).pop();
+    if (li != null && q.rotulo !== false) ends.push({ nome: q.nome, v: q.pts[li].v, y: y(q.pts[li].v) });
+  }
+  if (lbl) {
+    ends.sort((a, b) => a.y - b.y);
+    for (let i = 1; i < ends.length; i++) if (ends[i].y - ends[i - 1].y < 30) ends[i].y = ends[i - 1].y + 30;
+    for (const e of ends) {
+      s += `<text x="${W - mR + 12}" y="${e.y - 2}" font-size="12.5" font-weight="600" fill="var(--ink)">${fmtN(e.v)}</text>`;
+      s += `<text x="${W - mR + 12}" y="${e.y + 13}" font-size="11.5" fill="var(--ink-soft)">${esc(e.nome)}</text>`;
+    }
+  }
+  s += `<line class="xh" x1="0" x2="0" y1="${mT}" y2="${H - mB}" stroke="var(--ink-faint)" stroke-width="1" visibility="hidden"/>`;
+  s += `<rect class="hit" x="${mL - 10}" y="0" width="${W - mL - mR + 20}" height="${H}" fill="transparent"/>`;
+  el.innerHTML = s + `</svg>`;
+  const svg = el.querySelector("svg"), xh = el.querySelector(".xh"), hit = el.querySelector(".hit");
+  hit.addEventListener("pointermove", (ev) => {
+    const r = svg.getBoundingClientRect(), px = (ev.clientX - r.left) * W / r.width;
+    let bi = 0, bd = Infinity; for (let i = 0; i < n; i++) { const dd = Math.abs(x(i) - px); if (dd < bd) { bd = dd; bi = i; } }
+    xh.setAttribute("x1", x(bi)); xh.setAttribute("x2", x(bi)); xh.setAttribute("visibility", "visible");
+    $("tip").innerHTML = cfg.dica(bi); mostrarTip(ev.clientX, ev.clientY);
+  });
+  hit.addEventListener("pointerleave", () => { xh.setAttribute("visibility", "hidden"); $("tip").hidden = true; });
+}
+const linhaDica = (cor, nome, v, extra) => `<div class="tl"><span><i class="sw" style="background:${cor}"></i>${nome}</span><span><b>${v == null ? "sem resposta" : fmtN(v)}</b> <span class="muted">${extra || ""}</span></span></div>`;
+
+/* ---------- acumulado ---------- */
+function acumuladoPorMes(rows, meses) {
+  // NPS acumulado desde janeiro do mesmo ano, para cada mês da lista
+  return meses.map((m) => { const c = calc(rows.filter((r) => r.mes <= m && r.mes.slice(0, 4) === m.slice(0, 4))); return c ? { v: c.nps, n: c.n, c } : null; });
+}
+
+/* ---------- aba Evolução ---------- */
+let evoModo = "acum";
+function renderEvolucao(rows) {
+  const ms = MESES_BASE.filter((m) => m >= F.de && m <= F.ate);
+  const pers = evoModo === "tri" ? [...new Set(ms.map(triOf))] : ms;
+  const lab = (p) => evoModo === "tri" ? triLabel(p) : mesLabel(p);
+  const series = GRUPOS.map((g) => {
+    const rg = rows.filter((r) => r.grupo === g);
+    let pts;
+    if (evoModo === "acum") pts = acumuladoPorMes(rg, pers);
+    else pts = pers.map((p) => { const c = calc(rg.filter((r) => (evoModo === "tri" ? triOf(r.mes) : r.mes) === p)); return c ? { v: c.nps, n: c.n, c } : null; });
+    return { g, nome: g, cor: COR[g], pts };
+  }).filter((s) => s.pts.some((p) => p));
+  const el = $("line");
+  $("h-evo").textContent = { acum: "NPS acumulado do ano, mês a mês", mes: "NPS de cada mês, só com as respostas do mês", tri: "NPS de cada trimestre" }[evoModo];
+  $("evo-lead").textContent = {
+    acum: "Cada ponto soma todas as respostas de janeiro até o fim do mês, a mesma conta do painel da Track. Na tabela, a seta mostra quanto o acumulado subiu ou desceu em relação ao mês anterior.",
+    mes: "Cada ponto usa só as respostas daquele mês. Mês com poucas respostas oscila muito; o ponto vazado marca menos de 10 respostas.",
+    tri: "Cada ponto junta as respostas do trimestre; a seta na tabela compara com o trimestre anterior.",
+  }[evoModo];
+  if (!series.length) { el.innerHTML = `<p class="empty">Nenhuma resposta no recorte escolhido.</p>`; $("line-legend").innerHTML = ""; $("evo-table").innerHTML = ""; $("dist-mes").innerHTML = ""; return; }
+  const divisores = [];
+  pers.forEach((p, i) => { if (i > 0 && p.slice(0, 4) !== pers[i - 1].slice(0, 4)) divisores.push({ i, rotulo: p.slice(0, 4) }); });
+  const mesmoAno = (i) => i > 0 && pers[i].slice(0, 4) === pers[i - 1].slice(0, 4);
+  desenharLinhas(el, {
+    labels: pers.map(lab), series, divisores, rotulos: true, aria: "NPS por período para " + series.map((q) => q.g).join(", "),
+    dica: (i) => `<b>${lab(pers[i])}</b>` + series.map((q) => { const pt = q.pts[i], ant = mesmoAno(i) ? q.pts[i - 1] : null; return linhaDica(q.cor, q.g, pt ? pt.v : null, pt ? `${pt.n} resp. ${evoModo === "mes" ? "" : delta(pt.v, ant ? ant.v : null)}` : ""); }).join(""),
+  });
+  $("line-legend").innerHTML = series.map((q) => `<span><i class="sw" style="background:${q.cor}"></i>${q.g}</span>`).join("") +
+    `<span><i class="full"></i>10 respostas ou mais</span><span><i class="hollow"></i>Menos de 10 respostas</span>`;
+  const colVar = evoModo !== "mes";
+  $("evo-table").innerHTML = `<thead><tr><th>${evoModo === "tri" ? "Trimestre" : "Mês"}</th>${series.map((q) => `<th class="num">${q.g}</th>`).join("")}</tr></thead><tbody>` +
+    pers.map((p, i) => `<tr><td>${lab(p)}</td>${series.map((q) => {
+      const pt = q.pts[i], ant = mesmoAno(i) ? q.pts[i - 1] : null;
+      return `<td class="num">${pt ? fmtN(pt.v) : ""}<span class="nsm">${pt ? pt.n : ""}</span>${colVar && pt ? `<span class="dl">${delta(pt.v, ant ? ant.v : null)}</span>` : ""}</td>`;
+    }).join("")}</tr>`).join("") + `</tbody>`;
+  $("dist-mes").innerHTML = ms.map((p) => { const c = calc(rows.filter((r) => r.mes === p)); return c ? linhaDist(mesLabel(p), `${c.n} respostas`, c) : ""; }).join("");
+}
+
+/* ---------- aba 2025 × 2026 ---------- */
+let cmpModo = "acum";
+function serieAno(rows, ano, modo) {
+  const meses = Array.from({ length: 12 }, (_, i) => ano + "-" + String(i + 1).padStart(2, "0"));
+  const ult = MESES_BASE.filter((m) => m.startsWith(String(ano))).pop();
+  return meses.map((m) => {
+    if (!ult || m > ult) return null;
+    const rr = modo === "acum" ? rows.filter((r) => r.ano === ano && r.mes <= m) : rows.filter((r) => r.mes === m);
+    const c = calc(rr); return c ? { v: c.nps, n: c.n, c } : null;
+  });
+}
+function renderComparacao() {
+  const base = semPeriodo(), anos = [ANO_ATUAL - 1, ANO_ATUAL];
+  $("cmp-lead").textContent = cmpModo === "acum"
+    ? `Acumulado do ano em cada mês, nos dois anos. A distância entre as linhas é quanto ${ANO_ATUAL} está acima ou abaixo de ${ANO_ATUAL - 1} no mesmo ponto do ano. Os filtros de campanha e produto valem aqui; o de período não.`
+    : `NPS só com as respostas de cada mês, nos dois anos. Mês com poucas respostas oscila muito. Os filtros de campanha e produto valem aqui; o de período não.`;
+  const dados = GRUPOS.map((g) => { const rg = base.filter((r) => r.grupo === g); return { g, s25: serieAno(rg, anos[0], cmpModo), s26: serieAno(rg, anos[1], cmpModo) }; }).filter((d) => d.s25.some((p) => p) || d.s26.some((p) => p));
+  if (!dados.length) { $("cmp-sm").innerHTML = `<p class="empty">Nenhuma resposta no recorte escolhido.</p>`; $("cmp-table").innerHTML = ""; return; }
+  const vals = dados.flatMap((d) => [...d.s25, ...d.s26].filter((p) => p).map((p) => p.v));
+  const lo = Math.min(0, Math.floor(Math.min(...vals, 0) / 20) * 20);
+  $("cmp-sm").innerHTML = dados.map((d, i) => `<div class="card"><div class="card-head"><h3><i class="sw" style="background:${COR[d.g]}"></i>${d.g}</h3><span id="cmp-h-${i}"></span></div><div class="chart" id="cmp-c-${i}"></div></div>`).join("");
+  dados.forEach((d, i) => {
+    const u26 = d.s26.map((p, k) => p ? k : -1).filter((k) => k >= 0).pop();
+    if (u26 != null && d.s25[u26]) $("cmp-h-" + i).innerHTML = `${MESES[u26]}: ${fmtN(d.s26[u26].v)} contra ${fmtN(d.s25[u26].v)} ${delta(d.s26[u26].v, d.s25[u26].v)}`;
+    desenharLinhas($("cmp-c-" + i), {
+      labels: MESES.slice(), H: 230, faixaY: [lo, 100], aria: `${d.g}: ${anos[1]} contra ${anos[0]}`,
+      series: [{ nome: String(anos[0]), cor: "var(--y25)", pts: d.s25, fina: true }, { nome: String(anos[1]), cor: COR[d.g], pts: d.s26 }],
+      dica: (k) => `<b>${MESES[k]} · ${d.g}</b>` + linhaDica("var(--y25)", anos[0], d.s25[k] ? d.s25[k].v : null, d.s25[k] ? d.s25[k].n + " resp." : "") +
+        linhaDica(COR[d.g], anos[1], d.s26[k] ? d.s26[k].v : null, d.s26[k] ? d.s26[k].n + " resp." : "") +
+        (d.s25[k] && d.s26[k] ? `<div class="muted" style="margin-top:4px">Diferença: ${delta(d.s26[k].v, d.s25[k].v)}</div>` : ""),
+    });
+  });
+  $("cmp-table").innerHTML = `<thead><tr><th rowspan="2">Mês</th>${dados.map((d) => `<th class="grp" colspan="3">${d.g}</th>`).join("")}</tr>
+    <tr>${dados.map(() => `<th class="num bl">${anos[0]}</th><th class="num">${anos[1]}</th><th class="num">Diferença</th>`).join("")}</tr></thead><tbody>` +
+    MESES.map((m, k) => `<tr><td>${m}</td>${dados.map((d) => { const a = d.s25[k], b = d.s26[k];
+      return `<td class="num bl">${a ? fmtN(a.v) : ""}<span class="nsm">${a ? a.n : ""}</span></td><td class="num">${b ? fmtN(b.v) : ""}<span class="nsm">${b ? b.n : ""}</span></td><td class="num">${a && b ? delta(b.v, a.v) : ""}</td>`; }).join("")}</tr>`).join("") + `</tbody>`;
+}
+
+/* ---------- projeção ---------- */
+function projetar(rg) {
+  const r26 = rg.filter((r) => r.ano === ANO_ATUAL), r25 = rg.filter((r) => r.ano === ANO_ATUAL - 1);
+  if (!r26.length) return null;
+  const M = Math.max(...r26.map((r) => mesNum(r.mes)));
+  const c0 = calc(r26), n0 = c0.n, liq0 = c0.liq;
+  const ult3 = r26.filter((r) => mesNum(r.mes) > M - 3), vMes = ult3.length / 3, rem = 12 - M, resto = vMes * rem;
+  const meta = r25.length ? calc(r25).nps : null;
+  const cen = [];
+  const c3 = calc(ult3);
+  if (c3) cen.push({ k: `Ritmo de ${MESES[Math.max(0, M - 3)]} a ${MESES[M - 1]} de ${ANO_ATUAL}`, s: c3.nps, base: true });
+  if (rem > 0) {
+    const fim25 = calc(r25.filter((r) => mesNum(r.mes) > M));
+    if (fim25) cen.push({ k: `Repete ${MESES[M]} a dez de ${ANO_ATUAL - 1}`, s: fim25.nps });
+  }
+  const tris = [1, 2, 3, 4].filter((q) => q * 3 <= M).map((q) => calc(r26.filter((r) => Math.ceil(mesNum(r.mes) / 3) === q))).filter((c) => c);
+  if (tris.length) {
+    const melhor = Math.max(...tris.map((c) => c.nps));
+    if (c3 && Math.abs(melhor - c3.nps) < 0.05) cen[0].k += `, que é o melhor trimestre de ${ANO_ATUAL}`;
+    else cen.push({ k: `Repete o melhor trimestre de ${ANO_ATUAL}`, s: melhor });
+  }
+  const serie = (s) => Array.from({ length: rem }, (_, i) => (liq0 + s / 100 * vMes * (i + 1)) / (n0 + vMes * (i + 1)) * 100);
+  cen.forEach((c) => { c.serie = serie(c.s); c.fim = rem ? c.serie[rem - 1] : c0.nps; });
+  const precisa = meta == null || resto <= 0 ? null : (meta / 100 * (n0 + resto) - liq0) / resto * 100;
+  const fins = cen.map((c) => c.fim);
+  return { M, n0, hoje: c0.nps, vMes, rem, resto, meta, precisa, cen, base: cen.find((c) => c.base), lo: fins.length ? Math.min(...fins) : c0.nps, hi: fins.length ? Math.max(...fins) : c0.nps, melhorTri: tris.length ? Math.max(...tris.map((c) => c.nps)) : null };
+}
+function veredito(p) {
+  if (!p || p.meta == null) return `<span class="pill nd">Sem base em ${ANO_ATUAL - 1}</span>`;
+  if (p.base && p.base.fim > p.meta) return `<span class="pill sim">✓ Supera ${ANO_ATUAL - 1}</span>`;
+  if (p.hi > p.meta) return `<span class="pill nd">Só supera no melhor cenário</span>`;
+  return `<span class="pill nao">✕ Não supera ${ANO_ATUAL - 1}</span>`;
+}
+function precisaTxt(p) {
+  if (!p || p.precisa == null) return "sem base";
+  if (p.precisa > 100) return "acima de 100, inalcançável";
+  return fmtN(p.precisa);
+}
+function projecoesGrupos(base) { return GRUPOS.map((g) => ({ g, p: projetar(base.filter((r) => r.grupo === g)) })).filter((x) => x.p); }
+function tituloProj(proj) {
+  const comMeta = proj.filter((x) => x.p.meta != null);
+  const acima = comMeta.filter((x) => x.p.base && x.p.base.fim > x.p.meta);
+  const algum = comMeta.filter((x) => x.p.hi > x.p.meta);
+  if (acima.length) return { t: `Pela projeção, ${acima.map((x) => x.g).join(" e ")} fecha ${ANO_ATUAL} acima de ${ANO_ATUAL - 1}`, nenhum: false };
+  if (algum.length) return { t: `Pela projeção, só ${algum.map((x) => x.g).join(" e ")} passa ${ANO_ATUAL - 1}, e apenas no melhor cenário`, nenhum: false };
+  if (comMeta.length === 1) return { t: `Pela projeção, ${comMeta[0].g} não fecha ${ANO_ATUAL} acima de ${ANO_ATUAL - 1}`, nenhum: true };
+  return { t: `Pela projeção, nenhum ${comMeta.length === GRUPOS.length ? "dos três grupos" : "grupo do recorte"} fecha ${ANO_ATUAL} acima de ${ANO_ATUAL - 1}`, nenhum: true };
+}
+function renderStandfirstProj() {
+  const tt = tituloProj(projecoesGrupos(D));
+  $("sf-proj").textContent = tt.nenhum ? `Pela projeção, nenhum deles fecha dezembro acima de ${ANO_ATUAL - 1}.` : tt.t + ".";
+}
+function renderHeroProj(base) {
+  const proj = projecoesGrupos(base);
+  $("h-proj0").textContent = proj.length ? tituloProj(proj).t : `Nenhuma resposta de ${ANO_ATUAL} no recorte escolhido.`;
+  $("hp-cols").innerHTML = proj.map(({ g, p }) => `<div class="hp-col">
+    <div class="nm"><i class="sw" style="background:${COR[g]}"></i>${g}</div>
+    ${veredito(p)}
+    <div class="hp-row"><span>Acumulado em ${MESES[p.M - 1]}</span><b>${fmtN(p.hoje)}</b></div>
+    <div class="hp-row"><span>Dezembro projetado</span><b>${p.base ? fmtN(p.base.fim) : "sem base"}${p.cen.length > 1 ? ` <span style="font-weight:400;color:var(--ink-faint)">(${fmtN(p.lo)} a ${fmtN(p.hi)})</span>` : ""}</b></div>
+    <div class="hp-row"><span>Meta: superar ${ANO_ATUAL - 1}</span><b>${p.meta == null ? "sem base" : fmt1(p.meta)}</b></div>
+    <div class="hp-row"><span>NPS necessário de ${MESES[p.M] || "dez"} a dez</span><b>${precisaTxt(p)}</b></div>
+    <div class="hp-row"><span>Melhor trimestre de ${ANO_ATUAL}</span><b>${p.melhorTri == null ? "sem base" : fmtN(p.melhorTri)}</b></div>
+  </div>`).join("");
+}
+function renderProjecao() {
+  const base = semPeriodo();
+  renderHeroProj(base);
+  const itens = GRUPOS.map((g) => ({ g, rg: base.filter((r) => r.grupo === g) })).map((x) => ({ ...x, p: projetar(x.rg) })).filter((x) => x.p);
+  if (!itens.length) { $("prj-sm").innerHTML = `<p class="empty">Nenhuma resposta de ${ANO_ATUAL} no recorte escolhido.</p>`; return; }
+  $("prj-sm").innerHTML = itens.map((x, i) => `<div class="card"><div class="card-head"><h3><i class="sw" style="background:${COR[x.g]}"></i>${x.g}</h3>${veredito(x.p)}</div>
+    <div class="chart" id="prj-c-${i}"></div>
+    <div class="legend" style="margin-top:8px"><span><i class="ln" style="border-top-color:${COR[x.g]}"></i>${ANO_ATUAL}</span><span><i class="ln dash" style="border-top-color:${COR[x.g]}"></i>Ritmo atual</span><span><i class="band" style="background:${COR[x.g]}"></i>Cenários</span><span><i class="ln y25"></i>${ANO_ATUAL - 1}</span><span><i class="ln"></i>Meta</span></div>
+    <div class="pstats">
+      <div><span class="k">Acumulado em ${MESES[x.p.M - 1]}</span><span class="v">${fmtN(x.p.hoje)}<small>${x.p.n0} resp.</small></span></div>
+      <div><span class="k">Dezembro no ritmo atual</span><span class="v">${x.p.base ? fmtN(x.p.base.fim) : "sem base"}</span></div>
+      <div><span class="k">Meta: superar ${ANO_ATUAL - 1}</span><span class="v">${x.p.meta == null ? "sem base" : fmt1(x.p.meta)}</span></div>
+      <div><span class="k">Necessário de ${MESES[x.p.M] || "dez"} a dez</span><span class="v">${x.p.precisa == null ? "sem base" : x.p.precisa > 100 ? "acima de 100" : fmtN(x.p.precisa)}</span>${x.p.precisa != null && x.p.precisa > 100 ? `<span class="k">inalcançável com o volume esperado</span>` : ""}</div>
+    </div>
+    <div class="cen">${x.p.cen.map((c) => `<div><span>${c.k} (NPS ${fmtN(c.s)})</span><b>dez: ${fmtN(c.fim)}</b></div>`).join("")}
+      <div><span>Respostas esperadas até dezembro</span><b>${Math.round(x.p.resto)}</b></div></div>
+  </div>`).join("");
+  itens.forEach((x, i) => {
+    const p = x.p, rg = x.rg;
+    const s26 = serieAno(rg, ANO_ATUAL, "acum"), s25 = serieAno(rg, ANO_ATUAL - 1, "acum");
+    const proj = Array(12).fill(null), lo = Array(12).fill(null), hi = Array(12).fill(null);
+    proj[p.M - 1] = { v: p.hoje, n: 99 }; lo[p.M - 1] = p.hoje; hi[p.M - 1] = p.hoje;
+    for (let k = 0; k < p.rem; k++) {
+      const idx = p.M + k, vs = p.cen.map((c) => c.serie[k]);
+      if (p.base) proj[idx] = { v: p.base.serie[k], n: 99 };
+      lo[idx] = Math.min(...vs); hi[idx] = Math.max(...vs);
+    }
+    desenharLinhas($("prj-c-" + i), {
+      labels: MESES.slice(), H: 250, mR: 58, aria: `${x.g}: projeção de ${ANO_ATUAL}`,
+      faixa: p.cen.length > 1 ? { cor: COR[x.g], lo, hi } : null,
+      ref: p.meta == null ? null : { v: p.meta, rotulo: `meta|${fmt1(p.meta)}` },
+      series: [{ nome: String(ANO_ATUAL - 1), cor: "var(--y25)", pts: s25, fina: true, semPontos: true },
+               { nome: "Projeção", cor: COR[x.g], pts: proj, tracejado: true, semPontos: true },
+               { nome: String(ANO_ATUAL), cor: COR[x.g], pts: s26 }],
+      dica: (k) => {
+        let h = `<b>${MESES[k]} · ${x.g}</b>` + linhaDica("var(--y25)", ANO_ATUAL - 1, s25[k] ? s25[k].v : null, s25[k] ? s25[k].n + " resp." : "");
+        if (s26[k]) h += linhaDica(COR[x.g], ANO_ATUAL, s26[k].v, s26[k].n + " resp.");
+        else if (proj[k]) h += linhaDica(COR[x.g], "Ritmo atual", proj[k].v, "") + (lo[k] != null ? `<div class="muted">Cenários: ${fmtN(lo[k])} a ${fmtN(hi[k])}</div>` : "");
+        return h;
+      },
+    });
+  });
+}
+
+/* ---------- motivo real, por grupo ---------- */
+const SEM_MOTIVO = "Sem motivo informado";
+let motClasse = "Detrator", motAno = String(ANO_ATUAL);
+const M_ATUAL = Math.max(...D.filter((r) => r.ano === ANO_ATUAL).map((r) => mesNum(r.mes)));
+const txtAteMes = M_ATUAL === 12 ? "ano todo" : `jan a ${MESES[M_ATUAL - 1]}`;
+function montarAnoMotivos() {
+  const ops = [{ v: String(ANO_ATUAL), rot: `${ANO_ATUAL} (${txtAteMes})` }, { v: String(ANO_ATUAL - 1), rot: `${ANO_ATUAL - 1} (ano todo)` }, { v: "cmp", rot: `${ANO_ATUAL - 1} × ${ANO_ATUAL} (${txtAteMes})` }];
+  $("mot-ano").innerHTML = ops.map((o) => `<button type="button" data-v="${o.v}" aria-pressed="${o.v === motAno}">${o.rot}</button>`).join("");
+}
+function recorteMotivos() {
+  const base = semPeriodo();
+  if (motAno === "cmp") return { atual: base.filter((r) => r.ano === ANO_ATUAL), antes: base.filter((r) => r.ano === ANO_ATUAL - 1 && mesNum(r.mes) <= M_ATUAL), rotA: String(ANO_ATUAL), rotB: String(ANO_ATUAL - 1) };
+  return { atual: base.filter((r) => String(r.ano) === motAno), antes: null, rotA: motAno };
+}
+function contaMotivo(rr) {
+  const m = new Map();
+  rr.forEach((r) => { if (r.motivo_real !== SEM_MOTIVO) m.set(r.motivo_real, (m.get(r.motivo_real) || 0) + 1); });
+  return m;
+}
+function valorMotivo(v, base) { return base < 10 ? `${v} de ${base}` : `${fmtP(v / base * 100)}<small>${v}</small>`; }
+function paineisMotivo(el, atual, antes, rotA, rotB) {
+  const sel = (rr) => motClasse === "todas" ? rr : rr.filter((r) => r.classe === motClasse);
+  const nome = { Detrator: "detratores", Neutro: "neutros", Promotor: "promotores", todas: "respostas" }[motClasse];
+  const cols = GRUPOS.map((g) => {
+    const a = sel(atual.filter((r) => r.grupo === g)), b = antes ? sel(antes.filter((r) => r.grupo === g)) : null;
+    const ia = a.filter((r) => r.motivo_real !== SEM_MOTIVO), ib = b ? b.filter((r) => r.motivo_real !== SEM_MOTIVO) : null;
+    return { g, a, b, ia, ib, ca: contaMotivo(a), cb: b ? contaMotivo(b) : null };
+  }).filter((c) => c.a.length || (c.b && c.b.length));
+  if (!cols.length) { el.innerHTML = `<p class="empty">Nenhuma resposta no recorte escolhido.</p>`; return; }
+  el.innerHTML = cols.map((c) => {
+    const nA = c.ia.length, nB = c.ib ? c.ib.length : 0;
+    const sub = `${nA} de ${c.a.length} ${nome} de ${rotA} disseram o porquê` + (c.b ? `; em ${rotB}, ${nB} de ${c.b.length}` : "") + (nA < 10 && nA ? "; poucas respostas, em contagem" : "");
+    const chaves = [...new Set([...c.ca.keys(), ...(c.cb ? c.cb.keys() : [])])]
+      .sort((x, y) => (c.ca.get(y) || 0) / (nA || 1) - (c.ca.get(x) || 0) / (nA || 1) || (c.cb ? (c.cb.get(y) || 0) - (c.cb.get(x) || 0) : 0));
+    const linhas = chaves.map((k) => {
+      const v = c.ca.get(k) || 0, pa = nA ? v / nA * 100 : 0;
+      if (c.b) {
+        const w = c.cb.get(k) || 0, pb = nB ? w / nB * 100 : 0;
+        return `<div class="mrow" data-tip="${esc(k)} · ${c.g}|${rotA}: ${v} de ${nA} · ${rotB}: ${w} de ${nB}">
+          <div class="mtop"><span>${esc(k)}</span><b>${nA ? valorMotivo(v, nA) : "sem base"}</b></div>
+          <div class="trk"><i style="width:${pa}%;background:${nA < 10 ? "var(--neu)" : COR[c.g]}"></i></div>
+          <div class="mprev"><div class="trk fina"><i style="width:${pb}%;background:var(--y25)"></i></div><span>${rotB}: ${nB ? (nB < 10 ? `${w} de ${nB}` : fmtP(pb)) : "sem base"}</span></div></div>`;
+      }
+      let barra;
+      if (motClasse === "todas" && nA >= 10) {
+        const seg = ["Detrator", "Neutro", "Promotor"].map((cl) => ({ cl, n: c.ia.filter((r) => r.motivo_real === k && r.classe === cl).length }));
+        barra = `<div class="trk seg">${seg.map((s) => s.n ? `<i style="width:${s.n / nA * 100}%;background:${CLS[s.cl]}"></i>` : "").join("")}</div>`;
+      } else barra = `<div class="trk"><i style="width:${pa}%;background:${nA < 10 ? "var(--neu)" : COR[c.g]}"></i></div>`;
+      return `<div class="mrow" data-tip="${esc(k)} · ${c.g}|${v} de ${nA} ${nome} que disseram o porquê (${fmtP(pa)})">
+        <div class="mtop"><span>${esc(k)}</span><b>${valorMotivo(v, nA)}</b></div>${barra}</div>`;
+    }).join("");
+    const semA = c.a.length - nA, semB = c.b ? c.b.length - nB : 0;
+    const rodape = `<div class="msem">${SEM_MOTIVO}: ${semA} de ${c.a.length}${c.b ? `; em ${rotB}, ${semB} de ${c.b.length}` : ""}</div>`;
+    return `<div class="card"><div class="ph"><i class="sw" style="background:${COR[c.g]}"></i>${c.g}</div><div class="pb">${sub}</div>
+      ${linhas || `<p class="empty" style="padding:4px 0 10px">Ninguém disse o porquê neste recorte.</p>`}${rodape}</div>`;
+  }).join("");
+  $("mot-legend").innerHTML = antes
+    ? `<span><i class="sw" style="background:var(--ink-soft)"></i>${rotA}, na cor do grupo</span><span><i class="sw" style="background:var(--y25)"></i>${rotB}, mesmo período</span>`
+    : (motClasse === "todas" ? `<span>Barra dividida pela nota:</span><span><i class="sw" style="background:var(--det)"></i>Detratores</span><span><i class="sw" style="background:var(--neu)"></i>Neutros</span><span><i class="sw" style="background:var(--pro)"></i>Promotores</span>` : "");
+}
+function linhaRetorno(nome, sub, dg) {
+  const cont = STATUS.map((s) => ({ ...s, n: dg.filter((r) => statusGrupo(r.status_painel) === s.k).length }));
+  const tip = cont.filter((c) => c.n).map((c) => `${c.n} ${c.k.toLowerCase()}`).join(" · ");
+  return `<div class="drow"><div><div class="nm">${nome}</div><div class="sub">${sub}</div></div>
+    <div class="bar"><div class="sbar" data-tip="${esc(nome)}|${esc(tip)}">${cont.map((c) => c.n ? `<i style="width:${c.n / dg.length * 100}%;background:${c.c}"></i>` : "").join("")}</div></div>
+    <div class="val" style="font-size:15px">${cont[0].n} de ${dg.length}</div></div>`;
+}
+function renderMotivos() {
+  const { atual, antes, rotA, rotB } = recorteMotivos();
+  paineisMotivo($("mot-pm"), atual, antes, rotA, rotB);
+
+  const detA = atual.filter((r) => r.classe === "Detrator"), detB = antes ? antes.filter((r) => r.classe === "Detrator") : null;
+  $("trat").innerHTML = GRUPOS.map((g) => {
+    const a = detA.filter((r) => r.grupo === g), b = detB ? detB.filter((r) => r.grupo === g) : [];
+    return (a.length ? linhaRetorno(g, `${a.length} detratores de ${rotA}`, a) : "") + (b.length ? linhaRetorno(`${g} · ${rotB}`, `${b.length} detratores, mesmo período`, b) : "");
+  }).join("") || `<p class="empty">Nenhum detrator no recorte.</p>`;
+  const presentes = new Set([...detA, ...(detB || [])].map((r) => statusGrupo(r.status_painel)));
+  $("trat-legend").innerHTML = STATUS.filter((s) => presentes.has(s.k)).map((s) => `<span><i class="sw" style="background:${s.c}"></i>${s.k}</span>`).join("");
+  const tot = STATUS.map((s) => detA.filter((r) => statusGrupo(r.status_painel) === s.k).length);
+  $("trat-lead").textContent = detA.length
+    ? `Em ${rotA}, ${detA.length} respostas de detrator: ${tot[0]} tratadas pelo CS${tot[1] ? `, ${tot[1]} em andamento` : ""} e ${tot[2]} em que o cliente não atendeu às tentativas de contato. O número à direita é quantas foram tratadas.`
+    : "Nenhum detrator no recorte escolhido.";
+}
+
+/* ---------- comentários ---------- */
+let cLimite = 60;
+function montarComentarios() {
+  const mot = [...new Set(D.map((r) => r.motivo_real))].filter((m) => m !== SEM_MOTIVO).sort((a, b) => a.localeCompare(b, "pt"));
+  $("c-motivo").innerHTML = `<option value="todos">Todos</option>` + mot.map((m) => `<option>${esc(m)}</option>`).join("") + `<option>${SEM_MOTIVO}</option>`;
+  ["c-classe", "c-motivo", "c-so"].forEach((id) => $(id).addEventListener("change", () => { cLimite = 60; renderComentarios(filtrados()); }));
+  $("c-busca").addEventListener("input", () => { cLimite = 60; renderComentarios(filtrados()); });
+  $("c-more").addEventListener("click", () => { cLimite += 60; renderComentarios(filtrados()); });
+}
+const norm = (s) => String(s || "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+function temTexto(r) { return !!r.tem_texto; }
+const etiquetas = (r) => `<span class="tag real">${esc(r.motivo_real)}</span>` + (r.marcados || []).map((m) => `<span class="tag">${esc(m)}</span>`).join("");
+function renderComentarios(rows) {
+  const cl = $("c-classe").value, mo = $("c-motivo").value, so = $("c-so").checked, q = norm($("c-busca").value.trim());
+  let rr = rows.filter((r) => (cl === "todas" || r.classe === cl) && (mo === "todos" || r.motivo_real === mo) && (!so || temTexto(r)));
+  if (q) rr = rr.filter((r) => norm(r.comentario).includes(q) || norm(r.conta).includes(q) || norm(r.cliente).includes(q));
+  rr.sort((a, b) => b.data.localeCompare(a.data));
+  const c = calc(rr);
+  $("c-count").textContent = rr.length ? `${rr.length} respostas · NPS do recorte ${fmtN(c.nps)} · ${c.cd} detratores, ${c.cn} neutros, ${c.cp} promotores` : "Nenhuma resposta com esses filtros.";
+  $("c-list").innerHTML = rr.slice(0, cLimite).map((r) => `<article class="cm">
+    <div class="nota ${r.classe}" title="${r.classe}">${r.nota}</div>
+    <div class="hd"><b>${esc(r.conta)}</b><span>${dataBR(r.data)} · ${esc(r.campanha)}</span></div>
+    <p class="tx ${temTexto(r) ? "" : "none"}">${temTexto(r) ? esc(r.comentario) : "Sem comentário escrito"}</p>
+    <div class="tags">${etiquetas(r)}</div>
+  </article>`).join("");
+  $("c-more").hidden = rr.length <= cLimite;
+}
+
+/* ---------- cliente a cliente ---------- */
+let kSel = null;
+function clientes(rows) {
+  const m = new Map();
+  for (const r of rows) { if (!m.has(r.cliente)) m.set(r.cliente, []); m.get(r.cliente).push(r); }
+  return [...m.entries()].map(([k, rr]) => {
+    rr.sort((a, b) => a.data.localeCompare(b.data));
+    const f = rr[0].nota, u = rr[rr.length - 1].nota, datas = new Set(rr.map((r) => r.data)).size;
+    const mov = datas < 2 ? "Unica" : (u - f <= -2 ? "Caiu" : u - f >= 2 ? "Subiu" : "Estavel");
+    return { k, nome: rr[rr.length - 1].conta, rr, f, u, diff: u - f, mov, media: rr.reduce((s, r) => s + r.nota, 0) / rr.length, grupos: [...new Set(rr.map((r) => r.grupo))], c: calc(rr) };
+  });
+}
+const MOVTXT = { Caiu: "Caiu", Subiu: "Subiu", Estavel: "Estável", Unica: "Uma resposta" };
+function montarClientes() {
+  ["k-ordem", "k-mov", "k-multi"].forEach((id) => $(id).addEventListener("change", () => renderClientes(filtrados())));
+  $("k-busca").addEventListener("input", () => renderClientes(filtrados()));
+}
+function renderClientes(rows) {
+  const todos = clientes(rows);
+  const multi = todos.filter((c) => c.mov !== "Unica");
+  const n = (m) => multi.filter((c) => c.mov === m).length;
+  $("cli-lead").textContent = (multi.length
+    ? `No período filtrado (${periodoTxt(F.de, F.ate)}), ${multi.length} clientes responderam mais de uma vez: ${n("Caiu")} deram a última nota pelo menos 2 pontos abaixo da primeira, ${n("Subiu")} subiram e ${n("Estavel")} ficaram estáveis.`
+    : `No período filtrado, nenhum cliente respondeu mais de uma vez.`) + ` Para ver a história desde ${ANO_ATUAL - 1}, mude o filtro "De" para jan/${String(ANO_ATUAL - 1).slice(2)}.`;
+  const q = norm($("k-busca").value.trim()), mv = $("k-mov").value;
+  let lst = $("k-multi").checked ? multi : todos;
+  if (mv !== "todos") lst = lst.filter((c) => c.mov === mv);
+  if (q) lst = lst.filter((c) => norm(c.k).includes(q) || c.rr.some((r) => norm(r.conta).includes(q)));
+  const ord = $("k-ordem").value;
+  lst.sort((a, b) => ord === "queda" ? (a.diff - b.diff || a.u - b.u) : ord === "ultima" ? (a.u - b.u || a.diff - b.diff) : ord === "respostas" ? (b.rr.length - a.rr.length) : a.nome.localeCompare(b.nome, "pt"));
+  $("k-count").textContent = `${lst.length} clientes na lista`;
+  if (!lst.find((c) => c.k === kSel)) kSel = lst.length ? lst[0].k : null;
+  $("k-list").innerHTML = lst.map((c) => `<button class="crow" role="listitem" data-k="${esc(c.k)}" aria-current="${c.k === kSel}">
+    <div style="min-width:0"><div class="nm">${esc(c.nome)}</div><div class="sub"><span>${c.grupos.join(", ")}</span><span>${c.rr.length} ${c.rr.length > 1 ? "respostas" : "resposta"}</span></div></div>
+    <div class="mv">${c.rr.length > 1 ? `${c.f} → ${c.u}` : c.u}<span class="mvpill ${c.mov}">${MOVTXT[c.mov]}</span></div></button>`).join("") || `<p class="empty" style="padding:16px">Nenhum cliente com esses filtros.</p>`;
+  $("k-list").querySelectorAll(".crow").forEach((b) => b.addEventListener("click", () => { kSel = b.dataset.k; renderClientes(filtrados()); if (window.innerWidth < 900) $("k-detail").scrollIntoView({ behavior: "smooth", block: "start" }); }));
+  renderDetalhe(lst.find((c) => c.k === kSel));
+}
+function renderDetalhe(c) {
+  const el = $("k-detail");
+  if (!c) { el.innerHTML = `<p class="empty">Escolha um cliente na lista.</p>`; return; }
+  el.innerHTML = `<h3 class="dtitle">${esc(c.nome)}</h3><p class="dsub">${c.grupos.join(" · ")}</p>
+    <div class="dstats"><div><span class="k">Respostas</span><span class="v">${c.rr.length}</span></div>
+    <div><span class="k">Nota média</span><span class="v">${c.media.toFixed(1).replace(".", ",")}</span></div>
+    <div><span class="k">Primeira → última</span><span class="v">${c.f} → ${c.u}</span></div>
+    <div><span class="k">NPS do cliente</span><span class="v">${fmtN(c.c.nps)}</span></div></div>
+    <div class="chart" id="k-chart"></div>
+    <div class="legend" style="margin-bottom:10px"><span><i class="sw" style="background:var(--det)"></i>Detrator</span><span><i class="sw" style="background:var(--neu)"></i>Neutro</span><span><i class="sw" style="background:var(--pro)"></i>Promotor</span></div>
+    ${[...c.rr].reverse().map((r) => `<div class="resp"><div class="nota ${r.classe}">${r.nota}</div>
+      <div class="hd">${dataBR(r.data)} · ${esc(r.campanha)}${r.respondente ? " · " + esc(r.respondente) : ""}${r.nota_anterior != null ? " · nota anterior " + r.nota_anterior : ""}</div>
+      <p class="tx">${temTexto(r) ? esc(r.comentario) : `<span style="color:var(--ink-faint);font-family:var(--sans);font-size:13.5px;font-style:italic">Sem comentário escrito</span>`}</p>
+      <div class="tags">${etiquetas(r)}</div></div>`).join("")}`;
+  const ch = $("k-chart"), W = Math.max(300, ch.clientWidth || 560), H = 190, mL = 30, mR = 14, mT = 12, mB = 30;
+  const t0 = Date.parse(F.de + "-01"), [ay, am] = F.ate.split("-").map(Number), t1 = Date.UTC(ay, am, 1);
+  const x = (d) => mL + (Date.parse(d) - t0) / (t1 - t0) * (W - mL - mR), y = (v) => mT + (10 - v) * (H - mT - mB) / 10;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Notas de ${esc(c.nome)} ao longo do tempo">`;
+  s += `<rect x="${mL}" y="${y(6)}" width="${W - mL - mR}" height="${y(0) - y(6)}" fill="var(--det-soft)" opacity=".55"/>`;
+  s += `<rect x="${mL}" y="${y(10)}" width="${W - mL - mR}" height="${y(8.5) - y(10)}" fill="var(--pro-soft)" opacity=".55"/>`;
+  [0, 5, 10].forEach((v) => { s += `<line x1="${mL}" x2="${W - mR}" y1="${y(v)}" y2="${y(v)}" stroke="var(--rule)"/><text x="${mL - 8}" y="${y(v) + 4}" text-anchor="end" font-size="11" fill="var(--ink-faint)">${v}</text>`; });
+  const ms = MESES_BASE.filter((m) => m >= F.de && m <= F.ate), pulo = Math.ceil(ms.length / 9);
+  ms.forEach((m, i) => { if (i % pulo === 0) s += `<text x="${x(m + "-15")}" y="${H - 9}" text-anchor="middle" font-size="11" fill="var(--ink-faint)">${mesLabel(m)}</text>`; });
+  if (c.rr.length > 1) s += `<path d="${c.rr.map((r, i) => (i ? "L" : "M") + x(r.data) + " " + y(r.nota)).join(" ")}" fill="none" stroke="var(--ink-faint)" stroke-width="1.5"/>`;
+  c.rr.forEach((r) => { s += `<circle cx="${x(r.data)}" cy="${y(r.nota)}" r="6" fill="${CLS[r.classe]}" stroke="var(--surface)" stroke-width="2"><title>${dataBR(r.data)} · nota ${r.nota} · ${esc(r.campanha)}</title></circle>`; });
+  ch.innerHTML = s + `</svg>`;
+}
+
+/* ---------- tooltip genérico ---------- */
+function mostrarTip(cx, cy) {
+  const tip = $("tip"); tip.hidden = false;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  let l = cx + 14, t = cy + 14;
+  if (l + w > window.innerWidth - 8) l = cx - w - 14;
+  if (t + h > window.innerHeight - 8) t = cy - h - 14;
+  tip.style.left = Math.max(8, l) + "px"; tip.style.top = Math.max(8, t) + "px";
+}
+document.addEventListener("pointermove", (ev) => {
+  const a = ev.target.closest && ev.target.closest("[data-tip]");
+  if (!a) { if (!ev.target.closest || !ev.target.closest(".chart")) $("tip").hidden = true; return; }
+  const [t, b] = a.dataset.tip.split("|");
+  $("tip").innerHTML = `<b>${esc(t)}</b><div class="muted" style="font-size:12.5px;color:var(--ink-soft)">${esc(b)}</div>`;
+  mostrarTip(ev.clientX, ev.clientY);
+});
+
+/* ---------- abas ---------- */
+const TABS = ["geral", "evolucao", "comparacao", "projecao", "motivos", "comentarios", "clientes"];
+let aba = "geral";
+let projVisivel = store.get("nps-proj") === "1";
+function abrir(t, foco) {
+  aba = TABS.includes(t) ? t : "geral";
+  if (aba === "projecao" && !projVisivel) aba = "geral";
+  TABS.forEach((k) => { $("t-" + k).setAttribute("aria-selected", k === aba); $("t-" + k).tabIndex = k === aba ? 0 : -1; $("p-" + k).hidden = k !== aba; });
+  store.set("nps-aba", aba);
+  if (foco) $("t-" + aba).focus();
+  renderAba();
+}
+document.querySelectorAll(".tab").forEach((b) => b.addEventListener("click", () => abrir(b.dataset.tab)));
+$("tabs").addEventListener("keydown", (e) => {
+  const vis = TABS.filter((k) => !$("t-" + k).hidden), i = vis.indexOf(aba);
+  if (e.key === "ArrowRight") abrir(vis[(i + 1) % vis.length], true);
+  if (e.key === "ArrowLeft") abrir(vis[(i + vis.length - 1) % vis.length], true);
+});
+function aplicarProj() {
+  const b = $("btn-proj");
+  b.setAttribute("aria-pressed", projVisivel);
+  b.setAttribute("aria-label", projVisivel ? "Esconder projeções" : "Mostrar projeções");
+  $("t-projecao").hidden = !projVisivel;
+  $("sf-proj").hidden = !projVisivel;
+  $("meta-alvo").hidden = !projVisivel;
+  if (!projVisivel && aba === "projecao") abrir("geral");
+}
+$("btn-proj").addEventListener("click", () => { projVisivel = !projVisivel; store.set("nps-proj", projVisivel ? "1" : "0"); aplicarProj(); });
+
+function renderAba() {
+  const rows = filtrados();
+  if (aba === "geral") renderDist(rows);
+  if (aba === "evolucao") renderEvolucao(rows);
+  if (aba === "comparacao") renderComparacao();
+  if (aba === "projecao") renderProjecao();
+  if (aba === "motivos") renderMotivos();
+  if (aba === "comentarios") renderComentarios(rows);
+  if (aba === "clientes") renderClientes(rows);
+}
+function render() { renderOverview(filtrados()); renderAba(); }
+
+function botoesSeg(sel, cb) {
+  const bs = document.querySelectorAll(sel);
+  bs.forEach((b) => b.addEventListener("click", () => { bs.forEach((x) => x.setAttribute("aria-pressed", x === b)); cb(b); renderAba(); }));
+}
+botoesSeg("#evo-modo button", (b) => { evoModo = b.dataset.m; });
+botoesSeg("#cmp-modo button", (b) => { cmpModo = b.dataset.m; });
+botoesSeg("#mot-classe button", (b) => { motClasse = b.dataset.v; });
+montarAnoMotivos();
+botoesSeg("#mot-ano button", (b) => { motAno = b.dataset.v; });
+let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(renderAba, 150); });
+
+/* tema */
+(function () {
+  const root = document.documentElement, btn = $("btn-theme");
+  const escuro = () => root.dataset.theme ? root.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  const salvo = store.get("nps-tema"); if (salvo) root.dataset.theme = salvo;
+  const rot = () => { btn.textContent = escuro() ? "Tema claro" : "Tema escuro"; };
+  btn.addEventListener("click", () => { root.dataset.theme = escuro() ? "light" : "dark"; store.set("nps-tema", root.dataset.theme); rot(); renderAba(); });
+  rot();
+})();
+
+const datas = D.map((r) => r.data).sort();
+$("meta-periodo").textContent = `Respostas de ${dataBR(datas[0])} a ${dataBR(datas[datas.length - 1])}`;
+$("meta-n").textContent = `${D.length} respostas de ${new Set(D.map((r) => r.cliente)).size} clientes`;
+montarFiltros(); montarComentarios(); montarClientes();
+renderStandfirstProj();
+aplicarProj();
+const inicial = (location.hash || "").slice(1);
+renderOverview(filtrados());
+abrir(TABS.includes(inicial) ? inicial : (store.get("nps-aba") || "geral"));
+</script>
+</body>
+</html>

@@ -53,9 +53,9 @@ possível corte em projetos (ver `equipe/radar.md`).
       (pedido do Elias) — desde 2026-09-24 [clientes]
 - [ ] Giovanna: reapresentar ao cliente da integração Bayer a proposta com 40% de desconto, até 10x
       e uso de pontos — desde 2026-09-24 [clientes]
-- [ ] Andrezza: remarcar com o João Osório a continuação da apresentação do Vistra (financeiro e
-      fluxo de caixa), com os 2 painéis bonificados prometidos e o painel de limites de crédito pedido
-      pelo Vinícius — desde 2026-09-24 [vendas]
+- [ ] Julio: dar retorno à JOD (João Osório) sobre o fluxo de caixa do Vistra que não gera com a
+      data do dia e sobre um documento atualizado de onde o BI puxa cada dado (o do Biel é de 2025);
+      continuação feita em 28/09, oferta dos 2 painéis gratuitos de pé — desde 2026-09-28 [vendas]
 - [ ] Julio: alinhar com o Ângelo o passo a passo pra venda de parceria entrar no HubSpot (CS
       cadastra as 2 empresas sem cadastro) — desde 2026-09-28 [vendas]
 - [ ] Julio: agenda com o Leandro às terças (OKRs e iniciativas por mês, entregáveis da semana) —

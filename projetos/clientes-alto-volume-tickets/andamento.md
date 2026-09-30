@@ -18,5 +18,12 @@ categoria de ticket, com coluna "Prioridade CS" pra marcação humana (34 client
 - [ ] Julio: montar a versão myFarm do levantamento, cruzando os tickets do Movidesk por email do
       cliente (lá não há grupo econômico pra todos) — desde 2026-09-28
 
+- [ ] Julio: incluir na planilha a coluna "cliente falando de churn" (Sim/Não) pro CS preencher —
+      desde 2026-09-28
+- [ ] Julio e Joyce: mandar à Fernanda (produto myFarm) os clientes myFarm que mais abrem ou reabrem
+      ticket — desde 2026-09-28
+- [ ] Julio: corrigir o filtro myFarm/AgriManager do relatório de churn, separar motivo por mês e
+      por produto, e compartilhar a planilha de base com o Gustavo — desde 2026-09-28 [churn]
+
 ## Feito
 - 2026-09-28: planilha apresentada ao CS, que passou a marcar a Prioridade CS
