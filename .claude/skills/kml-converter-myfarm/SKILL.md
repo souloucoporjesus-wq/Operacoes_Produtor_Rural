@@ -1,173 +1,84 @@
 ---
 name: kml-converter-myfarm
 description: >
-  Conversor de arquivos KML para o formato aceito pelo MyFarm ERP.
-  Use SEMPRE que o usuário enviar um arquivo KML para importar talhões no MyFarm,
-  mencionar problemas na importação de KML, pedir para "converter KML",
-  "arrumar KML", "ajustar arquivo de talhão", "importar talhão", ou qualquer
-  variação que envolva preparar arquivos KML para o sistema MyFarm.
-  Também acione quando o usuário mencionar erros como "Nenhum talhão válido",
-  "tag name deve ter entre 1 e 50 caracteres", ou erros genéricos na importação
-  de talhões via arquivo.
+  Prepara arquivo KML ou KMZ de talhões para o Importar Talhão do myFarm ERP.
+  Use SEMPRE que o usuário enviar um arquivo KML ou KMZ para importar talhões no myFarm,
+  mencionar problemas na importação de KML, pedir para "converter KML", "arrumar KML",
+  "ajustar arquivo de talhão", "importar talhão", falar de arquivo de linhas de plantio ou de
+  passadas de máquina para virar talhão, ou citar erros como "Nenhum talhão válido",
+  "tag name deve ter entre 1 e 50 caracteres" ou erro genérico na importação de talhões por arquivo.
 ---
 
-# Conversor KML para MyFarm
+# Conversor de KML para o myFarm
 
-Você converte arquivos KML (exportados do Google Earth, Google MyMaps ou outras plataformas) para o formato específico aceito pelo MyFarm ERP.
+O leitor de KML do myFarm é restritivo e não diz por que recusa ("Nenhum talhão válido no documento").
+Esta skill deixa o arquivo no formato que ele aceita: um talhão por arquivo, pronto para
+Agricultura Digital > Mapas > Importar Talhão.
 
-## Por que essa skill existe
+## Duas ferramentas, as mesmas regras
 
-O MyFarm possui um parser KML restritivo que rejeita arquivos exportados diretamente do Google Earth ou MyMaps. As restrições não são documentadas para o usuário, e as mensagens de erro são genéricas ("Nenhum talhão válido no documento"). Esta skill aplica todas as transformações necessárias automaticamente.
-
-## Restrições do parser KML do MyFarm
-
-O MyFarm aceita **apenas** KMLs que sigam **todas** estas regras simultaneamente:
-
-| Regra | O que o MyFarm exige | O que o Google Earth exporta |
+| ferramenta | quem usa | quando |
 |---|---|---|
-| Namespaces | Nenhum `xmlns` na tag `<kml>` | Inclui `xmlns` e `gx` |
-| Document ID | `<Document id="featureCollection">` | `<Document>` com nome |
-| Placemark ID | `<Placemark id="UUID">` (UUID v4) | `<Placemark>` sem ID ou com ID diferente |
-| MultiGeometry | `<Polygon>` dentro de `<MultiGeometry>` | `<Polygon>` direto |
-| Coordenadas | Apenas `longitude,latitude` (2 valores) | `longitude,latitude,altitude` (3 valores) |
-| Precisão | Máximo 7 casas decimais, sem artefatos float | Até 15 casas, com artefatos (ex: `9999999`) |
-| Sentido do polígono | Sentido horário (CW) | Sentido anti-horário (CCW) |
-| Tag name | Entre 1 e 50 caracteres | Pode exceder 50 |
-| Minificação | XML em uma linha, sem indentação | Indentado e formatado |
-| Placemarks por arquivo | 1 Placemark por arquivo | Pode ter múltiplos |
+| **a página do conversor** (caminho no mapa do `AGENTS.md`) | qualquer pessoa do time, sem o agente: abre o HTML no navegador, arrasta o arquivo, confere no mapa e baixa. Funciona sem internet e o arquivo não sai do computador | uso do dia a dia, e o **único** caminho quando o arquivo só tem linhas de plantio (ela estima o contorno) |
+| **o script `convert_kml.py`** (nesta pasta da skill) | o agente, quando o arquivo chega na conversa | arquivo com os talhões desenhados como área |
 
-## Fluxo de conversão
+As regras do myFarm moram nos dois lugares: o bloco `REGRAS` da página e o `REGRAS` do script.
+Mudou uma, muda a outra, e depois abre a página com `#teste` no fim do endereço para rodar os testes dela.
 
-### Passo 1: Ler e analisar o KML de entrada
+## Passo a passo (agente)
 
-```python
-from xml.etree import ElementTree as ET
+1. Rodar o script: `py convert_kml.py <arquivo.kml ou .kmz> <pasta de saída>` (Windows; no Mac,
+   `python3`). Só usa a biblioteca padrão. A saída vai para a pasta do cliente ou do projeto (mapa do
+   `AGENTS.md`), em `talhoes-myfarm/AAAA-MM-DD/`; sem pasta do cliente, perguntar onde salvar.
+2. Ler o relatório que o script imprime e repassar como diz "O que dizer ao entregar".
+3. Código de saída 2 quer dizer que nada foi gerado. Se o relatório diz "só linhas abertas", o arquivo é
+   de linhas de plantio ou de passadas de máquina e não tem o contorno do talhão. Dizer isso e indicar a
+   página do conversor, que estima o contorno pela área que as linhas cobrem (cada talhão sai marcado
+   "Confira", com as linhas desenhadas por baixo para comparar com o mapa do cliente). A outra saída é
+   pedir ao cliente o arquivo com o contorno.
 
-ns = {'kml': 'http://www.opengis.net/kml/2.2'}
-tree = ET.parse('arquivo_entrada.kml')
-root = tree.getroot()
-```
+## Regras que não mudam
 
-Identificar todos os Placemarks com polígonos. Podem estar:
-- Soltos no Document
-- Dentro de Folders
-- Duplicados (mesmo polígono em Folder e solto)
+- **Só polígono vira talhão.** Linha aberta e ponto são ignorados e listados no relatório. Nunca fechar
+  uma linha para virar área: num arquivo de linhas de plantio (02/10/2026), isso gerou 1.163 talhões
+  falsos, somando 8.659 ha numa área de uns 240 ha.
+- Talhão em qualquer nível de pasta conta.
+- Talhão com várias áreas no mesmo item vira um arquivo por área ("- parte 1", "- parte 2").
+- Mesmo desenho duas vezes: fica um só, de preferência o que está dentro de pasta.
+- Recorte interno sai, com aviso: o formato do myFarm só leva o contorno externo.
+- KMZ (KML compactado) é aberto direto.
 
-**Regra de deduplicação:** se um Placemark solto no Document tem coordenadas idênticas a um dentro de uma Folder, descartar o solto.
+## O que o myFarm exige
 
-### Passo 2: Extrair e limpar coordenadas
-
-Para cada Placemark:
-
-1. Extrair texto da tag `<coordinates>`
-2. Fazer split por whitespace para obter pares
-3. Para cada par, fazer split por vírgula
-4. Descartar o terceiro valor (altitude) se existir
-5. Converter para float e arredondar para 7 casas decimais
-6. Montar como `"{lon},{lat}"`
-
-```python
-pairs = coords_raw.split()
-clean = []
-for p in pairs:
-    parts = p.split(',')
-    if len(parts) >= 2:
-        lon = round(float(parts[0]), 7)
-        lat = round(float(parts[1]), 7)
-        clean.append((lon, lat))
-```
-
-### Passo 3: Garantir sentido horário (CW)
-
-Usar a fórmula da Shoelace para verificar a orientação:
-
-```python
-def is_clockwise(coords):
-    """Retorna True se o polígono está em sentido horário."""
-    total = 0
-    n = len(coords)
-    for i in range(n):
-        x1, y1 = coords[i]
-        x2, y2 = coords[(i + 1) % n]
-        total += (x2 - x1) * (y2 + y1)
-    return total > 0
-
-if not is_clockwise(coords):
-    coords = list(reversed(coords))
-```
-
-Alternativamente, usar Shapely:
-
-```python
-from shapely.geometry import Polygon
-poly = Polygon(coords)
-if poly.exterior.is_ccw:
-    coords = list(reversed(coords))
-```
-
-**Instalar Shapely:** `pip install shapely --break-system-packages`
-
-### Passo 4: Garantir fechamento do polígono
-
-```python
-if coords[0] != coords[-1]:
-    coords.append(coords[0])
-```
-
-### Passo 5: Validar nome
-
-- Se o nome original tiver mais de 50 caracteres, truncar ou usar o nome da Folder/Placemark mais curto
-- Se não houver nome, gerar como "TL" + sequência numérica (ex: TL01, TL02)
-- Informar ao usuário os nomes que foram ajustados
-
-### Passo 6: Gerar KML no formato MyFarm
-
-Cada Placemark vira um arquivo separado. Formato exato:
-
-```python
-import uuid
-
-pm_id = str(uuid.uuid4())
-coords_str = ' '.join(f"{c[0]},{c[1]}" for c in coords)
-
-kml_out = (
-    f'<?xml version="1.0" encoding="UTF-8"?>'
-    f'<kml><Document id="featureCollection">'
-    f'<Placemark id="{pm_id}">'
-    f'<name>{nome_talhao}</name>'
-    f'<MultiGeometry><Polygon><outerBoundaryIs><LinearRing>'
-    f'<coordinates>{coords_str}</coordinates>'
-    f'</LinearRing></outerBoundaryIs></Polygon></MultiGeometry>'
-    f'</Placemark></Document></kml>'
-)
-```
-
-### Passo 7: Salvar e entregar
-
-- Um arquivo `.kml` por talhão
-- Nome do arquivo: nome do talhão com caracteres especiais substituídos por `_`
-- Salvar em `/mnt/user-data/outputs/`
-- Usar `present_files` para entregar ao usuário
-
-## Script completo de referência
-
-Consulte `references/convert_kml.py` para o script completo e testado.
-
-## Comunicação com o usuário
-
-Ao entregar os arquivos, informar:
-1. Quantos talhões foram encontrados no arquivo original
-2. Quantos foram convertidos com sucesso
-3. Se algum nome foi truncado ou ajustado (e qual era o original)
-4. Se algum Placemark duplicado foi descartado
-5. Instrução: importar cada arquivo individualmente em Agricultura Digital > Mapas > Importar Talhão
-
-## Troubleshooting
-
-| Erro no MyFarm | Causa provável | Verificação |
+| regra | o myFarm exige | o Google Earth costuma exportar |
 |---|---|---|
-| "Nenhum talhão válido no documento" | Polígono em sentido anti-horário (CCW) | Verificar com Shapely: `poly.exterior.is_ccw` deve ser `False` |
-| "Nenhum talhão válido no documento" | Coordenadas com altitude (3 valores) | Verificar se há 3 valores por par |
-| "Nenhum talhão válido no documento" | Artefatos de ponto flutuante | Verificar coordenadas com mais de 7 decimais |
-| "A tag 'name' deve ter entre 1 e 50 caracteres" | Nome do talhão muito longo | Verificar `len(name) > 50` |
-| Erro genérico sem mensagem clara | Combinação de múltiplos problemas | Aplicar todas as transformações acima |
+| namespaces | nenhum `xmlns` na tag `<kml>` | `xmlns` e `gx` |
+| documento | `<Document id="featureCollection">` | `<Document>` com nome |
+| talhão | `<Placemark id="UUID">` (UUID v4) | sem id ou com outro formato |
+| agrupamento | `<Polygon>` dentro de `<MultiGeometry>` | `<Polygon>` direto |
+| coordenadas | só longitude e latitude | longitude, latitude e altitude |
+| precisão | no máximo 7 casas decimais | até 15, com sobras de arredondamento |
+| sentido | horário | muitas vezes anti-horário |
+| nome | de 1 a 50 caracteres | pode passar de 50 |
+| formato | XML numa linha só | com quebras e recuos |
+| talhões por arquivo | um | vários |
+
+Nome: acima de 50 caracteres é cortado; sem nome ou com o nome padrão ("Polígono sem título") vira TL01,
+TL02...; `&` vira "e" e `<`, `>` e aspas saem; nome repetido ganha (2), (3).
+
+## O que dizer ao entregar
+
+1. quantos talhões o arquivo tinha e quantos foram convertidos
+2. nomes ajustados (cortado, TL01, caractere trocado, repetido), com o nome original
+3. repetidos descartados e itens ignorados (linhas, pontos)
+4. o que conferir antes de importar (contorno que se cruza, recorte interno, várias áreas)
+5. importar um arquivo por vez em Agricultura Digital > Mapas > Importar Talhão
+
+## Se o myFarm recusar
+
+| mensagem do myFarm | causa provável | o que fazer |
+|---|---|---|
+| "Nenhum talhão válido no documento" | contorno anti-horário, altitude ou casas demais | passar o arquivo original pelo script ou pela página |
+| "A tag name deve ter entre 1 e 50 caracteres" | nome vazio ou longo demais | ajustar o nome (a página deixa trocar antes de baixar) |
+| erro sem mensagem clara | vários problemas juntos | passar o arquivo original pelo script ou pela página |
+| recusou um arquivo que saiu daqui | regra do myFarm que ainda não está aqui, ou contorno que se cruza | guardar o original e o print do erro, descobrir a regra e ajustar o `REGRAS` nos dois lugares |
