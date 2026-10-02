@@ -370,7 +370,7 @@ a.hist-btn{text-decoration:none;display:inline-flex;align-items:center}
 
   <!-- PROJETOS A ATACAR -->
   <section id="tab-atacar" role="tabpanel" class="hide">
-    <div class="hint" style="max-width:1000px">Só projetos em andamento sem nenhuma agenda marcada. O número é quantos dias o projeto está sem agenda, contando até a data da posição. Clique no projeto para a visão 360 e no título da coluna para reordenar.</div>
+    <div class="hint" style="max-width:1000px">Só projetos em andamento sem nenhuma agenda marcada. O número é quantos dias o projeto está sem agenda, contando até a data da posição. Clique no projeto para abrir a página dele numa nova aba e no título da coluna para reordenar.</div>
     <div class="grid" id="kpisAtaque" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:12px"></div>
     <div class="grid g-2" style="margin-top:14px;align-items:start">
       <div class="card">
@@ -443,7 +443,7 @@ a.hist-btn{text-decoration:none;display:inline-flex;align-items:center}
       <div class="count-line" id="semRotulo"></div>
       <div class="seg escopo" role="group" aria-label="Projetos"><button type="button" data-v="todos">Todos os projetos</button><button type="button" data-v="hunter">Só hunter</button></div>
     </div>
-    <div class="hint" style="max-width:1000px">Agenda de cada consultor com agenda na semana, dia a dia, com todos os projetos da exportação do CES (hunter e farmer). Passe o mouse num bloco para ver o horário de início e fim, a OS, a etapa e as horas; clique num projeto hunter em aberto para abrir a visão 360. Valem os filtros de sistema, consultor e busca. A agenda mostra só as OS que vieram na planilha.</div>
+    <div class="hint" style="max-width:1000px">Agenda de cada consultor com agenda na semana, dia a dia, com todos os projetos da exportação do CES (hunter e farmer). Passe o mouse num bloco para ver o horário de início e fim, a OS, a etapa e as horas; clique num projeto hunter em aberto para abrir a página dele numa nova aba. Valem os filtros de sistema, consultor e busca. A agenda mostra só as OS que vieram na planilha.</div>
     <div class="grid" id="kpisCons" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-top:12px"></div>
     <div class="legend-inline" style="margin:14px 0 8px">
       <span><span class="dot" style="background:var(--myfarm)"></span>myFarm</span>
@@ -808,7 +808,7 @@ function abrirHistorico(cod){
       <div class="eyebrow">Histórico do projeto #${p.cod} · ${esc(p.sistema)}</div>
       <h2 id="hTitulo">${esc(p.nome)}</h2>
       <div class="sub">${n} anotaç${n === 1 ? "ão" : "ões"} dos reports das analistas, da mais nova para a mais antiga.</div>
-      <div class="tags" style="margin-top:10px"><button type="button" class="btn" id="hAbrir360">Abrir visão 360</button><button type="button" class="btn" id="hFechar">Fechar</button></div>
+      <div class="tags" style="margin-top:10px"><button type="button" class="btn" id="hAbrir360">Abrir página do projeto</button><button type="button" class="btn" id="hFechar">Fechar</button></div>
     </div>
     <div class="sheet-body">${n ? p.historico.map(e => entradaHist(e, p)).join("") : `<div class="empty">Este projeto não aparece em nenhum report.</div>`}</div>`;
   $("#hFechar").onclick = fecharHistorico;
@@ -1378,7 +1378,7 @@ function graficosProjeto(p, ags){
   const partes = [["Usadas", p.utilizadas, c], ["Sem fechar", p.sem_fechar, css("--warning")], ["Marcadas", p.agendadas, css("--ink-2")], ["Livres", Math.max(p.saldo_livre, 0), css("--axis")]];
   if(p.saldo_livre < 0) partes.push(["Além do adquirido", -p.saldo_livre, css("--critical")]);
   plot("chComp", partes.filter(x => x[1] > 0).map(([n, v, col]) => ({type:"bar", orientation:"h", name:n, y:["horas"], x:[v], marker:{color:col},
-      text:[h(v)], textposition:"inside", insidetextanchor:"middle", textfont:{color:"#fff", size:12}, hovertemplate:`${n}: <b>${h(v)}</b><extra></extra>`})),
+      text:[v / Math.max(1, sum(partes, x => x[1])) >= 0.08 ? h(v) : ""], textposition:"inside", insidetextanchor:"middle", textfont:{color:"#fff", size:12}, hovertemplate:`${n}: <b>${h(v)}</b><extra></extra>`})),
     {barmode:"stack", bargap:0.45, xaxis:{ticksuffix:"h", showgrid:true}, yaxis:{showticklabels:false, showgrid:false, showline:false}, legend:{orientation:"h", x:0, y:-0.25}, margin:{l:8, r:12, t:10, b:8}});
 
   // 3. horas por mês

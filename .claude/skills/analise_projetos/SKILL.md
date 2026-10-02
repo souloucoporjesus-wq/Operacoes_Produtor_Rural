@@ -6,8 +6,8 @@ description: >-
   OS planejada e Implantador, calcula horas adquiridas, usadas e saldo, dias em aberto, última e
   próxima agenda, última OS executada, fase da jornada, saúde e ordem de ataque de cada projeto, e
   gera o painel em HTML que abre direto no navegador (abas Visão geral, Projetos a atacar, Prioridades, Projetos,
-  Agenda dos projetos, Agenda dos consultores, Agendas realizadas e Pessoas, com visão 360 por
-  projeto e botão Histórico com as anotações dos reports das analistas). Use sempre que o usuário chamar /analise_projetos
+  Agenda dos projetos, Agenda dos consultores, Agendas realizadas e Pessoas, com página própria
+  de cada projeto aberta em nova aba e botão Histórico com as anotações dos reports das analistas). Use sempre que o usuário chamar /analise_projetos
   ou falar em painel de projetos, projetos de implantação, projetos hunter, exportação do CES,
   saldo de horas dos projetos, horas usadas, última agenda, próxima agenda, última OS, projetos
   parados, projetos por encerrar, quais projetos atacar primeiro, carteira de implantação,
@@ -57,11 +57,20 @@ acima da conclusão, e a conclusão é atualizada.
 | Pessoas | analistas e consultores: carteira, horas em 90 dias, responsável no cadastro × quem atende |
 
 Todas as tabelas ordenam clicando no título da coluna. Clicar num projeto hunter em aberto abre a
-visão 360 dele. Quando há histórico importado, as listas de Projetos a atacar, Prioridades e
-Projetos mostram o botão "Histórico" (abre só as anotações) e a marca "report: encerramento" ou
-"report: cancelado" quando o report diverge do CES; a visão 360 ganha o cartão "Histórico dos
-reports"; os Destaques contam os projetos em encerramento no report e a hora entregue sem
-faturar. Atalhos de endereço: `#p<código>` abre a visão 360 e `#h<código>` abre o histórico.
+**página do projeto numa nova aba** (pedido do Julio em 02/10/2026): é o mesmo arquivo do painel com
+`#p<código>` no endereço, então funciona offline e não gera um arquivo por projeto. A página traz:
+cabeçalho com cliente, grupo econômico, local, manutenção, analista, consultor responsável,
+vendedor e posição na fila; o que pede ação; abertura, horas adquiridas, usadas, saldo, última e
+próxima agenda; **ritmo do projeto** comparado aos hunter concluídos do mesmo sistema (primeira
+agenda, agendas que aconteceram, maior pausa entre agendas, parado agora em vezes a maior pausa
+típica); jornada por fase; gráficos (evolução do consumo, para onde vão as horas adquiridas, horas
+por mês, horas por fase deste projeto × concluídos, linha do tempo das agendas por fase e
+situação); quem atendeu; pacotes de horas; histórico dos reports; e a tabela de agendas com
+horário. Quando há histórico importado, as listas de Projetos a atacar, Prioridades e Projetos
+mostram o botão "Histórico" (abre só as anotações, sem sair do painel) e a marca "report:
+encerramento" ou "report: cancelado" quando o report diverge do CES; os Destaques contam os
+projetos em encerramento no report e a hora entregue sem faturar. Atalhos de endereço:
+`#p<código>` abre a página do projeto e `#h<código>` abre o histórico.
 
 ## Regras combinadas com o Julio (02/10/2026)
 
@@ -95,6 +104,11 @@ faturar. Atalhos de endereço: `#p<código>` abre a visão 360 e `#h<código>` a
   18:00 (08:00 às 12:00 e 13:00 às 18:00)"). Em 01/10/2026 o horário vinha em 100% das agendas que
   aconteceram, batia com as horas lançadas, e faltava em 5% das marcadas ("horário não informado no
   CES").
+- **Régua de ritmo da página do projeto:** vem dos hunter concluídos desde 2024, por sistema
+  (`_referencia` e `_fases_referencia` em `modelo.py`). Em 02/10/2026: primeira agenda em 10 a 13
+  dias depois da abertura; maior pausa entre agendas de 56 dias (myFarm) e 104 (AgriManager);
+  treinamento e simulação com cerca de um terço das horas e parametrização com 20% a 28%. Parar não
+  separa quem conclui; ficar parado sim (críticos e por encerrar estavam parados há 139 a 223 dias).
 - **Fase** = a mais avançada entre as agendas que aconteceram; as etapas das duas metodologias são
   traduzidas para sete fases em `fase_da_etapa` (`modelo.py`).
 
