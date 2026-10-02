@@ -1,0 +1,1510 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Conversor de KML para o myFarm</title>
+<!--
+  Conversor de KML para o myFarm
+  Página única: abre direto do arquivo no navegador, sem internet e sem instalar nada.
+  O KML não sai do computador de quem usa.
+
+  Pra mudar uma regra (ex.: o myFarm passou a aceitar nome maior), mexa no bloco REGRAS
+  no começo do <script>. Depois de qualquer mudança, abra a página com #teste no fim do
+  endereço: ela roda os testes e mostra no topo se passou ou o que quebrou.
+  Ao mudar, suba a VERSAO e anote no HISTORICO, logo abaixo do REGRAS.
+-->
+<style>
+*{box-sizing:border-box}
+:root{
+  color-scheme:light;
+  --plano:#f9f9f7;--superficie:#fcfcfb;--superficie-2:#f1f0ec;
+  --texto:#0b0b0b;--texto-2:#52514e;--mudo:#898781;
+  --linha:#e1e0d9;--borda:rgba(11,11,11,.10);
+  --destaque:#256abf;--destaque-forte:#1c5cab;--destaque-fundo:rgba(42,120,214,.07);
+  --bom:#0ca30c;--alerta:#fab219;--critico:#d03b3b;
+  --bom-tinta:#006300;--alerta-tinta:#7a4f00;--critico-tinta:#a12b2b;
+  --alerta-fundo:rgba(250,178,25,.20);--critico-fundo:rgba(208,59,59,.11);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    color-scheme:dark;
+    --plano:#0d0d0d;--superficie:#1a1a19;--superficie-2:#262624;
+    --texto:#ffffff;--texto-2:#c3c2b7;--mudo:#898781;
+    --linha:#2c2c2a;--borda:rgba(255,255,255,.10);
+    --destaque:#3987e5;--destaque-forte:#2a78d6;--destaque-fundo:rgba(57,135,229,.10);
+    --bom-tinta:#0ca30c;--alerta-tinta:#fab219;--critico-tinta:#e66767;
+    --alerta-fundo:rgba(250,178,25,.14);--critico-fundo:rgba(208,59,59,.20);
+  }
+}
+body{margin:0;background:var(--plano);color:var(--texto);font:15px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:1180px;margin:0 auto;padding:32px 24px 40px}
+h1{font-size:26px;line-height:1.2;margin:0 0 6px;font-weight:650}
+h2{font-size:18px;margin:0 0 12px;font-weight:650}
+.sub{color:var(--texto-2);margin:0 0 24px;max-width:780px}
+section{margin-top:28px}
+.cartao{background:var(--superficie);border:1px solid var(--borda);border-radius:12px;padding:20px}
+.soltar{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:170px;
+  border:2px dashed var(--linha);border-radius:12px;background:var(--superficie);cursor:pointer;text-align:center;padding:24px;
+  transition:border-color .15s,background-color .15s}
+.soltar:hover,.soltar.arrastando,.soltar:focus-within{border-color:var(--destaque);background:var(--destaque-fundo)}
+.soltar strong{font-size:17px}
+.soltar span{color:var(--texto-2)}
+.soltar input{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.entrada-rodape{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;margin-top:10px;color:var(--texto-2);font-size:13.5px}
+button{font:inherit;font-size:14px;border-radius:8px;padding:8px 14px;border:1px solid var(--borda);background:var(--superficie);color:var(--texto);cursor:pointer;white-space:nowrap}
+button:hover:not(:disabled){border-color:var(--destaque)}
+button.principal{background:var(--destaque-forte);border-color:transparent;color:#fff;font-weight:600}
+button.principal:hover:not(:disabled){background:var(--destaque)}
+button.link{border:0;background:none;padding:0;color:var(--destaque);text-decoration:underline;font-size:inherit}
+button:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--destaque);outline-offset:2px}
+.mensagem{margin-top:12px;padding:12px 14px;border-radius:10px;background:var(--critico-fundo);color:var(--critico-tinta)}
+.mensagem:empty{display:none}
+
+.resumo{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.tile{background:var(--superficie);border:1px solid var(--borda);border-radius:12px;padding:14px 16px}
+.tile .rot{color:var(--texto-2);font-size:13px;display:flex;align-items:center;gap:7px}
+.tile .valor{font-size:28px;font-weight:650;line-height:1.25;margin-top:2px}
+.ponto{display:inline-block;width:9px;height:9px;border-radius:50%}
+.ponto.pronto{background:var(--bom)}.ponto.atencao{background:var(--alerta)}.ponto.erro{background:var(--critico)}
+.linha-resumo{color:var(--texto-2);margin:12px 0 0;font-size:14px}
+.acoes{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:16px}
+.acoes .nota{color:var(--texto-2);font-size:13.5px}
+
+.mapa-topo{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:baseline;gap:8px 20px;margin-bottom:8px}
+.legenda{display:flex;gap:16px;color:var(--texto-2);font-size:13px}
+.legenda span{display:inline-flex;align-items:center;gap:6px}
+.mapa{width:100%;height:auto;display:block}
+.pol{fill-opacity:.32;stroke-width:1.5;vector-effect:non-scaling-stroke;cursor:pointer;transition:fill-opacity .12s}
+.pol.pronto{fill:var(--bom);stroke:var(--bom)}
+.pol.atencao{fill:var(--alerta);stroke:#c98500}
+.pol.erro{fill:var(--critico);stroke:var(--critico)}
+.pol:hover,.pol.realce{fill-opacity:.6;stroke-width:3}
+.pol.estimado{fill-opacity:.10;stroke-width:2}
+.pol.estimado:hover,.pol.estimado.realce{fill-opacity:.28;stroke-width:3}
+.fonte{fill:none;stroke:var(--destaque);stroke-opacity:.5;stroke-width:.5;vector-effect:non-scaling-stroke;pointer-events:none}
+.traco{display:inline-block;width:14px;height:0;border-top:2px solid var(--destaque);opacity:.7}
+.status{margin-top:12px;color:var(--texto-2)}
+.status:empty{display:none}
+.rotulo{font-size:12px;fill:var(--texto);stroke:var(--superficie);stroke-width:3px;paint-order:stroke;stroke-linejoin:round;pointer-events:none}
+.miniatura .pol{cursor:default;stroke-width:1.2}
+.dica{position:fixed;z-index:10;pointer-events:none;background:var(--superficie);color:var(--texto);border:1px solid var(--borda);
+  border-radius:8px;padding:8px 10px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.14);max-width:280px}
+.dica[hidden]{display:none}
+.dica .d-nome{font-weight:600}
+.dica .d-info{color:var(--texto-2)}
+
+.tabela-envolve{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;font-weight:600;color:var(--texto-2);font-size:12.5px;padding:8px 10px;border-bottom:1px solid var(--linha);white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid var(--linha);vertical-align:middle}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.origem{color:var(--texto-2);font-size:13px;min-width:140px}
+td.marcas{min-width:260px}
+tr.realce td{background:var(--superficie-2)}
+input.nome{width:100%;min-width:210px;font:inherit;font-size:14px;padding:6px 8px;border-radius:6px;border:1px solid var(--linha);background:var(--plano);color:var(--texto)}
+input.nome:disabled{opacity:.6}
+input.nome.invalido{border-color:var(--critico)}
+.chip{display:inline-block;font-size:12px;line-height:1.35;padding:2px 8px;border-radius:999px;margin:2px 4px 2px 0;background:var(--superficie-2);color:var(--texto-2)}
+.chip.aviso{background:var(--alerta-fundo);color:var(--alerta-tinta)}
+.chip.erro{background:var(--critico-fundo);color:var(--critico-tinta)}
+.situacao{white-space:nowrap;font-weight:600;font-size:13px;display:inline-flex;align-items:center;gap:6px}
+.situacao .ic{display:inline-flex;width:18px;height:18px;border-radius:50%;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:700}
+.situacao.pronto{color:var(--bom-tinta)}.situacao.pronto .ic{background:var(--bom)}
+.situacao.atencao{color:var(--alerta-tinta)}.situacao.atencao .ic{background:var(--alerta);color:#0b0b0b}
+.situacao.erro{color:var(--critico-tinta)}.situacao.erro .ic{background:var(--critico)}
+
+.fora ul{margin:6px 0 14px;padding-left:20px}
+.fora li{margin:3px 0}
+.fora h3{font-size:14.5px;margin:0;font-weight:600}
+ol.passos{margin:0;padding-left:20px}
+ol.passos li{margin:4px 0}
+details summary{cursor:pointer;font-weight:650;font-size:16px}
+details[open] summary{margin-bottom:12px}
+.regras td,.regras th{font-size:13.5px;vertical-align:top}
+.regras th{white-space:normal}
+code{font-family:ui-monospace,Consolas,monospace;font-size:12.5px;background:var(--superficie-2);padding:1px 5px;border-radius:4px}
+footer{color:var(--mudo);font-size:12.5px;margin-top:32px}
+
+.testes{margin-bottom:20px;padding:14px 16px;border-radius:10px;border:1px solid var(--borda);background:var(--superficie)}
+.testes.ok{border-color:var(--bom)}.testes.falhou{border-color:var(--critico)}
+.testes ul{margin:8px 0 0;padding-left:20px;font-size:13.5px}
+.testes .f{color:var(--critico-tinta)}
+
+@media (max-width:760px){
+  main{padding:20px 14px 32px}
+  .resumo{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .rotulo{display:none}
+}
+</style>
+</head>
+<body>
+<main>
+  <div id="testes" class="testes" hidden></div>
+
+  <header>
+    <h1>Conversor de KML para o myFarm</h1>
+    <p class="sub">Prepara o arquivo de talhões exportado do Google Earth, do MyMaps ou de outra ferramenta para a
+      importação do myFarm. Tudo acontece neste navegador: o arquivo não é enviado para lugar nenhum.</p>
+  </header>
+
+  <label class="soltar" id="soltar">
+    <input type="file" id="arquivo" accept=".kml,.kmz" multiple>
+    <strong>Arraste o arquivo .kml ou .kmz aqui</strong>
+    <span>ou clique para escolher. Pode mandar mais de um arquivo de uma vez.</span>
+  </label>
+  <div class="entrada-rodape">
+    <span>Quer ver como funciona antes? <button type="button" class="link" id="abrir-exemplo">Abrir um arquivo de exemplo</button></span>
+  </div>
+  <div class="mensagem" id="mensagem" role="alert"></div>
+  <div class="status" id="status" role="status"></div>
+
+  <section id="resultado" hidden>
+    <div class="resumo">
+      <div class="tile"><div class="rot">Talhões encontrados</div><div class="valor" id="t-lidos">0</div></div>
+      <div class="tile"><div class="rot"><span class="ponto pronto"></span>Prontos</div><div class="valor" id="t-pronto">0</div></div>
+      <div class="tile"><div class="rot"><span class="ponto atencao"></span>Confira antes de importar</div><div class="valor" id="t-atencao">0</div></div>
+      <div class="tile"><div class="rot"><span class="ponto erro"></span>Com erro</div><div class="valor" id="t-erro">0</div></div>
+    </div>
+    <p class="linha-resumo" id="linha-resumo"></p>
+    <div class="acoes">
+      <button type="button" class="principal" id="baixar-todos">Baixar todos (.zip)</button>
+      <button type="button" id="outro">Carregar outro arquivo</button>
+      <span class="nota" id="nota-zip"></span>
+    </div>
+
+    <section class="cartao" id="bloco-mapa">
+      <div class="mapa-topo">
+        <h2>Desenho dos talhões</h2>
+        <div class="legenda" id="legenda"></div>
+      </div>
+      <svg class="mapa" id="mapa" viewBox="0 0 1000 440" role="img" aria-label="Desenho dos talhões convertidos"></svg>
+    </section>
+
+    <section class="cartao">
+      <h2>Talhões</h2>
+      <p class="linha-resumo" style="margin:-4px 0 12px">O nome pode ser trocado aqui antes de baixar (de 1 a <span class="max-nome">50</span> caracteres).</p>
+      <div class="tabela-envolve">
+        <table>
+          <thead><tr>
+            <th></th><th>Nome no myFarm</th><th>Origem no arquivo</th><th class="num">Pontos</th><th class="num">Área aprox.</th>
+            <th>O que foi feito</th><th>Situação</th><th></th>
+          </tr></thead>
+          <tbody id="linhas"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="cartao fora" id="fora" hidden>
+      <h2>Ficou de fora</h2>
+      <div id="fora-lista"></div>
+    </section>
+  </section>
+
+  <section class="cartao">
+    <h2>Como importar no myFarm</h2>
+    <ol class="passos">
+      <li>Baixe os arquivos. Cada talhão vira um arquivo .kml; o .zip só junta todos para baixar de uma vez, então extraia antes de importar.</li>
+      <li>No myFarm, entre em <strong>Agricultura Digital &gt; Mapas &gt; Importar Talhão</strong>.</li>
+      <li>Importe um arquivo por vez.</li>
+      <li>Se o myFarm recusar algum, veja a tabela "Se o myFarm recusar" logo abaixo.</li>
+    </ol>
+  </section>
+
+  <section class="cartao">
+    <details>
+      <summary>Regras que a página aplica</summary>
+      <table class="regras">
+        <thead><tr><th>Regra</th><th>O que o myFarm exige</th><th>O que costuma vir do Google Earth</th></tr></thead>
+        <tbody>
+          <tr><td>Endereços de padrão (<code>xmlns</code>)</td><td>Nenhum na tag <code>&lt;kml&gt;</code></td><td>Vem com <code>xmlns</code> e <code>gx</code></td></tr>
+          <tr><td>Identificação do documento</td><td><code>&lt;Document id="featureCollection"&gt;</code></td><td><code>&lt;Document&gt;</code> com nome</td></tr>
+          <tr><td>Identificação do talhão</td><td><code>&lt;Placemark id="..."&gt;</code> com um código único (UUID)</td><td>Sem código ou com outro formato</td></tr>
+          <tr><td>Agrupamento do polígono</td><td><code>&lt;Polygon&gt;</code> dentro de <code>&lt;MultiGeometry&gt;</code></td><td><code>&lt;Polygon&gt;</code> direto</td></tr>
+          <tr><td>Coordenadas</td><td>Só longitude e latitude (2 valores)</td><td>Longitude, latitude e altitude (3 valores)</td></tr>
+          <tr><td>Casas decimais</td><td>No máximo <span class="casas">7</span></td><td>Até 15, com sobras de arredondamento</td></tr>
+          <tr><td>Sentido do contorno</td><td>Horário</td><td>Muitas vezes anti-horário</td></tr>
+          <tr><td>Nome do talhão</td><td>De 1 a <span class="max-nome">50</span> caracteres</td><td>Pode passar de 50</td></tr>
+          <tr><td>Formato do texto</td><td>Tudo numa linha só</td><td>Com quebras de linha e recuos</td></tr>
+          <tr><td>Talhões por arquivo</td><td>Um</td><td>Vários no mesmo arquivo</td></tr>
+        </tbody>
+      </table>
+      <p class="linha-resumo">Além disso, a página procura talhões em qualquer nível de pasta, separa talhão com várias áreas em
+        arquivos próprios, descarta desenho repetido (fica o que está dentro de pasta), dá nome TL01, TL02... a quem não tem, troca
+        <code>&amp;</code> por "e" no nome, diferencia nomes repetidos com (2), (3), e avisa quando o contorno se cruza ou tinha recorte interno.</p>
+      <p class="linha-resumo"><strong>Arquivo só com linhas de plantio ou de passadas de máquina</strong> (sem o contorno do talhão): a página
+        estima a borda pela área que as linhas cobrem, meio espaçamento além da última linha. Faixas separadas por carreador estreito
+        (até uns 12 m) ficam no mesmo talhão; áreas separadas por mais que isso viram talhões diferentes (parte 1, parte 2), e
+        buracos sem linha dentro da área entram no talhão. O nome sai do nome do arquivo. É uma estimativa: confira o desenho com
+        o mapa do cliente antes de importar.</p>
+
+      <h2 style="margin-top:20px">Se o myFarm recusar</h2>
+      <table class="regras">
+        <thead><tr><th>Mensagem do myFarm</th><th>Causa provável</th><th>O que fazer</th></tr></thead>
+        <tbody>
+          <tr><td>"Nenhum talhão válido no documento"</td><td>Contorno anti-horário, coordenada com altitude ou com casas demais</td><td>Passar o arquivo original por esta página (ela corrige os três)</td></tr>
+          <tr><td>"A tag name deve ter entre 1 e 50 caracteres"</td><td>Nome vazio ou longo demais</td><td>Ajustar o nome na tabela antes de baixar</td></tr>
+          <tr><td>Erro sem mensagem clara</td><td>Vários problemas juntos</td><td>Passar o arquivo original por esta página</td></tr>
+          <tr><td>Recusou um arquivo que saiu daqui</td><td>Regra do myFarm que a página ainda não conhece, ou contorno que se cruza</td><td>Guarde o arquivo original e o print do erro: com eles dá para descobrir a regra nova e ajustar a página</td></tr>
+        </tbody>
+      </table>
+    </details>
+  </section>
+
+  <footer id="rodape"></footer>
+</main>
+<div class="dica" id="dica" hidden></div>
+
+<script>
+'use strict';
+
+/* ===================== REGRAS DO MYFARM =====================
+   O que o leitor de KML do myFarm aceita. Mudou alguma coisa no myFarm, é aqui que se ajusta. */
+const REGRAS = {
+  nomeMaximo: 50,                 // a tag name precisa ter de 1 a 50 caracteres
+  casasDecimais: 7,               // coordenada com no máximo 7 casas decimais
+  sentidoHorario: true,           // o contorno precisa estar em sentido horário
+  prefixoSemNome: 'TL',           // talhão sem nome vira TL01, TL02...
+  nomesGenericos: /sem t[ií]tulo|untitled/i,          // nome padrão do Google Earth: tratado como "sem nome"
+  trocarNoNome: [[/&/g, ' e '], [/[<>"\u0000-\u001f]/g, '']], // caractere que o nome não leva
+  limitePontosCruzamento: 6000,   // acima disso a checagem de contorno cruzado é pulada (fica lenta)
+};
+
+/* Arquivo só com linhas de plantio ou de passadas: como a borda é estimada */
+const CONTORNO = {
+  minimoLinhas: 10,        // abaixo disso não tenta estimar, só explica que falta o contorno
+  fatorJuncao: 2,          // junta faixas separadas por até 2 x este fator x espaçamento (carreador interno, quebra de linha)
+  juncaoMinima: 6,         // em metros
+  juncaoMaxima: 15,        // em metros
+  celulasMaximas: 6e6,     // tamanho máximo da grade de cálculo (memória e tempo)
+  menorParteHa: 0.5,       // pedaço separado menor que isso é descartado
+  simplificar: 1,          // tolerância em metros para tirar o serrilhado da grade
+};
+
+const VERSAO = '1.2';
+const HISTORICO = [ // a mais nova primeiro
+  ['1.2', '2026-10-02', 'Arquivo só com linhas de plantio ou de passadas: estima o contorno pela área que as linhas cobrem ' +
+    '(nome do arquivo, áreas separadas viram partes) e desenha as linhas por baixo para conferir.'],
+  ['1.1', '2026-10-02', 'Arquivo só com linhas (de plantio, de passada de máquina) explica que falta o contorno do talhão; ' +
+    'lista de itens ignorados resumida quando passa de 20.'],
+  ['1.0', '2026-10-02', 'Primeira versão, a partir da skill kml-converter-myfarm. Lê subpastas e KMZ, trata nome repetido, ' +
+    'caractere especial e talhão com várias áreas, avisa contorno cruzado e recorte interno.'],
+];
+
+/* ===================== utilidades ===================== */
+const $ = (s) => document.querySelector(s);
+const SVGNS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, ...filhos) {
+  const e = document.createElement(tag);
+  for (const [k, v] of Object.entries(attrs || {})) {
+    if (v == null || v === false) continue;
+    if (k === 'class') e.className = v;
+    else if (k.startsWith('on')) e.addEventListener(k.slice(2), v);
+    else e.setAttribute(k, v === true ? '' : v);
+  }
+  for (const f of filhos.flat()) if (f != null && f !== false) e.append(f instanceof Node ? f : String(f));
+  return e;
+}
+function svg(tag, attrs) {
+  const e = document.createElementNS(SVGNS, tag);
+  for (const [k, v] of Object.entries(attrs || {})) e.setAttribute(k, v);
+  return e;
+}
+const rad = (g) => g * Math.PI / 180;
+const plural = (n, um, varios) => `${n} ${n === 1 ? um : varios}`;
+const fmtHa = (ha) => ha < 0.01 ? 'menos de 0,01 ha'
+  : ha.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' ha';
+
+// número com no máximo N casas, sem notação científica e sem zeros sobrando
+function fmt(x) {
+  let s = x.toFixed(REGRAS.casasDecimais);
+  if (s.includes('.')) s = s.replace(/0+$/, '').replace(/\.$/, '');
+  return s === '-0' ? '0' : s;
+}
+function arred(x) { const f = 10 ** REGRAS.casasDecimais; return Math.round(x * f) / f; }
+function casasDe(s) { const i = s.indexOf('.'); if (i < 0) return 0; const m = s.slice(i + 1).match(/^\d+/); return m ? m[0].length : 0; }
+const chaveP = (p) => fmt(p[0]) + ',' + fmt(p[1]);
+
+function uuid() {
+  const b = crypto.getRandomValues(new Uint8Array(16));
+  b[6] = (b[6] & 0x0f) | 0x40; b[8] = (b[8] & 0x3f) | 0x80;
+  const h = Array.from(b, (x) => x.toString(16).padStart(2, '0')).join('');
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+}
+function escXml(s) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&apos;');
+}
+function cortar(s, max) {
+  if (s.length <= max) return s;
+  const r = Array.from(s);
+  while (r.join('').length > max) r.pop();
+  return r.join('').trim();
+}
+function trocarCaracteres(n) {
+  for (const [re, por] of REGRAS.trocarNoNome) n = n.replace(re, por);
+  return n.replace(/\s+/g, ' ').trim();
+}
+function limparNomeDigitado(v) { return cortar(trocarCaracteres(v), REGRAS.nomeMaximo); }
+function nomeArquivo(nome) {
+  let s = nome.replace(/[\\/:*?"<>|\u0000-\u001f]/g, '').replace(/\s+/g, '_').replace(/[._]+$/, '');
+  if (!s || /^(con|prn|aux|nul|com\d|lpt\d)$/i.test(s)) s = 'talhao_' + s;
+  return s;
+}
+
+/* ===================== leitura do arquivo ===================== */
+// texto do KML respeitando a codificação declarada (UTF-8 na maioria; às vezes ISO-8859-1)
+function decodificar(bytes) {
+  const cabeca = new TextDecoder('latin1').decode(bytes.subarray(0, 300));
+  const m = cabeca.match(/encoding\s*=\s*["']([\w.:-]+)["']/i);
+  try { return new TextDecoder(m ? m[1] : 'utf-8').decode(bytes); }
+  catch (e) { return new TextDecoder('utf-8').decode(bytes); }
+}
+
+async function textosDoArquivo(bytes, nome) {
+  if (bytes[0] === 0x50 && bytes[1] === 0x4b) { // começa com "PK": é KMZ (KML compactado)
+    const dentro = await lerZip(bytes, (n) => /\.kml$/i.test(n));
+    if (!dentro.length) throw new Error('o KMZ não tem nenhum KML dentro');
+    return dentro.map((e) => ({ texto: decodificar(e.dados), nome: dentro.length > 1 ? `${nome} › ${e.nome}` : nome }));
+  }
+  return [{ texto: decodificar(bytes), nome }];
+}
+
+const filhos = (e, nome) => Array.from(e.children).filter((c) => c.localName === nome);
+const primeiroFilho = (e, nome) => filhos(e, nome)[0] || null;
+const desc = (e, nome) => Array.from(e.getElementsByTagNameNS('*', nome));
+const textoDe = (e) => (e && e.textContent ? e.textContent.replace(/\s+/g, ' ').trim() : '');
+
+let contadorItens = 0;
+
+function lerKml(texto, arquivo) {
+  const doc = new DOMParser().parseFromString(texto, 'application/xml');
+  if (doc.getElementsByTagName('parsererror').length) {
+    throw new Error('o conteúdo não é um KML válido (arquivo corrompido ou de outro tipo)');
+  }
+  const brutos = [], ignorados = [], linhasAbertas = [];
+  const placemarks = desc(doc, 'Placemark');
+  if (!placemarks.length && doc.documentElement.localName !== 'kml') throw new Error('não parece um arquivo KML');
+  for (const pm of placemarks) {
+    const nomeOriginal = textoDe(primeiroFilho(pm, 'name'));
+    const caminho = [];
+    for (let a = pm.parentElement; a; a = a.parentElement) {
+      if (a.localName === 'Folder') { const n = textoDe(primeiroFilho(a, 'name')); caminho.unshift(n || 'pasta sem nome'); }
+    }
+    const poligonos = desc(pm, 'Polygon');
+    if (!poligonos.length) {
+      const ign = { arquivo, nome: nomeOriginal || '(sem nome)', caminho, motivo: motivoSemArea(pm) };
+      ignorados.push(ign);
+      for (const ls of desc(pm, 'LineString')) {
+        const pts = lerCoordenadas(textoDe(desc(ls, 'coordinates')[0])).pts;
+        if (pts.length >= 2) linhasAbertas.push({ pts, ign });
+      }
+      continue;
+    }
+    poligonos.forEach((pg, i) => {
+      brutos.push(limparPoligono(pg, {
+        arquivo, nomeOriginal, caminho,
+        parte: poligonos.length > 1 ? i + 1 : 0, partes: poligonos.length,
+      }));
+    });
+  }
+  // arquivo sem nenhuma área, só com linhas de plantio ou de passada: estima a borda pela área que as linhas cobrem
+  if (!brutos.length && linhasAbertas.length >= CONTORNO.minimoLinhas) {
+    const est = contornoDasLinhas(linhasAbertas.map((l) => l.pts));
+    if (est.contornos.length) {
+      const usadas = new Set(linhasAbertas.map((l) => l.ign));
+      const restantes = ignorados.filter((g) => !usadas.has(g));
+      const base = arquivo.split(' › ').pop().replace(/\.(kml|kmz)$/i, '').trim() || 'Talhão';
+      const n = est.contornos.length;
+      const desenho = linhasParaDesenho(linhasAbertas.map((l) => l.pts));
+      est.contornos.forEach((c, k) => {
+        const it = Object.assign({}, {
+          arquivo, nomeOriginal: n > 1 ? `${base} - parte ${k + 1}` : base, caminho: [], parte: 0, partes: 1,
+          id: ++contadorItens, uuid: uuid(), ajustes: [], avisos: [], avisosNome: [], erro: null,
+          anel: null, pontos: 0, area: 0, chave: null, editado: false, repetido: false,
+        });
+        limparPontos(it, { pts: c.anel.map(([x, y]) => [arred(x), arred(y)]), comAltitude: false, casasMax: 0, ilegiveis: 0 });
+        it.ajustes = ['borda calculada pela área que as linhas cobrem'];
+        it.avisos.unshift(`contorno estimado a partir de ${milhar(linhasAbertas.length)} linhas de plantio ou passadas ` +
+          `(espaçamento de ${est.espacamento.toFixed(1).replace('.', ',')} m): confira no mapa antes de importar`);
+        if (n > 1) it.avisos.push(`as linhas formam ${n} áreas separadas: cada uma virou um talhão`);
+        it.estimado = true;
+        if (k === 0) it.linhasFonte = desenho;
+        brutos.push(it);
+      });
+      return { brutos, ignorados: restantes };
+    }
+  }
+  return { brutos, ignorados };
+}
+
+// versão leve das linhas, só para desenhar por baixo do contorno estimado
+function linhasParaDesenho(linhas, maximo = 25000) {
+  const total = linhas.reduce((s, l) => s + l.length, 0), passo = Math.max(1, Math.ceil(total / maximo));
+  return linhas.map((l) => l.filter((_, i) => i % passo === 0 || i === l.length - 1));
+}
+
+function motivoSemArea(pm) {
+  if (desc(pm, 'Point').length) return 'é um ponto, não uma área';
+  if (desc(pm, 'LineString').length || desc(pm, 'LinearRing').length) return 'é uma linha, não uma área';
+  if (desc(pm, 'Track').length || desc(pm, 'MultiTrack').length) return 'é um trajeto, não uma área';
+  return 'não tem desenho de área';
+}
+
+function lerCoordenadas(texto) {
+  const pts = [];
+  let comAltitude = false, casasMax = 0, ilegiveis = 0;
+  for (const tupla of texto.trim().replace(/\s*,\s*/g, ',').split(/\s+/)) {
+    if (!tupla) continue;
+    const partes = tupla.split(',');
+    const lon = parseFloat(partes[0]), lat = parseFloat(partes[1]);
+    if (partes.length < 2 || !isFinite(lon) || !isFinite(lat)) { ilegiveis++; continue; }
+    if (partes.length >= 3 && partes[2] !== '') comAltitude = true;
+    casasMax = Math.max(casasMax, casasDe(partes[0]), casasDe(partes[1]));
+    pts.push([arred(lon), arred(lat)]);
+  }
+  return { pts, comAltitude, casasMax, ilegiveis };
+}
+
+// soma de Shoelace com x = longitude e y = latitude: positiva = sentido horário
+function somaShoelace(aberto) {
+  let t = 0;
+  for (let i = 0; i < aberto.length; i++) {
+    const [x1, y1] = aberto[i], [x2, y2] = aberto[(i + 1) % aberto.length];
+    t += (x2 - x1) * (y2 + y1);
+  }
+  return t;
+}
+
+// área aproximada sobre a esfera, em hectares (anel fechado)
+function areaHa(anel) {
+  const R = 6378137;
+  let t = 0;
+  for (let i = 0; i < anel.length - 1; i++) {
+    const [x1, y1] = anel[i], [x2, y2] = anel[i + 1];
+    t += rad(x2 - x1) * (2 + Math.sin(rad(y1)) + Math.sin(rad(y2)));
+  }
+  return Math.abs(t * R * R / 2) / 10000;
+}
+
+function seCruza(anel) {
+  const n = anel.length - 1;
+  const lado = (p, q, r) => Math.sign((q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]));
+  for (let i = 0; i < n; i++) {
+    const a = anel[i], b = anel[i + 1];
+    for (let j = i + 2; j < n; j++) {
+      if (i === 0 && j === n - 1) continue; // primeiro e último lado se encostam no fechamento
+      const c = anel[j], d = anel[j + 1];
+      if (lado(a, b, c) * lado(a, b, d) < 0 && lado(c, d, a) * lado(c, d, b) < 0) return true;
+    }
+  }
+  return false;
+}
+
+function limparPoligono(pg, base) {
+  const it = Object.assign({}, base, {
+    id: ++contadorItens, uuid: uuid(), ajustes: [], avisos: [], avisosNome: [], erro: null,
+    anel: null, pontos: 0, area: 0, chave: null, editado: false, repetido: false,
+  });
+  if (base.parte) it.avisos.push(`área ${base.parte} de ${base.partes} do mesmo talhão no arquivo original: virou arquivo separado`);
+  if (desc(pg, 'innerBoundaryIs').length) it.avisos.push('recorte interno descartado: o arquivo do myFarm leva só o contorno externo');
+
+  const contorno = desc(pg, 'outerBoundaryIs')[0];
+  const coordsEl = desc(contorno || pg, 'coordinates')[0];
+  if (!coordsEl || !coordsEl.textContent.trim()) { it.erro = 'o talhão não tem coordenadas'; return it; }
+  return limparPontos(it, lerCoordenadas(coordsEl.textContent));
+}
+
+// limpa os pontos já lidos (de um polígono do arquivo ou de um contorno estimado)
+function limparPontos(it, lido) {
+  if (lido.ilegiveis) it.avisos.push(`${plural(lido.ilegiveis, 'ponto ilegível ignorado', 'pontos ilegíveis ignorados')}`);
+  if (lido.pts.some(([x, y]) => Math.abs(x) > 180 || Math.abs(y) > 90)) {
+    it.erro = 'coordenada fora do mapa (longitude e latitude podem estar trocadas)'; return it;
+  }
+  if (lido.comAltitude) it.ajustes.push('altitude removida');
+  if (lido.casasMax > REGRAS.casasDecimais) it.ajustes.push(`casas decimais reduzidas para ${REGRAS.casasDecimais}`);
+
+  const semRep = [];
+  for (const p of lido.pts) { const u = semRep[semRep.length - 1]; if (!u || u[0] !== p[0] || u[1] !== p[1]) semRep.push(p); }
+  const repetidos = lido.pts.length - semRep.length;
+  const fechado = semRep.length > 1 && semRep[0][0] === semRep[semRep.length - 1][0] && semRep[0][1] === semRep[semRep.length - 1][1];
+  let aberto = fechado ? semRep.slice(0, -1) : semRep;
+  if (repetidos) it.ajustes.push(plural(repetidos, 'ponto repetido removido', 'pontos repetidos removidos'));
+  if (new Set(aberto.map(chaveP)).size < 3) { it.erro = 'menos de 3 pontos: não forma uma área'; return it; }
+
+  const soma = somaShoelace(aberto);
+  if (soma === 0) { it.erro = 'área zero: os pontos estão todos em linha'; return it; }
+  if (!fechado) it.ajustes.push('contorno fechado');
+  if ((soma > 0) !== REGRAS.sentidoHorario) {
+    aberto = aberto.slice().reverse();
+    it.ajustes.push(REGRAS.sentidoHorario ? 'sentido virado para horário' : 'sentido virado para anti-horário');
+  }
+  it.anel = aberto.concat([aberto[0]]);
+  it.pontos = it.anel.length;
+  it.area = areaHa(it.anel);
+  it.chave = Array.from(new Set(aberto.map(chaveP))).sort().join(' ');
+  if (aberto.length <= REGRAS.limitePontosCruzamento && seCruza(it.anel)) {
+    it.avisos.push('o contorno se cruza: confira o desenho, o myFarm pode recusar ou calcular a área errada');
+  }
+  return it;
+}
+
+/* ===================== contorno estimado a partir de linhas ===================== */
+// As linhas vão para uma grade, junta-se tudo o que está a menos de R metros, fecham-se os buracos,
+// recua-se R menos meio espaçamento e contorna-se o resultado. A borda fica meio espaçamento além da última linha.
+function projecaoLocal(linhas) {
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (const l of linhas) for (const [x, y] of l) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  const lon0 = (x0 + x1) / 2, lat0 = (y0 + y1) / 2, R = 6371008.8;
+  const mx = R * Math.cos(rad(lat0)) * Math.PI / 180, my = R * Math.PI / 180;
+  return { ida: ([lon, lat]) => [(lon - lon0) * mx, (lat - lat0) * my], volta: ([x, y]) => [lon0 + x / mx, lat0 + y / my] };
+}
+
+// distância típica entre linhas vizinhas: do meio de uma linha até o segmento mais próximo de outra
+function estimarEspacamento(linhasXY) {
+  const C = 10, grade = new Map(), chave = (i, j) => i * 1e6 + j;
+  linhasXY.forEach((l, li) => {
+    for (let k = 1; k < l.length; k++) {
+      const a = l[k - 1], b = l[k];
+      const i0 = Math.floor(Math.min(a[0], b[0]) / C), i1 = Math.floor(Math.max(a[0], b[0]) / C);
+      const j0 = Math.floor(Math.min(a[1], b[1]) / C), j1 = Math.floor(Math.max(a[1], b[1]) / C);
+      for (let i = i0; i <= i1; i++) for (let j = j0; j <= j1; j++) {
+        const kk = chave(i, j); let v = grade.get(kk); if (!v) grade.set(kk, v = []); v.push(li, k);
+      }
+    }
+  });
+  const distSeg = (p, a, b) => {
+    const dx = b[0] - a[0], dy = b[1] - a[1], L = dx * dx + dy * dy;
+    let t = L ? ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / L : 0; t = Math.max(0, Math.min(1, t));
+    return Math.hypot(a[0] + t * dx - p[0], a[1] + t * dy - p[1]);
+  };
+  const amostras = [], passo = Math.max(1, Math.floor(linhasXY.length / 400));
+  for (let li = 0; li < linhasXY.length; li += passo) {
+    const l = linhasXY[li]; if (l.length < 2) continue;
+    const p = l[Math.floor(l.length / 2)], ci = Math.floor(p[0] / C), cj = Math.floor(p[1] / C);
+    let melhor = Infinity;
+    for (let i = ci - 2; i <= ci + 2; i++) for (let j = cj - 2; j <= cj + 2; j++) {
+      const v = grade.get(chave(i, j)); if (!v) continue;
+      for (let n = 0; n < v.length; n += 2) {
+        if (v[n] === li) continue;
+        const o = linhasXY[v[n]], d = distSeg(p, o[v[n + 1] - 1], o[v[n + 1]]);
+        if (d < melhor) melhor = d;
+      }
+    }
+    if (melhor < Infinity && melhor > 0.05) amostras.push(melhor);
+  }
+  if (amostras.length < 5) return null;
+  amostras.sort((a, b) => a - b);
+  return amostras[Math.floor(amostras.length / 2)];
+}
+
+// transformada de distância exata (Felzenszwalb e Huttenlocher): distância ao quadrado, em células, até a marca mais próxima
+function distanciaAte(marcado, nx, ny) {
+  const INF = 1e30, n = Math.max(nx, ny);
+  const d = new Float32Array(nx * ny), f = new Float64Array(n), v = new Int32Array(n), z = new Float64Array(n + 1), saida = new Float64Array(n);
+  const linha1d = (len) => {
+    let k = -1;
+    for (let q = 0; q < len; q++) {
+      if (f[q] >= INF) continue;
+      if (k < 0) { k = 0; v[0] = q; z[0] = -Infinity; z[1] = Infinity; continue; }
+      let s;
+      while (true) { const p = v[k]; s = ((f[q] + q * q) - (f[p] + p * p)) / (2 * (q - p)); if (s <= z[k]) k--; else break; }
+      k++; v[k] = q; z[k] = s; z[k + 1] = Infinity;
+    }
+    if (k < 0) { saida.fill(INF, 0, len); return; }
+    k = 0;
+    for (let q = 0; q < len; q++) { while (z[k + 1] < q) k++; const p = v[k]; saida[q] = (q - p) * (q - p) + f[p]; }
+  };
+  for (let i = 0; i < nx; i++) { // colunas
+    for (let j = 0; j < ny; j++) f[j] = marcado[j * nx + i] ? 0 : INF;
+    linha1d(ny);
+    for (let j = 0; j < ny; j++) d[j * nx + i] = saida[j];
+  }
+  for (let j = 0; j < ny; j++) { // linhas
+    const o = j * nx;
+    for (let i = 0; i < nx; i++) f[i] = d[o + i];
+    linha1d(nx);
+    for (let i = 0; i < nx; i++) d[o + i] = saida[i];
+  }
+  return d;
+}
+
+function simplificar(pts, tol) { // Douglas-Peucker, linha aberta
+  if (pts.length < 3) return pts.slice();
+  const manter = new Uint8Array(pts.length); manter[0] = manter[pts.length - 1] = 1;
+  const pilha = [[0, pts.length - 1]], t2 = tol * tol;
+  while (pilha.length) {
+    const [a, b] = pilha.pop(), A = pts[a], B = pts[b];
+    const dx = B[0] - A[0], dy = B[1] - A[1], L = dx * dx + dy * dy;
+    let maior = -1, idx = -1;
+    for (let i = a + 1; i < b; i++) {
+      const P = pts[i];
+      let t = L ? ((P[0] - A[0]) * dx + (P[1] - A[1]) * dy) / L : 0; t = Math.max(0, Math.min(1, t));
+      const x = A[0] + t * dx - P[0], y = A[1] + t * dy - P[1], dd = x * x + y * y;
+      if (dd > maior) { maior = dd; idx = i; }
+    }
+    if (maior > t2) { manter[idx] = 1; pilha.push([a, idx], [idx, b]); }
+  }
+  return pts.filter((_, i) => manter[i]);
+}
+
+// linhas: [[lon, lat], ...] cada. Devolve os contornos (anel fechado em lon/lat), o espaçamento e a junção usados.
+function contornoDasLinhas(linhas) {
+  const proj = projecaoLocal(linhas);
+  const xy = linhas.map((l) => l.map(proj.ida));
+  const espacamento = estimarEspacamento(xy) || 3;
+  const R = Math.min(CONTORNO.juncaoMaxima, Math.max(CONTORNO.juncaoMinima, CONTORNO.fatorJuncao * espacamento));
+  const recuo = Math.max(0, R - espacamento / 2);
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (const l of xy) for (const [x, y] of l) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+  const margem = R + 4;
+  x0 -= margem; y0 -= margem; x1 += margem; y1 += margem;
+  const c = Math.max(0.5, Math.min(espacamento / 2, 1), Math.sqrt((x1 - x0) * (y1 - y0) / CONTORNO.celulasMaximas));
+  const nx = Math.ceil((x1 - x0) / c) + 1, ny = Math.ceil((y1 - y0) / c) + 1, N = nx * ny;
+  const cel = (x, y) => Math.floor((y1 - y) / c) * nx + Math.floor((x - x0) / c);
+
+  // 1. linhas na grade
+  const linha = new Uint8Array(N);
+  for (const l of xy) {
+    if (l.length === 1) linha[cel(l[0][0], l[0][1])] = 1;
+    for (let k = 1; k < l.length; k++) {
+      const [ax, ay] = l[k - 1], [bx, by] = l[k];
+      const passos = Math.max(1, Math.ceil(Math.hypot(bx - ax, by - ay) / (c / 2)));
+      for (let s = 0; s <= passos; s++) linha[cel(ax + (bx - ax) * s / passos, ay + (by - ay) * s / passos)] = 1;
+    }
+  }
+  // 2. junta o que está a menos de R
+  const d1 = distanciaAte(linha, nx, ny), lim1 = (R / c) ** 2;
+  // 3. fecha os buracos: o que não se alcança pela borda da grade está dentro
+  const fora = new Uint8Array(N), pilha = new Int32Array(N);
+  let topo = 0;
+  const empurra = (p) => { if (!fora[p] && d1[p] > lim1) { fora[p] = 1; pilha[topo++] = p; } };
+  for (let i = 0; i < nx; i++) { empurra(i); empurra((ny - 1) * nx + i); }
+  for (let j = 0; j < ny; j++) { empurra(j * nx); empurra(j * nx + nx - 1); }
+  while (topo) {
+    const p = pilha[--topo], i = p % nx;
+    if (i > 0) empurra(p - 1);
+    if (i < nx - 1) empurra(p + 1);
+    if (p >= nx) empurra(p - nx);
+    if (p < N - nx) empurra(p + nx);
+  }
+  // 4. recua R menos meio espaçamento
+  const d2 = distanciaAte(fora, nx, ny), lim2 = (recuo / c) ** 2;
+  const dentro = new Uint8Array(N);
+  for (let p = 0; p < N; p++) dentro[p] = !fora[p] && d2[p] > lim2 ? 1 : 0;
+  // células que só se tocam pela quina ganham uma vizinha, para a borda não ter cruzamento
+  for (let volta = 0, mudou = true; mudou && volta < 6; volta++) {
+    mudou = false;
+    for (let j = 0; j < ny - 1; j++) for (let i = 0; i < nx - 1; i++) {
+      const p = j * nx + i, a = dentro[p], b = dentro[p + 1], e = dentro[p + nx], d = dentro[p + nx + 1];
+      if (a && d && !b && !e) { dentro[p + 1] = 1; mudou = true; }
+      else if (b && e && !a && !d) { dentro[p] = 1; mudou = true; }
+    }
+  }
+  // 5. separa os pedaços e contorna cada um
+  const rotulo = new Int32Array(N), areas = [0];
+  let nr = 0;
+  for (let p0 = 0; p0 < N; p0++) {
+    if (!dentro[p0] || rotulo[p0]) continue;
+    nr++;
+    let conta = 0;
+    topo = 0; pilha[topo++] = p0; rotulo[p0] = nr;
+    while (topo) {
+      const p = pilha[--topo], i = p % nx;
+      conta++;
+      if (i > 0 && dentro[p - 1] && !rotulo[p - 1]) { rotulo[p - 1] = nr; pilha[topo++] = p - 1; }
+      if (i < nx - 1 && dentro[p + 1] && !rotulo[p + 1]) { rotulo[p + 1] = nr; pilha[topo++] = p + 1; }
+      if (p >= nx && dentro[p - nx] && !rotulo[p - nx]) { rotulo[p - nx] = nr; pilha[topo++] = p - nx; }
+      if (p < N - nx && dentro[p + nx] && !rotulo[p + nx]) { rotulo[p + nx] = nr; pilha[topo++] = p + nx; }
+    }
+    areas.push(conta * c * c / 10000);
+  }
+  const maior = Math.max(0, ...areas);
+  const contornos = [];
+  let descartados = 0;
+  for (let r = 1; r <= nr; r++) {
+    if (areas[r] < CONTORNO.menorParteHa || areas[r] < maior * 0.02) { descartados++; continue; }
+    const metros = tracarContorno(rotulo, r, nx, ny).map(([i, j]) => [x0 + i * c, y1 - j * c]);
+    const meio = Math.floor(metros.length / 2); // simplifica em duas metades para o anel não colapsar
+    const s = simplificar(metros.slice(0, meio + 1), CONTORNO.simplificar)
+      .concat(simplificar(metros.slice(meio), CONTORNO.simplificar).slice(1));
+    contornos.push({ anel: s.map(proj.volta) });
+  }
+  return { contornos, espacamento, juncao: R, descartados };
+}
+
+// percorre a borda das células do pedaço r (vértices nos cantos das células) e devolve o maior anel fechado
+function tracarContorno(rotulo, r, nx, ny) {
+  const NX = nx + 1, saem = new Map(), arestas = [];
+  const em = (i, j) => i >= 0 && j >= 0 && i < nx && j < ny && rotulo[j * nx + i] === r;
+  const add = (a, b) => { arestas.push([a, b]); const l = saem.get(a); if (l) l.push(arestas.length - 1); else saem.set(a, [arestas.length - 1]); };
+  for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) {
+    if (rotulo[j * nx + i] !== r) continue;
+    if (!em(i, j - 1)) add(j * NX + i, j * NX + i + 1);
+    if (!em(i + 1, j)) add(j * NX + i + 1, (j + 1) * NX + i + 1);
+    if (!em(i, j + 1)) add((j + 1) * NX + i + 1, (j + 1) * NX + i);
+    if (!em(i - 1, j)) add((j + 1) * NX + i, j * NX + i);
+  }
+  const usada = new Uint8Array(arestas.length);
+  let melhor = null, melhorArea = -1;
+  for (let e0 = 0; e0 < arestas.length; e0++) {
+    if (usada[e0]) continue;
+    const anel = [];
+    let e = e0;
+    while (e != null && !usada[e]) {
+      usada[e] = 1;
+      const [a, b] = arestas[e];
+      anel.push([a % NX, Math.floor(a / NX)]);
+      const op = (saem.get(b) || []).find((x) => !usada[x]);
+      e = op == null ? null : op;
+    }
+    let area = 0;
+    for (let k = 0; k < anel.length; k++) { const [xa, ya] = anel[k], [xb, yb] = anel[(k + 1) % anel.length]; area += xa * yb - xb * ya; }
+    if (Math.abs(area) > melhorArea) { melhorArea = Math.abs(area); melhor = anel; }
+  }
+  melhor.push(melhor[0]);
+  return melhor;
+}
+
+/* ===================== repetidos e nomes ===================== */
+function montarResultado(brutos, ignorados, falhas, nomesArquivos) {
+  const porChave = new Map(), descartados = [];
+  const emPasta = (it) => it.caminho.length > 0;
+  for (const it of brutos) {
+    if (it.erro) continue;
+    const ja = porChave.get(it.chave);
+    if (!ja) porChave.set(it.chave, it);
+    else if (emPasta(it) && !emPasta(ja)) { porChave.set(it.chave, it); descartados.push({ item: ja, ficou: it }); }
+    else descartados.push({ item: it, ficou: ja });
+  }
+  for (const d of descartados) while (porChave.get(d.ficou.chave) !== d.ficou) d.ficou = porChave.get(d.ficou.chave);
+  const itens = brutos.filter((it) => it.erro || porChave.get(it.chave) === it);
+  nomear(itens);
+  return { itens, descartados, ignorados, falhas, nomesArquivos };
+}
+
+function nomear(itens) {
+  const max = REGRAS.nomeMaximo;
+  const bases = itens.map((it) => {
+    const avisos = [];
+    const n = (it.nomeOriginal || '').replace(/\s+/g, ' ').trim();
+    if (!n || REGRAS.nomesGenericos.test(n)) return { n: '', avisos };
+    const t = trocarCaracteres(n);
+    if (t !== n) avisos.push('caractere especial trocado no nome (&, <, > ou aspas)');
+    return { n: t, avisos };
+  });
+  const ocupados = new Set(bases.map((b) => b.n.toLowerCase()).filter(Boolean));
+  const usados = new Set();
+  let tl = 0;
+  itens.forEach((it, i) => {
+    const { n: base, avisos } = bases[i];
+    if (it.erro) { it.nome = base || it.nomeOriginal || '(sem nome)'; it.avisosNome = []; return; }
+    let nome;
+    if (!base) {
+      do { tl++; nome = REGRAS.prefixoSemNome + String(tl).padStart(2, '0'); }
+      while (ocupados.has(nome.toLowerCase()) || usados.has(nome.toLowerCase()));
+      avisos.push(it.nomeOriginal ? `nome genérico ("${it.nomeOriginal}"): recebeu ${nome}` : `sem nome no arquivo: recebeu ${nome}`);
+    } else {
+      const suf = it.parte ? ` - parte ${it.parte}` : '';
+      nome = cortar(base, max - suf.length) + suf;
+      if (base.length + suf.length > max) avisos.push(`nome cortado em ${max} caracteres (era "${base}")`);
+    }
+    if (usados.has(nome.toLowerCase())) {
+      let k = 2, novo;
+      do { const suf = ` (${k++})`; novo = cortar(nome, max - suf.length) + suf; } while (usados.has(novo.toLowerCase()));
+      avisos.push(`nome repetido no arquivo: virou "${novo}"`);
+      nome = novo;
+    }
+    usados.add(nome.toLowerCase());
+    it.nome = nome;
+    it.avisosNome = avisos;
+  });
+}
+
+function situacao(it) {
+  if (it.erro || !it.nome.trim()) return 'erro';
+  if (it.avisos.length || it.avisosNome.length || it.repetido) return 'atencao';
+  return 'pronto';
+}
+
+function marcas(it) {
+  const m = [];
+  if (it.erro) m.push(['erro', it.erro]);
+  else if (!it.nome.trim()) m.push(['erro', 'o nome não pode ficar vazio']);
+  for (const a of it.avisosNome) m.push(['aviso', a]);
+  if (it.repetido) m.push(['aviso', 'nome igual ao de outro talhão']);
+  for (const a of it.avisos) m.push(['aviso', a]);
+  for (const a of it.ajustes) m.push(['ajuste', a]);
+  if (it.editado) m.push(['ajuste', 'nome trocado aqui']);
+  if (!m.length) m.push(['ajuste', 'só a estrutura do arquivo foi ajustada']);
+  return m;
+}
+
+/* ===================== saída no formato do myFarm ===================== */
+function gerarKml(nome, anel, id) {
+  const coords = anel.map(([x, y]) => fmt(x) + ',' + fmt(y)).join(' ');
+  return '<?xml version="1.0" encoding="UTF-8"?>' +
+    '<kml><Document id="featureCollection">' +
+    `<Placemark id="${id}">` +
+    `<name>${escXml(nome)}</name>` +
+    '<MultiGeometry><Polygon><outerBoundaryIs><LinearRing>' +
+    `<coordinates>${coords}</coordinates>` +
+    '</LinearRing></outerBoundaryIs></Polygon></MultiGeometry>' +
+    '</Placemark></Document></kml>';
+}
+
+/* ===================== ZIP (sem biblioteca) ===================== */
+const TABELA_CRC = (() => {
+  const t = new Uint32Array(256);
+  for (let n = 0; n < 256; n++) { let c = n; for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1; t[n] = c >>> 0; }
+  return t;
+})();
+function crc32(b) { let c = 0xffffffff; for (let i = 0; i < b.length; i++) c = TABELA_CRC[(c ^ b[i]) & 0xff] ^ (c >>> 8); return (c ^ 0xffffffff) >>> 0; }
+
+// entrada: { nome, dados (como vão gravados), metodo (0 = sem compactar, 8 = deflate), crc, tamanho (original) }
+function montarZip(entradas) {
+  const enc = new TextEncoder(), partes = [], centrais = [];
+  const d = new Date();
+  const hora = (d.getHours() << 11) | (d.getMinutes() << 5) | (d.getSeconds() >> 1);
+  const data = ((d.getFullYear() - 1980) << 9) | ((d.getMonth() + 1) << 5) | d.getDate();
+  let pos = 0;
+  for (const e of entradas) {
+    const nb = enc.encode(e.nome);
+    const loc = new Uint8Array(30 + nb.length), lv = new DataView(loc.buffer);
+    lv.setUint32(0, 0x04034b50, true); lv.setUint16(4, 20, true); lv.setUint16(6, 0x0800, true); lv.setUint16(8, e.metodo, true);
+    lv.setUint16(10, hora, true); lv.setUint16(12, data, true); lv.setUint32(14, e.crc, true);
+    lv.setUint32(18, e.dados.length, true); lv.setUint32(22, e.tamanho, true); lv.setUint16(26, nb.length, true);
+    loc.set(nb, 30);
+    const cen = new Uint8Array(46 + nb.length), cv = new DataView(cen.buffer);
+    cv.setUint32(0, 0x02014b50, true); cv.setUint16(4, 20, true); cv.setUint16(6, 20, true); cv.setUint16(8, 0x0800, true);
+    cv.setUint16(10, e.metodo, true); cv.setUint16(12, hora, true); cv.setUint16(14, data, true); cv.setUint32(16, e.crc, true);
+    cv.setUint32(20, e.dados.length, true); cv.setUint32(24, e.tamanho, true); cv.setUint16(28, nb.length, true);
+    cv.setUint32(42, pos, true);
+    cen.set(nb, 46);
+    partes.push(loc, e.dados); centrais.push(cen);
+    pos += loc.length + e.dados.length;
+  }
+  const tamCentral = centrais.reduce((s, c) => s + c.length, 0);
+  const fim = new Uint8Array(22), fv = new DataView(fim.buffer);
+  fv.setUint32(0, 0x06054b50, true); fv.setUint16(8, entradas.length, true); fv.setUint16(10, entradas.length, true);
+  fv.setUint32(12, tamCentral, true); fv.setUint32(16, pos, true);
+  return new Blob([...partes, ...centrais, fim], { type: 'application/zip' });
+}
+function zipar(arquivos) {
+  return montarZip(arquivos.map((a) => ({ nome: a.nome, dados: a.dados, metodo: 0, crc: crc32(a.dados), tamanho: a.dados.length })));
+}
+
+async function lerZip(bytes, filtro) {
+  const v = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  let fim = -1;
+  for (let i = bytes.length - 22; i >= Math.max(0, bytes.length - 22 - 65535); i--) {
+    if (v.getUint32(i, true) === 0x06054b50) { fim = i; break; }
+  }
+  if (fim < 0) throw new Error('o KMZ está corrompido (não deu para abrir o arquivo compactado)');
+  const total = v.getUint16(fim + 10, true);
+  let p = v.getUint32(fim + 16, true);
+  const saida = [];
+  for (let k = 0; k < total; k++) {
+    if (v.getUint32(p, true) !== 0x02014b50) throw new Error('o KMZ está corrompido');
+    const flag = v.getUint16(p + 8, true), metodo = v.getUint16(p + 10, true), tamC = v.getUint32(p + 20, true);
+    const nl = v.getUint16(p + 28, true), xl = v.getUint16(p + 30, true), cl = v.getUint16(p + 32, true);
+    const ini = v.getUint32(p + 42, true);
+    const nome = new TextDecoder('utf-8').decode(bytes.subarray(p + 46, p + 46 + nl));
+    p += 46 + nl + xl + cl;
+    if (filtro && !filtro(nome)) continue;
+    if (flag & 1) throw new Error('o KMZ está protegido por senha');
+    const inicioDados = ini + 30 + v.getUint16(ini + 26, true) + v.getUint16(ini + 28, true);
+    const dados = bytes.subarray(inicioDados, inicioDados + tamC);
+    if (metodo === 0) saida.push({ nome, dados });
+    else if (metodo === 8) saida.push({ nome, dados: await descompactar(dados) });
+    else throw new Error('o KMZ usa uma compactação que a página não lê; abra no Google Earth e salve como KML');
+  }
+  return saida;
+}
+async function descompactar(dados) {
+  if (typeof DecompressionStream === 'undefined') {
+    throw new Error('este navegador não abre KMZ; use o Edge ou o Chrome atualizado, ou salve como KML no Google Earth');
+  }
+  const fluxo = new Blob([dados]).stream().pipeThrough(new DecompressionStream('deflate-raw'));
+  return new Uint8Array(await new Response(fluxo).arrayBuffer());
+}
+
+function baixar(blob, nome) {
+  const url = URL.createObjectURL(blob);
+  const a = el('a', { href: url, download: nome });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 4000);
+}
+
+/* ===================== tela ===================== */
+let estado = null;
+const ROTULO = { pronto: 'Pronto', atencao: 'Confira', erro: 'Erro' };
+const ICONE = { pronto: '✓', atencao: '!', erro: '✕' };
+
+async function carregarArquivos(lista) {
+  const arquivos = Array.from(lista || []);
+  if (!arquivos.length) return;
+  $('#mensagem').textContent = '';
+  const brutos = [], ignorados = [], falhas = [];
+  for (const f of arquivos) {
+    $('#status').textContent = `Lendo ${f.name}... Arquivo de linhas de plantio pode levar alguns segundos.`;
+    await new Promise((r) => setTimeout(r, 30)); // deixa a mensagem aparecer antes do cálculo
+    try {
+      const bytes = new Uint8Array(await f.arrayBuffer());
+      for (const { texto, nome } of await textosDoArquivo(bytes, f.name)) {
+        const r = lerKml(texto, nome);
+        brutos.push(...r.brutos); ignorados.push(...r.ignorados);
+      }
+    } catch (e) {
+      falhas.push({ arquivo: f.name, motivo: e.message });
+    }
+  }
+  $('#status').textContent = '';
+  mostrarResultado(montarResultado(brutos, ignorados, falhas, arquivos.map((f) => f.name)));
+}
+
+function mostrarResultado(res) {
+  if (!res.itens.length && !res.descartados.length) {
+    $('#resultado').hidden = true;
+    const motivos = res.falhas.map((f) => `${f.arquivo}: ${f.motivo}.`);
+    if (!motivos.length) motivos.push(explicarSemArea(res.ignorados));
+    $('#mensagem').textContent = motivos.join(' ');
+    return;
+  }
+  estado = res;
+  $('#resultado').hidden = false;
+  desenharTabela();
+  desenharMapa();
+  desenharFora();
+  atualizarTudo();
+  $('#resultado').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+const milhar = (n) => n.toLocaleString('pt-BR');
+
+// arquivo sem nenhuma área: diz o que veio no lugar e o que o myFarm precisa
+function explicarSemArea(ignorados) {
+  const conta = (re) => ignorados.filter((g) => re.test(g.motivo)).length;
+  const linhas = conta(/linha/), pontos = conta(/ponto/), trajetos = conta(/trajeto/);
+  const precisa = 'Para importar no myFarm é preciso o arquivo com o contorno de cada talhão, desenhado como área fechada (polígono).';
+  if (!ignorados.length) return 'Não achei nenhum talhão desenhado como área no arquivo. ' + precisa;
+  const partes = [];
+  if (linhas) partes.push(`${milhar(linhas)} ${linhas === 1 ? 'linha aberta' : 'linhas abertas'}`);
+  if (pontos) partes.push(`${milhar(pontos)} ${pontos === 1 ? 'ponto' : 'pontos'}`);
+  if (trajetos) partes.push(`${milhar(trajetos)} ${trajetos === 1 ? 'trajeto' : 'trajetos'}`);
+  const outros = ignorados.length - linhas - pontos - trajetos;
+  if (outros) partes.push(`${milhar(outros)} sem desenho`);
+  let texto = `Este arquivo não tem contorno de talhão: não há nenhuma área fechada, só ${partes.join(', ').replace(/, ([^,]*)$/, ' e $1')}.`;
+  if (linhas >= 10) texto += ' Muitas linhas lado a lado costumam ser linhas de plantio ou passadas de máquina, não a borda do talhão.';
+  return texto + ' ' + precisa;
+}
+
+function origemDe(it) {
+  const partes = [];
+  if (estado.nomesArquivos.length > 1 || it.arquivo.includes(' › ')) partes.push(it.arquivo);
+  partes.push(it.caminho.length ? it.caminho.join(' › ') : 'fora de pasta');
+  return partes.join(' · ');
+}
+
+function desenharTabela() {
+  const corpo = $('#linhas');
+  corpo.replaceChildren();
+  for (const it of estado.itens) {
+    const inp = el('input', {
+      class: 'nome', type: 'text', maxlength: REGRAS.nomeMaximo, value: it.nome,
+      'aria-label': 'Nome do talhão no myFarm', disabled: !!it.erro,
+    });
+    inp.addEventListener('input', () => { it.nome = inp.value; it.editado = true; it.avisosNome = []; atualizarTudo(); });
+    inp.addEventListener('change', () => {
+      const limpo = limparNomeDigitado(inp.value);
+      if (limpo !== inp.value) { inp.value = limpo; it.nome = limpo; atualizarTudo(); }
+    });
+    const botao = el('button', { type: 'button', onclick: () => baixarUm(it) }, 'Baixar .kml');
+    const marcasTd = el('td', { class: 'marcas' });
+    const situacaoTd = el('td');
+    const tr = el('tr', {},
+      el('td', {}, miniatura(it)),
+      el('td', {}, inp),
+      el('td', { class: 'origem' }, origemDe(it)),
+      el('td', { class: 'num' }, it.anel ? String(it.pontos) : '—'),
+      el('td', { class: 'num' }, it.anel ? fmtHa(it.area) : '—'),
+      marcasTd, situacaoTd,
+      el('td', {}, botao));
+    tr.addEventListener('mouseenter', () => it.pathMapa && it.pathMapa.classList.add('realce'));
+    tr.addEventListener('mouseleave', () => it.pathMapa && it.pathMapa.classList.remove('realce'));
+    it.ui = { tr, inp, botao, marcasTd, situacaoTd };
+    corpo.append(tr);
+  }
+}
+
+function atualizarTudo() {
+  const conta = new Map();
+  for (const it of estado.itens) if (!it.erro) { const k = it.nome.trim().toLowerCase(); conta.set(k, (conta.get(k) || 0) + 1); }
+  for (const it of estado.itens) it.repetido = !it.erro && !!it.nome.trim() && conta.get(it.nome.trim().toLowerCase()) > 1;
+
+  const n = { pronto: 0, atencao: 0, erro: 0 };
+  let area = 0;
+  for (const it of estado.itens) {
+    const s = situacao(it);
+    n[s]++;
+    if (s !== 'erro') area += it.area;
+    const ui = it.ui;
+    ui.marcasTd.replaceChildren(...marcas(it).map(([tipo, txt]) => el('span', { class: 'chip ' + tipo }, txt)));
+    ui.situacaoTd.replaceChildren(el('span', { class: 'situacao ' + s }, el('span', { class: 'ic', 'aria-hidden': 'true' }, ICONE[s]), ROTULO[s]));
+    ui.botao.disabled = s === 'erro';
+    ui.inp.classList.toggle('invalido', !it.erro && !it.nome.trim());
+    if (it.pathMapa) it.pathMapa.setAttribute('class', classePol(it, s) + (it.pathMapa.classList.contains('realce') ? ' realce' : ''));
+    if (it.miniatura && it.miniatura.firstChild) it.miniatura.firstChild.setAttribute('class', classePol(it, s));
+    if (it.rotulo) it.rotulo.textContent = cortar(it.nome, it.rotuloMax);
+  }
+  $('#t-lidos').textContent = estado.itens.length;
+  $('#t-pronto').textContent = n.pronto;
+  $('#t-atencao').textContent = n.atencao;
+  $('#t-erro').textContent = n.erro;
+
+  const frases = [];
+  if (n.pronto + n.atencao) frases.push(`Área somada dos talhões que vão para o myFarm: ${fmtHa(area)} (aproximada).`);
+  const fora = [];
+  if (estado.descartados.length) fora.push(plural(estado.descartados.length, 'desenho repetido descartado', 'desenhos repetidos descartados'));
+  if (estado.ignorados.length) fora.push(plural(estado.ignorados.length, 'item que não é área ignorado', 'itens que não são área ignorados'));
+  if (estado.falhas.length) fora.push(plural(estado.falhas.length, 'arquivo que não deu para ler', 'arquivos que não deu para ler'));
+  if (fora.length) frases.push(`${fora.join(', ')}: detalhes em "Ficou de fora", no fim da página.`.replace(/^./, (c) => c.toUpperCase()));
+  $('#linha-resumo').textContent = frases.join(' ');
+
+  $('#baixar-todos').disabled = !(n.pronto + n.atencao);
+  $('#nota-zip').textContent = n.erro ? `${plural(n.erro, 'talhão com erro fica', 'talhões com erro ficam')} fora do .zip.` : '';
+}
+
+function baixarUm(it) {
+  const nome = limparNomeDigitado(it.nome);
+  if (!nome || it.erro) return;
+  baixar(new Blob([gerarKml(nome, it.anel, it.uuid)], { type: 'application/vnd.google-earth.kml+xml' }), nomeArquivo(nome) + '.kml');
+}
+
+function baixarTodos() {
+  const enc = new TextEncoder(), usados = new Map(), arquivos = [];
+  for (const it of estado.itens) {
+    if (situacao(it) === 'erro') continue;
+    const nome = limparNomeDigitado(it.nome);
+    let base = nomeArquivo(nome), k = usados.get(base.toLowerCase()) || 0;
+    usados.set(base.toLowerCase(), k + 1);
+    if (k) base += '_' + (k + 1);
+    arquivos.push({ nome: base + '.kml', dados: enc.encode(gerarKml(nome, it.anel, it.uuid)) });
+  }
+  if (!arquivos.length) return;
+  const nomes = estado.nomesArquivos;
+  const nomeZip = nomes.length === 1
+    ? nomes[0].replace(/\.(kml|kmz)$/i, '') + ' - talhoes myFarm.zip'
+    : `talhoes myFarm ${new Date().toISOString().slice(0, 10)}.zip`;
+  baixar(zipar(arquivos), nomeZip);
+}
+
+/* mapa: projeção simples (longitude encolhida pelo cosseno da latitude), suficiente para conferir o desenho */
+function projetor(aneis, larg, alt, margem) {
+  let x0 = Infinity, x1 = -Infinity, y0 = Infinity, y1 = -Infinity;
+  for (const a of aneis) for (const [x, y] of a) { x0 = Math.min(x0, x); x1 = Math.max(x1, x); y0 = Math.min(y0, y); y1 = Math.max(y1, y); }
+  const kx = Math.cos(rad((y0 + y1) / 2));
+  const w = Math.max((x1 - x0) * kx, 1e-9), h = Math.max(y1 - y0, 1e-9);
+  const esc = Math.min((larg - 2 * margem) / w, (alt - 2 * margem) / h);
+  const dx = (larg - w * esc) / 2, dy = (alt - h * esc) / 2;
+  return ([x, y]) => [dx + (x - x0) * kx * esc, dy + (y1 - y) * esc];
+}
+const caminhoSvg = (anel, proj) => 'M' + anel.slice(0, -1).map((p) => proj(p).map((v) => v.toFixed(1)).join(' ')).join('L') + 'Z';
+
+function centroide(anel) {
+  const [ox, oy] = anel[0];
+  let a = 0, cx = 0, cy = 0;
+  for (let i = 0; i < anel.length - 1; i++) {
+    const x1 = anel[i][0] - ox, y1 = anel[i][1] - oy, x2 = anel[i + 1][0] - ox, y2 = anel[i + 1][1] - oy;
+    const f = x1 * y2 - x2 * y1;
+    a += f; cx += (x1 + x2) * f; cy += (y1 + y2) * f;
+  }
+  return a ? [ox + cx / (3 * a), oy + cy / (3 * a)] : anel[0];
+}
+
+const classePol = (it, s) => 'pol ' + s + (it.estimado ? ' estimado' : '');
+
+function miniatura(it) {
+  const s = svg('svg', { class: 'miniatura', width: 44, height: 44, viewBox: '0 0 44 44', 'aria-hidden': 'true' });
+  if (it.anel) s.append(svg('path', { d: caminhoSvg(it.anel, projetor([it.anel], 44, 44, 4)), class: classePol(it, situacao(it)) }));
+  it.miniatura = s;
+  return s;
+}
+
+function desenharMapa() {
+  const mapa = $('#mapa');
+  mapa.replaceChildren();
+  const comDesenho = estado.itens.filter((it) => it.anel);
+  $('#bloco-mapa').hidden = !comDesenho.length;
+  if (!comDesenho.length) return;
+  const L = 1000, A = 440;
+  const proj = projetor(comDesenho.map((it) => it.anel), L, A, 18);
+  const dica = $('#dica');
+  const rotulos = [];
+  // linhas de plantio que deram origem a um contorno estimado, por baixo dele
+  for (const it of comDesenho) {
+    for (const l of it.linhasFonte || []) {
+      mapa.append(svg('polyline', { class: 'fonte', points: l.map((q) => proj(q).map((v) => v.toFixed(1)).join(',')).join(' ') }));
+    }
+  }
+  for (const it of comDesenho) {
+    const p = svg('path', { d: caminhoSvg(it.anel, proj), class: classePol(it, situacao(it)), tabindex: 0 });
+    p.addEventListener('pointermove', (e) => {
+      const s = situacao(it);
+      dica.replaceChildren(el('div', { class: 'd-nome' }, it.nome || '(sem nome)'),
+        el('div', { class: 'd-info' }, `${fmtHa(it.area)} · ${it.pontos} pontos · ${ROTULO[s]}`));
+      dica.hidden = false;
+      const x = Math.min(e.clientX + 14, window.innerWidth - dica.offsetWidth - 8);
+      const y = Math.min(e.clientY + 14, window.innerHeight - dica.offsetHeight - 8);
+      dica.style.left = x + 'px'; dica.style.top = y + 'px';
+      it.ui.tr.classList.add('realce');
+    });
+    p.addEventListener('pointerleave', () => { dica.hidden = true; it.ui.tr.classList.remove('realce'); });
+    const irParaLinha = () => { it.ui.tr.scrollIntoView({ behavior: 'smooth', block: 'center' }); if (!it.ui.inp.disabled) it.ui.inp.focus({ preventScroll: true }); };
+    p.addEventListener('click', irParaLinha);
+    p.addEventListener('keydown', (e) => { if (e.key === 'Enter') irParaLinha(); });
+    it.pathMapa = p;
+    mapa.append(p);
+    // rótulo só quando cabe e quando não são talhões demais
+    if (comDesenho.length <= 40) {
+      const pts = it.anel.map(proj);
+      const w = Math.max(...pts.map((q) => q[0])) - Math.min(...pts.map((q) => q[0]));
+      const h = Math.max(...pts.map((q) => q[1])) - Math.min(...pts.map((q) => q[1]));
+      if (w >= 80 && h >= 22) {
+        const [cx, cy] = proj(centroide(it.anel));
+        const t = svg('text', { x: cx.toFixed(1), y: (cy + 4).toFixed(1), 'text-anchor': 'middle', class: 'rotulo' });
+        it.rotuloMax = Math.max(6, Math.floor(w / 7));
+        t.textContent = cortar(it.nome, it.rotuloMax);
+        it.rotulo = t;
+        rotulos.push(t);
+      }
+    }
+  }
+  mapa.append(...rotulos);
+  const presentes = ['pronto', 'atencao', 'erro'].filter((s) => estado.itens.some((it) => it.anel && situacao(it) === s));
+  const legenda = presentes.map((s) => el('span', {}, el('span', { class: 'ponto ' + s }), { pronto: 'Pronto', atencao: 'Confira antes', erro: 'Com erro' }[s]));
+  if (comDesenho.some((it) => it.linhasFonte)) legenda.push(el('span', {}, el('span', { class: 'traco' }), 'Linhas do arquivo'));
+  $('#legenda').replaceChildren(...legenda);
+}
+
+function desenharFora() {
+  const caixa = $('#fora-lista');
+  caixa.replaceChildren();
+  const { descartados, ignorados, falhas } = estado;
+  const ondeEsta = (it) => it.caminho.length ? it.caminho.join(' › ') : 'fora de pasta';
+  if (falhas.length) {
+    caixa.append(el('h3', {}, 'Arquivos que não deu para ler'),
+      el('ul', {}, falhas.map((f) => el('li', {}, `${f.arquivo}: ${f.motivo}.`))));
+  }
+  if (descartados.length) {
+    caixa.append(el('h3', {}, 'Desenhos repetidos descartados'),
+      el('ul', {}, descartados.map((d) => el('li', {},
+        `${d.item.nomeOriginal || '(sem nome)'} (${ondeEsta(d.item)}): mesmo desenho de "${d.ficou.nome}" (${ondeEsta(d.ficou)}), que foi mantido.`))));
+  }
+  if (ignorados.length) {
+    const LIMITE = 20;
+    const itens = ignorados.slice(0, LIMITE).map((g) => el('li', {}, `${g.nome} (${ondeEsta(g)}): ${g.motivo}.`));
+    if (ignorados.length > LIMITE) itens.push(el('li', {}, `e mais ${milhar(ignorados.length - LIMITE)}.`));
+    caixa.append(el('h3', {}, `Itens que não são área (${milhar(ignorados.length)})`), el('ul', {}, itens));
+  }
+  $('#fora').hidden = !caixa.children.length;
+}
+
+/* ===================== arquivo de exemplo ===================== */
+const EXEMPLO = `<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2" xmlns:kml="http://www.opengis.net/kml/2.2" xmlns:atom="http://www.w3.org/2005/Atom">
+<Document>
+  <name>Fazenda Exemplo.kml</name>
+  <Folder>
+    <name>Fazenda Exemplo</name>
+    <Folder>
+      <name>Safra 26/27</name>
+      <Placemark>
+        <name>Talhão 01</name>
+        <Polygon><outerBoundaryIs><LinearRing><coordinates>
+          -50.920000000000002,-17.800000000000001,0 -50.920000000000002,-17.812000000000001,0 -50.905000000000001,-17.812000000000001,0 -50.905000000000001,-17.800000000000001,0 -50.920000000000002,-17.800000000000001,0
+        </coordinates></LinearRing></outerBoundaryIs></Polygon>
+      </Placemark>
+      <Placemark>
+        <name>Talhão 02</name>
+        <Polygon><outerBoundaryIs><LinearRing><coordinates>
+          -50.905,-17.8,0 -50.8975,-17.7988,0 -50.89,-17.8,0 -50.89,-17.812,0 -50.905,-17.812,0 -50.905,-17.8,0
+        </coordinates></LinearRing></outerBoundaryIs></Polygon>
+      </Placemark>
+      <Placemark>
+        <name>Talhão 03 Área do pivô central ao lado da sede antiga</name>
+        <Polygon><outerBoundaryIs><LinearRing><coordinates>
+          -50.9065,-17.8195,0 -50.908257,-17.815257,0 -50.9125,-17.8135,0 -50.916743,-17.815257,0 -50.9185,-17.8195,0 -50.916743,-17.823743,0 -50.9125,-17.8255,0 -50.908257,-17.823743,0 -50.9065,-17.8195,0
+        </coordinates></LinearRing></outerBoundaryIs></Polygon>
+      </Placemark>
+      <Placemark>
+        <name>Soja &amp; Milho</name>
+        <Polygon>
+          <outerBoundaryIs><LinearRing><coordinates>
+            -50.903,-17.8135,0 -50.889,-17.8135,0 -50.889,-17.826,0 -50.903,-17.826,0 -50.903,-17.8135,0
+          </coordinates></LinearRing></outerBoundaryIs>
+          <innerBoundaryIs><LinearRing><coordinates>
+            -50.898,-17.818,0 -50.894,-17.818,0 -50.894,-17.822,0 -50.898,-17.822,0 -50.898,-17.818,0
+          </coordinates></LinearRing></innerBoundaryIs>
+        </Polygon>
+      </Placemark>
+    </Folder>
+    <Placemark>
+      <name>Polígono sem título</name>
+      <Polygon><outerBoundaryIs><LinearRing><coordinates>
+        -50.932,-17.8,0 -50.922,-17.8,0 -50.922,-17.81,0 -50.932,-17.81,0 -50.932,-17.8,0
+      </coordinates></LinearRing></outerBoundaryIs></Polygon>
+    </Placemark>
+    <Placemark>
+      <name>Sede</name>
+      <Point><coordinates>-50.926,-17.818,0</coordinates></Point>
+    </Placemark>
+  </Folder>
+  <Placemark>
+    <name>Talhão 01</name>
+    <Polygon><outerBoundaryIs><LinearRing><coordinates>
+      -50.92,-17.8,0 -50.92,-17.812,0 -50.905,-17.812,0 -50.905,-17.8,0 -50.92,-17.8,0
+    </coordinates></LinearRing></outerBoundaryIs></Polygon>
+  </Placemark>
+</Document>
+</kml>`;
+
+function abrirExemplo() {
+  const r = lerKml(EXEMPLO, 'Fazenda Exemplo.kml');
+  mostrarResultado(montarResultado(r.brutos, r.ignorados, [], ['Fazenda Exemplo.kml']));
+}
+
+/* ===================== testes (abra a página com #teste no fim do endereço) ===================== */
+async function rodarTestes() {
+  const resultados = [];
+  const teste = async (nome, fn) => {
+    try { await fn(); resultados.push({ ok: true, nome }); }
+    catch (e) { resultados.push({ ok: false, nome, erro: e.message }); }
+  };
+  const ok = (cond, msg) => { if (!cond) throw new Error(msg); };
+  const processar = (texto, nome = 'teste.kml') => { const r = lerKml(texto, nome); return montarResultado(r.brutos, r.ignorados, [], [nome]); };
+  const kml = (corpo) => `<?xml version="1.0" encoding="UTF-8"?><kml xmlns="http://www.opengis.net/kml/2.2" xmlns:gx="http://www.google.com/kml/ext/2.2"><Document>${corpo}</Document></kml>`;
+  const pm = (nome, coords) => `<Placemark><name>${nome}</name><Polygon><outerBoundaryIs><LinearRing><coordinates>${coords}</coordinates></LinearRing></outerBoundaryIs></Polygon></Placemark>`;
+  const quadrado = (x, y, d = 0.01) => `${x},${y},0 ${x + d},${y},0 ${x + d},${y - d},0 ${x},${y - d},0 ${x},${y},0`;
+  const N = REGRAS.nomeMaximo, C = REGRAS.casasDecimais;
+  const num = `-?\\d+(\\.\\d{1,${C}})?`;
+  const FORMATO = new RegExp('^<\\?xml version="1\\.0" encoding="UTF-8"\\?><kml><Document id="featureCollection">' +
+    '<Placemark id="[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}">' +
+    `<name>[^<>&]{1,${N}}</name><MultiGeometry><Polygon><outerBoundaryIs><LinearRing>` +
+    `<coordinates>${num},${num}( ${num},${num})+</coordinates>` +
+    '</LinearRing></outerBoundaryIs></Polygon></MultiGeometry></Placemark></Document></kml>$');
+  const saida = (it) => gerarKml(limparNomeDigitado(it.nome), it.anel, it.uuid);
+  const ex = processar(EXEMPLO, 'Fazenda Exemplo.kml');
+  const porNome = (res, n) => res.itens.find((it) => it.nome === n);
+
+  await teste('acha talhão dentro de subpasta', () => {
+    const t = porNome(ex, 'Talhão 01');
+    ok(t, 'Talhão 01 não foi encontrado');
+    ok(t.caminho.join('/') === 'Fazenda Exemplo/Safra 26/27', 'caminho errado: ' + t.caminho.join('/'));
+  });
+  await teste('descarta desenho repetido e mantém o que está na pasta', () => {
+    ok(ex.descartados.length === 1, 'descartados: ' + ex.descartados.length);
+    ok(ex.descartados[0].ficou.caminho.length > 0, 'ficou o que está fora de pasta');
+    ok(ex.itens.length === 5, 'itens: ' + ex.itens.length);
+  });
+  await teste('repetido solto antes do da pasta: fica o da pasta', () => {
+    const r = processar(kml(pm('Solto', quadrado(-50, -17)) + `<Folder><name>F</name>${pm('Na pasta', quadrado(-50, -17))}</Folder>`));
+    ok(r.itens.length === 1 && r.itens[0].nome === 'Na pasta', 'ficou: ' + r.itens.map((i) => i.nome).join(','));
+  });
+  await teste('ignora ponto', () => {
+    ok(ex.ignorados.length === 1 && /ponto/.test(ex.ignorados[0].motivo), 'ignorados: ' + JSON.stringify(ex.ignorados));
+  });
+  await teste('arquivo gerado segue o formato do myFarm', () => {
+    for (const it of ex.itens) ok(FORMATO.test(saida(it)), 'fora do formato: ' + saida(it).slice(0, 200));
+  });
+  await teste('arquivo gerado é XML válido, sem namespace, com 1 talhão', () => {
+    for (const it of ex.itens) {
+      const d = new DOMParser().parseFromString(saida(it), 'application/xml');
+      ok(!d.getElementsByTagName('parsererror').length, 'XML inválido: ' + it.nome);
+      ok(d.documentElement.namespaceURI === null, 'tem namespace: ' + it.nome);
+      ok(d.getElementsByTagName('Placemark').length === 1, 'mais de um Placemark');
+    }
+  });
+  await teste('contorno sai fechado e em sentido horário', () => {
+    for (const it of ex.itens) {
+      const pts = saida(it).match(/<coordinates>(.*)<\/coordinates>/)[1].split(' ').map((p) => p.split(',').map(Number));
+      ok(pts[0][0] === pts[pts.length - 1][0] && pts[0][1] === pts[pts.length - 1][1], 'não fechou: ' + it.nome);
+      ok(somaShoelace(pts.slice(0, -1)) > 0, 'não está horário: ' + it.nome);
+    }
+    ok(porNome(ex, 'Talhão 01').ajustes.includes('sentido virado para horário'), 'Talhão 01 deveria ter sido virado');
+    ok(!porNome(ex, 'Talhão 02').ajustes.some((a) => /sentido/.test(a)), 'Talhão 02 já estava horário');
+  });
+  await teste('remove altitude e reduz casas decimais', () => {
+    const t = porNome(ex, 'Talhão 01');
+    ok(t.ajustes.includes('altitude removida'), 'sem aviso de altitude');
+    ok(t.ajustes.some((a) => /casas decimais/.test(a)), 'sem aviso de casas');
+    const coords = saida(t).match(/<coordinates>(.*)<\/coordinates>/)[1];
+    ok(coords.split(' ').every((p) => p.split(',').length === 2) && !new RegExp(`\\.\\d{${C + 1}}`).test(coords), 'sobrou altitude ou casas: ' + coords);
+  });
+  await teste(`nome longo é cortado em ${N}`, () => {
+    const t = ex.itens.find((it) => it.nomeOriginal.startsWith('Talhão 03'));
+    ok(t.nome.length <= N && t.nome.length > 0, 'tamanho: ' + t.nome.length);
+    ok(t.avisosNome.some((a) => /cortado/.test(a)), 'sem aviso de corte');
+  });
+  await teste('& no nome vira "e"', () => { ok(porNome(ex, 'Soja e Milho'), 'nomes: ' + ex.itens.map((i) => i.nome).join(' | ')); });
+  await teste('recorte interno é avisado', () => { ok(porNome(ex, 'Soja e Milho').avisos.some((a) => /recorte/.test(a)), 'sem aviso'); });
+  await teste('"Polígono sem título" vira TL01', () => { ok(porNome(ex, 'TL01'), 'nomes: ' + ex.itens.map((i) => i.nome).join(' | ')); });
+  await teste('nome igual com desenho diferente ganha (2)', () => {
+    const r = processar(kml(pm('Talhão 02', quadrado(-50, -17)) + pm('Talhão 02', quadrado(-49, -17))));
+    ok(r.itens.map((i) => i.nome).join('|') === 'Talhão 02|Talhão 02 (2)', 'nomes: ' + r.itens.map((i) => i.nome).join('|'));
+  });
+  await teste('talhão com várias áreas vira uma parte por arquivo', () => {
+    const r = processar(kml(`<Placemark><name>Talhão 05</name><MultiGeometry>` +
+      `<Polygon><outerBoundaryIs><LinearRing><coordinates>${quadrado(-50, -17)}</coordinates></LinearRing></outerBoundaryIs></Polygon>` +
+      `<Polygon><outerBoundaryIs><LinearRing><coordinates>${quadrado(-49.9, -17)}</coordinates></LinearRing></outerBoundaryIs></Polygon>` +
+      `</MultiGeometry></Placemark>`));
+    ok(r.itens.map((i) => i.nome).join('|') === 'Talhão 05 - parte 1|Talhão 05 - parte 2', 'nomes: ' + r.itens.map((i) => i.nome).join('|'));
+  });
+  await teste('arquivo que já saiu daqui passa de novo sem ajuste', () => {
+    for (const it of ex.itens) {
+      const r = processar(saida(it));
+      ok(r.itens.length === 1, 'itens: ' + r.itens.length);
+      const de = r.itens[0];
+      ok(!de.ajustes.length && !de.avisos.length && situacao(de) === 'pronto', `${it.nome}: ${de.ajustes.concat(de.avisos).join(', ')}`);
+      ok(de.chave === it.chave, 'coordenadas mudaram: ' + it.nome);
+    }
+  });
+  await teste('latitude e longitude trocadas dão erro', () => {
+    const r = processar(kml(pm('Trocado', '-17.8,-150.92 -17.8,-150.91 -17.81,-150.91 -17.8,-150.92')));
+    ok(r.itens.length === 1 && situacao(r.itens[0]) === 'erro', 'não deu erro');
+  });
+  await teste('contorno que se cruza é avisado', () => {
+    const r = processar(kml(pm('Gravata', '-50,-17 -49.98,-17.01 -49.98,-17 -50,-17.02 -50,-17')));
+    ok(r.itens[0].avisos.some((a) => /cruza/.test(a)), 'sem aviso');
+    ok(!processar(kml(pm('Ok', quadrado(-50, -17)))).itens[0].avisos.length, 'quadrado não deveria ter aviso');
+  });
+  await teste('menos de 3 pontos dá erro', () => {
+    const r = processar(kml(pm('Linha', '-50,-17 -49.99,-17 -50,-17')));
+    ok(situacao(r.itens[0]) === 'erro', 'não deu erro');
+  });
+  await teste('KML sem namespace também é lido', () => {
+    const r = processar(`<kml><Document>${pm('Sem ns', quadrado(-50, -17))}</Document></kml>`);
+    ok(r.itens.length === 1 && r.itens[0].nome === 'Sem ns', 'não leu');
+  });
+  await teste('arquivo em ISO-8859-1 mantém o acento', () => {
+    const texto = '<?xml version="1.0" encoding="ISO-8859-1"?><kml><Document>' + pm('Talhão Área', quadrado(-50, -17)) + '</Document></kml>';
+    const bytes = Uint8Array.from(texto, (c) => c.charCodeAt(0));
+    const r = processar(decodificar(bytes));
+    ok(r.itens[0].nome === 'Talhão Área', 'nome lido: ' + r.itens[0].nome);
+  });
+  await teste('nome vazio digitado vira erro e nome longo digitado é cortado', () => {
+    const r = processar(kml(pm('A', quadrado(-50, -17))));
+    r.itens[0].nome = '   ';
+    ok(situacao(r.itens[0]) === 'erro', 'vazio não deu erro');
+    ok(limparNomeDigitado('x'.repeat(N + 10)).length === N, 'não cortou');
+    ok(limparNomeDigitado('Soja & Milho') === 'Soja e Milho', 'não trocou &');
+  });
+  await teste('números saem sem notação científica', () => {
+    ok(fmt(arred(-0.00000004)) === '0', fmt(arred(-0.00000004)));
+    ok(fmt(arred(-47.12345678)) === '-47.1234568', fmt(arred(-47.12345678)));
+    ok(fmt(arred(0.0000001)) === '0.0000001', fmt(arred(0.0000001)));
+    ok(fmt(arred(-50.910000000000004)) === '-50.91', fmt(arred(-50.910000000000004)));
+  });
+  await teste('ZIP gerado abre de volta, com acento no nome', async () => {
+    const dados = new TextEncoder().encode(gerarKml('Talhão 1', porNome(ex, 'Talhão 01').anel, uuid()));
+    const blob = zipar([{ nome: 'Talhão_1.kml', dados }, { nome: 'B.kml', dados }]);
+    const lidos = await lerZip(new Uint8Array(await blob.arrayBuffer()));
+    ok(lidos.length === 2 && lidos[0].nome === 'Talhão_1.kml', 'nomes: ' + lidos.map((l) => l.nome).join(','));
+    ok(new TextDecoder().decode(lidos[0].dados) === new TextDecoder().decode(dados), 'conteúdo diferente');
+  });
+  await teste('KMZ compactado é lido', async () => {
+    ok(typeof CompressionStream !== 'undefined', 'navegador sem CompressionStream para montar o teste');
+    const original = new TextEncoder().encode(EXEMPLO);
+    const fluxo = new Blob([original]).stream().pipeThrough(new CompressionStream('deflate-raw'));
+    const comp = new Uint8Array(await new Response(fluxo).arrayBuffer());
+    const kmz = montarZip([{ nome: 'doc.kml', dados: comp, metodo: 8, crc: crc32(original), tamanho: original.length },
+      { nome: 'files/foto.png', dados: new Uint8Array([1, 2, 3]), metodo: 0, crc: crc32(new Uint8Array([1, 2, 3])), tamanho: 3 }]);
+    const textos = await textosDoArquivo(new Uint8Array(await kmz.arrayBuffer()), 'Fazenda.kmz');
+    ok(textos.length === 1, 'KMLs dentro: ' + textos.length);
+    const r = lerKml(textos[0].texto, textos[0].nome);
+    ok(r.brutos.length === 6, 'polígonos: ' + r.brutos.length);
+  });
+  await teste('tela: carrega arquivo, monta a tabela e reage à troca de nome', async () => {
+    await carregarArquivos([new File([EXEMPLO], 'Fazenda Exemplo.kml'), new File(['isto não é KML'], 'ruim.kml')]);
+    ok(estado.itens.length === 5 && estado.falhas.length === 1, `itens ${estado.itens.length}, falhas ${estado.falhas.length}`);
+    ok($('#linhas').children.length === 5, 'linhas na tabela: ' + $('#linhas').children.length);
+    ok($('#t-lidos').textContent === '5' && $('#t-pronto').textContent === '2', 'quadros: ' + $('#t-lidos').textContent + '/' + $('#t-pronto').textContent);
+    const it = estado.itens.find((i) => i.nome === 'Talhão 02');
+    it.ui.inp.value = ''; it.ui.inp.dispatchEvent(new Event('input'));
+    ok(it.ui.botao.disabled && $('#t-erro').textContent === '1', 'nome vazio não bloqueou o download');
+    it.ui.inp.value = 'Talhão 01'; it.ui.inp.dispatchEvent(new Event('input'));
+    ok(situacao(it) === 'atencao' && it.repetido, 'nome igual a outro não foi avisado');
+    it.ui.inp.value = 'Talhão 02'; it.ui.inp.dispatchEvent(new Event('input'));
+    ok(situacao(it) === 'pronto' && !it.ui.botao.disabled, 'não voltou a pronto');
+  });
+  // linhas paralelas como as de plantio: n linhas a cada `passo` metros, com `comp` metros, a partir de (lon, lat)
+  const GRAU_LAT = 110600, GRAU_LON = 106400; // metros por grau perto de 17° S
+  const linhasPlantio = (n, lon, lat, comp, passo, pref = 'kml_') => Array.from({ length: n }, (_, i) => {
+    const y = lat - i * passo / GRAU_LAT, dx = comp / GRAU_LON;
+    return `<Placemark><name>${pref}${i}</name><LineString><coordinates>${lon},${y},0 ${lon + dx / 2},${y},0 ${lon + dx},${y},0</coordinates></LineString></Placemark>`;
+  }).join('');
+  await teste('poucas linhas: explica que falta o contorno', () => {
+    const r = processar(kml(linhasPlantio(5, -50, -17, 500, 3) + '<Placemark><name>Sede</name><Point><coordinates>-50,-17,0</coordinates></Point></Placemark>'));
+    ok(!r.itens.length && r.ignorados.length === 6, `itens ${r.itens.length}, ignorados ${r.ignorados.length}`);
+    const msg = explicarSemArea(r.ignorados);
+    ok(/5 linhas abertas e 1 ponto/.test(msg) && /contorno de cada talhão/.test(msg), msg);
+  });
+  await teste('linhas de plantio: estima o contorno com a área certa', () => {
+    const r = processar(kml(linhasPlantio(30, -50, -17, 500, 3) + '<Placemark><name>Sede</name><Point><coordinates>-49.99,-17.01,0</coordinates></Point></Placemark>'), '3900.kml');
+    ok(r.itens.length === 1, 'contornos: ' + r.itens.length);
+    const it = r.itens[0], esperado = (30 * 3) * (500 + 3) / 10000; // 30 faixas de 3 m, meio espaçamento além das pontas
+    ok(Math.abs(it.area - esperado) / esperado < 0.06, `área ${it.area.toFixed(2)} ha, esperado ${esperado.toFixed(2)} ha`);
+    ok(it.nome === '3900' && situacao(it) === 'atencao', `nome ${it.nome}, situação ${situacao(it)}`);
+    ok(/estimado a partir de 30 linhas/.test(it.avisos[0]) && /3,0 m/.test(it.avisos[0]), it.avisos[0]);
+    ok(r.ignorados.length === 1 && r.ignorados[0].nome === 'Sede', 'ignorados: ' + r.ignorados.map((g) => g.nome).join(','));
+    ok(FORMATO.test(saida(it)), 'fora do formato');
+    ok(it.linhasFonte && it.linhasFonte.length === 30, 'sem linhas para desenhar');
+  });
+  await teste('linhas de plantio em duas áreas separadas viram duas partes', () => {
+    const r = processar(kml(linhasPlantio(15, -50, -17, 400, 3) + linhasPlantio(15, -50, -17 - (15 * 3 + 60) / GRAU_LAT, 400, 3, 'b_')), 'Fazenda X.kml');
+    ok(r.itens.map((i) => i.nome).join('|') === 'Fazenda X - parte 1|Fazenda X - parte 2', 'nomes: ' + r.itens.map((i) => i.nome).join('|'));
+    ok(r.itens.every((i) => i.avisos.some((a) => /2 áreas separadas/.test(a))), 'sem aviso de áreas separadas');
+  });
+  await teste('carreador estreito entre linhas não divide o talhão', () => {
+    const r = processar(kml(linhasPlantio(15, -50, -17, 400, 3) + linhasPlantio(15, -50, -17 - (15 * 3 + 8) / GRAU_LAT, 400, 3, 'b_')), 'T.kml');
+    ok(r.itens.length === 1, 'contornos: ' + r.itens.length);
+  });
+  await teste('nome de arquivo sem caractere proibido', () => {
+    ok(nomeArquivo('Talhão 1/2: "A"') === 'Talhão_12_A', nomeArquivo('Talhão 1/2: "A"'));
+    ok(nomeArquivo('CON') === 'talhao_CON', nomeArquivo('CON'));
+  });
+
+  const falhas = resultados.filter((r) => !r.ok);
+  const caixa = $('#testes');
+  caixa.hidden = false;
+  caixa.className = 'testes ' + (falhas.length ? 'falhou' : 'ok');
+  caixa.replaceChildren(
+    el('strong', {}, falhas.length ? `Testes: ${falhas.length} de ${resultados.length} falharam` : `Testes: os ${resultados.length} passaram`),
+    el('ul', {}, resultados.map((r) => el('li', { class: r.ok ? '' : 'f' }, (r.ok ? '✓ ' : '✕ ') + r.nome + (r.ok ? '' : ` → ${r.erro}`)))));
+  document.body.dataset.testes = falhas.length ? 'falhou' : 'ok';
+  document.title = falhas.length ? `TESTES FALHARAM (${falhas.length}/${resultados.length})` : `TESTES OK (${resultados.length})`;
+}
+
+/* ===================== ligações ===================== */
+const entrada = $('#arquivo');
+entrada.addEventListener('change', () => { carregarArquivos(entrada.files); entrada.value = ''; });
+const soltar = $('#soltar');
+['dragenter', 'dragover'].forEach((t) => document.addEventListener(t, (e) => { e.preventDefault(); soltar.classList.add('arrastando'); }));
+['dragleave', 'drop'].forEach((t) => document.addEventListener(t, (e) => {
+  e.preventDefault();
+  if (t === 'drop' || !e.relatedTarget) soltar.classList.remove('arrastando');
+}));
+document.addEventListener('drop', (e) => carregarArquivos(e.dataTransfer && e.dataTransfer.files));
+$('#abrir-exemplo').addEventListener('click', abrirExemplo);
+$('#outro').addEventListener('click', () => entrada.click());
+$('#baixar-todos').addEventListener('click', baixarTodos);
+document.querySelectorAll('.max-nome').forEach((e) => { e.textContent = REGRAS.nomeMaximo; });
+document.querySelectorAll('.casas').forEach((e) => { e.textContent = REGRAS.casasDecimais; });
+const dataVer = HISTORICO[0][1];
+$('#rodape').textContent = `Versão ${VERSAO} · ${dataVer.split('-').reverse().join('/')} · roda neste navegador; nenhum arquivo é enviado pela internet.`;
+
+if (location.hash === '#teste') rodarTestes();
+else if (location.hash === '#exemplo') abrirExemplo();
+</script>
+</body>
+</html>
