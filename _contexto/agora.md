@@ -7,6 +7,10 @@
 
 ## Onde paramos
 
+Em 01/10 o dia foi da Fazenda Estrela (myFarm, Campo Novo do Parecis), que ameaça cancelar por demora
+do produto: bugs confirmados com correção prometida pra 09 e 12/10 e a Fernanda Lima como ponto único
+das devolutivas (`retencao/contexto.md`). Em 30/09, calculadora de horas AgriManager fechada com o
+Cicílio (84h) e revisão do arquivo de recuperação com o Leandro.
 Em 28/09 ficou pronto o relatório de churn para Produto, "Por que o cliente saiu"
 (`relatorios/raio-x-churn-2026-09-16/`, link privado publicado): 49 cancelamentos lidos um a um,
 myFarm e AgriManager separados, com motivo apurado, lacunas de produto e ERP de destino. No mesmo
@@ -21,8 +25,10 @@ possível corte em projetos (ver `equipe/radar.md`).
 - [ ] Julio: mandar pro Leandro os argumentos da folha de CS e serviços acima de 2025 (comissão
       que entrou, posições de 2025 que só foram ocupadas em 2026, produtos novos do ano) pro texto
       dele ao Carlos — desde 2026-09-24 [equipe]
-- [ ] Julio: enviar ao Leandro o status report da cobrança (página e `descobertas.md` em
-      `retencao/Posição suspensos 25-09-2026/`) — desde 2026-09-25 [retenção]
+- [ ] Julio: corrigir no arquivo de recuperação a separação entre MRR e dívida total e reenviar ao
+      Leandro — desde 2026-09-30 [retenção]
+- [ ] Julio e Ângelo: desenhar o fluxo de cancelamento e o dono de cada tipo de demanda (cancelamento
+      em até 30 dias da venda fica com o comercial), presencial — até 2026-10-05 [retenção]
 - [ ] Julio: decidir se soma ao total recuperado Lucival (R$ 15 mil pagos em 16/09), Beatriz
       (acordo de R$ 2 mil) e Marcelo Lara (quitado, sem valor informado) — desde 2026-09-25 [retenção]
 - [ ] Julio: alinhar com o financeiro o Plano Safra de clientes marcados "não propor flexibilização
@@ -37,7 +43,15 @@ possível corte em projetos (ver `equipe/radar.md`).
 - [ ] Julio: dar dono e limite pro caso AgroJem (horas sem proposta assinada) — desde 2026-09-23 [clientes]
 - [ ] Julio: publicar tabela de preço e alçada de desconto pro CS e corrigir o Engenho (hora
       R$265, Engenho mostra R$290) — desde 2026-09-23 [vendas]
-- [ ] Cecílio: planilha da estimativa padrão de horas pro Julio validar — desde 2026-09-23 [implantação]
+- [ ] Cecílio: levar a calculadora de horas AgriManager (ponto de partida 84h) ao Leandro e ver se dá
+      pra calcular dentro do HubSpot — desde 2026-09-30 [implantação]
+- [ ] Ana Rocha: mandar à Fazenda Estrela (Flávio) a devolutiva item a item com prazos, revisada pelo
+      Julio — desde 2026-10-01 [clientes]
+- [ ] Julio: puxar com o comercial a conversa sobre venda que promete o que o produto não tem
+      (Fazenda Estrela, Jefferson, Capelesso) — desde 2026-10-01 [vendas]
+- [ ] Julio: aprovar a proposta da Amanda pra separação de base e licenças do Grupo NASA — desde 2026-10-01 [clientes]
+- [ ] Andrezza: refazer a proposta Vista BI do Thiago (implantação R$ 4.500 e R$ 2.200 por mês com
+      usuários ilimitados, incluindo o relatório de uns R$ 5 mil) — desde 2026-10-01 [vendas]
 - [ ] Julio: reporte semanal de posição de suspensos pro Carlos (CEO), com desde quando o cliente
       é cliente no analítico — toda semana [retenção]
 - [ ] Amanda: centralizar os 52 clientes suspensos sem movimento e dar vazão — desde 2026-09-17 [retenção]
@@ -96,6 +110,7 @@ possível corte em projetos (ver `equipe/radar.md`).
 
 ## Quente agora
 
+- Fazenda Estrela (myFarm) ameaçando cancelar por demora do produto; Perdizes no mesmo caminho
 - Time: possíveis saídas e possível corte em projetos (ver `equipe/radar.md`)
 - Clientes críticos por ticket levados ao dev (28/09)
 - Clientes em suspensão por pedido de cancelamento e/ou dívidas em aberto

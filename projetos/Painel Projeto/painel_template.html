@@ -1,0 +1,1479 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Projetos de implantação hunter</title>
+<style>
+:root{
+  color-scheme: light;
+  --page:#f9f9f7; --surface:#fcfcfb; --surface-2:#f1f0ec; --surface-3:#e8e7e1;
+  --ink:#0b0b0b; --ink-2:#52514e; --muted:#898781;
+  --grid:#e1e0d9; --axis:#c3c2b7; --border:rgba(11,11,11,.10); --shadow:0 1px 2px rgba(11,11,11,.04),0 8px 24px rgba(11,11,11,.06);
+  --myfarm:#f08c3c; --agm:#1a7f4b; --entradas:#2a78d6; --encerramentos:#e87ba4;
+  --good:#0ca30c; --warning:#fab219; --serious:#ec835a; --critical:#d03b3b; --neutral:#898781;
+  --meter:#7d8796; --focus:#0b0b0b; --overlay:rgba(11,11,11,.38);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --page:#0d0d0d; --surface:#1a1a19; --surface-2:#232321; --surface-3:#2e2e2b;
+    --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+    --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10); --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+    --myfarm:#d9782c; --agm:#187542; --entradas:#3987e5; --encerramentos:#d55181;
+    --meter:#8c96a6; --focus:#ffffff; --overlay:rgba(0,0,0,.6);
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --page:#0d0d0d; --surface:#1a1a19; --surface-2:#232321; --surface-3:#2e2e2b;
+  --ink:#ffffff; --ink-2:#c3c2b7; --muted:#898781;
+  --grid:#2c2c2a; --axis:#383835; --border:rgba(255,255,255,.10); --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.35);
+  --myfarm:#d9782c; --agm:#187542; --entradas:#3987e5; --encerramentos:#d55181;
+  --meter:#8c96a6; --focus:#ffffff; --overlay:rgba(0,0,0,.6);
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--page);color:var(--ink);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1440px;margin:0 auto;padding:0 28px}
+@media (max-width:720px){.wrap{padding:0 16px}}
+
+/* topo */
+header.top{padding-top:28px;padding-bottom:18px}
+.top-row{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;flex-wrap:wrap}
+.eyebrow{font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-size:28px;line-height:1.15;margin:6px 0 6px;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--ink-2);font-size:13.5px}
+.sub b{color:var(--ink);font-weight:600}
+.top-actions{display:flex;gap:8px;align-items:center}
+.btn{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:8px 12px;cursor:pointer;display:inline-flex;gap:6px;align-items:center;white-space:nowrap}
+.btn:hover{background:var(--surface-2)}
+.btn:focus-visible,.seg button:focus-visible,.tab:focus-visible,tr.row:focus-visible,.chip:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+
+/* filtros */
+.filters{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--page) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--border)}
+.filters .wrap{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding-top:10px;padding-bottom:10px}
+.seg{display:inline-flex;background:var(--surface-2);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;padding:6px 11px;border-radius:8px;cursor:pointer;color:var(--ink-2);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--surface);color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.08);font-weight:600}
+.sel{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:7px 10px;max-width:220px}
+.search{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:7px 10px;min-width:180px;flex:1;max-width:280px}
+.clear{border:0;background:none;color:var(--ink-2);text-decoration:underline;cursor:pointer;padding:6px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
+/* agenda dos consultores */
+.grade{table-layout:fixed;min-width:1000px}
+.grade th{cursor:default}
+.grade th:hover{background:var(--surface)}
+.grade thead th{text-align:left}
+.grade th.cons{width:190px;text-align:left;vertical-align:top;white-space:normal}
+.grade tbody th.cons,.grade tfoot th.cons{position:sticky;left:0;top:auto;z-index:1;background:var(--surface)}
+.grade thead th.cons{left:0;z-index:4}
+.grade td.cel{vertical-align:top;padding:6px;border-left:1px solid var(--grid)}
+.grade td.vazia{background:color-mix(in srgb,var(--surface-2) 55%,transparent)}
+.grade th.hoje,.grade td.hoje{background:color-mix(in srgb,var(--ink) 5%,var(--surface))}
+.grade .pname{min-width:0;max-width:none;overflow-wrap:anywhere}
+.grade tfoot td,.grade tfoot th{border-top:1px solid var(--axis);position:static}
+.ag{display:flex;justify-content:space-between;gap:6px;border-left:3px solid var(--c);background:color-mix(in srgb,var(--c) 16%,var(--surface));border-radius:6px;padding:4px 6px;margin-bottom:4px;font-size:11.5px;line-height:1.3}
+.ag.clic{cursor:pointer}
+.ag.clic:hover,.ag.clic:focus-visible{outline:1px solid var(--c)}
+.ag-p{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+.ag-h{color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.ag-proxima{background:var(--surface);border:1px solid var(--c);border-left-width:3px}
+.ag-semfechar .ag-p::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--warning);margin-right:4px;vertical-align:middle}
+.ag-vencida{opacity:.55;background:transparent}
+.ag-vencida .ag-p{text-decoration:line-through}
+.cel-tot{font-size:11px;color:var(--muted);text-align:right}
+.cel-tot.alerta{color:var(--ink);font-weight:650}
+label.data{display:inline-flex;gap:6px;align-items:center;color:var(--ink-2)}
+label.data input{max-width:160px}
+@media (max-width:720px){
+  .filters .wrap{gap:8px}
+  .seg{max-width:100%;overflow-x:auto;scrollbar-width:none}
+  .sel{max-width:none;flex:1 1 140px;min-width:0}
+  .search{max-width:none;min-width:0;flex:1 1 100%}
+  h1{font-size:23px}
+  .g-kpi{grid-template-columns:1fr 1fr}
+  .g-kpi .hero{grid-column:1 / -1}
+  .kpi .value{font-size:24px}
+  .card{padding:14px}
+}
+
+/* abas */
+.tabs{display:flex;gap:4px;margin:18px 0 18px;border-bottom:1px solid var(--border);overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--ink-2);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;font-weight:500}
+.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink);font-weight:650}
+.tab .n{color:var(--muted);font-weight:500;margin-left:4px}
+
+/* cartões */
+.grid{display:grid;gap:14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);min-width:0}
+.card h3{margin:0;font-size:14.5px;font-weight:650}
+.card .hint{color:var(--muted);font-size:12.5px;margin-top:2px}
+.card-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;margin-bottom:8px}
+.linkbtn{border:0;background:none;color:var(--ink-2);cursor:pointer;font-size:12.5px;text-decoration:underline;padding:0;white-space:nowrap}
+.g-kpi{grid-template-columns:minmax(240px,1.25fr) repeat(auto-fit,minmax(160px,1fr))}
+.g-2{grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr))}
+.g-3{grid-template-columns:repeat(auto-fit,minmax(min(100%,360px),1fr))}
+.g-main{grid-template-columns:minmax(0,1.7fr) minmax(280px,1fr)}
+@media (max-width:980px){.g-main{grid-template-columns:1fr}.g-kpi{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}}
+.section-title{font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);font-weight:650;margin:26px 0 10px}
+
+/* números */
+.kpi .label{color:var(--ink-2);font-size:13px}
+.kpi .value{font-size:28px;font-weight:650;letter-spacing:-.01em;margin-top:4px;line-height:1.1}
+.kpi .foot{color:var(--muted);font-size:12.5px;margin-top:6px}
+.hero .value{font-size:56px;font-weight:650;letter-spacing:-.02em;line-height:1}
+.hero .split{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;color:var(--ink-2);font-size:13px}
+.hero .split span{display:inline-flex;align-items:center;gap:6px}
+.meter{height:6px;border-radius:3px;background:var(--surface-3);overflow:hidden;margin-top:10px}
+.meter>i{display:block;height:100%;border-radius:3px;background:var(--meter)}
+.num{font-variant-numeric:tabular-nums}
+
+/* saúde */
+.pill{display:inline-flex;align-items:center;gap:6px;padding:3px 9px 3px 6px;border-radius:999px;font-size:12.5px;font-weight:600;white-space:nowrap;background:color-mix(in srgb,var(--c) 15%,transparent);color:var(--ink)}
+.pill svg{width:14px;height:14px;color:var(--c);flex:none}
+.s-critico{--c:var(--critical)} .s-encerrar{--c:var(--serious)} .s-atencao{--c:var(--warning)} .s-emdia{--c:var(--good)} .s-suspenso{--c:var(--neutral)}
+.health-list{display:flex;flex-direction:column;gap:6px;margin-top:6px}
+.health-item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:10px 10px;border-radius:10px;cursor:pointer;border:1px solid transparent;background:none;text-align:left;width:100%}
+.health-item:hover{background:var(--surface-2)}
+.health-item[aria-pressed="true"]{border-color:var(--border);background:var(--surface-2)}
+.health-item .desc{color:var(--ink-2);font-size:12.5px}
+.health-item .count{font-size:22px;font-weight:650}
+.insights{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px}
+.insights li{display:grid;grid-template-columns:auto 1fr;gap:10px;align-items:start;color:var(--ink-2)}
+.insights li b{color:var(--ink)}
+.insights svg{width:16px;height:16px;margin-top:2px}
+
+/* gráficos */
+.chart{width:100%;height:320px}
+.chart.tall{height:380px}
+.chart.short{height:260px}
+.legend-inline{display:flex;gap:14px;flex-wrap:wrap;color:var(--ink-2);font-size:12.5px;margin-top:2px}
+.legend-inline span{display:inline-flex;gap:6px;align-items:center}
+.sym{font-size:13px;line-height:1;color:var(--ink-2)}
+.tbl-view{display:none;margin-top:10px;max-height:280px;overflow:auto}
+.tbl-view.open{display:block}
+
+/* tabelas */
+.table-wrap{overflow:auto;border-radius:12px;border:1px solid var(--border);background:var(--surface);max-height:72vh}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:13px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid var(--grid);vertical-align:middle}
+th{position:sticky;top:0;background:var(--surface);z-index:2;font-weight:600;color:var(--ink-2);font-size:12px;white-space:nowrap;cursor:pointer;user-select:none}
+th.sorted{color:var(--ink)}
+th .arr{color:var(--muted);margin-left:4px;font-size:11px;font-family:"Segoe UI Symbol",system-ui,sans-serif;font-variant-emoji:text}
+th[data-k]:hover{color:var(--ink);background:var(--surface-2)}
+th.sorted .arr{color:var(--ink)}
+.linha-hist{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:4px}
+.linha-hist:empty{display:none}
+.hist-btn{border:1px solid var(--border);background:var(--surface);border-radius:999px;padding:2px 10px;font-size:12px;cursor:pointer;color:var(--ink);white-space:nowrap}
+.hist-btn:hover{background:var(--surface-2);border-color:var(--axis)}
+.rep-tag{display:inline-flex;align-items:center;gap:5px;font-size:12px;padding:2px 8px;border-radius:999px;background:color-mix(in srgb,var(--serious) 14%,transparent);color:var(--ink);white-space:nowrap}
+.sheet-hist{max-width:860px}
+.hist-item{border:1px solid var(--border);border-radius:12px;padding:14px 16px;background:var(--surface);margin-bottom:12px}
+.hist-cab{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:8px}
+.hist-bloco{margin-top:8px}
+.hist-bloco .role{color:var(--muted);font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.hist-bloco p{margin:4px 0 0;color:var(--ink);line-height:1.5}
+.hist-nums{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px;margin-top:12px}
+.hn{background:var(--surface-2);border-radius:8px;padding:8px 10px}
+.hn span{display:block;color:var(--ink-2);font-size:12px}
+.hn b{font-size:17px}
+.hn small{display:block;color:var(--muted);font-size:11.5px;margin-top:2px}
+.hn.neg{box-shadow:inset 3px 0 0 var(--critical)}
+.dias-sem{display:flex;align-items:baseline;gap:4px;border-left:4px solid var(--c);padding-left:8px;white-space:nowrap}
+.dias-sem b{font-size:21px;font-weight:650;font-variant-numeric:tabular-nums;min-width:2.2em;text-align:right}
+.dias-sem span{font-size:12px;color:var(--muted)}
+.tbl-ataque td{padding:8px 10px}
+.tbl-ataque td .pname{min-width:0;max-width:300px}
+.kpi.faixa{border-left:4px solid var(--c)}
+.grupo-card{cursor:pointer;text-align:left;font:inherit;color:inherit;width:100%}
+.grupo-card:hover{background:var(--surface-2)}
+.grupo-card[aria-pressed="true"]{outline:2px solid var(--ink);outline-offset:-2px}
+.grupo-card .value{font-size:30px}
+#tblPrio td{white-space:normal}
+#tblPrio td .pill,#tblPrio td .chip{white-space:nowrap}
+#tblPrio .pessoa{max-width:175px}
+#tblPrio td .pname{white-space:normal;max-width:230px}
+#tblPrio td .quebra{white-space:normal;max-width:220px}
+#tblPrio th,#tblPrio td{padding:10px 10px}
+td.r,th.r{text-align:right}
+td .muted,.muted{color:var(--muted)}
+td .small{font-size:12px;color:var(--muted)}
+tr.row{cursor:pointer}
+tr.row:hover td{background:var(--surface-2)}
+.pname{font-weight:600;color:var(--ink);max-width:340px;min-width:200px}
+#tblProj td{white-space:nowrap}
+#tblProj td .pname{white-space:normal}
+.sys{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.mini{display:inline-block;width:70px;height:6px;border-radius:3px;background:var(--surface-3);vertical-align:middle;margin-right:8px;overflow:hidden}
+.mini>i{display:block;height:100%;background:var(--meter);border-radius:3px}
+.steps{display:inline-flex;gap:2px;vertical-align:middle;margin-right:6px}
+.steps i{width:9px;height:9px;border-radius:2px;background:var(--surface-3)}
+.steps i.on{background:var(--ink-2)}
+.steps i.cur{background:var(--ink)}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+.count-line{color:var(--ink-2)}
+.empty{padding:28px;text-align:center;color:var(--muted)}
+
+/* chips de situação da agenda */
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:2px 9px;font-size:12px;font-weight:600;white-space:nowrap;border:1px solid var(--border);background:var(--surface)}
+.chip i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.a-realizada{--c:var(--good)} .a-semfechar{--c:var(--warning)} .a-proxima{--c:var(--ink-2)} .a-vencida{--c:var(--critical)}
+.chipbar{display:flex;gap:6px;flex-wrap:wrap}
+.chipbar button{cursor:pointer}
+.chipbar button[aria-pressed="true"]{background:var(--surface-3);border-color:var(--axis)}
+
+/* modal 360 */
+.modal{position:fixed;inset:0;background:var(--overlay);z-index:50;display:none;align-items:flex-start;justify-content:center;padding:28px 16px;overflow:auto}
+.modal.open{display:flex}
+.sheet{background:var(--page);border-radius:18px;max-width:1180px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.35);border:1px solid var(--border)}
+.sheet-head{padding:22px 24px 16px;border-bottom:1px solid var(--border);background:var(--surface);border-radius:18px 18px 0 0}
+.sheet-body{padding:20px 24px 26px}
+@media (max-width:720px){.modal{padding:0}.sheet{border-radius:0;min-height:100vh}.sheet-head{border-radius:0;padding-right:96px}.sheet-body{padding:16px}}
+.sheet h2{margin:4px 0 4px;font-size:24px;line-height:1.2;letter-spacing:-.01em}
+.tags{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.tag{display:inline-flex;gap:6px;align-items:center;font-size:12.5px;padding:3px 9px;border-radius:999px;background:var(--surface-2);color:var(--ink-2);white-space:nowrap}
+.close{position:fixed;right:20px;top:18px;z-index:60;box-shadow:var(--shadow)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:4px 18px;margin-top:12px;color:var(--ink-2);font-size:13px}
+.facts b{color:var(--ink);font-weight:600}
+.alert{border-radius:12px;padding:12px 14px;background:color-mix(in srgb,var(--c) 10%,var(--surface));border:1px solid color-mix(in srgb,var(--c) 35%,transparent)}
+.alert ul{margin:6px 0 0;padding-left:18px;color:var(--ink-2)}
+.alert .ttl{display:flex;gap:8px;align-items:center;font-weight:650}
+.alert svg{width:16px;height:16px;color:var(--c)}
+.people{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.person .role{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.04em;font-weight:600}
+.person .who{font-weight:600;margin-top:3px}
+.bars{display:flex;flex-direction:column;gap:7px;margin-top:6px}
+.bars .b{display:grid;grid-template-columns:minmax(0,1fr) 54px;gap:8px;align-items:center;font-size:13px}
+.bars .b .t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.bars .track{grid-column:1 / -1;height:5px;border-radius:3px;background:var(--surface-3);overflow:hidden;margin-top:-3px}
+.bars .track i{display:block;height:100%;background:var(--meter);border-radius:3px}
+.journey{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px;margin-top:8px}
+.jstep{border-radius:10px;padding:10px 10px;background:var(--surface-2);border:1px solid transparent;min-width:0}
+.jstep .n{font-size:11.5px;color:var(--muted);font-weight:600}
+.jstep .t{font-size:12.5px;font-weight:600;margin-top:2px;line-height:1.25}
+.jstep .h{font-size:12px;color:var(--ink-2);margin-top:4px}
+.jstep.done{background:var(--surface-3)}
+.jstep.cur{background:var(--surface);border-color:var(--ink);box-shadow:var(--shadow)}
+@media (max-width:720px){.journey{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.bench{color:var(--ink-2);font-size:13px;margin-top:10px}
+footer{color:var(--muted);font-size:12.5px;padding:30px 0 40px}
+details.rules{margin-top:10px}
+details.rules summary{cursor:pointer;color:var(--ink-2)}
+details.rules ul{color:var(--ink-2);padding-left:18px}
+.hide{display:none!important}
+.voltar{color:var(--ink-2);text-decoration:none;font-size:13.5px}
+.voltar:hover{color:var(--ink);text-decoration:underline}
+.facts-pag{grid-template-columns:repeat(auto-fit,minmax(230px,1fr));margin-top:14px}
+#paginaProjeto .alert{margin-top:4px}
+a.hist-btn{text-decoration:none;display:inline-flex;align-items:center}
+</style>
+</head>
+<body>
+<div id="paginaProjeto" class="hide"></div>
+<header class="top wrap">
+  <div class="top-row">
+    <div>
+      <div class="eyebrow">Implantação · projetos hunter · myFarm e AgriManager</div>
+      <h1>Acompanhamento dos projetos de implantação</h1>
+      <div class="sub" id="sub"></div>
+    </div>
+    <div class="top-actions">
+      <button class="btn" id="btnTema" type="button" title="Alternar tema claro e escuro">Tema</button>
+    </div>
+  </div>
+</header>
+
+<div class="filters" role="region" aria-label="Filtros">
+  <div class="wrap">
+    <div class="seg" id="fSistema" role="group" aria-label="Sistema"></div>
+    <div class="seg" id="fStatus" role="group" aria-label="Status"></div>
+    <select class="sel" id="fSaude" aria-label="Saúde"></select>
+    <select class="sel" id="fAnalista" aria-label="Analista de projeto"></select>
+    <select class="sel" id="fConsultor" aria-label="Consultor"></select>
+    <select class="sel" id="fFase" aria-label="Fase"></select>
+    <input class="search" id="fBusca" type="search" placeholder="Buscar projeto, cliente ou código" aria-label="Buscar">
+    <button class="clear" id="fLimpar" type="button">Limpar filtros</button>
+  </div>
+</div>
+
+<main class="wrap">
+  <nav class="tabs" role="tablist" aria-label="Seções">
+    <button class="tab" role="tab" data-tab="geral">Visão geral</button>
+    <button class="tab" role="tab" data-tab="atacar">Projetos a atacar</button>
+    <button class="tab" role="tab" data-tab="prioridades">Prioridades</button>
+    <button class="tab" role="tab" data-tab="projetos">Projetos <span class="n" id="nProj"></span></button>
+    <button class="tab" role="tab" data-tab="agenda">Agenda dos projetos</button>
+    <button class="tab" role="tab" data-tab="consultores">Agenda dos consultores</button>
+    <button class="tab" role="tab" data-tab="realizadas">Agendas realizadas</button>
+    <button class="tab" role="tab" data-tab="pessoas">Pessoas</button>
+  </nav>
+
+  <!-- VISÃO GERAL -->
+  <section id="tab-geral" role="tabpanel">
+    <div class="grid g-kpi" id="kpis"></div>
+
+    <div class="grid g-main" style="margin-top:14px">
+      <div class="card">
+        <div class="card-head">
+          <div>
+            <h3>Onde está cada projeto</h3>
+            <div class="hint">Tempo desde a última agenda × parte das horas já usada. Clique num ponto para abrir o projeto.</div>
+            <div class="legend-inline" id="legScatter"></div>
+          </div>
+        </div>
+        <div class="chart tall" id="chScatter"></div>
+      </div>
+      <div class="card">
+        <h3>O que pede ação</h3>
+        <div class="hint">Clique para filtrar o painel.</div>
+        <div class="health-list" id="healthList"></div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Destaques</h3>
+      <div class="hint">Calculados sobre o recorte dos filtros.</div>
+      <ul class="insights" id="insights" style="margin-top:12px"></ul>
+    </div>
+
+    <div class="section-title">Andamento</div>
+    <div class="grid g-2">
+      <div class="card">
+        <div class="card-head"><div><h3>Em que fase da jornada estão</h3><div class="hint">Fase mais avançada com agenda realizada. Clique numa barra para filtrar.</div></div><button class="linkbtn" data-tbl="tbFase">Ver tabela</button></div>
+        <div class="chart" id="chFase"></div><div class="tbl-view" id="tbFase"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3>Há quanto tempo sem agenda</h3><div class="hint">Dias desde a última agenda que aconteceu.</div></div><button class="linkbtn" data-tbl="tbSem">Ver tabela</button></div>
+        <div class="chart" id="chSemAgenda"></div><div class="tbl-view" id="tbSem"></div>
+      </div>
+    </div>
+
+    <div class="section-title">Evolução desde 2025 <span style="text-transform:none;letter-spacing:0;font-weight:500">(todos os projetos hunter, inclusive encerrados; segue só o filtro de sistema)</span></div>
+    <div class="grid g-3">
+      <div class="card">
+        <div class="card-head"><div><h3>Carteira em andamento</h3><div class="hint">Projetos abertos no fim de cada mês.</div></div><button class="linkbtn" data-tbl="tbCarteira">Ver tabela</button></div>
+        <div class="chart short" id="chCarteira"></div><div class="tbl-view" id="tbCarteira"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3>Horas realizadas por mês</h3><div class="hint">OS fechadas, validadas e acertadas.</div></div><button class="linkbtn" data-tbl="tbHoras">Ver tabela</button></div>
+        <div class="chart short" id="chHoras"></div><div class="tbl-view" id="tbHoras"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3>Entradas e encerramentos</h3><div class="hint">Abertura e entrega pro suporte, por mês.</div></div><button class="linkbtn" data-tbl="tbFluxo">Ver tabela</button></div>
+        <div class="chart short" id="chFluxo"></div><div class="tbl-view" id="tbFluxo"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJETOS A ATACAR -->
+  <section id="tab-atacar" role="tabpanel" class="hide">
+    <div class="hint" style="max-width:1000px">Só projetos em andamento sem nenhuma agenda marcada. O número é quantos dias o projeto está sem agenda, contando até a data da posição. Clique no projeto para a visão 360 e no título da coluna para reordenar.</div>
+    <div class="grid" id="kpisAtaque" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:12px"></div>
+    <div class="grid g-2" style="margin-top:14px;align-items:start">
+      <div class="card">
+        <div class="card-head"><div><h3>Retomar a implantação <span class="muted" id="nRetomar"></span></h3><div class="hint">Ainda não chegaram à produção e estão sem nada marcado.</div></div></div>
+        <div class="table-wrap"><table id="tblRetomar" class="tbl-ataque"></table></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3>Encerrar ou usar o saldo <span class="muted" id="nEncerrar"></span></h3><div class="hint">Go live feito e mais de 30 dias sem agenda.</div></div></div>
+        <div class="table-wrap"><table id="tblEncerrar" class="tbl-ataque"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIORIDADES -->
+  <section id="tab-prioridades" role="tabpanel" class="hide">
+    <div class="hint" style="margin-bottom:12px;max-width:980px">Por onde atacar: primeiro o crítico sem agenda, depois quem ainda implanta e está sem a próxima agenda, depois quem só falta encerrar, depois quem já tem agenda marcada e, por último, os suspensos. Dentro de cada grupo, quem está há mais tempo sem agenda vem antes. Clique no título de qualquer coluna para reordenar e num cartão para ver só aquele grupo.</div>
+    <div class="grid" id="gruposPrio" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))"></div>
+    <div class="toolbar" style="margin-top:14px">
+      <div class="count-line" id="prioCount"></div>
+      <button class="btn" id="btnCsvPrio" type="button">Exportar planilha (CSV)</button>
+    </div>
+    <div class="table-wrap"><table id="tblPrio"></table></div>
+  </section>
+
+  <!-- PROJETOS -->
+  <section id="tab-projetos" role="tabpanel" class="hide">
+    <div class="toolbar">
+      <div class="count-line" id="projCount"></div>
+      <button class="btn" id="btnCsv" type="button">Exportar planilha (CSV)</button>
+    </div>
+    <div class="table-wrap"><table id="tblProj"></table></div>
+  </section>
+
+  <!-- AGENDA -->
+  <section id="tab-agenda" role="tabpanel" class="hide">
+    <div class="grid g-kpi" id="kpisAgenda" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))"></div>
+    <div class="grid g-2" style="margin-top:14px">
+      <div class="card">
+        <div class="card-head"><div><h3>Horas marcadas nas próximas semanas</h3><div class="hint">Agendas futuras, por semana (segunda a domingo).</div></div><button class="linkbtn" data-tbl="tbSemanas">Ver tabela</button></div>
+        <div class="chart short" id="chSemanas"></div><div class="tbl-view" id="tbSemanas"></div>
+      </div>
+      <div class="card">
+        <h3>Próximas agendas</h3>
+        <div class="hint">Tudo o que está marcado daqui pra frente. Clique para abrir o projeto.</div>
+        <div class="table-wrap" style="margin-top:10px;max-height:300px"><table id="tblProximas"></table></div>
+      </div>
+    </div>
+    <div class="grid g-2" style="margin-top:14px">
+      <div class="card">
+        <h3>Agendas planejadas que passaram sem execução</h3>
+        <div class="hint">Continuam como planejadas no CES: remarcar ou cancelar.</div>
+        <div class="table-wrap" style="margin-top:10px;max-height:380px"><table id="tblVencidas"></table></div>
+      </div>
+      <div class="card">
+        <h3>Agendas confirmadas com OS sem fechar</h3>
+        <div class="hint">Aconteceram, mas as horas ainda não contam como usadas.</div>
+        <div class="table-wrap" style="margin-top:10px;max-height:380px"><table id="tblSemFechar"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- AGENDA DOS CONSULTORES -->
+  <section id="tab-consultores" role="tabpanel" class="hide">
+    <div class="toolbar">
+      <div class="seg" id="semNav" role="group" aria-label="Semana">
+        <button type="button" data-d="-1">← Semana anterior</button>
+        <button type="button" data-d="0">Semana da posição</button>
+        <button type="button" data-d="1">Próxima semana →</button>
+      </div>
+      <div class="count-line" id="semRotulo"></div>
+      <div class="seg escopo" role="group" aria-label="Projetos"><button type="button" data-v="todos">Todos os projetos</button><button type="button" data-v="hunter">Só hunter</button></div>
+    </div>
+    <div class="hint" style="max-width:1000px">Agenda de cada consultor com agenda na semana, dia a dia, com todos os projetos da exportação do CES (hunter e farmer). Passe o mouse num bloco para ver o horário de início e fim, a OS, a etapa e as horas; clique num projeto hunter em aberto para abrir a visão 360. Valem os filtros de sistema, consultor e busca. A agenda mostra só as OS que vieram na planilha.</div>
+    <div class="grid" id="kpisCons" style="grid-template-columns:repeat(auto-fit,minmax(190px,1fr));margin-top:12px"></div>
+    <div class="legend-inline" style="margin:14px 0 8px">
+      <span><span class="dot" style="background:var(--myfarm)"></span>myFarm</span>
+      <span><span class="dot" style="background:var(--agm)"></span>AgriManager</span>
+      <span><span class="dot" style="background:var(--neutral)"></span>projeto fora da aba Projetos</span>
+      <span class="muted">bloco cheio = realizada · contorno = marcada · ponto amarelo = OS sem fechar · riscado = planejada que não aconteceu · mais de 8h no dia aparece em destaque</span>
+    </div>
+    <div class="table-wrap grade-wrap"><table id="gradeCons" class="grade"></table></div>
+    <div class="section-title">Agendas da semana</div>
+    <div class="table-wrap" style="max-height:520px"><table id="tblSemana"></table></div>
+  </section>
+
+  <!-- AGENDAS REALIZADAS -->
+  <section id="tab-realizadas" role="tabpanel" class="hide">
+    <div class="toolbar">
+      <div class="seg" id="perPreset" role="group" aria-label="Período">
+        <button type="button" data-v="7">7 dias</button><button type="button" data-v="15">15 dias</button><button type="button" data-v="30">30 dias</button>
+        <button type="button" data-v="60">60 dias</button><button type="button" data-v="90">90 dias</button>
+        <button type="button" data-v="mes">Este mês</button><button type="button" data-v="mespassado">Mês passado</button>
+      </div>
+      <label class="data">De <input type="date" id="perDe" class="sel"></label>
+      <label class="data">Até <input type="date" id="perAte" class="sel"></label>
+      <div class="seg escopo" role="group" aria-label="Projetos"><button type="button" data-v="todos">Todos os projetos</button><button type="button" data-v="hunter">Só hunter</button></div>
+    </div>
+    <div class="count-line" id="perRotulo"></div>
+    <div class="hint" style="max-width:1000px">Agendas que aconteceram (OS fechada, validada, acertada ou confirmada sem fechar) no período, contando até a data da posição do CES. Os dias contam pra trás a partir dessa data. Valem os filtros de sistema, consultor e busca.</div>
+    <div class="grid" id="kpisReal" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:12px"></div>
+    <div class="grid g-2" style="margin-top:14px">
+      <div class="card">
+        <div class="card-head"><div><h3>Horas por consultor</h3><div class="hint">No período, por sistema.</div></div><button class="linkbtn" data-tbl="tbRealCons">Ver tabela</button></div>
+        <div class="chart" id="chRealCons"></div><div class="tbl-view" id="tbRealCons"></div>
+      </div>
+      <div class="card">
+        <div class="card-head"><div><h3 id="tituloRealDias">Horas realizadas por dia</h3><div class="hint">Por sistema; acima de 62 dias, por semana.</div></div><button class="linkbtn" data-tbl="tbRealDias">Ver tabela</button></div>
+        <div class="chart" id="chRealDias"></div><div class="tbl-view" id="tbRealDias"></div>
+      </div>
+    </div>
+    <div class="toolbar" style="margin-top:18px">
+      <h3 style="margin:0;font-size:14.5px">Agendas do período</h3>
+      <button class="btn" id="btnCsvReal" type="button">Exportar planilha (CSV)</button>
+    </div>
+    <div class="table-wrap"><table id="tblReal"></table></div>
+  </section>
+
+  <!-- PESSOAS -->
+  <section id="tab-pessoas" role="tabpanel" class="hide">
+    <div class="hint" style="margin-bottom:10px">Analista e consultor responsável vêm do cadastro do projeto no CES; quem atendeu vem das OS. Os números consideram os projetos do recorte.</div>
+    <div class="section-title" style="margin-top:6px">Analistas de projeto (cadastro)</div>
+    <div class="grid g-3" id="cardsAnalistas"></div>
+    <div class="section-title">Consultores</div>
+    <div class="grid g-main">
+      <div class="card">
+        <div class="card-head"><div><h3>Horas atendidas nos últimos 90 dias</h3><div class="hint">Nos projetos em aberto do recorte, por sistema.</div></div><button class="linkbtn" data-tbl="tbConsult">Ver tabela</button></div>
+        <div class="chart" id="chConsult"></div><div class="tbl-view" id="tbConsult"></div>
+      </div>
+      <div class="card">
+        <h3>Responsável no cadastro × quem atende</h3>
+        <div class="hint">Projetos em que o consultor é o responsável, e quantos ele atendeu em 90 dias.</div>
+        <div class="table-wrap" style="margin-top:10px;max-height:360px"><table id="tblResp"></table></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div id="rodape"></div>
+    <details class="rules">
+      <summary>Como este painel calcula</summary>
+      <ul id="regras"></ul>
+    </details>
+  </footer>
+</main>
+
+<div class="modal" id="modalHist" role="dialog" aria-modal="true" aria-labelledby="hTitulo">
+  <div class="sheet sheet-hist" id="sheetHist"></div>
+</div>
+
+
+<script>/*__PLOTLY__*/</script>
+<script>
+const D = /*__DADOS__*/;
+const FONT = 'system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+const SAUDES = ["Crítico","Encerrar","Atenção","Em dia","Suspenso"];
+const SAUDE_CLS = {"Crítico":"s-critico","Encerrar":"s-encerrar","Atenção":"s-atencao","Em dia":"s-emdia","Suspenso":"s-suspenso"};
+const SAUDE_VAR = {"Crítico":"--critical","Encerrar":"--serious","Atenção":"--warning","Em dia":"--good","Suspenso":"--neutral"};
+const SAUDE_DESC = {
+  "Crítico":"Parado antes do go live, ou horas no fim sem go live",
+  "Encerrar":"Go live feito e sem agenda há mais de 30 dias",
+  "Atenção":"Agenda vencida, OS sem fechar ou parado há pouco",
+  "Em dia":"Com agenda recente ou marcada",
+  "Suspenso":"Projeto suspenso"};
+const SIT_CLS = {"Realizada":"a-realizada","Sem fechar":"a-semfechar","Próxima":"a-proxima","Vencida":"a-vencida"};
+const SIT_ROT = {"Realizada":"Realizada","Sem fechar":"Sem fechar","Próxima":"Marcada","Vencida":"Vencida"};
+const SISTEMAS = ["myFarm","AgriManager"];
+const FASES = Object.assign({0:"Sem agenda de fase"}, D.fases);
+const REF = new Date(D.meta.ref + "T00:00:00");
+
+const ICON = {
+  "Crítico":'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.6 15.2 14.2H.8z" fill="currentColor"/><path d="M8 6.2v3.6M8 11.8v.1" stroke="#fff" stroke-width="1.7" stroke-linecap="round"/></svg>',
+  "Encerrar":'<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 14.6V1.8" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><path d="M4.2 2.2h8.6l-1.8 3.2 1.8 3.2H4.2z" fill="currentColor"/></svg>',
+  "Atenção":'<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.8" fill="currentColor"/><path d="M8 4.4V8l2.5 1.7" stroke="#1a1a19" stroke-width="1.7" fill="none" stroke-linecap="round"/></svg>',
+  "Em dia":'<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.8" fill="currentColor"/><path d="M4.9 8.3l2.1 2.1 4.1-4.3" stroke="#fff" stroke-width="1.8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  "Suspenso":'<svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.8" fill="currentColor"/><path d="M6.3 5.3v5.4M9.7 5.3v5.4" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>',
+};
+
+/* ---------- utilidades ---------- */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const nf1 = new Intl.NumberFormat("pt-BR",{maximumFractionDigits:1});
+const nf0 = new Intl.NumberFormat("pt-BR",{maximumFractionDigits:0});
+const brl = new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL",maximumFractionDigits:0});
+const h = v => v == null ? "–" : nf1.format(v) + "h";
+const pct = v => v == null ? "–" : Math.round(v*100) + "%";
+const dt = s => { if(!s) return "–"; const [y,m,d] = s.split("-"); return `${d}/${m}/${y}`; };
+const dtc = s => { if(!s) return "–"; const [y,m,d] = s.split("-"); return `${d}/${m}/${y.slice(2)}`; };
+const toD = s => new Date(s + "T00:00:00");
+const diasAte = s => Math.round((toD(s) - REF) / 864e5);
+const sum = (a, f) => a.reduce((t, x) => t + (f(x) || 0), 0);
+const median = a => { if(!a.length) return null; const s=[...a].sort((x,y)=>x-y); const k=Math.floor(s.length/2); return s.length%2 ? s[k] : (s[k-1]+s[k])/2; };
+const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+const SIS_VAR = {"myFarm":"--myfarm", "AgriManager":"--agm", "Outro":"--neutral"};
+const cor = s => css(SIS_VAR[s] || "--neutral");
+const pill = s => `<span class="pill ${SAUDE_CLS[s]}">${ICON[s]}${esc(s)}</span>`;
+const sysTag = s => `<span class="sys"><span class="dot" style="background:var(${SIS_VAR[s] || "--neutral"})"></span>${esc(s)}</span>`;
+const mesRot = p => { const [y,m] = p.split("-"); return ["jan","fev","mar","abr","mai","jun","jul","ago","set","out","nov","dez"][+m-1] + "/" + y.slice(2); };
+const store = { get(k, d){ try { const v = localStorage.getItem("painelHunter." + k); return v == null ? d : JSON.parse(v); } catch(e){ return d; } },
+                set(k, v){ try { localStorage.setItem("painelHunter." + k, JSON.stringify(v)); } catch(e){} } };
+
+const PROJ = D.projetos;
+const BY_COD = Object.fromEntries(PROJ.map(p => [p.cod, p]));
+const AG_BY = {}; D.agendas.forEach(a => (AG_BY[a.cod] ||= []).push(a));
+const PAC_BY = {}; D.pacotes.forEach(a => (PAC_BY[a.cod] ||= []).push(a));
+
+/* ---------- estado e filtros ---------- */
+const ESTADO_PADRAO = {sistema:"Todos", status:"Abertos", saude:"", analista:"", consultor:"", fase:"", busca:"", tab:"geral", escopo:"todos", sort:{col:"saude", dir:1}};
+const st = Object.assign({}, ESTADO_PADRAO, {tab: store.get("tab","geral"), sort: store.get("sort", ESTADO_PADRAO.sort)});
+
+function filtrar(ignorar = {}){
+  const b = st.busca.trim().toLowerCase();
+  return PROJ.filter(p =>
+    (ignorar.sistema || st.sistema === "Todos" || p.sistema === st.sistema) &&
+    (st.status === "Abertos" || (st.status === "Em andamento" ? p.status !== "Suspenso" : p.status === "Suspenso")) &&
+    (ignorar.saude || !st.saude || p.saude === st.saude) &&
+    (!st.analista || p.analista === st.analista) &&
+    (!st.consultor || p.responsavel === st.consultor || p.consultores.some(c => c.nome === st.consultor)) &&
+    (ignorar.fase || st.fase === "" || p.fase === +st.fase) &&
+    (!b || (p.nome + " " + p.projeto + " " + p.cliente + " " + p.grupo_economico + " " + p.cod).toLowerCase().includes(b)));
+}
+
+function montarFiltros(){
+  const seg = (el, opcoes, chave) => {
+    el.innerHTML = opcoes.map(o => `<button type="button" data-v="${esc(o.v)}" aria-pressed="${st[chave]===o.v}">${o.dot?`<span class="dot" style="background:var(${o.dot});margin-right:6px"></span>`:""}${esc(o.t)}</button>`).join("");
+    el.onclick = e => { const btn = e.target.closest("button"); if(!btn) return; st[chave] = btn.dataset.v; atualizar(); };
+  };
+  seg($("#fSistema"), [{v:"Todos",t:"Todos"},{v:"myFarm",t:"myFarm",dot:"--myfarm"},{v:"AgriManager",t:"AgriManager",dot:"--agm"}], "sistema");
+  seg($("#fStatus"), [{v:"Abertos",t:"Andamento e suspensos"},{v:"Em andamento",t:"Em andamento"},{v:"Suspensos",t:"Suspensos"}], "status");
+  const opts = (el, rot, valores, chave, txt = v => v) => {
+    el.innerHTML = `<option value="">${esc(rot)}</option>` + valores.map(v => `<option value="${esc(v)}">${esc(txt(v))}</option>`).join("");
+    el.value = st[chave]; el.onchange = () => { st[chave] = el.value; atualizar(); };
+  };
+  const uniq = a => [...new Set(a.filter(Boolean))].sort((x,y)=>x.localeCompare(y,"pt-BR"));
+  opts($("#fSaude"), "Saúde: todas", SAUDES, "saude");
+  opts($("#fAnalista"), "Analista: todos", uniq(PROJ.map(p=>p.analista)), "analista");
+  opts($("#fConsultor"), "Consultor: todos", uniq(PROJ.flatMap(p=>[p.responsavel, ...p.consultores.map(c=>c.nome)])), "consultor");
+  opts($("#fFase"), "Fase: todas", Object.keys(FASES).map(Number).sort((a,b)=>a-b), "fase", k => FASES[k]);
+  $("#fBusca").oninput = e => { st.busca = e.target.value; atualizar(); };
+  $("#fLimpar").onclick = () => { Object.assign(st, {sistema:"Todos",status:"Abertos",saude:"",analista:"",consultor:"",fase:"",busca:""}); $("#fBusca").value=""; atualizar(); };
+}
+function sincronizarFiltros(){
+  document.querySelectorAll("#fSistema button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.sistema));
+  document.querySelectorAll("#fStatus button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.status));
+  $("#fSaude").value = st.saude; $("#fAnalista").value = st.analista; $("#fConsultor").value = st.consultor; $("#fFase").value = st.fase;
+}
+
+/* ---------- plotly ---------- */
+function layout(extra = {}){
+  const c = {ink:css("--ink"), ink2:css("--ink-2"), muted:css("--muted"), grid:css("--grid"), axis:css("--axis"), surface:css("--surface"), border:css("--axis")};
+  const eixo = {gridcolor:c.grid, linecolor:c.axis, zerolinecolor:c.axis, tickfont:{color:c.muted, size:11.5}, title:{font:{color:c.ink2, size:12}}, automargin:true, showline:true, linewidth:1};
+  const base = {paper_bgcolor:"rgba(0,0,0,0)", plot_bgcolor:"rgba(0,0,0,0)", separators:",.",
+    font:{family:FONT, size:12, color:c.ink2}, margin:{l:8,r:12,t:10,b:8},
+    hoverlabel:{bgcolor:c.surface, bordercolor:c.border, font:{family:FONT, color:c.ink, size:12.5}, align:"left"},
+    legend:{orientation:"h", x:0, y:1.13, font:{color:c.ink2, size:12}, bgcolor:"rgba(0,0,0,0)", traceorder:"normal"},
+    barcornerradius:4, bargap:0.35};
+  const out = Object.assign({}, base, extra);
+  out.xaxis = Object.assign({}, eixo, extra.xaxis || {});
+  out.yaxis = Object.assign({}, eixo, extra.yaxis || {});
+  out.legend = Object.assign({}, base.legend, extra.legend || {});
+  return out;
+}
+const CFG = {displayModeBar:false, responsive:true};
+function plot(id, traces, lay){ const el = document.getElementById(id); if(!el || el.offsetParent === null) return; Plotly.react(el, traces, layout(lay), CFG); return el; }
+
+function tabela(id, cols, linhas){
+  const el = document.getElementById(id);
+  el.innerHTML = `<table><thead><tr>${cols.map((c,i)=>`<th class="${i?"r":""}" style="cursor:default">${esc(c)}</th>`).join("")}</tr></thead><tbody>` +
+    linhas.map(l => `<tr>${l.map((v,i)=>`<td class="${i?"r num":""}">${esc(v)}</td>`).join("")}</tr>`).join("") + `</tbody></table>`;
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("[data-tbl]"); if(!b) return;
+  const el = document.getElementById(b.dataset.tbl); el.classList.toggle("open");
+  b.textContent = el.classList.contains("open") ? "Ocultar tabela" : "Ver tabela";
+});
+
+/* ---------- visão geral ---------- */
+function renderKpis(ps){
+  const and = ps.filter(p => p.status !== "Suspenso");
+  const adq = sum(ps, p=>p.adquiridas), uti = sum(ps, p=>p.utilizadas), saldo = sum(ps, p=>p.saldo), livre = sum(ps, p=>Math.max(p.saldo_livre,0));
+  const parados = and.filter(p => p.dias_sem_agenda > 30 && !p.proxima).length;
+  const prox30 = D.agendas.filter(a => a.situacao === "Próxima" && ps.some(p=>p.cod===a.cod) && diasAte(a.dia) <= 30);
+  const porSis = SISTEMAS.map(s => [s, ps.filter(p=>p.sistema===s).length]).filter(x=>x[1]);
+  $("#kpis").innerHTML = `
+    <div class="card kpi hero">
+      <div class="label">Projetos em aberto</div>
+      <div class="value">${ps.length}</div>
+      <div class="split">${porSis.map(([s,n])=>`<span>${sysTag(s)} <b class="num">${n}</b></span>`).join("")}
+        <span class="muted">${and.length} em andamento · ${ps.length-and.length} suspensos</span></div>
+    </div>
+    <div class="card kpi"><div class="label">Horas adquiridas</div><div class="value">${nf0.format(adq)}h</div>
+      <div class="foot">${nf0.format(sum(ps,p=>p.bonificadas))}h bonificadas · ${nf0.format(sum(ps,p=>p.transferidas))}h transferidas</div></div>
+    <div class="card kpi"><div class="label">Horas usadas</div><div class="value">${nf0.format(uti)}h</div>
+      <div class="meter" role="img" aria-label="${pct(adq?uti/adq:0)} usado"><i style="width:${adq?Math.min(100,uti/adq*100):0}%"></i></div>
+      <div class="foot">${pct(adq?uti/adq:0)} do adquirido</div></div>
+    <div class="card kpi"><div class="label">Saldo de horas</div><div class="value">${nf0.format(saldo)}h</div>
+      <div class="foot">${nf0.format(livre)}h sem nenhuma agenda marcada</div></div>
+    <div class="card kpi"><div class="label">Dias em aberto (mediana)</div><div class="value">${nf0.format(median(and.map(p=>p.dias_aberto)) ?? 0)}</div>
+      <div class="foot">dos projetos em andamento</div></div>
+    <div class="card kpi"><div class="label">Parados há +30 dias</div><div class="value">${parados}</div>
+      <div class="foot">em andamento, sem agenda e nada marcado</div></div>
+    <div class="card kpi"><div class="label">Agendas nos próximos 30 dias</div><div class="value">${prox30.length}</div>
+      <div class="foot">${h(sum(prox30,a=>a.horas))} marcadas em ${new Set(prox30.map(a=>a.cod)).size} projetos</div></div>`;
+}
+
+function renderSaude(){
+  const base = filtrar({saude:true});
+  $("#healthList").innerHTML = SAUDES.map(s => {
+    const n = base.filter(p => p.saude === s).length;
+    return `<button type="button" class="health-item" data-s="${esc(s)}" aria-pressed="${st.saude===s}">
+      ${pill(s)}<span class="desc">${esc(SAUDE_DESC[s])}</span><span class="count num">${n}</span></button>`;
+  }).join("");
+  $("#healthList").onclick = e => { const b = e.target.closest(".health-item"); if(!b) return; st.saude = st.saude === b.dataset.s ? "" : b.dataset.s; atualizar(); };
+}
+
+function renderInsights(ps){
+  const and = ps.filter(p => p.status !== "Suspenso");
+  const it = [];
+  const enc = ps.filter(p => p.saude === "Encerrar");
+  if(enc.length) it.push(["Encerrar", `<b>${enc.length} projetos já passaram do go live</b> e estão sem agenda há mais de 30 dias (mediana de ${nf0.format(median(enc.map(p=>p.dias_sem_agenda)))} dias), com ${h(sum(enc,p=>p.saldo))} de saldo somado. Pedem termo de encerramento ou uso do saldo.`]);
+  const cri = ps.filter(p => p.saude === "Crítico");
+  if(cri.length){ const pior = [...cri].sort((a,b)=>b.dias_sem_agenda-a.dias_sem_agenda)[0];
+    it.push(["Crítico", `<b>${cri.length} projetos críticos</b>: parados antes do go live ou com as horas no fim sem go live. O mais antigo está há ${nf0.format(pior.dias_sem_agenda)} dias sem agenda (${esc(pior.nome)}).`]); }
+  const venc = ps.filter(p => p.vencidas > 0);
+  if(venc.length) it.push(["Atenção", `<b>${venc.length} projetos têm agendas planejadas que passaram sem execução nem cancelamento</b> (${sum(venc,p=>p.vencidas)} dias de agenda). A agenda planejada do CES não serve de previsão enquanto isso não for limpo.`]);
+  const acima = and.filter(p => D.referencia[p.sistema] && p.dias_aberto > D.referencia[p.sistema].dias_p75);
+  if(acima.length) it.push(["Atenção", `<b>${acima.length} projetos em andamento estão abertos há mais tempo</b> do que 75% dos concluídos do mesmo sistema levaram para encerrar.`]);
+  const semAg = and.filter(p => p.nunca_agenda);
+  if(semAg.length) it.push(["Atenção", `<b>${semAg.length} projetos ainda não tiveram nenhuma agenda</b>; ${semAg.filter(p=>p.proxima).length} já têm a primeira marcada.`]);
+  const emEnc = ps.filter(p => statusRep(p) === "encerramento");
+  if(emEnc.length) it.push(["Encerrar", `<b>${emEnc.length} projetos estão em encerramento no report da analista</b> e seguem em andamento no CES; ${emEnc.filter(p => p.saude === "Encerrar").length} deles o painel também marca para encerrar. Falta baixar no CES.`]);
+  const semFat = ps.filter(p => ultimoRep(p) && ultimoRep(p).financeiro < 0);
+  if(semFat.length) it.push(["Atenção", `<b>${semFat.length} projetos têm hora entregue sem faturamento</b> segundo o report (${h(-sum(semFat, p => ultimoRep(p).financeiro))}). Conferir antes do encerramento.`]);
+  const ok = ps.filter(p => p.saude === "Em dia");
+  if(ok.length) it.push(["Em dia", `<b>${ok.length} projetos em dia</b>, com agenda recente ou marcada.`]);
+  $("#insights").innerHTML = it.length ? it.map(([s,t]) => `<li><span class="${SAUDE_CLS[s]}" style="color:var(--c)">${ICON[s]}</span><span>${t}</span></li>`).join("") : `<li>Nenhum projeto no recorte.</li>`;
+}
+
+function renderScatter(ps){
+  const c = s => css(SAUDE_VAR[s]);
+  const traces = SAUDES.map(s => {
+    const g = ps.filter(p => p.saude === s);
+    return {type:"scatter", mode:"markers", name:s, x:g.map(p=>Math.max(p.dias_sem_agenda,1)), y:g.map(p=>p.pct*100),
+      customdata:g.map(p=>p.cod),
+      text:g.map(p=>`<b>${esc(p.nome)}</b><br>${esc(p.sistema)} · ${esc(p.fase_nome)}<br>${p.nunca_agenda?"nunca teve agenda":"última agenda "+dt(p.ultima)} (${nf0.format(p.dias_sem_agenda)} dias)<br>${h(p.utilizadas)} de ${h(p.adquiridas)} usadas · saldo ${h(p.saldo)}<br>${p.proxima?"próxima "+dt(p.proxima):"nada marcado"}`),
+      hovertemplate:"%{text}<extra></extra>",
+      marker:{size:12, color:c(s), symbol:g.map(p=>p.sistema==="myFarm"?"circle":"diamond"), line:{width:2, color:css("--surface")}, opacity:.95}};
+  }).filter(t => t.x.length);
+  const ticks = [1,7,15,30,60,90,180,365,730,1825,3650];
+  const rot = ["0","7d","15d","30d","60d","3m","6m","1a","2a","5a","10a"];
+  const maxX = Math.max(400, ...ps.map(p=>p.dias_sem_agenda));
+  const el = plot("chScatter", traces, {
+    xaxis:{type:"log", title:{text:"dias desde a última agenda"}, tickvals:ticks, ticktext:rot, range:[-0.05, Math.log10(maxX*1.25)], showgrid:true},
+    yaxis:{title:{text:"% das horas adquiridas já usadas"}, ticksuffix:"%", range:[-4, 108], dtick:25},
+    showlegend:true, legend:{orientation:"h", x:0, y:-0.2},
+    shapes:[{type:"line", x0:30, x1:30, yref:"paper", y0:0, y1:1, line:{color:css("--axis"), width:1}}],
+    annotations:[{x:Math.log10(30), y:1, yref:"paper", xref:"x", text:"30 dias", showarrow:false, xanchor:"left", yanchor:"top", font:{size:11, color:css("--muted")}}],
+    margin:{l:8,r:12,t:10,b:8}});
+  if(el && !el._clk){ el._clk = true; el.on("plotly_click", ev => abrir(ev.points[0].customdata)); }
+  $("#legScatter").innerHTML = `<span><span class="sym">●</span> myFarm</span><span><span class="sym">◆</span> AgriManager</span><span>cor = saúde do projeto</span>`;
+}
+
+function renderFase(){
+  const ps = filtrar({fase:true});
+  const ks = Object.keys(FASES).map(Number).sort((a,b)=>a-b);
+  const sis = SISTEMAS.filter(s => st.sistema === "Todos" || st.sistema === s);
+  const traces = sis.map(s => ({type:"bar", orientation:"h", name:s, y:ks.map(k=>FASES[k]), x:ks.map(k=>ps.filter(p=>p.sistema===s && p.fase===k).length),
+    customdata:ks, marker:{color:cor(s), line:{width:0}}, hovertemplate:`%{y}<br><b>%{x}</b> projetos ${s}<extra></extra>`}));
+  const el = plot("chFase", traces, {barmode:"stack", bargap:0.38, yaxis:{autorange:"reversed", showgrid:false}, xaxis:{title:{text:"projetos"}, dtick:5},
+    showlegend: sis.length > 1, legend:{orientation:"h", x:0, y:1.1}});
+  if(el && !el._clk){ el._clk = true; el.on("plotly_click", ev => { const k = String(ev.points[0].customdata); st.fase = st.fase === k ? "" : k; atualizar(); }); }
+  tabela("tbFase", ["Fase", ...sis], ks.map(k => [FASES[k], ...sis.map(s=>ps.filter(p=>p.sistema===s && p.fase===k).length)]));
+}
+
+function renderSemAgenda(ps){
+  const faixas = [[0,7,"até 7"],[8,15,"8 a 15"],[16,30,"16 a 30"],[31,60,"31 a 60"],[61,90,"61 a 90"],[91,180,"91 a 180"],[181,1e9,"mais de 180"]];
+  const sis = SISTEMAS.filter(s => st.sistema === "Todos" || st.sistema === s);
+  const cont = (s,[a,b]) => ps.filter(p => p.sistema===s && p.dias_sem_agenda>=a && p.dias_sem_agenda<=b).length;
+  plot("chSemAgenda", sis.map(s => ({type:"bar", name:s, x:faixas.map(f=>f[2]), y:faixas.map(f=>cont(s,f)), marker:{color:cor(s)},
+    hovertemplate:`%{x} dias<br><b>%{y}</b> projetos ${s}<extra></extra>`})),
+    {barmode:"stack", bargap:0.55, xaxis:{title:{text:"dias desde a última agenda"}, showgrid:false}, yaxis:{title:{text:"projetos"}}, showlegend:sis.length>1, legend:{orientation:"h",x:0,y:1.1}});
+  tabela("tbSem", ["Dias sem agenda", ...sis], faixas.map(f => [f[2], ...sis.map(s=>cont(s,f))]));
+}
+
+function renderEvolucao(){
+  const E = D.evolucao, sis = SISTEMAS.filter(s => st.sistema === "Todos" || st.sistema === s);
+  const x = E.meses.map(mesRot);
+  plot("chCarteira", sis.map(s => ({type:"scatter", mode:"lines+markers", name:s, x, y:E.carteira[s], line:{color:cor(s), width:2}, marker:{size:6, color:cor(s), line:{width:2,color:css("--surface")}},
+    hovertemplate:`%{x}<br><b>%{y}</b> projetos ${s}<extra></extra>`})),
+    {hovermode:"x unified", xaxis:{showgrid:false, nticks:8}, yaxis:{rangemode:"tozero"}, showlegend:sis.length>1, legend:{orientation:"h",x:0,y:1.15}});
+  tabela("tbCarteira", ["Mês", ...sis], x.map((m,i)=>[m, ...sis.map(s=>E.carteira[s][i])]));
+  plot("chHoras", sis.map(s => ({type:"bar", name:s, x, y:E.horas[s], marker:{color:cor(s)}, hovertemplate:`%{x}<br><b>%{y:,.0f}h</b> ${s}<extra></extra>`})),
+    {barmode:"stack", bargap:0.3, xaxis:{showgrid:false, nticks:8}, yaxis:{ticksuffix:"h"}, showlegend:sis.length>1, legend:{orientation:"h",x:0,y:1.15}});
+  tabela("tbHoras", ["Mês", ...sis], x.map((m,i)=>[m, ...sis.map(s=>nf1.format(E.horas[s][i])+"h")]));
+  const ent = x.map((_,i)=>sum(sis,s=>E.entradas[s][i])), enc = x.map((_,i)=>sum(sis,s=>E.encerramentos[s][i]));
+  plot("chFluxo", [
+    {type:"bar", name:"Entradas", x, y:ent, marker:{color:css("--entradas")}, hovertemplate:"%{x}<br><b>%{y}</b> entradas<extra></extra>"},
+    {type:"bar", name:"Encerramentos", x, y:enc, marker:{color:css("--encerramentos")}, hovertemplate:"%{x}<br><b>%{y}</b> encerramentos<extra></extra>"}],
+    {barmode:"group", bargap:0.3, bargroupgap:0.08, xaxis:{showgrid:false, nticks:8}, yaxis:{rangemode:"tozero"}, legend:{orientation:"h",x:0,y:1.15}});
+  tabela("tbFluxo", ["Mês","Entradas","Encerramentos"], x.map((m,i)=>[m, ent[i], enc[i]]));
+}
+
+/* ---------- histórico: anotações dos reports das analistas ---------- */
+const temHist = p => !!(p.historico && p.historico.length);
+const ultimoRep = p => temHist(p) ? p.historico[0] : null;
+const statusRep = p => { const r = ultimoRep(p); return r && r.status ? r.status.toLowerCase() : ""; };
+const histBtn = p => temHist(p) ? `<button type="button" class="hist-btn" data-hist="${p.cod}" title="Ver as anotações dos reports">Histórico${p.historico.length > 1 ? " (" + p.historico.length + ")" : ""}</button>` : "";
+const repTag = p => { const st = statusRep(p); return st && st !== "em andamento" ? `<span class="rep-tag">report: ${esc(st)}</span>` : ""; };
+const nomeArquivo = a => a.replace(/\.xlsx$/i, "");
+function entradaHist(e, p){
+  const num = (rot, v, extra = "", cls = "") => `<div class="hn ${cls}"><span>${rot}</span><b>${v == null ? "–" : h(v)}</b>${extra ? `<small>${extra}</small>` : ""}</div>`;
+  const fin = e.financeiro == null ? "" : e.financeiro < 0 ? "entregue sem faturar" : e.financeiro > 0 ? "faturado e ainda não entregue" : "faturado = realizado";
+  return `<div class="hist-item">
+    <div class="hist-cab"><b>${esc(nomeArquivo(e.arquivo))}</b><span class="muted">salvo em ${dt(e.data)}</span>
+      ${e.status ? `<span class="tag">report: ${esc(e.status.toLowerCase())}</span>` : ""}<span class="tag">CES: ${esc(p.status.toLowerCase())}</span></div>
+    ${e.andamento ? `<div class="hist-bloco"><div class="role">Andamento, previsão de encerramento, financeiro e travas</div><p>${esc(e.andamento).replace(/\n/g, "<br>")}</p></div>` : ""}
+    ${e.handoff ? `<div class="hist-bloco"><div class="role">HandOff</div><p>${esc(e.handoff)}</p></div>` : ""}
+    ${e.analista_sucesso ? `<div class="hist-bloco"><div class="role">Analista de sucesso</div><p>${esc(e.analista_sucesso)}</p></div>` : ""}
+    <div class="hist-nums">
+      ${num("Vendidas", e.hr_adq, `adquiridas no CES: ${h(p.adquiridas)}`)}
+      ${num("Planejadas", e.planejado)}
+      ${num("Realizadas", e.realizado, `usadas no CES: ${h(p.utilizadas)}`)}
+      ${num("Estoque de horas", e.estoque, `saldo no CES: ${h(p.saldo)}`)}
+      ${num("Faturadas", e.faturado)}
+      ${num("Saldo financeiro", e.financeiro, fin, e.financeiro < 0 ? "neg" : "")}
+    </div>
+  </div>`;
+}
+let histAberto = null;
+function abrirHistorico(cod){
+  const p = BY_COD[cod]; if(!p) return;
+  histAberto = cod;
+  const n = (p.historico || []).length;
+  $("#sheetHist").innerHTML = `
+    <div class="sheet-head">
+      <div class="eyebrow">Histórico do projeto #${p.cod} · ${esc(p.sistema)}</div>
+      <h2 id="hTitulo">${esc(p.nome)}</h2>
+      <div class="sub">${n} anotaç${n === 1 ? "ão" : "ões"} dos reports das analistas, da mais nova para a mais antiga.</div>
+      <div class="tags" style="margin-top:10px"><button type="button" class="btn" id="hAbrir360">Abrir visão 360</button><button type="button" class="btn" id="hFechar">Fechar</button></div>
+    </div>
+    <div class="sheet-body">${n ? p.historico.map(e => entradaHist(e, p)).join("") : `<div class="empty">Este projeto não aparece em nenhum report.</div>`}</div>`;
+  $("#hFechar").onclick = fecharHistorico;
+  $("#hAbrir360").onclick = () => { fecharHistorico(); abrir(cod); };
+  $("#modalHist").classList.add("open"); document.body.style.overflow = "hidden";
+  $("#hFechar").focus();
+}
+function fecharHistorico(){ $("#modalHist").classList.remove("open"); histAberto = null; if(!abertoCod) document.body.style.overflow = ""; }
+$("#modalHist").addEventListener("click", e => { if(e.target.id === "modalHist") fecharHistorico(); });
+
+/* ---------- tabelas ordenáveis (clique no título da coluna) ---------- */
+const ORDEM = store.get("ordem", {});
+const TABS_ORD = {};
+function ordenarLinhas(id, cols, rows, padrao, desempate){
+  const s = ORDEM[id] || padrao || {col: cols[0].k, dir: 1};
+  const c = cols.find(x => x.k === s.col) || cols[0];
+  const linhas = rows.map((r, i) => [r, i]).sort((A, B) => {
+    const x = c.v(A[0]), y = c.v(B[0]);
+    const nx = x == null || x === "", ny = y == null || y === "";
+    if(nx || ny) return nx && ny ? A[1] - B[1] : (nx ? 1 : -1);
+    const r = typeof x === "string" ? x.localeCompare(y, "pt-BR") : x - y;
+    return r * s.dir || (desempate ? desempate(A[0], B[0]) : 0) || A[1] - B[1];
+  }).map(x => x[0]);
+  return {s, linhas};
+}
+function tabelaOrdenavel(id, cols, rows, opt = {}){
+  const el = document.getElementById(id); if(!el) return;
+  TABS_ORD[id] = {cols, rows, opt};
+  const {s, linhas} = ordenarLinhas(id, cols, rows, opt.padrao, opt.desempate);
+  el.innerHTML = `<thead><tr>${cols.map(c => { const ativo = s.col === c.k;
+      return `<th data-k="${c.k}" class="${c.r ? "r" : ""} ${ativo ? "sorted" : ""}" title="Clique para ordenar por ${esc(c.t)}" aria-sort="${ativo ? (s.dir > 0 ? "ascending" : "descending") : "none"}">${esc(c.t)}<span class="arr">${ativo ? (s.dir > 0 ? "↑︎" : "↓︎") : "↕︎"}</span></th>`; }).join("")}</tr></thead>
+    <tbody>${linhas.length ? linhas.map(r => `<tr${opt.cod && opt.cod(r) != null ? ` class="row" tabindex="0" data-cod="${opt.cod(r)}"` : ""}>${cols.map(c => `<td class="${c.r ? "r num" : ""}">${c.f(r)}</td>`).join("")}</tr>`).join("")
+      : `<tr><td colspan="${cols.length}" class="empty">${esc(opt.vazio || "Nada aqui.")}</td></tr>`}</tbody>`;
+  if(el._ord) return;
+  el._ord = true;
+  el.addEventListener("click", e => {
+    const th = e.target.closest("th[data-k]");
+    if(th){
+      const t = TABS_ORD[id], k = th.dataset.k, atual = ORDEM[id] || t.opt.padrao || {col: t.cols[0].k, dir: 1};
+      const col = t.cols.find(c => c.k === k);
+      ORDEM[id] = {col: k, dir: atual.col === k ? -atual.dir : (col.d0 || 1)};
+      store.set("ordem", ORDEM);
+      tabelaOrdenavel(id, t.cols, t.rows, t.opt);
+      return;
+    }
+    const hb = e.target.closest("[data-hist]"); if(hb){ abrirHistorico(+hb.dataset.hist); return; }
+    const tr = e.target.closest("tr[data-cod]"); if(tr) abrir(+tr.dataset.cod);
+  });
+  el.addEventListener("keydown", e => { if(e.target.closest("[data-hist]")) return; const tr = e.target.closest("tr[data-cod]"); if(tr && (e.key === "Enter" || e.key === " ")){ e.preventDefault(); abrir(+tr.dataset.cod); } });
+}
+function baixarCsv(nome, cab, linhas){
+  const csv = "﻿" + [cab, ...linhas].map(l => l.map(v => `"${String(v ?? "").replace(/"/g, '""')}"`).join(";")).join("\r\n");
+  const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([csv], {type: "text/csv;charset=utf-8"}));
+  a.download = nome; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+const porPrioridade = (a, b) => a.prioridade - b.prioridade;
+const ncsv = v => v == null ? "" : String(v).replace(".", ",");
+const fasePassos = p => `<span class="steps" title="${esc(p.fase_nome)}">${[1,2,3,4,5,6,7].map(i => `<i class="${i < p.fase ? "on" : i === p.fase ? "cur" : ""}"></i>`).join("")}</span><span class="small" style="white-space:nowrap">${esc(p.fase_nome)}</span>`;
+
+/* ---------- projetos a atacar ---------- */
+const FAIXAS_ATAQUE = [[91, 1e9, "Mais de 90 dias", "--critical"], [31, 90, "31 a 90 dias", "--serious"], [0, 30, "Até 30 dias", "--warning"]];
+const faixaDe = d => FAIXAS_ATAQUE.find(f => d >= f[0] && d <= f[1]);
+const COLS_ATAQUE = [
+  {k:"dias", t:"Dias sem agenda", v:p=>p.dias_sem_agenda, d0:-1,
+    f:p=>`<div class="dias-sem" style="--c:var(${faixaDe(p.dias_sem_agenda)[3]})"><b>${nf0.format(p.dias_sem_agenda)}</b><span>dias</span></div>`},
+  {k:"nome", t:"Projeto", v:p=>p.nome,
+    f:p=>`<div class="pname">${esc(p.nome)}</div><div class="small">${sysTag(p.sistema)} · ${esc(p.fase_nome.toLowerCase())}${p.grupo === "Sem agenda marcada" ? " · marcar a próxima agenda" : ""}</div><div class="linha-hist">${repTag(p)}${histBtn(p)}</div>`},
+  {k:"consultor", t:"Último consultor", v:p=>p.ultima_os_consultor || p.responsavel,
+    f:p=>`${esc(p.ultima_os_consultor || p.responsavel || "–")}<div class="small">${p.nunca_agenda ? "nunca teve agenda" : "última agenda " + dtc(p.ultima)}</div>`},
+  {k:"saldo", t:"Saldo", v:p=>p.saldo, d0:-1, r:true, f:p=>`<b>${h(p.saldo)}</b>`},
+];
+function renderAtacar(ps){
+  const lista = ps.filter(p => p.status !== "Suspenso" && !p.proxima);
+  const retomar = lista.filter(p => p.grupo !== "Encerrar"), encerrar = lista.filter(p => p.grupo === "Encerrar");
+  const conta = f => lista.filter(p => p.dias_sem_agenda >= f[0] && p.dias_sem_agenda <= f[1]).length;
+  $("#kpisAtaque").innerHTML = `<div class="card kpi"><div class="label">Projetos a atacar</div><div class="value">${lista.length}</div>
+      <div class="foot">${retomar.length} para retomar · ${encerrar.length} para encerrar · saldo parado ${h(sum(lista, p => p.saldo))}</div></div>` +
+    FAIXAS_ATAQUE.map(f => `<div class="card kpi faixa" style="--c:var(${f[3]})"><div class="label">${f[2]} sem agenda</div><div class="value">${conta(f)}</div>
+      <div class="foot">${lista.filter(p => p.dias_sem_agenda >= f[0] && p.dias_sem_agenda <= f[1] && p.grupo !== "Encerrar").length} para retomar</div></div>`).join("") +
+    (lista.some(temHist) ? `<div class="card kpi"><div class="label">Em encerramento no report</div><div class="value">${lista.filter(p => statusRep(p) === "encerramento").length}</div>
+      <div class="foot">a analista já trata como encerramento; ${retomar.filter(p => statusRep(p) === "encerramento").length} estão na lista de retomar</div></div>` : "");
+  $("#nRetomar").textContent = `(${retomar.length})`;
+  $("#nEncerrar").textContent = `(${encerrar.length})`;
+  tabelaOrdenavel("tblRetomar", COLS_ATAQUE, retomar, {padrao: {col: "dias", dir: -1}, cod: p => p.cod, desempate: porPrioridade, vazio: "Nenhum projeto parado antes do go live."});
+  tabelaOrdenavel("tblEncerrar", COLS_ATAQUE, encerrar, {padrao: {col: "dias", dir: -1}, cod: p => p.cod, desempate: porPrioridade, vazio: "Nenhum projeto para encerrar."});
+}
+
+/* ---------- prioridades ---------- */
+const GRUPO_SAUDE = {"Crítico sem agenda":"Crítico", "Sem agenda marcada":"Atenção", "Encerrar":"Encerrar", "Com agenda marcada":"Em dia", "Suspenso":"Suspenso"};
+const GRUPO_DESC = {
+  "Crítico sem agenda":"Parado antes do go live ou com as horas no fim, sem nada marcado",
+  "Sem agenda marcada":"Ainda implantando e sem a próxima agenda",
+  "Encerrar":"Go live feito e sem agenda: encerrar ou usar o saldo",
+  "Com agenda marcada":"Já tem a próxima agenda",
+  "Suspenso":"Projeto suspenso"};
+let grupoPrio = "";
+const GRUPO_CURTO = {"Crítico sem agenda":"Crítico", "Sem agenda marcada":"Sem agenda", "Encerrar":"Encerrar", "Com agenda marcada":"Agendado", "Suspenso":"Suspenso"};
+const grupoCurto = g => `<span class="pill ${SAUDE_CLS[GRUPO_SAUDE[g]]}" title="${esc(g)}">${ICON[GRUPO_SAUDE[g]]}${esc(GRUPO_CURTO[g])}</span>`;
+const grupoTag = g => `<span class="pill ${SAUDE_CLS[GRUPO_SAUDE[g]]}">${ICON[GRUPO_SAUDE[g]]}${esc(g)}</span>`;
+const COLS_PRIO = [
+  {k:"prioridade", t:"#", v:p=>p.prioridade, f:p=>`<b class="num">${p.prioridade}</b>`},
+  {k:"grupo", t:"Grupo", v:p=>D.grupos.indexOf(p.grupo), f:p=>grupoCurto(p.grupo)},
+  {k:"nome", t:"Projeto", v:p=>p.nome, f:p=>`<div class="pname">${esc(p.nome)}</div><div class="small">${sysTag(p.sistema)} · #${p.cod} · ${esc(p.saude.toLowerCase())}</div><div class="linha-hist">${repTag(p)}${histBtn(p)}</div>`},
+  {k:"analista", t:"Analista", v:p=>p.analista, f:p=>`<div class="pessoa">${esc(p.analista || "–")}<div class="small">resp.: ${esc(p.responsavel || "–")}</div></div>`},
+  {k:"ultima", t:"Última agenda", v:p=>p.dias_sem_agenda, d0:-1, r:true,
+    f:p=>p.nunca_agenda ? `<span class="muted">nunca teve</span><div class="small">aberto há ${nf0.format(p.dias_aberto)} dias</div>` : `${dt(p.ultima)}<div class="small">há ${nf0.format(p.dias_sem_agenda)} dias</div>`},
+  {k:"ultima_os", t:"Última OS executada", v:p=>p.ultima_os, d0:-1,
+    f:p=>p.ultima_os ? `<div><b class="num">OS ${p.ultima_os}</b>${p.ultima_os_situacao === "Sem fechar" ? ` <span class="chip a-semfechar"><i></i>sem fechar</span>` : ""}</div><div class="small quebra">${esc(p.ultima_os_etapa || "–")}</div><div class="small">${esc(p.ultima_os_consultor)} · ${h(p.ultima_os_horas)}${p.ultima_os_execucao ? " · " + esc(p.ultima_os_execucao.toLowerCase()) : ""}</div>` : `<span class="muted">nenhuma</span>`},
+  {k:"proxima", t:"Próxima agenda", v:p=>p.proxima || "0000",
+    f:p=>p.proxima ? `${dt(p.proxima)} <span class="small">em ${diasAte(p.proxima)} dias</span><div class="small quebra">OS ${p.proxima_os} · ${esc(p.proxima_os_consultor)}</div><div class="small quebra">${esc(p.proxima_os_etapa || "–")}</div>`
+      : `<span class="chip a-semfechar"><i></i>nada marcado</span>${p.vencidas ? `<div class="small">${p.vencidas} planejada${p.vencidas > 1 ? "s" : ""} vencida${p.vencidas > 1 ? "s" : ""}</div>` : ""}`},
+  {k:"saldo", t:"Saldo", v:p=>p.saldo, d0:-1, r:true, f:p=>`<b>${h(p.saldo)}</b><div class="small">${pct(p.pct)} usado</div>`},
+  {k:"fase", t:"Fase", v:p=>p.fase, f:p=>`<span class="steps" title="${esc(p.fase_nome)}">${[1,2,3,4,5,6,7].map(i => `<i class="${i < p.fase ? "on" : i === p.fase ? "cur" : ""}"></i>`).join("")}</span><div class="small quebra" style="max-width:110px">${esc(p.fase_nome)}</div>`},
+];
+function renderPrioridades(ps){
+  $("#gruposPrio").innerHTML = D.grupos.map(g => { const gs = ps.filter(p => p.grupo === g);
+    return `<button type="button" class="card kpi grupo-card" data-g="${esc(g)}" aria-pressed="${grupoPrio === g}">
+      <div class="label">${grupoTag(g)}</div><div class="value">${gs.length}</div>
+      <div class="foot">${esc(GRUPO_DESC[g])}<br>saldo somado ${h(sum(gs, p => p.saldo))}</div></button>`; }).join("");
+  const lista = grupoPrio ? ps.filter(p => p.grupo === grupoPrio) : ps;
+  $("#prioCount").textContent = `${lista.length} projeto${lista.length === 1 ? "" : "s"}${grupoPrio ? ` em "${grupoPrio}" (clique de novo no cartão para ver todos)` : ""} · ordem padrão: coluna #`;
+  tabelaOrdenavel("tblPrio", COLS_PRIO, lista, {padrao: {col: "prioridade", dir: 1}, cod: p => p.cod, desempate: porPrioridade, vazio: "Nenhum projeto com esses filtros."});
+}
+$("#gruposPrio").onclick = e => { const b = e.target.closest("[data-g]"); if(!b) return; grupoPrio = grupoPrio === b.dataset.g ? "" : b.dataset.g; renderPrioridades(filtrar()); };
+$("#btnCsvPrio").onclick = () => {
+  const t = TABS_ORD.tblPrio; if(!t) return;
+  const cab = ["Prioridade","Grupo","Saúde","Código","Projeto","Sistema","Analista","Consultor responsável","Última agenda","Dias sem agenda","Última OS executada","Etapa da última OS","Consultor da última OS","Horas da última OS","Situação da última OS","Próxima agenda","OS da próxima agenda","Consultor da próxima agenda","Etapa da próxima agenda","Agendas vencidas","Saldo","% usado","Fase"];
+  const linhas = ordenarLinhas("tblPrio", t.cols, t.rows, t.opt.padrao, t.opt.desempate).linhas.map(p => [p.prioridade, p.grupo, p.saude, p.cod, p.nome, p.sistema, p.analista, p.responsavel, dt(p.ultima), p.dias_sem_agenda, p.ultima_os ?? "", p.ultima_os_etapa, p.ultima_os_consultor, ncsv(p.ultima_os_horas), p.ultima_os_situacao, dt(p.proxima), p.proxima_os ?? "", p.proxima_os_consultor, p.proxima_os_etapa, p.vencidas, ncsv(p.saldo), ncsv(Math.round(p.pct * 1000) / 10), p.fase_nome]);
+  baixarCsv(`prioridades-projetos-hunter-${D.meta.ref}.csv`, cab, linhas);
+};
+
+/* ---------- projetos ---------- */
+const COLS = [
+  {k:"saude", t:"Saúde", v:p=>SAUDES.indexOf(p.saude), f:p=>pill(p.saude)},
+  {k:"nome", t:"Projeto", v:p=>p.nome, f:p=>`<div class="pname">${esc(p.nome)}</div><div class="small">#${p.cod} · ${esc(p.tipo)}${p.status==="Suspenso"?" · suspenso":""}</div><div class="linha-hist">${repTag(p)}${histBtn(p)}</div>`},
+  {k:"sistema", t:"Sistema", v:p=>p.sistema, f:p=>sysTag(p.sistema)},
+  {k:"analista", t:"Analista", v:p=>p.analista, f:p=>esc(p.analista || "–")},
+  {k:"responsavel", t:"Consultor resp.", v:p=>p.responsavel, f:p=>`${esc(p.responsavel || "–")}${p.consultores.length && p.consultores[0].nome!==p.responsavel?`<div class="small">mais horas: ${esc(p.consultores[0].nome)}</div>`:""}`},
+  {k:"abertura", t:"Abertura", v:p=>p.abertura, r:true, f:p=>`${dt(p.abertura)}<div class="small">${nf0.format(p.dias_aberto)} dias</div>`},
+  {k:"adquiridas", t:"Adquiridas", v:p=>p.adquiridas, d0:-1, r:true, f:p=>h(p.adquiridas)},
+  {k:"utilizadas", t:"Usadas", v:p=>p.utilizadas, d0:-1, r:true, f:p=>h(p.utilizadas)},
+  {k:"saldo", t:"Saldo", v:p=>p.saldo, d0:-1, r:true, f:p=>`<b>${h(p.saldo)}</b>`},
+  {k:"pct", t:"% usado", v:p=>p.pct, d0:-1, r:true, f:p=>`<span class="mini"><i style="width:${Math.min(100,p.pct*100)}%"></i></span>${pct(p.pct)}`},
+  {k:"ultima", t:"Última agenda", v:p=>p.dias_sem_agenda, d0:-1, r:true, f:p=>p.nunca_agenda?`<span class="muted">nunca</span>`:`${dt(p.ultima)}<div class="small">há ${nf0.format(p.dias_sem_agenda)} dias</div>`},
+  {k:"proxima", t:"Próxima", v:p=>p.proxima || "0000", r:true, f:p=>p.proxima?`${dt(p.proxima)}<div class="small">em ${diasAte(p.proxima)} dias</div>`:`<span class="muted">nada marcado</span>`},
+  {k:"fase", t:"Fase", v:p=>p.fase, f:fasePassos},
+];
+function renderTabela(ps){
+  $("#projCount").textContent = `${ps.length} projeto${ps.length===1?"":"s"} no recorte · saldo somado ${h(sum(ps,p=>p.saldo))}`;
+  tabelaOrdenavel("tblProj", COLS, ps, {padrao: {col: "saude", dir: 1}, cod: p => p.cod, desempate: porPrioridade, vazio: "Nenhum projeto com esses filtros."});
+}
+$("#btnCsv").onclick = () => {
+  const cab = ["Código","Projeto","Nome no CES","Cliente","Sistema","Tipo","Status","Saúde","Motivos","Analista","Consultor responsável","Quem mais atendeu","Vendedor","Abertura","Dias em aberto","Horas adquiridas","Horas usadas","Horas sem fechar","Horas marcadas","Saldo","% usado","Agendas realizadas","Última agenda","Dias sem agenda","Última OS executada","Próxima agenda","Agendas vencidas","Fase","Status no report","HandOff","Saldo financeiro (report)"];
+  const linhas = ordenarLinhas("tblProj", COLS, filtrar(), {col: "saude", dir: 1}, porPrioridade).linhas.map(p => [p.cod,p.nome,p.projeto,p.cliente,p.sistema,p.tipo,p.status,p.saude,p.motivos.join(" | "),p.analista,p.responsavel,(p.consultores[0]||{}).nome||"",p.vendedor,dt(p.abertura),p.dias_aberto,ncsv(p.adquiridas),ncsv(p.utilizadas),ncsv(p.sem_fechar),ncsv(p.agendadas),ncsv(p.saldo),ncsv(Math.round(p.pct*1000)/10),p.n_agendas,dt(p.ultima),p.dias_sem_agenda,p.ultima_os ?? "",dt(p.proxima),p.vencidas,p.fase_nome,statusRep(p),(ultimoRep(p)||{}).handoff||"",ncsv((ultimoRep(p)||{}).financeiro)]);
+  baixarCsv(`projetos-hunter-${D.meta.ref}.csv`, cab, linhas);
+};
+
+/* ---------- agenda ---------- */
+const horarioTxt = (hi, hf, hr) => !hi ? "Horário não informado no CES"
+  : (hr && hr.includes(" e ") ? `Das ${hi} às ${hf} (${hr})` : `Das ${hi} às ${hf}`);
+const horarioCel = (hi, hf, hr) => hi ? `<span class="num" style="white-space:nowrap">${hi} às ${hf}</span>${hr && hr.includes(" e ") ? `<div class="small">${esc(hr)}</div>` : ""}` : `<span class="muted">–</span>`;
+const COLS_AG = [
+  {k:"dia", t:"Data", v:a=>a.dia + (a.hi || ""), f:a=>`<span class="num">${dtc(a.dia)}</span>${a.hi ? `<div class="small num" style="white-space:nowrap">${a.hi} às ${a.hf}</div>` : ""}`},
+  {k:"projeto", t:"Projeto e etapa", v:a=>BY_COD[a.cod].nome, f:a=>`<div class="pname" style="max-width:260px">${esc(BY_COD[a.cod].nome)}</div><div class="small">OS ${a.os} · ${esc(a.etapa || "–")}</div>`},
+  {k:"consultor", t:"Consultor", v:a=>a.consultor, f:a=>esc(a.consultor)},
+  {k:"horas", t:"Horas", v:a=>a.horas, d0:-1, r:true, f:a=>h(a.horas)},
+];
+const COLS_VENC = [
+  {k:"projeto", t:"Projeto", v:x=>BY_COD[x.cod].nome, f:x=>`<div class="pname" style="max-width:260px">${esc(BY_COD[x.cod].nome)}</div><div class="small">${esc(BY_COD[x.cod].sistema)}</div>`},
+  {k:"analista", t:"Analista", v:x=>BY_COD[x.cod].analista, f:x=>esc(BY_COD[x.cod].analista)},
+  {k:"n", t:"Agendas", v:x=>x.n, d0:-1, r:true, f:x=>x.n},
+  {k:"periodo", t:"Período", v:x=>x.min, r:true, f:x=>`${dtc(x.min)}${x.min!==x.max?" a "+dtc(x.max):""}`},
+];
+
+function renderAgenda(ps){
+  const cods = new Set(ps.map(p=>p.cod));
+  const ag = D.agendas.filter(a => cods.has(a.cod));
+  const prox = ag.filter(a => a.situacao === "Próxima").sort((a,b)=>a.dia.localeCompare(b.dia));
+  const venc = ag.filter(a => a.situacao === "Vencida"), semf = ag.filter(a => a.situacao === "Sem fechar");
+  const p7 = prox.filter(a=>diasAte(a.dia)<=7), p30 = prox.filter(a=>diasAte(a.dia)<=30);
+  $("#kpisAgenda").innerHTML = [
+    ["Próximos 7 dias", p7.length, `${h(sum(p7,a=>a.horas))} em ${new Set(p7.map(a=>a.cod)).size} projetos`],
+    ["Próximos 30 dias", p30.length, `${h(sum(p30,a=>a.horas))} em ${new Set(p30.map(a=>a.cod)).size} projetos`],
+    ["Projetos sem nada marcado", ps.filter(p=>p.status!=="Suspenso" && !p.proxima).length, "em andamento"],
+    ["Agendas vencidas", venc.length, `em ${new Set(venc.map(a=>a.cod)).size} projetos`],
+    ["Confirmadas sem fechar", semf.length, `${h(sum(semf,a=>a.horas))} fora do consumo`],
+  ].map(([l,v,f])=>`<div class="card kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="foot">${f}</div></div>`).join("");
+
+  // semanas
+  const seg = d => { const x = toD(d); const w = (x.getDay()+6)%7; x.setDate(x.getDate()-w); return x; };
+  const s0 = seg(D.meta.ref); const semanas = [...Array(10)].map((_,i)=>{ const d = new Date(s0); d.setDate(d.getDate()+7*i); return d; });
+  const rot = semanas.map(d => `${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}`);
+  const sis = SISTEMAS.filter(s => st.sistema === "Todos" || st.sistema === s);
+  const val = (s,i) => sum(prox.filter(a => BY_COD[a.cod].sistema===s && seg(a.dia).getTime()===semanas[i].getTime()), a=>a.horas);
+  plot("chSemanas", sis.map(s => ({type:"bar", name:s, x:rot, y:rot.map((_,i)=>val(s,i)), marker:{color:cor(s)}, hovertemplate:`semana de %{x}<br><b>%{y:,.0f}h</b> ${s}<extra></extra>`})),
+    {barmode:"stack", bargap:0.35, xaxis:{showgrid:false, title:{text:"semana começando em"}}, yaxis:{ticksuffix:"h", rangemode:"tozero"}, showlegend:sis.length>1, legend:{orientation:"h",x:0,y:1.15}});
+  tabela("tbSemanas", ["Semana", ...sis], rot.map((r,i)=>[r, ...sis.map(s=>nf1.format(val(s,i))+"h")]));
+
+  tabelaOrdenavel("tblProximas", COLS_AG, prox, {padrao: {col: "dia", dir: 1}, cod: a => a.cod, vazio: "Nada marcado."});
+
+  const porProj = Object.values(venc.reduce((o,a)=>{ (o[a.cod] ||= {cod:a.cod, n:0, h:0, min:a.dia, max:a.dia}); const x=o[a.cod]; x.n++; x.h+=a.horas||0; if(a.dia<x.min)x.min=a.dia; if(a.dia>x.max)x.max=a.dia; return o; },{})).sort((a,b)=>b.n-a.n || a.min.localeCompare(b.min));
+  tabelaOrdenavel("tblVencidas", COLS_VENC, porProj, {padrao: {col: "n", dir: -1}, cod: x => x.cod, vazio: "Nenhuma."});
+  tabelaOrdenavel("tblSemFechar", COLS_AG, semf, {padrao: {col: "dia", dir: 1}, cod: a => a.cod, vazio: "Nenhuma."});
+}
+/* ---------- agenda dos consultores e agendas realizadas (todos os projetos) ---------- */
+const AG = D.agenda_geral;
+const SIS_TODOS = ["myFarm", "AgriManager", "Outro"];
+const DIAS_SEM = ["Seg", "Ter", "Qua", "Qui", "Sex", "Sáb", "Dom"];
+const ACONTECEU = new Set(["Realizada", "Sem fechar"]);
+const CONTA_HORA = new Set(["Realizada", "Sem fechar", "Próxima"]);
+const isoD = d => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const somaDias = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const segundaDe = d => { const x = new Date(d); x.setHours(0,0,0,0); x.setDate(x.getDate() - ((x.getDay() + 6) % 7)); return x; };
+const corta = (t, n) => t.length > n ? t.slice(0, n - 1) + "…" : t;
+let semanaDesl = 0;
+let periodo = {preset: "30"};
+
+function filtrarAgendaGeral(){
+  const b = st.busca.trim().toLowerCase();
+  return AG.filter(a => (st.escopo === "todos" || a.hu) &&
+    (st.sistema === "Todos" || a.s === st.sistema) &&
+    (!st.consultor || a.c === st.consultor) &&
+    (!b || (a.p + " " + a.cod + " " + a.c).toLowerCase().includes(b)));
+}
+const tipoTxt = a => a.hu ? "hunter" : a.t.toLowerCase();
+const COLS_AGG = [
+  {k:"d", t:"Data", v:a=>a.d + (a.hi || ""), f:a=>`<span class="num">${dtc(a.d)}</span><div class="small">${DIAS_SEM[(toD(a.d).getDay() + 6) % 7]}</div>`},
+  {k:"hi", t:"Horário", v:a=>a.hi || null, f:a=>horarioCel(a.hi, a.hf, a.hr)},
+  {k:"c", t:"Consultor", v:a=>a.c, f:a=>esc(a.c)},
+  {k:"p", t:"Projeto", v:a=>a.p, f:a=>`<div class="pname" style="max-width:260px">${esc(a.p)}</div><div class="small">${sysTag(a.s)} · ${esc(tipoTxt(a))} · #${a.cod}</div>`},
+  {k:"e", t:"Etapa", v:a=>a.e, f:a=>`<div class="small quebra" style="max-width:240px">${esc(a.e || "–")}</div>`},
+  {k:"x", t:"Modalidade", v:a=>a.x, f:a=>esc(a.x || "–")},
+  {k:"h", t:"Horas", v:a=>a.h, d0:-1, r:true, f:a=>h(a.h)},
+  {k:"si", t:"Situação", v:a=>a.si, f:a=>`<span class="chip ${SIT_CLS[a.si]}"><i></i>${SIT_ROT[a.si]}</span>`},
+  {k:"os", t:"OS", v:a=>a.os, d0:-1, r:true, f:a=>`<span class="muted">${a.os}</span>`},
+];
+function segEscopo(){
+  document.querySelectorAll(".escopo button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.escopo));
+}
+document.querySelectorAll(".escopo").forEach(el => el.onclick = e => { const b = e.target.closest("button"); if(!b) return; st.escopo = b.dataset.v; atualizar(); });
+
+function renderConsultores(){
+  segEscopo();
+  const base = filtrarAgendaGeral();
+  const ini = somaDias(segundaDe(REF), 7 * semanaDesl), dias = [...Array(7)].map((_, i) => somaDias(ini, i));
+  const di = isoD(dias[0]), df = isoD(dias[6]);
+  const sem = base.filter(a => a.d >= di && a.d <= df);
+  const col = dias.filter((d, i) => i < 5 || sem.some(a => a.d === isoD(d)));
+  const horas = (lista) => sum(lista.filter(a => CONTA_HORA.has(a.si)), a => a.h);
+  const nomes = [...new Set(sem.filter(a => CONTA_HORA.has(a.si)).map(a => a.c))]
+    .map(n => ({n, tot: horas(sem.filter(a => a.c === n))}))
+    .sort((a, b) => b.tot - a.tot || a.n.localeCompare(b.n, "pt-BR"));
+  const refIso = D.meta.ref;
+  $("#semRotulo").innerHTML = `Semana de <b>${dt(di)}</b> a <b>${dt(df)}</b>${semanaDesl === 0 ? " · semana da posição" : ""}`;
+
+  const livresDe = n => dias.slice(0, 5).filter(d => !sem.some(a => a.c === n && a.d === isoD(d) && CONTA_HORA.has(a.si))).length;
+  const horasHunter = horas(sem.filter(a => a.hu)), horasTot = horas(sem);
+  $("#kpisCons").innerHTML = [
+    ["Horas na semana", h(horasTot), `${h(horas(sem.filter(a => a.si === "Próxima")))} marcadas · ${h(horas(sem.filter(a => ACONTECEU.has(a.si))))} realizadas`],
+    ["Agendas", sem.filter(a => CONTA_HORA.has(a.si)).length, `${sem.filter(a => a.si === "Vencida").length} planejadas que não aconteceram`],
+    ["Consultores com agenda", nomes.length, `${sum(nomes, x => livresDe(x.n))} dias úteis livres somados`],
+    ["Projetos hunter", horasTot ? pct(horasHunter / horasTot) : "–", "das horas da semana"],
+  ].map(([l, v, f]) => `<div class="card kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="foot">${f}</div></div>`).join("");
+
+  const bloco = a => {
+    const dica = `${a.p} · OS ${a.os}\n${horarioTxt(a.hi, a.hf, a.hr)}\n${a.e || ""}\n${a.c} · ${nf1.format(a.h)}h · ${a.x || ""}\n${SIT_ROT[a.si]} · ${a.s} · ${tipoTxt(a)}`;
+    return `<div class="ag ag-${SIT_CLS[a.si].slice(2)}${a.ab ? " clic" : ""}" style="--c:var(${SIS_VAR[a.s]})" title="${esc(dica)}"${a.ab ? ` data-cod="${a.cod}" tabindex="0"` : ""}>
+      <span class="ag-p">${esc(corta(a.p, 24))}</span><span class="ag-h">${nf1.format(a.h)}h</span></div>`;
+  };
+  const ordemSit = {"Realizada": 0, "Sem fechar": 1, "Próxima": 2, "Vencida": 3};
+  const cab = `<thead><tr><th class="cons">Consultor</th>${col.map(d => { const i = isoD(d);
+    return `<th class="${i === refIso ? "hoje" : ""}">${DIAS_SEM[(d.getDay() + 6) % 7]} ${String(d.getDate()).padStart(2,"0")}/${String(d.getMonth()+1).padStart(2,"0")}${i === refIso ? `<div class="small">posição</div>` : ""}</th>`; }).join("")}<th class="r">Semana</th></tr></thead>`;
+  const corpo = nomes.length ? nomes.map(({n, tot}) => {
+    const cels = col.map(d => { const i = isoD(d);
+      const ags = sem.filter(a => a.c === n && a.d === i).sort((a, b) => (a.hi || "99").localeCompare(b.hi || "99") || ordemSit[a.si] - ordemSit[b.si] || a.p.localeCompare(b.p, "pt-BR"));
+      const t = horas(ags);
+      return `<td class="cel${i === refIso ? " hoje" : ""}${ags.length ? "" : " vazia"}">${ags.map(bloco).join("")}${t > 8 ? `<div class="cel-tot alerta">${h(t)} no dia</div>` : (ags.length > 1 && t > 0 ? `<div class="cel-tot">${h(t)}</div>` : "")}</td>`; }).join("");
+    const liv = livresDe(n);
+    return `<tr><th class="cons"><div class="pname">${esc(n)}</div><div class="small">${liv} dia${liv === 1 ? "" : "s"} útil${liv === 1 ? "" : "s"} livre${liv === 1 ? "" : "s"}</div></th>${cels}<td class="r num"><b>${h(tot)}</b></td></tr>`;
+  }).join("") : `<tr><td colspan="${col.length + 2}" class="empty">Nenhum consultor com agenda nessa semana.</td></tr>`;
+  const rodape = nomes.length ? `<tfoot><tr><th class="cons">Total do dia</th>${col.map(d => `<td class="r num"><b>${h(horas(sem.filter(a => a.d === isoD(d))))}</b></td>`).join("")}<td class="r num"><b>${h(horasTot)}</b></td></tr></tfoot>` : "";
+  $("#gradeCons").innerHTML = cab + `<tbody>${corpo}</tbody>` + rodape;
+  tabelaOrdenavel("tblSemana", COLS_AGG, sem, {padrao: {col: "d", dir: 1}, cod: a => a.ab ? a.cod : null, vazio: "Nenhuma agenda nessa semana."});
+}
+$("#semNav").onclick = e => { const b = e.target.closest("button"); if(!b) return; const d = +b.dataset.d; semanaDesl = d === 0 ? 0 : semanaDesl + d; renderConsultores(); };
+$("#gradeCons").addEventListener("click", e => { const b = e.target.closest("[data-cod]"); if(b) abrir(+b.dataset.cod); });
+$("#gradeCons").addEventListener("keydown", e => { const b = e.target.closest("[data-cod]"); if(b && e.key === "Enter") abrir(+b.dataset.cod); });
+
+function datasPeriodo(){
+  const ref = REF;
+  if(periodo.preset === "custom") return {de: periodo.de, ate: periodo.ate};
+  if(periodo.preset === "mes") return {de: isoD(new Date(ref.getFullYear(), ref.getMonth(), 1)), ate: isoD(ref)};
+  if(periodo.preset === "mespassado") return {de: isoD(new Date(ref.getFullYear(), ref.getMonth() - 1, 1)), ate: isoD(new Date(ref.getFullYear(), ref.getMonth(), 0))};
+  return {de: isoD(somaDias(ref, -(+periodo.preset - 1))), ate: isoD(ref)};
+}
+function renderRealizadas(){
+  segEscopo();
+  document.querySelectorAll("#perPreset button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === periodo.preset));
+  const minimo = isoD(somaDias(REF, -(D.meta.janela_realizadas - 1)));
+  let {de, ate} = datasPeriodo();
+  if(de < minimo) de = minimo;
+  if(ate > D.meta.ref) ate = D.meta.ref;
+  if(de > ate) [de, ate] = [ate, de];
+  const inDe = $("#perDe"), inAte = $("#perAte");
+  inDe.min = inAte.min = minimo; inDe.max = inAte.max = D.meta.ref; inDe.value = de; inAte.value = ate;
+  const nDias = Math.round((toD(ate) - toD(de)) / 864e5) + 1;
+  const rows = filtrarAgendaGeral().filter(a => ACONTECEU.has(a.si) && a.d >= de && a.d <= ate);
+  const tot = sum(rows, a => a.h), pres = sum(rows.filter(a => a.x === "Presencial"), a => a.h);
+  $("#perRotulo").innerHTML = `De <b>${dt(de)}</b> a <b>${dt(ate)}</b> (${nDias} dia${nDias > 1 ? "s" : ""})`;
+  $("#kpisReal").innerHTML = [
+    ["Agendas realizadas", rows.length, `${rows.filter(a => a.si === "Sem fechar").length} com OS ainda sem fechar`],
+    ["Horas", h(tot), `${nf1.format(tot / Math.max(1, nDias))}h por dia corrido`],
+    ["Projetos atendidos", new Set(rows.map(a => a.cod)).size, `${new Set(rows.filter(a => a.hu).map(a => a.cod)).size} hunter`],
+    ["Consultores", new Set(rows.map(a => a.c)).size, "com agenda no período"],
+    ["Presencial", tot ? pct(pres / tot) : "–", `${h(pres)} das horas`],
+  ].map(([l, v, f]) => `<div class="card kpi"><div class="label">${l}</div><div class="value">${v}</div><div class="foot">${f}</div></div>`).join("");
+
+  const sis = SIS_TODOS.filter(s => rows.some(a => a.s === s));
+  const cons = [...new Set(rows.map(a => a.c))].map(c => ({c, t: sum(rows.filter(a => a.c === c), a => a.h)})).sort((a, b) => a.t - b.t);
+  const el = document.getElementById("chRealCons"); if(el) el.style.height = Math.max(220, 50 + cons.length * 28) + "px";
+  plot("chRealCons", sis.map(s => ({type: "bar", orientation: "h", name: s, y: cons.map(x => x.c), x: cons.map(x => sum(rows.filter(a => a.c === x.c && a.s === s), a => a.h)),
+    marker: {color: cor(s)}, hovertemplate: `%{y}<br><b>%{x:,.1f}h</b> ${s}<extra></extra>`})),
+    {barmode: "stack", bargap: 0.4, xaxis: {ticksuffix: "h", title: {text: "horas realizadas no período"}}, yaxis: {showgrid: false}, showlegend: sis.length > 1, legend: {orientation: "h", x: 0, y: 1.06}});
+  tabela("tbRealCons", ["Consultor", "Horas", "Agendas"], [...cons].reverse().map(x => [x.c, nf1.format(x.t) + "h", rows.filter(a => a.c === x.c).length]));
+
+  const porSemana = nDias > 62;
+  const chave = d => porSemana ? isoD(segundaDe(toD(d))) : d;
+  const eixo = []; for(let d = toD(porSemana ? isoD(segundaDe(toD(de))) : de); isoD(d) <= ate; d = somaDias(d, porSemana ? 7 : 1)) eixo.push(isoD(d));
+  const rot = eixo.map(d => dtc(d).slice(0, 5));
+  plot("chRealDias", sis.map(s => ({type: "bar", name: s, x: rot, y: eixo.map(k => sum(rows.filter(a => a.s === s && chave(a.d) === k), a => a.h)),
+    marker: {color: cor(s)}, hovertemplate: `${porSemana ? "semana de " : ""}%{x}<br><b>%{y:,.1f}h</b> ${s}<extra></extra>`})),
+    {barmode: "stack", bargap: 0.3, xaxis: {showgrid: false, nticks: 12, title: {text: porSemana ? "semana começando em" : "dia"}}, yaxis: {ticksuffix: "h", rangemode: "tozero"}, showlegend: sis.length > 1, legend: {orientation: "h", x: 0, y: 1.12}});
+  tabela("tbRealDias", [porSemana ? "Semana" : "Dia", ...sis], eixo.map((k, i) => [rot[i], ...sis.map(s => nf1.format(sum(rows.filter(a => a.s === s && chave(a.d) === k), a => a.h)) + "h")]));
+  $("#tituloRealDias").textContent = porSemana ? "Horas realizadas por semana" : "Horas realizadas por dia";
+
+  tabelaOrdenavel("tblReal", COLS_AGG, rows, {padrao: {col: "d", dir: -1}, cod: a => a.ab ? a.cod : null, vazio: "Nenhuma agenda realizada nesse período."});
+}
+$("#perPreset").onclick = e => { const b = e.target.closest("button"); if(!b) return; periodo = {preset: b.dataset.v}; renderRealizadas(); };
+["#perDe", "#perAte"].forEach(id => $(id).addEventListener("change", () => { const de = $("#perDe").value, ate = $("#perAte").value; if(!de || !ate) return; periodo = {preset: "custom", de, ate}; renderRealizadas(); }));
+$("#btnCsvReal").onclick = () => {
+  const t = TABS_ORD.tblReal; if(!t) return;
+  const cab = ["Data", "Início", "Fim", "Horário", "Consultor", "Projeto", "Código", "Sistema", "Tipo", "Hunter", "Etapa", "Modalidade", "Horas", "Situação", "OS"];
+  const linhas = ordenarLinhas("tblReal", t.cols, t.rows, t.opt.padrao).linhas.map(a => [dt(a.d), a.hi, a.hf, a.hr, a.c, a.p, a.cod, a.s, a.t, a.hu ? "sim" : "não", a.e, a.x, ncsv(a.h), SIT_ROT[a.si], a.os]);
+  const {de, ate} = datasPeriodo();
+  baixarCsv(`agendas-realizadas-${de}-a-${ate}.csv`, cab, linhas);
+};
+
+/* ---------- pessoas ---------- */
+function renderPessoas(ps){
+  const an = {};
+  ps.forEach(p => { const a = (an[p.analista || "Sem analista"] ||= {nome:p.analista || "Sem analista", ps:[]}); a.ps.push(p); });
+  const lista = Object.values(an).sort((a,b)=>b.ps.length-a.ps.length);
+  $("#cardsAnalistas").innerHTML = lista.map(a => {
+    const ult = a.ps.map(p=>p.ultima).filter(Boolean).sort().pop();
+    const cont = s => a.ps.filter(p=>p.saude===s).length;
+    return `<div class="card"><div class="card-head"><div><h3>${esc(a.nome)}</h3><div class="hint">${a.ps.length} projeto${a.ps.length>1?"s":""} · saldo ${h(sum(a.ps,p=>p.saldo))} · agenda mais recente ${dt(ult)}</div></div>
+      <button class="linkbtn" data-analista="${esc(a.nome)}">Ver projetos</button></div>
+      <div class="tags" style="margin-top:4px">${SAUDES.filter(cont).map(s=>`<span class="pill ${SAUDE_CLS[s]}">${ICON[s]}${cont(s)} ${esc(s.toLowerCase())}</span>`).join("")}</div></div>`;
+  }).join("") || `<div class="empty">Nenhum projeto no recorte.</div>`;
+
+  const cods = new Set(ps.map(p=>p.cod));
+  const lim = new Date(REF); lim.setDate(lim.getDate()-90);
+  const ag = D.agendas.filter(a => cods.has(a.cod));
+  const rec = ag.filter(a => a.situacao === "Realizada" && toD(a.dia) > lim);
+  const nomes = [...new Set([...rec.map(a=>a.consultor), ...ps.map(p=>p.responsavel).filter(Boolean)])];
+  const dados = nomes.map(n => ({nome:n,
+    h: Object.fromEntries(SISTEMAS.map(s=>[s, sum(rec.filter(a=>a.consultor===n && BY_COD[a.cod].sistema===s), a=>a.horas)])),
+    proj90: new Set(rec.filter(a=>a.consultor===n).map(a=>a.cod)).size,
+    resp: ps.filter(p=>p.responsavel===n && p.status!=="Suspenso").length,
+    marc: sum(ag.filter(a=>a.consultor===n && a.situacao==="Próxima" && diasAte(a.dia)<=30), a=>a.horas)}));
+  dados.forEach(d => d.tot = d.h.myFarm + d.h.AgriManager);
+  const comHoras = dados.filter(d=>d.tot>0).sort((a,b)=>a.tot-b.tot);
+  const sis = SISTEMAS.filter(s => st.sistema === "Todos" || st.sistema === s);
+  const el = document.getElementById("chConsult"); if(el) el.style.height = Math.max(220, 46 + comHoras.length*30) + "px";
+  plot("chConsult", sis.map(s => ({type:"bar", orientation:"h", name:s, y:comHoras.map(d=>d.nome), x:comHoras.map(d=>d.h[s]), marker:{color:cor(s)},
+    hovertemplate:`%{y}<br><b>%{x:,.1f}h</b> ${s}<extra></extra>`})),
+    {barmode:"stack", bargap:0.4, xaxis:{ticksuffix:"h", title:{text:"horas realizadas em 90 dias"}}, yaxis:{showgrid:false}, showlegend:sis.length>1, legend:{orientation:"h",x:0,y:1.08}});
+  tabela("tbConsult", ["Consultor","Horas 90 dias","Projetos atendidos","Horas marcadas 30 dias"], [...comHoras].reverse().map(d=>[d.nome, nf1.format(d.tot)+"h", d.proj90, nf1.format(d.marc)+"h"]));
+  const resp = dados.filter(d=>d.resp>0).sort((a,b)=>b.resp-a.resp);
+  tabelaOrdenavel("tblResp", [
+    {k:"nome", t:"Consultor", v:d=>d.nome, f:d=>esc(d.nome)},
+    {k:"resp", t:"Responsável por", v:d=>d.resp, d0:-1, r:true, f:d=>d.resp},
+    {k:"proj90", t:"Atendeu em 90 dias", v:d=>d.proj90, d0:-1, r:true, f:d=>d.proj90},
+    {k:"tot", t:"Horas 90 dias", v:d=>d.tot, d0:-1, r:true, f:d=>h(d.tot)},
+  ], resp, {padrao: {col: "resp", dir: -1}, vazio: "Nenhum."});
+}
+$("#cardsAnalistas").addEventListener("click", e => { const b = e.target.closest("[data-analista]"); if(!b) return; st.analista = b.dataset.analista; mostrarAba("projetos"); atualizar(); });
+
+/* ---------- página do projeto: abre em nova aba (painel-projetos-hunter.html#p<código>) ---------- */
+let abertoCod = null;
+const urlPainel = () => location.href.split("#")[0];
+const urlProjeto = cod => urlPainel() + "#p" + cod;
+function abrir(cod){ if(BY_COD[cod]) window.open(urlProjeto(cod), "_blank"); }
+const SIT_COR = {"Realizada":"--good", "Sem fechar":"--warning", "Próxima":"--ink-2", "Vencida":"--critical"};
+const aconteceu = a => a.situacao === "Realizada" || a.situacao === "Sem fechar";
+const difDias = (a, b) => Math.round((toD(b) - toD(a)) / 864e5);
+
+function ritmoProjeto(p, ags){
+  const dias = [...new Set(ags.filter(aconteceu).map(a => a.dia))].sort();
+  const r = {dias, primeira: dias[0] || null, atePrimeira: dias.length ? difDias(p.abertura, dias[0]) : null, maior: null, maiorDe: null, maiorAte: null, intervaloMedio: null};
+  if(dias.length > 1){
+    let soma = 0; r.maior = 0;
+    for(let i = 1; i < dias.length; i++){ const g = difDias(dias[i-1], dias[i]); soma += g; if(g > r.maior){ r.maior = g; r.maiorDe = dias[i-1]; r.maiorAte = dias[i]; } }
+    r.intervaloMedio = soma / (dias.length - 1);
+  }
+  return r;
+}
+
+function modoProjeto(cod){
+  const p = BY_COD[cod]; if(!p) return false;
+  abertoCod = cod;
+  document.title = `${p.nome} · projeto #${p.cod}`;
+  ["header.top", ".filters", "main"].forEach(sel => document.querySelectorAll(sel).forEach(el => el.classList.add("hide")));
+  $("#paginaProjeto").classList.remove("hide");
+  renderProjeto(p);
+  return true;
+}
+
+function renderProjeto(p){
+  const cod = p.cod;
+  const ags = (AG_BY[cod] || []).slice().sort((a,b) => b.dia.localeCompare(a.dia));
+  const pacs = (PAC_BY[cod] || []).slice().sort((a,b) => (a.data || "").localeCompare(b.data || ""));
+  const ref = D.referencia[p.sistema] || {};
+  const rit = ritmoProjeto(p, ags);
+  const feitas = ags.filter(aconteceu);
+  const horasFase = k => sum(feitas.filter(a => a.fase === k), a => a.horas);
+  const maxC = Math.max(1, ...p.consultores.map(c => c.horas));
+  const cont = s => ags.filter(a => a.situacao === s).length;
+  const nOS = new Set(feitas.map(a => a.os)).size;
+  const horasFeitas = sum(feitas, a => a.horas);
+  const pres = sum(feitas.filter(a => a.execucao === "Presencial"), a => a.horas);
+  const m = D.meta;
+  const kpi = (rot, val, pe, grande = true) => `<div class="card kpi"><div class="label">${rot}</div><div class="value" ${grande ? "" : 'style="font-size:22px"'}>${val}</div><div class="foot">${pe}</div></div>`;
+  const vsRef = (v, r, unid) => r == null || v == null ? "" : `concluídos ${esc(p.sistema)}: mediana de ${nf0.format(r)} ${unid}`;
+
+  $("#paginaProjeto").innerHTML = `
+  <div class="wrap">
+    <header class="top">
+      <div class="top-row">
+        <div>
+          <a class="voltar" href="${esc(urlPainel())}">← Painel de projetos</a>
+          <div class="eyebrow" style="margin-top:10px">Projeto #${p.cod} · ${esc(p.tipo)} · ${esc(p.sistema)}</div>
+          <h1>${esc(p.nome)}</h1>
+          <div class="sub">${esc(p.projeto)} · posição do CES em <b>${dt(m.atualizado_em.slice(0,10))} às ${m.atualizado_em.slice(11)}</b></div>
+          <div class="tags">${pill(p.saude)}${sysTag(p.sistema)}<span class="tag">${esc(p.status)}</span><span class="tag">${esc(p.fase_nome)}</span><span class="tag">${esc(p.grupo)}</span>${p.curva && p.curva !== "-" ? `<span class="tag">Curva ${esc(p.curva)}</span>` : ""}${repTag(p)}${temHist(p) ? `<a class="hist-btn" href="#cHist" id="pHist">Histórico${p.historico.length > 1 ? " (" + p.historico.length + ")" : ""}</a>` : ""}</div>
+        </div>
+        <div class="top-actions"><button class="btn" id="btnTemaP" type="button">Tema</button></div>
+      </div>
+      <div class="facts facts-pag">
+        <div>Cliente <b>${esc(p.cliente || "–")}</b></div>
+        <div>Grupo econômico <b>${esc(p.grupo_economico || "–")}</b></div>
+        <div>Local <b>${esc(p.municipio || "–")}${p.uf ? " / " + esc(p.uf) : ""}</b></div>
+        <div>Manutenção do grupo <b>${p.manutencao != null ? brl.format(p.manutencao) + "/mês" : "–"}</b></div>
+        <div>Analista de projeto <b>${esc(p.analista || "–")}</b></div>
+        <div>Consultor responsável <b>${esc(p.responsavel || "–")}</b></div>
+        <div>Vendedor <b>${esc(p.vendedor || "–")}</b></div>
+        <div>Prioridade <b>${p.prioridade}º de ${PROJ.length} na fila</b></div>
+      </div>
+    </header>
+
+    ${p.motivos.length ? `<div class="alert ${SAUDE_CLS[p.saude]}"><div class="ttl">${ICON[p.saude]}O que pede ação</div><ul>${p.motivos.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>`
+      : `<div class="alert s-emdia"><div class="ttl">${ICON["Em dia"]}Sem alertas</div></div>`}
+
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:14px">
+      ${kpi("Abertura", dt(p.abertura), `há ${nf0.format(p.dias_aberto)} dias · ${vsRef(p.dias_aberto, ref.dias_mediana, "dias até encerrar")}`, false)}
+      ${kpi("Horas adquiridas", h(p.adquiridas), `${h(p.contratadas)} contratadas${p.bonificadas ? ` · ${h(p.bonificadas)} bonificadas` : ""}${p.transferidas ? ` · ${h(p.transferidas)} transferidas` : ""}`)}
+      <div class="card kpi"><div class="label">Horas usadas</div><div class="value">${h(p.utilizadas)}</div><div class="meter"><i style="width:${Math.min(100, p.pct*100)}%"></i></div><div class="foot">${pct(p.pct)} do adquirido${p.sem_fechar ? ` · ${h(p.sem_fechar)} sem fechar` : ""}</div></div>
+      ${kpi("Saldo", h(p.saldo), `${p.agendadas ? `${h(p.agendadas)} já marcadas · ` : ""}${h(Math.max(p.saldo_livre, 0))} livres`)}
+      ${kpi("Última agenda", p.nunca_agenda ? "nunca" : dt(p.ultima), p.nunca_agenda ? `aberto há ${p.dias_aberto} dias` : `há ${nf0.format(p.dias_sem_agenda)} dias${p.ultima_os ? ` · OS ${p.ultima_os}` : ""}`, false)}
+      ${kpi("Próxima agenda", p.proxima ? dt(p.proxima) : "nada marcado", p.proxima ? `em ${diasAte(p.proxima)} dias · ${p.futuras} marcada${p.futuras > 1 ? "s" : ""}` : (p.vencidas ? `${p.vencidas} planejadas venceram` : "sem agenda futura"), false)}
+    </div>
+
+    <div class="section-title">Ritmo do projeto</div>
+    <div class="grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+      ${kpi("Primeira agenda", rit.primeira ? dt(rit.primeira) : "–", rit.primeira ? `${nf0.format(rit.atePrimeira)} dias depois da abertura · ${vsRef(rit.atePrimeira, ref.ate_primeira_mediana, "dias")}` : "ainda não houve agenda", false)}
+      ${kpi("Agendas que aconteceram", nf0.format(rit.dias.length), `${nOS} OS · ${h(horasFeitas)} · ${horasFeitas ? pct(pres / horasFeitas) : "0%"} presencial${rit.intervaloMedio != null ? ` · uma a cada ${nf0.format(rit.intervaloMedio)} dias` : ""}`)}
+      ${kpi("Maior pausa entre agendas", rit.maior != null ? `${nf0.format(rit.maior)} dias` : "–", rit.maior != null ? `de ${dtc(rit.maiorDe)} a ${dtc(rit.maiorAte)} · ${vsRef(rit.maior, ref.maior_pausa_mediana, "dias")}` : "menos de duas agendas", false)}
+      ${kpi("Parado agora", p.proxima ? "agenda marcada" : `${nf0.format(p.dias_sem_agenda)} dias`, p.proxima ? `próxima em ${dt(p.proxima)}` : (ref.maior_pausa_mediana ? `${nf1.format(p.dias_sem_agenda / ref.maior_pausa_mediana)} vezes a maior pausa típica dos concluídos` : "sem agenda marcada"), false)}
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3>Jornada da implantação</h3>
+      <div class="hint">Horas realizadas em cada fase; destacada a fase mais avançada com agenda.</div>
+      <div class="journey">${[1,2,3,4,5,6,7].map(k => `<div class="jstep ${k < p.fase ? "done" : k === p.fase ? "cur" : ""}"><div class="n">${k}</div><div class="t">${esc(FASES[k])}</div><div class="h">${horasFase(k) ? h(horasFase(k)) : "–"}</div></div>`).join("")}</div>
+      <div class="bench">${ref.dias_mediana ? `Projetos ${esc(p.sistema)} concluídos desde 2024 levaram em mediana <b>${nf0.format(ref.dias_mediana)} dias</b> da abertura ao encerramento e usaram <b>${h(ref.horas_mediana)}</b>. Este está aberto há <b>${nf0.format(p.dias_aberto)} dias</b> e usou <b>${h(p.utilizadas)}</b>.` : ""}${horasFase(0) ? ` Gestão do projeto (status report, demandas da gerência): ${h(horasFase(0))}.` : ""}</div>
+    </div>
+
+    <div class="section-title">Gráficos</div>
+    <div class="grid g-main">
+      <div class="card"><h3>Evolução do consumo de horas</h3><div class="hint">Horas usadas acumuladas por agenda, contra o adquirido. A parte tracejada é o que já está marcado.</div><div class="chart" id="chProj"></div></div>
+      <div class="card"><h3>Para onde vão as horas adquiridas</h3><div class="hint">Usadas, confirmadas sem fechar, já marcadas e livres.</div><div class="chart short" id="chComp"></div></div>
+    </div>
+    <div class="grid g-2" style="margin-top:14px">
+      <div class="card"><h3>Horas por mês</h3><div class="hint">Agendas que aconteceram e as já marcadas, mês a mês.</div><div class="chart" id="chMes"></div></div>
+      <div class="card"><h3>Horas por fase: este projeto × concluídos</h3><div class="hint">Parte das horas em cada fase; concluídos = hunter ${esc(p.sistema)} encerrados desde 2024.</div><div class="chart" id="chFases"></div></div>
+    </div>
+    <div class="card" style="margin-top:14px"><h3>Linha do tempo das agendas</h3><div class="hint">Cada ponto é um dia de agenda, na fase da etapa da OS; o tamanho é a quantidade de horas.</div><div class="chart" id="chLinha"></div></div>
+
+    <div class="grid g-main" style="margin-top:14px">
+      <div class="card">
+        <h3>Quem atendeu</h3>
+        <div class="hint">Horas usadas por consultor${pres ? ` · ${h(pres)} presenciais e ${h(horasFeitas - pres)} remotas` : ""}.</div>
+        <div class="bars">${p.consultores.length ? p.consultores.map(c => `<div class="b"><span class="t">${esc(c.nome)}</span><span class="r num" style="text-align:right">${h(c.horas)}</span><span class="track"><i style="width:${c.horas / maxC * 100}%"></i></span></div>`).join("") : `<span class="muted">Nenhuma agenda realizada ainda.</span>`}</div>
+      </div>
+      <div class="card">
+        <h3>Pacotes de horas adquiridas</h3>
+        <div class="table-wrap" style="margin-top:10px"><table>
+          <thead><tr><th>Data</th><th>Tipo</th><th class="r">Horas</th><th class="r">Valor da hora</th><th class="r">Usadas</th></tr></thead>
+          <tbody>${pacs.map(k => `<tr><td class="num">${dt(k.data)}</td><td>${esc(k.tipo)}<div class="small">${esc(k.modelo || "")}</div></td><td class="r num">${h(k.qtde)}</td><td class="r num">${k.valor_hora != null ? brl.format(k.valor_hora) : "–"}</td><td class="r num">${h(sum(ags.filter(a => a.situacao === "Realizada" && a.pacote === k.codigo), a => a.horas) || null)}</td></tr>`).join("") || `<tr><td colspan="5" class="empty">Sem pacotes.</td></tr>`}</tbody>
+        </table></div>
+      </div>
+    </div>
+
+    ${temHist(p) ? `<div class="card" id="cHist" style="margin-top:14px"><h3>Histórico dos reports</h3><div class="hint">Anotações das analistas, da mais nova para a mais antiga.</div><div style="margin-top:10px">${p.historico.map(e => entradaHist(e, p)).join("")}</div></div>` : ""}
+
+    <div class="card" style="margin-top:14px">
+      <div class="card-head"><div><h3>Agendas</h3><div class="hint">${cont("Realizada")} realizadas · ${cont("Sem fechar")} sem fechar · ${cont("Próxima")} marcadas · ${cont("Vencida")} vencidas</div></div>
+        <div class="chipbar" id="agFiltro">${["Todas","Realizada","Sem fechar","Próxima","Vencida"].map((s,i) => `<button type="button" class="chip ${SIT_CLS[s] || ""}" data-s="${s}" aria-pressed="${i === 0}">${s !== "Todas" ? "<i></i>" : ""}${s === "Todas" ? "Todas" : SIT_ROT[s]}</button>`).join("")}</div></div>
+      <div class="table-wrap" style="max-height:520px"><table id="tblAg"></table></div>
+    </div>
+
+    <footer>Fonte: exportação do CES (${esc(m.arquivo)})${temHist(p) ? " e reports das analistas" : ""}. Página gerada pelo painel de projetos em ${dt(m.gerado_em.slice(0,10))} ${m.gerado_em.slice(11)}.</footer>
+  </div>`;
+
+  const COLS_AG360 = [
+    {k:"dia", t:"Data", v:a=>a.dia + (a.hi || ""), f:a=>`<span class="num">${dt(a.dia)}</span><div class="small">${DIAS_SEM[(toD(a.dia).getDay() + 6) % 7]}</div>`},
+    {k:"hi", t:"Horário", v:a=>a.hi || null, f:a=>horarioCel(a.hi, a.hf, a.hr)},
+    {k:"situacao", t:"Situação", v:a=>a.situacao, f:a=>`<span class="chip ${SIT_CLS[a.situacao]}"><i></i>${SIT_ROT[a.situacao]}</span>`},
+    {k:"consultor", t:"Consultor", v:a=>a.consultor, f:a=>esc(a.consultor)},
+    {k:"etapa", t:"Etapa", v:a=>a.etapa, f:a=>`${esc(a.etapa || "–")}<div class="small">${esc(FASES[a.fase] && a.fase ? FASES[a.fase] : "gestão")}</div>`},
+    {k:"execucao", t:"Modalidade", v:a=>a.execucao, f:a=>esc(a.execucao || "–")},
+    {k:"horas", t:"Horas", v:a=>a.horas, d0:-1, r:true, f:a=>h(a.horas)},
+    {k:"os", t:"OS", v:a=>a.os, d0:-1, r:true, f:a=>`<span class="muted">${a.os}</span>`},
+  ];
+  const desenharAg = filtro => tabelaOrdenavel("tblAg", COLS_AG360, ags.filter(a => filtro === "Todas" || a.situacao === filtro), {padrao: {col: "dia", dir: -1}, vazio: "Nenhuma agenda."});
+  desenharAg("Todas");
+  $("#agFiltro").onclick = e => { const b = e.target.closest("button"); if(!b) return; document.querySelectorAll("#agFiltro button").forEach(x => x.setAttribute("aria-pressed", x === b)); desenharAg(b.dataset.s); };
+  const escuro = () => (document.documentElement.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark";
+  $("#btnTemaP").textContent = escuro() ? "Tema claro" : "Tema escuro";
+  $("#btnTemaP").onclick = () => { const novo = escuro() ? "light" : "dark"; store.set("tema", novo); aplicarTema(novo); $("#btnTemaP").textContent = escuro() ? "Tema claro" : "Tema escuro"; graficosProjeto(p, ags); };
+  if($("#pHist")) $("#pHist").onclick = e => { e.preventDefault(); $("#cHist").scrollIntoView({behavior: "smooth", block: "start"}); };
+  requestAnimationFrame(() => graficosProjeto(p, ags));
+}
+
+function graficosProjeto(p, ags){
+  const c = cor(p.sistema);
+  const feitas = ags.filter(a => a.situacao === "Realizada").sort((a,b) => a.dia.localeCompare(b.dia));
+  const futuras = ags.filter(a => a.situacao === "Próxima").sort((a,b) => a.dia.localeCompare(b.dia));
+
+  // 1. evolução do consumo
+  let acc = 0; const xs = [], ys = [], tx = [];
+  if(p.abertura){ xs.push(p.abertura); ys.push(0); tx.push("abertura do projeto"); }
+  feitas.forEach(a => { acc += a.horas || 0; xs.push(a.dia); ys.push(acc); tx.push(`${dt(a.dia)} · ${esc(a.consultor)}<br>${esc(a.etapa || "")}<br>+${h(a.horas)} → <b>${h(acc)}</b>`); });
+  const tr = [{type:"scatter", mode:"lines+markers", name:"Usadas", x:xs, y:ys, text:tx, hovertemplate:"%{text}<extra></extra>", line:{shape:"hv", color:c, width:2}, marker:{size:7, color:c, line:{width:2, color:css("--surface")}}}];
+  if(futuras.length){ let f = acc; const fx = [xs[xs.length-1] || D.meta.ref], fy = [acc], ft = ["hoje"];
+    futuras.forEach(a => { f += a.horas || 0; fx.push(a.dia); fy.push(f); ft.push(`${dt(a.dia)} · ${esc(a.consultor)}<br>${esc(a.etapa || "")}<br>marcada +${h(a.horas)} → ${h(f)}`); });
+    tr.push({type:"scatter", mode:"lines+markers", name:"Marcadas", x:fx, y:fy, text:ft, hovertemplate:"%{text}<extra></extra>", line:{shape:"hv", color:c, width:2, dash:"dot"}, marker:{size:7, color:css("--surface"), line:{width:2, color:c}}}); }
+  plot("chProj", tr, {
+    xaxis:{type:"date", showgrid:false, tickformat:"%m/%y"}, yaxis:{ticksuffix:"h", rangemode:"tozero", range:[0, Math.max(p.adquiridas, acc + p.agendadas) * 1.12]},
+    showlegend:false,
+    shapes:[{type:"line", xref:"paper", x0:0, x1:1, y0:p.adquiridas, y1:p.adquiridas, line:{color:css("--ink-2"), width:1}},
+            {type:"line", x0:D.meta.ref, x1:D.meta.ref, yref:"paper", y0:0, y1:1, line:{color:css("--axis"), width:1}}],
+    annotations:[{xref:"paper", x:0, y:p.adquiridas, text:`adquiridas: ${h(p.adquiridas)}`, showarrow:false, xanchor:"left", yanchor:"bottom", font:{size:11.5, color:css("--ink-2")}},
+                 {x:D.meta.ref, yref:"paper", y:1, text:"posição", showarrow:false, xanchor:"right", yanchor:"top", font:{size:11, color:css("--muted")}}]});
+
+  // 2. composição das horas adquiridas
+  const partes = [["Usadas", p.utilizadas, c], ["Sem fechar", p.sem_fechar, css("--warning")], ["Marcadas", p.agendadas, css("--ink-2")], ["Livres", Math.max(p.saldo_livre, 0), css("--axis")]];
+  if(p.saldo_livre < 0) partes.push(["Além do adquirido", -p.saldo_livre, css("--critical")]);
+  plot("chComp", partes.filter(x => x[1] > 0).map(([n, v, col]) => ({type:"bar", orientation:"h", name:n, y:["horas"], x:[v], marker:{color:col},
+      text:[h(v)], textposition:"inside", insidetextanchor:"middle", textfont:{color:"#fff", size:12}, hovertemplate:`${n}: <b>${h(v)}</b><extra></extra>`})),
+    {barmode:"stack", bargap:0.45, xaxis:{ticksuffix:"h", showgrid:true}, yaxis:{showticklabels:false, showgrid:false, showline:false}, legend:{orientation:"h", x:0, y:-0.25}, margin:{l:8, r:12, t:10, b:8}});
+
+  // 3. horas por mês
+  const mes = d => d.slice(0, 7);
+  const meses = []; const ini = (ags.map(a => a.dia).sort()[0] || D.meta.ref).slice(0, 7), fim = [D.meta.ref, ...futuras.map(a => a.dia)].sort().pop().slice(0, 7);
+  for(let y = +ini.slice(0,4), mm = +ini.slice(5,7); `${y}-${String(mm).padStart(2,"0")}` <= fim; mm === 12 ? (y++, mm = 1) : mm++) meses.push(`${y}-${String(mm).padStart(2,"0")}`);
+  const rot = meses.map(mesRot);
+  plot("chMes", [
+    {type:"bar", name:"Aconteceram", x:rot, y:meses.map(k => sum(ags.filter(a => aconteceu(a) && mes(a.dia) === k), a => a.horas)), marker:{color:c}, hovertemplate:"%{x}<br><b>%{y:,.1f}h</b> que aconteceram<extra></extra>"},
+    {type:"bar", name:"Marcadas", x:rot, y:meses.map(k => sum(futuras.filter(a => mes(a.dia) === k), a => a.horas)), marker:{color:css("--ink-2")}, hovertemplate:"%{x}<br><b>%{y:,.1f}h</b> marcadas<extra></extra>"}],
+    {barmode:"stack", bargap:0.35, xaxis:{showgrid:false}, yaxis:{ticksuffix:"h", rangemode:"tozero"}, legend:{orientation:"h", x:0, y:1.12}});
+
+  // 4. horas por fase × concluídos
+  const ks = [1,2,3,4,5,6,7,0], nomes = ks.map(k => k ? FASES[k] : "Gestão");
+  const tot = sum(ags.filter(aconteceu), a => a.horas) || 1;
+  const refF = (D.fases_referencia || {})[p.sistema] || {};
+  plot("chFases", [
+    {type:"bar", orientation:"h", name:"Este projeto", y:nomes, x:ks.map(k => sum(ags.filter(a => aconteceu(a) && a.fase === k), a => a.horas) / tot * 100), marker:{color:c}, hovertemplate:"%{y}<br><b>%{x:.0f}%</b> das horas deste projeto<extra></extra>"},
+    {type:"bar", orientation:"h", name:"Concluídos", y:nomes, x:ks.map(k => (refF[k] || 0) * 100), marker:{color:css("--neutral")}, hovertemplate:"%{y}<br><b>%{x:.0f}%</b> das horas nos concluídos<extra></extra>"}],
+    {barmode:"group", bargap:0.3, bargroupgap:0.1, xaxis:{ticksuffix:"%", rangemode:"tozero"}, yaxis:{autorange:"reversed", showgrid:false}, legend:{orientation:"h", x:0, y:1.1}});
+
+  // 5. linha do tempo das agendas
+  const faseNome = a => a.fase ? FASES[a.fase] : "Gestão";
+  plot("chLinha", ["Realizada", "Sem fechar", "Próxima", "Vencida"].map(si => { const g = ags.filter(a => a.situacao === si);
+    return {type:"scatter", mode:"markers", name:SIT_ROT[si], x:g.map(a => a.dia), y:g.map(faseNome),
+      text:g.map(a => `<b>${dt(a.dia)}</b> · ${a.hi ? a.hi + " às " + a.hf : "sem horário"}<br>${esc(a.consultor)} · ${h(a.horas)} · ${esc(a.execucao || "")}<br>${esc(a.etapa || "")}<br>${SIT_ROT[si]} · OS ${a.os}`),
+      hovertemplate:"%{text}<extra></extra>",
+      marker:{size:g.map(a => 8 + Math.min(10, (a.horas || 0) * 1.2)), color:css(SIT_COR[si]), opacity:si === "Vencida" ? .55 : .9, line:{width:2, color:css("--surface")}}};
+  }).filter(t => t.x.length),
+    {xaxis:{type:"date", tickformat:"%m/%y", showgrid:true}, yaxis:{type:"category", categoryorder:"array", categoryarray:["Gestão", ...[1,2,3,4,5,6,7].map(k => FASES[k])], autorange:"reversed", showgrid:true},
+     legend:{orientation:"h", x:0, y:1.12},
+     shapes:[{type:"line", x0:D.meta.ref, x1:D.meta.ref, yref:"paper", y0:0, y1:1, line:{color:css("--axis"), width:1}}]});
+}
+document.addEventListener("keydown", e => { if(e.key === "Escape" && histAberto) fecharHistorico(); });
+
+/* ---------- abas, tema, montagem ---------- */
+function mostrarAba(t){
+  st.tab = t; store.set("tab", t);
+  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === t));
+  ["geral","atacar","prioridades","projetos","agenda","consultores","realizadas","pessoas"].forEach(x => $("#tab-"+x).classList.toggle("hide", x !== t));
+}
+document.querySelectorAll(".tab").forEach(b => b.onclick = () => { mostrarAba(b.dataset.tab); atualizar(); });
+
+function atualizar(){
+  sincronizarFiltros();
+  const ps = filtrar();
+  $("#nProj").textContent = ps.length;
+  if(st.tab === "geral"){ renderKpis(ps); renderSaude(); renderInsights(ps); renderScatter(ps); renderFase(); renderSemAgenda(ps); renderEvolucao(); }
+  if(st.tab === "atacar") renderAtacar(ps);
+  if(st.tab === "prioridades") renderPrioridades(ps);
+  if(st.tab === "projetos") renderTabela(ps);
+  if(st.tab === "agenda") renderAgenda(ps);
+  if(st.tab === "consultores") renderConsultores();
+  if(st.tab === "realizadas") renderRealizadas();
+  if(st.tab === "pessoas") renderPessoas(ps);
+}
+
+function aplicarTema(t){
+  if(t) document.documentElement.setAttribute("data-theme", t); else document.documentElement.removeAttribute("data-theme");
+  const escuro = t ? t === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+  $("#btnTema").textContent = escuro ? "Tema claro" : "Tema escuro";
+}
+$("#btnTema").onclick = () => {
+  const atual = document.documentElement.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+  const novo = atual === "dark" ? "light" : "dark"; store.set("tema", novo); aplicarTema(novo); atualizar();
+};
+
+(function iniciar(){
+  aplicarTema(store.get("tema", null));
+  const hp = location.hash.match(/^#p(\d+)/);
+  if(hp && modoProjeto(+hp[1])) return;   // página do projeto (aberta em nova aba)
+  const m = D.meta;
+  $("#sub").innerHTML = `Posição do CES em <b>${dt(m.atualizado_em.slice(0,10))} às ${m.atualizado_em.slice(11)}</b> · planilha ${esc(m.arquivo)} · painel gerado em ${dt(m.gerado_em.slice(0,10))} ${m.gerado_em.slice(11)}`;
+  $("#rodape").innerHTML = `Fonte: exportação do CES (${esc(m.arquivo)}), abas Projetos, Hr Adquirida, OS executada, OS planejada e Implantador. Para atualizar: salve a nova exportação nesta pasta e dê dois cliques em <b>atualizar-painel.bat</b> (ou rode <b>gerar_painel.py</b>).`;
+  const L = m.limites, R = D.referencia;
+  $("#regras").innerHTML = [
+    "Projeto hunter: tipo implantação ou reimplantação, nos departamentos CES Implantação AgriManager e CES Implantação myFarm. Em aberto: em andamento e suspenso.",
+    "Horas adquiridas: soma de todos os pacotes do projeto (contratadas, bonificadas, transferidas). Horas usadas: só OS fechada, validada ou acertada. Agenda confirmada que já passou e ficou sem OS fechada aparece à parte, como \"sem fechar\".",
+    "Saldo: adquiridas menos usadas. Saldo livre: saldo menos o que está confirmado sem fechar e o que já está marcado.",
+    "Agenda: cada dia de atendimento numa OS. Última agenda: a mais recente que aconteceu (fechada ou confirmada). Vencida: planejada para uma data que já passou, sem execução nem cancelamento.",
+    "Fase: a mais avançada entre as agendas que aconteceram, traduzindo as etapas das duas metodologias para sete fases. Status report e demandas da gerência contam como gestão, sem fase.",
+    `Crítico: antes do go live e sem agenda há mais de ${L.sem_agenda_critico} dias sem nada marcado, ou com ${Math.round(L.consumo_critico*100)}% das horas usadas sem go live, ou com mais horas usadas que adquiridas.`,
+    `Encerrar: go live feito e sem agenda há mais de ${L.sem_agenda_critico} dias, sem nada marcado.`,
+    `Atenção: ${L.sem_agenda_atencao} a ${L.sem_agenda_critico} dias sem agenda sem nada marcado, ${Math.round(L.consumo_atencao*100)}% das horas usadas sem go live, agenda vencida, OS sem fechar, ou aberto há mais tempo que 75% dos concluídos do mesmo sistema (myFarm: ${R.myFarm?nf0.format(R.myFarm.dias_p75):"–"} dias; AgriManager: ${R.AgriManager?nf0.format(R.AgriManager.dias_p75):"–"} dias).`,
+    "Projeto: clicar num projeto abre a página dele numa nova aba (o mesmo arquivo com #p e o código no endereço), com ritmo comparado aos concluídos, gráficos, histórico e agendas.",
+    "Analista de projeto: coluna GERENTE do projeto. Consultor responsável: coluna RESPONSAVEL. Quem atendeu: consultores das OS.",
+    "Histórico: anotações dos reports de projetos das analistas (andamento, HandOff, analista de sucesso, horas, faturado e saldo financeiro), importadas por importar_reports.py e ligadas pelo código do projeto. Para hora e saldo vale o CES; o report traz a anotação e o financeiro (faturado menos realizado; negativo é hora entregue sem faturar).",
+    "Agenda dos consultores e agendas realizadas: todas as OS que vieram na exportação do CES (hunter e farmer: treinamento, consultoria, DBA e outros), com o botão Só hunter. Horas da semana somam realizadas, sem fechar e marcadas; planejada que passou sem execução aparece riscada e não soma. Nessas abas valem os filtros de sistema, consultor e busca.",
+  ].map(t => `<li>${esc(t)}</li>`).join("");
+  montarFiltros();
+  mostrarAba(st.tab);
+  atualizar();
+  const aba = location.hash.match(/^#(geral|atacar|prioridades|projetos|agenda|consultores|realizadas|pessoas)$/); if(aba){ mostrarAba(aba[1]); atualizar(); }
+  const hh = location.hash.match(/^#h(\d+)/); if(hh && BY_COD[+hh[1]]) abrirHistorico(+hh[1]);
+})();
+</script>
+</body>
+</html>

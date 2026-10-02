@@ -120,3 +120,17 @@ regra de trabalho. O que não entra: tarefa feita (isso é o diário).
 - **2026-09-25** (Leandro) [equipe]: volta a agenda mensal de OKRs e iniciativas e entra uma semanal
   de entregáveis, às terças. Por quê: o acompanhamento estava solto e a operação consome tudo; o
   Leandro assumiu que faltou disciplina de acompanhamento dele.
+- **2026-09-29** (Julio e Leandro Xavier) [onboarding myFarm]: a Evoluto começa pelo myFarm e só depois
+  vai pro AgriManager. Por quê: a agenda dos consultores AgriManager está cheia e é preciso validar o
+  modelo antes de pôr esforço grande; o myFarm é a maior carteira.
+- **2026-09-30** (Julio e Cicilio Manfroi) [implantação AgriManager]: a calculadora de horas de
+  implantação parte de 84h (60h das etapas mais 24h de pós go live), com instalação e gerente de
+  projeto bonificados. Por quê: a primeira versão da planilha tinha deixado o pós go live de fora.
+- **2026-10-01** (Julio) [retenção]: seguir com o downsell do cliente AgriManager da carteira da Ramona
+  (de R$ 10.670 pra cerca de R$ 6.116 por mês), com convite pra piloto do AgriManager Web e fluxo de
+  caixa do Vista BI grátis quando ficar pronto. Por quê: melhor reduzir que perder o cliente, que tem
+  orçamento de concorrente por R$ 3 mil.
+- **2026-10-01** (Fernanda Lima e Julio) [myFarm]: a Fernanda passa a ser o ponto único das devolutivas
+  do produto myFarm; bug confirmado vai ao cliente com prazo de até uma semana (1 dia pra corrigir,
+  1 pra publicar, sem deploy na sexta). Por quê: demandas ficaram 15 a 20 dias sem resposta e
+  clientes (Fazenda Estrela, Perdizes) ameaçaram cancelar.

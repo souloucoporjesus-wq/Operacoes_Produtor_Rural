@@ -64,6 +64,7 @@ diário de outra origem, avisa se o `agora.md` está velho.
 | de um projeto ou cliente, pra trabalhar nele | a pasta dele: `AGENTS.md` + `contexto.md` + `andamento.md` |
 | posição de suspensos, inadimplência e churn, e o que ficou combinado com a diretoria | `retencao/contexto.md` (reuniões brutas em `retencao/reunioes/`) |
 | o NPS de produto e serviços (bases da Track, notebook, apresentação pra diretoria): a pasta do NPS | `relatorios/Atualização de NPS/` (a skill `analise_NPS` conduz) |
+| os projetos de implantação hunter (exportação do CES, saldo de horas, última e próxima agenda, prioridades): a pasta do painel de projetos | `projetos/Painel Projeto/` (a skill `analise_projetos` conduz; `atualizar-painel.bat` atualiza sem IA) |
 | o briefing do dia (pendências, o que ficou parado, Leandro, sinais do time, ajustes pro Julio) | `painel/briefing.html`; o histórico em `briefing/AAAA-MM-DD.json` e `.md` (a skill `briefing` gera) |
 | como o Julio trabalha, escreve e decide (o que o sistema aprendeu) | `_contexto/jeito-do-julio.md` |
 | sinais do time, quem é quem, histórico de entradas e saídas (**confidencial**) | `equipe/radar.md` |
@@ -203,5 +204,7 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
   plataforma Evoluto e carga inicial de cadastros por XML com a Pâmela
 - `projetos/onboarding-agm-nfe/` · roteiro padrão pra habilitar a automação de entrada de notas
   fiscais (NF-e) no AGM Web: itens necessários, responsáveis (Gustavo Silva, Mateus Pires)
+- `projetos/Painel Projeto/` · painel dos projetos de implantação hunter (myFarm e AgriManager) a partir
+  da exportação do CES: modelo em Python, notebook de análise, painel HTML e `atualizar-painel.bat`
 - `projetos/clientes-alto-volume-tickets/` · levantamento pedido pelo dev: clientes que abrem
   muitos tickets, pra priorizar atenção de desenvolvimento (dados em `dados/`)

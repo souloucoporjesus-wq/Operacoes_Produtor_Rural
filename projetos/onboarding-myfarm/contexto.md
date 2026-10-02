@@ -93,6 +93,18 @@ contratação, lendo o XML com IA e importando cadastros e tributação.
   oferecidas; Bruno Capelesso (migração do myFarm pro AgriManager, projeto de 92 h) só quer emitir
   nota, sem equipe nem processo, com várias fazendas numa inscrição só na Bahia
 
+## Iniciativas com o Leandro, 29/09/2026 → `_memoria/reunioes/2026-09-29-evoluto-automacao-implantacao-iniciativas-cs-leandro.md`
+
+- Evoluto começa pelo myFarm (trilha de implantação dentro da plataforma) e só depois vai pro
+  AgriManager: a agenda dos consultores AgriManager está cheia e é preciso validar antes. O Rodrigo
+  pediu um documento de prós, contras e riscos de ir ou não pra Evoluto.
+- XML: o Lucas mandou uns 600 XMLs de um cliente em 28/09, que vão pra Pâmela. Ordem de extração:
+  cadastro de materiais e clientes, notas emitidas e recebidas, tributação por último. A extração
+  serve aos dois produtos; muda só o layout de entrada.
+- O BPO (Cecília) já tem um script na nuvem que lê notas de uma pasta e lança no myFarm; a ideia é
+  levar isso pro produto (com o Diego Viana), sem avanço confirmado. No AgriManager, automatizar a
+  criação de empresa a partir do script de banco que já existe.
+
 ## Fontes
 
 - Conversa 25/09/2026 com a Jaqueline Martins →

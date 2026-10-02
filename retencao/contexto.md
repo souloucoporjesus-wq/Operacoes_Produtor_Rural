@@ -268,3 +268,58 @@ Status report para a diretoria na mesma pasta: `Recuperacao de valores 25.09.202
 - Combinado: o CS pode cadastrar seguindo o padrão (com treinamento se precisar), e é preciso alinhar
   com o Ângelo o passo a passo pra venda de parceria entrar no HubSpot. Continua o item de 23/09
   sobre os clientes da Romina e do Jader.
+
+## Agro Aliança (Ítalo), 30/09/2026 → `_memoria/reunioes/2026-09-30-agro-alianca-planejamento-integrado-aliare-cloud-italo.md`
+
+- Giovanna assumiu a conta como CS. Produto (Jefferson, Gustavo e Patricia) mostrou o protótipo de
+  planejamento integrado de aplicações (vários talhões de uma vez, rateio por área, grupo de
+  integração); o Ítalo aprovou e levou ao gestor. A proposta tinha desconto válido só até 30/09.
+- Aliare Cloud apresentada: sem acesso direto ao banco (o Power BI segue por conector, trocando o
+  caminho de conexão), mesmo número de licenças do AgriManager local, uns 7 dias pra liberar o
+  ambiente mais 1 a 2 de homologação.
+- No meio da reunião, revisão do arquivo de recuperação com o Leandro: 72 contratos na lista, 15
+  recuperados (R$ 130 mil de dívida), cerca de R$ 105 mil ainda na cobrança interna (Amanda) e
+  R$ 57 mil no escritório externo, que não pode ser mexido. Tellus e Theodoro pagaram uma parcela e
+  seguem pra cancelamento. O Julio ficou de corrigir no arquivo a separação entre MRR e dívida total
+  e reenviar.
+
+## Clientes em risco sem devolutiva do produto, 01/10/2026, Julio e Ângelo → `_memoria/reunioes/2026-10-01-clientes-risco-cancelamento-fluxos-angelo.md`
+
+- Fazenda Estrela e Perdizes (esta faz BPO e pode trazer outros clientes) ameaçam cancelar por falta
+  de retorno do produto, não por defeito técnico em si; das 10 a 11 demandas da Estrela o
+  desenvolvimento tinha respondido 4.
+- Basf/Lidera: o cliente pagou R$ 38 mil de implantação e travou na liberação de pontos (concierge).
+  Faturamento da Romina caiu parcial em 01/10 (R$ 13 mil de R$ 18 mil).
+- Combinado: segunda, 05/10/2026, presencial, desenhar com o Ângelo o fluxo de cancelamento e o dono
+  de cada tipo de demanda; cancelamento em até 30 dias da venda fica com o comercial.
+
+## Fazenda Estrela, Campo Novo do Parecis (myFarm, cliente Flávio), 01/10/2026 → `_memoria/reunioes/2026-10-01-fazenda-estrela-*.md` (9 reuniões) e `2026-10-01-cronograma-flavio-e-pedido-dolar-myfarm-warlen.md`
+
+- Projeto hunter aberto em 23/07/2026 (código 30017362, consultor Lucas Nogueira, vendedor André
+  Cunha). O cliente deu ultimato de cancelamento: os itens levados ao desenvolvimento em 16 e 17/09
+  ficaram uns 15 dias sem resposta, que só veio depois que o Leandro cobrou. Cliente influente na
+  região (pioneiro em Campo Novo, ligado à Famato).
+- A partir de 01/10 a Fernanda Lima (produto myFarm) é o ponto único das devolutivas do produto.
+- Três funções que o produto dizia existir falharam no teste do Lucas na base da cliente e viraram
+  bug: entrada de nota em duplicidade sem aviso, vínculo automático de materiais pelo XML e notas
+  sumindo no Baixar Notas (ticket 391). Correções prometidas pra 09/10 e 12/10 (sem deploy às
+  sextas). Cadastro de funcionários não será feito; integração pedido de compra x financeiro e
+  controle de aplicação vão pro banco de ideias; busca de fornecedor por CNPJ será comunicada pra
+  06/11; as demais melhorias têm análise até 16/10. Integração da balança: ticket aberto, data a
+  definir.
+- A Ana Rocha monta a planilha item a item e o texto ao cliente, revisados pelo Julio.
+- Leitura do Julio e do CS: cancelamento provável. Pontos estruturais: venda prometendo o que o
+  produto não tem (casos Jefferson e Capelesso), ticket que vai direto pro produto sem passar pelo
+  suporte (o suporte só prioriza bug registrado) e falta de comunicação do que o produto entrega
+  (sugestão: apresentação a cada 60 dias).
+
+## Downsell AgriManager com a Ramona, 01/10/2026 → `_memoria/reunioes/2026-10-01-downsell-licencas-agrimanager-ramona.md`
+
+- Cliente da carteira da Ramona (nome não dito na reunião) caiu de uns 15 mil pra 7 mil hectares e
+  quer cortar licenças: de R$ 10.670 pra cerca de R$ 6.116 por mês (valor a confirmar com
+  Contratos). Disse ter orçamento de concorrente por R$ 3 mil e ter ouvido que o AgriManager seria
+  descontinuado.
+- Seguir com o downsell. Retenção: convite pra piloto do AgriManager Web (compras e entrada de notas)
+  e fluxo de caixa do Vista BI liberado de graça quando ficar pronto; a Ramona simula mudança no
+  modelo de contrato e tenta descobrir qual sistema ele avalia. myFarm descartado por ora
+  (operação grande demais).
