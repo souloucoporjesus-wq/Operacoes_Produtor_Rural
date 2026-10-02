@@ -1,0 +1,873 @@
+{
+  "data": "2026-10-02",
+  "gerado_em": "2026-10-02T09:44:00-03:00",
+  "janela": {
+    "inicio": "01/10 09:45",
+    "fim": "02/10 09:44"
+  },
+  "fontes": {
+    "emails": 0,
+    "mensagens no Teams": 0,
+    "conversas": 0,
+    "reuniões": 16
+  },
+  "resumo": [
+    "O Microsoft 365 (Outlook, Teams, agenda) segue inacessível nesta rotina pelo quarto dia seguido (desde 29/09): nada do que chegou por email ou Teams pôde ser lido hoje, incluindo se o Julio já respondeu ao Leandro sobre a cobrança (atrasado desde 29/09) e sobre o Catelan (desde 28/09); a rotina do resumo do Teams das 16:30 também está parada desde 28/09 pelo mesmo motivo.",
+    "Pelas 16 reuniões do Granola de 01 e 02/10, dois assuntos dominam: o cliente Fazenda Estrela (8 das 16 reuniões), que o próprio Julio já trata como \"cancelamento inevitável\" e tem um prazo dado pelo próprio cliente na tarde de 01/10 que pode ter vencido sem resposta formal, com o Leandro intervindo pessoalmente duas vezes para destravar o time de dev; e dois desligamentos simultâneos de analistas de projetos — Jaqueline Martins, afastada por burnout após 8 anos de casa, e Joyce Pereira, com risco jurídico por possível deficiência — os dois já alinhados com o Leandro mas aguardando validação da BP de RH (Flávia).",
+    "Sinal de atenção sobre o próprio Julio: em pelo menos três reuniões registradas ele verbaliza esgotamento (\"tô adoecendo com essas coisas... tô quase jogando a toalha\"), acumulando CS e projetos sozinho com as duas analistas de projeto afastadas ao mesmo tempo."
+  ],
+  "pendencias": [
+    {
+      "id": "p1",
+      "titulo": "Atualizar o Leandro sobre a posição de cobranças (prazo venceu em 29/09)",
+      "detalhe": "Pedido do Leandro em 28/09 à noite, prazo era 29/09; já são 4 dias sem confirmação possível, porque Teams e email continuam fora do ar nesta rotina. Sem novidade pelo Granola nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "briefing/2026-10-01.json (p1); _contexto/agora.md",
+      "desde": "2026-09-25",
+      "prazo": "2026-09-29",
+      "prioridade": "critica",
+      "status": "atrasada",
+      "chefe": true
+    },
+    {
+      "id": "p2",
+      "titulo": "Reconectar o Microsoft 365 (Teams, Outlook, agenda) nesta máquina",
+      "detalhe": "Quarto dia seguido sem autenticação nesta rotina de nuvem (29/09, 30/09, 01/10, 02/10); o resumo do Teams das 16:30 também segue parado desde 28/09 pelo mesmo motivo. O Granola continua funcionando normalmente. Enquanto durar, nenhum pedido do Leandro, de cliente ou prazo que chegue por email ou Teams aparece em nenhum briefing — a lacuna já é maior do que a da semana passada.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md [sistema]; _memoria/recados/2026-09-30-resumo-teams-sem-acesso.md; briefing/2026-10-01.json (p2)",
+      "desde": "2026-09-25",
+      "prazo": null,
+      "prioridade": "critica",
+      "status": "parada",
+      "chefe": false
+    },
+    {
+      "id": "p3",
+      "titulo": "Validar com a BP de RH (Flávia) o desligamento de Joyce Pereira",
+      "detalhe": "Baixo desempenho confirmado por 3 consultores; está de atestado por ansiedade e volta em 08/10. A própria Flávia levantou risco jurídico de a dispensa parecer discriminatória por doença/deficiência — pede cuidado antes de formalizar. Já alinhado com o Leandro.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Conversa com a BP Flávia sobre os desligamentos de Jaqueline e Joyce, 02/10 08:25",
+      "desde": "2026-10-02",
+      "prazo": null,
+      "prioridade": "critica",
+      "status": "nova",
+      "chefe": true
+    },
+    {
+      "id": "p4",
+      "titulo": "Validar com a BP de RH (Flávia) o desligamento de Jaqueline Martins",
+      "detalhe": "8 anos de casa; diagnóstico de início de depressão e burnout, afastada 30 dias (volta 31/10). Julio já havia decidido não renovar com ela antes do afastamento; falta checar estabilidade via INSS antes de formalizar. Já alinhado com o Leandro.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Conversa com a BP Flávia sobre os desligamentos de Jaqueline e Joyce, 02/10 08:25",
+      "desde": "2026-10-02",
+      "prazo": null,
+      "prioridade": "critica",
+      "status": "nova",
+      "chefe": true
+    },
+    {
+      "id": "p5",
+      "titulo": "Decidir e comunicar ao cliente Fazenda Estrela o que será e não será feito",
+      "detalhe": "O próprio cliente deu prazo até a tarde de 01/10 para uma resposta; o prazo já deve ter vencido. Em reunião interna o Julio já avaliou a situação como \"é um churn, cancelamento inevitável\" — falta oficializar e comunicar, inclusive pra não a decisão vazar por atraso.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Reunião Interna - myFarm - Pri, 01/10 10:28",
+      "desde": "2026-10-01",
+      "prazo": "2026-10-01",
+      "prioridade": "critica",
+      "status": "atrasada",
+      "chefe": false
+    },
+    {
+      "id": "p6",
+      "titulo": "Comunicar ao cliente Fazenda Estrela as datas de entrega de bugs (08, 09 e 12/10)",
+      "detalhe": "Prioridade sempre em NF-e. O Leandro já ligou pessoalmente pra Joice Magalhães (produto) cobrando a priorização desses bugs, e também pressionou o time de dev depois que o Julio o acionou. Evitar prometer prazo a Ana/Henrique sem checar antes com suporte e produto.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Tempo de entrega - Fazenda Estrela (01/10 17:42) e Priorização de bugs e prazos de entrega com Fernanda e Joice (01/10 17:28)",
+      "desde": "2026-10-01",
+      "prazo": null,
+      "prioridade": "critica",
+      "status": "nova",
+      "chefe": true
+    },
+    {
+      "id": "p7",
+      "titulo": "Abrir e acompanhar o ticket de integração de balança da Fazenda Estrela",
+      "detalhe": "Nunca chegou a ser aberto, apesar de o cliente já ter tentado resolver pelo suporte sem sucesso. Já instruído em reunião interna; falta confirmar a execução.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Fazenda Estrela - Reunião Interna demandas do cliente, 01/10 11:22",
+      "desde": "2026-10-01",
+      "prazo": null,
+      "prioridade": "critica",
+      "status": "nova",
+      "chefe": false
+    },
+    {
+      "id": "p8",
+      "titulo": "Jaqueline e Joyce: força-tarefa de 12 encerramentos de projetos myFarm (venceu 30/09)",
+      "detalhe": "A tarefa está travada na prática: as duas responsáveis estão afastadas por motivo de saúde e em processo de desligamento (ver p3 e p4) — Joyce volta só em 08/10, Jaqueline em 31/10. Falta decidir quem assume os encerramentos enquanto isso, ou se a tarefa fica suspensa até a definição do RH.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md; briefing/2026-10-01.json (p6); Granola, Conversa com a BP Flávia, 02/10 08:25",
+      "desde": "2026-09-23",
+      "prazo": "2026-09-30",
+      "prioridade": "critica",
+      "status": "atrasada",
+      "chefe": false
+    },
+    {
+      "id": "p9",
+      "titulo": "Dar retorno ao André (COAP): ficha de aplicação por tanque e frete de terceiro",
+      "detalhe": "Prazo era ontem (01/10). Sem novidade pelo Granola ou pelo sistema nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-24",
+      "prazo": "2026-10-01",
+      "prioridade": "critica",
+      "status": "atrasada",
+      "chefe": false
+    },
+    {
+      "id": "p10",
+      "titulo": "Cobrar de Contratos uma resposta pra NVCorp",
+      "detalhe": "Sem retorno da Aliare desde 08/07. Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md (apontado desde 23/09)",
+      "desde": "2026-07-08",
+      "prazo": null,
+      "prioridade": "critica",
+      "status": "parada",
+      "chefe": false
+    },
+    {
+      "id": "p11",
+      "titulo": "Levar ao Leandro uma proposta de saída pro distrato da Agro Aliança",
+      "detalhe": "Sem novidade de execução nesta janela (ver p12 sobre a contradição com a venda de melhoria/Cloud ao mesmo cliente, apontada no briefing de 01/10).",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md; briefing/2026-10-01.json (p5)",
+      "desde": "2026-09-04",
+      "prazo": null,
+      "prioridade": "critica",
+      "status": "parada",
+      "chefe": true
+    },
+    {
+      "id": "p12",
+      "titulo": "Confirmar com o Leandro se a estratégia com a Agro Aliança mudou (saída/distrato x venda de melhoria e Cloud)",
+      "detalhe": "Apontado desde 01/10: a Giovanna e o time de produto ofereceram ao mesmo cliente (que pediu indenização e acionou o jurídico) uma proposta de melhoria e migração pro Aliare Cloud. Sem novidade nesta janela — segue sem esclarecer se são frentes coordenadas ou desalinhadas. (apontado desde 01/10)",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "briefing/2026-10-01.json (p3); retencao/contexto.md",
+      "desde": "2026-09-30",
+      "prazo": null,
+      "prioridade": "critica",
+      "status": "parada",
+      "chefe": true
+    },
+    {
+      "id": "p13",
+      "titulo": "Responder ao Leandro quanto o cliente Catelan paga",
+      "detalhe": "Pergunta direta do Leandro em 28/09 à noite; sem evidência de resposta e sem como confirmar (Teams/email fora do ar).",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "briefing/2026-10-01.json (p7)",
+      "desde": "2026-09-28",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "aberta",
+      "chefe": true
+    },
+    {
+      "id": "p14",
+      "titulo": "Fechar os pontos técnicos e a proposta comercial da JOD (3tentos) no Vista BI",
+      "detalhe": "Ficam o bug do filtro de data e a conciliação dos R$58 milhões em \"aplicações imediatas\", além da formalização comercial da POC. Sem novidade confirmável nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "briefing/2026-10-01.json (p8)",
+      "desde": "2026-09-25",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "aberta",
+      "chefe": true
+    },
+    {
+      "id": "p15",
+      "titulo": "Decidir a consolidação de Jaqueline e Joyce num gerente de projetos",
+      "detalhe": "Proposta do Leandro desde o 1:1 de 25/09. Avançou: o Leandro já aprovou abrir a vaga interna de Gerente de Projetos (ver p16); falta a decisão final sobre a consolidação em si, que ganhou urgência com os dois desligamentos em curso (p3, p4).",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "equipe/radar.md; briefing/2026-10-01.json (p9); Granola, Conversa com a BP Flávia, 02/10 08:25",
+      "desde": "2026-09-25",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "aberta",
+      "chefe": true
+    },
+    {
+      "id": "p16",
+      "titulo": "Fechar o levantamento salarial da vaga de Gerente de Projetos e repassar o número à Flávia",
+      "detalhe": "Comparação interno x mercado (júnior/pleno/sênior), faixa estimada R$ 6.500 a R$ 7.000. Vaga já aprovada pelo Leandro; falta só o número final.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Conversa com a BP Flávia sobre os desligamentos de Jaqueline e Joyce, 02/10 08:25",
+      "desde": "2026-10-02",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "nova",
+      "chefe": true
+    },
+    {
+      "id": "p17",
+      "titulo": "Revisar o texto de resposta ao cliente Fazenda Estrela antes de enviar",
+      "detalhe": "Compilado de bugs e melhorias, com prazo de análise interna até 16/10. Revisar antes de sair, dado o histórico recente de atraso e risco de churn desse cliente.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Tempo de entrega - Fazenda Estrela (01/10 17:42) e Revisão de bugs e melhorias - Fazenda Estrela (01/10 17:06)",
+      "desde": "2026-10-01",
+      "prazo": "2026-10-16",
+      "prioridade": "alta",
+      "status": "nova",
+      "chefe": false
+    },
+    {
+      "id": "p18",
+      "titulo": "Decidir com a Fernanda se os bugs da Fazenda Estrela já foram validados pelo produto ou se o suporte reavalia do zero",
+      "detalhe": "Risco de retrabalho (reavaliar tudo de novo) x mais atraso num cliente perto de cancelar. Chamados vêm indo direto pra fila de produto pulando a validação do suporte.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Fluxo de suporte e priorização de bugs do RP com Joyce, 01/10 16:55",
+      "desde": "2026-10-01",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "nova",
+      "chefe": false
+    },
+    {
+      "id": "p19",
+      "titulo": "Agendar conversa com o Leandro sobre o processo/SLA do \"banco de ideias\" do myFarm e sobre enxugar o roadmap",
+      "detalhe": "Hoje não há critério de priorização nem devolutiva ao cliente, e a capacidade do time de produto é baixa. A Fernanda pretende alinhar isso com o Leandro assim que ele voltar de viagem; vale o Julio puxar também a conversa sobre focar o roadmap em demandas reais de cliente.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Fazenda Estrela - Reunião Interna demandas do cliente, 01/10 11:22",
+      "desde": "2026-10-01",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "nova",
+      "chefe": true
+    },
+    {
+      "id": "p20",
+      "titulo": "Conectar o Lucas (consultor) com o time de dev do myFarm pra catalogar item a item a base da Fazenda Estrela",
+      "detalhe": "Ideal numa sessão gravada, cobrindo o que já existe e o que falta; depois, apresentar o resultado à cliente Valéria.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Testes de funcionalidade e bugs no sistema de notas com Lucas (01/10 14:52), Fazenda Estrela: vinculação de produtos e alinhamento com dev (01/10 10:46) e Reunião Interna - myFarm - Pri (01/10 10:28)",
+      "desde": "2026-10-01",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "nova",
+      "chefe": false
+    },
+    {
+      "id": "p21",
+      "titulo": "Reunião presencial com o Ângelo em 05/10 pra desenhar o fluxo de quem trata o quê",
+      "detalhe": "Faturamento, cancelamento em 30 dias e pedido de horas não têm dono estrutural claro — gap que já causou cerca de 20 dias de atraso em respostas a clientes (Fazenda Estrela, Perdizes, Coap). Já combinado; falta realizar.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Gestão de clientes em risco de cancelamento e fluxos operacionais, 01/10 10:54",
+      "desde": "2026-10-01",
+      "prazo": "2026-10-05",
+      "prioridade": "alta",
+      "status": "nova",
+      "chefe": false
+    },
+    {
+      "id": "p22",
+      "titulo": "Reunião de alinhamento com a Fazenda Pontal das Perdizes (myFarm) — acompanhar risco de churn",
+      "detalhe": "Prazo original já vencido (17/09). Nesta janela, o Granola confirmou o mesmo padrão de risco: email do cliente parado, sem resposta — o mesmo gap estrutural que afeta a Fazenda Estrela e o Coap (ver p21).",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md; Granola, Gestão de clientes em risco de cancelamento e fluxos operacionais, 01/10 10:54",
+      "desde": "2026-09-16",
+      "prazo": "2026-09-17",
+      "prioridade": "alta",
+      "status": "atrasada",
+      "chefe": false
+    },
+    {
+      "id": "p23",
+      "titulo": "Ana Rocha: preparar o quadro com o cliente \"Seu Flávio\" (Campo Novo) feito/não-feito/banco de ideias",
+      "detalhe": "Combinado pra apresentação do Julio ainda em 01/10; sem confirmação de que já aconteceu. Cliente descrito como influente política e socialmente — vale checar se foi feito.",
+      "quem": "Ana Rocha",
+      "origem": "granola",
+      "ref": "Granola, MyFarm bugs, validations, and client update with Fernanda, 01/10 15:42",
+      "desde": "2026-10-01",
+      "prazo": "2026-10-01",
+      "prioridade": "alta",
+      "status": "aberta",
+      "chefe": false
+    },
+    {
+      "id": "p24",
+      "titulo": "Encaixar agenda com a Ana Rocha (e a Talita) sobre a limpeza do HubSpot",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "briefing/2026-10-01.json (p15)",
+      "desde": "2026-09-30",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "aberta",
+      "chefe": false
+    },
+    {
+      "id": "p25",
+      "titulo": "Levar à diretoria desconto ou isenção da hora de atualização da Motta pós-20h",
+      "detalhe": "Pedido do Elias; sem novidade nesta janela, já soma mais de uma semana sem movimento.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-24",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "parada",
+      "chefe": false
+    },
+    {
+      "id": "p26",
+      "titulo": "Giovanna: reapresentar ao cliente da integração Bayer a proposta com 40% de desconto",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Giovanna",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-24",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "parada",
+      "chefe": false
+    },
+    {
+      "id": "p27",
+      "titulo": "Andrezza: remarcar com o João Osório a continuação da apresentação do Vistra",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Andrezza",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-24",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "parada",
+      "chefe": false
+    },
+    {
+      "id": "p28",
+      "titulo": "Levar ao Leandro a proposta do Alzir Pimentel (parcelas mantendo os usuários)",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-25",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "aberta",
+      "chefe": true
+    },
+    {
+      "id": "p29",
+      "titulo": "Enviar o reporte semanal de posição de suspensos pro Carlos (CEO)",
+      "detalhe": "Recorrente, toda semana. Sem confirmação de envio nesta janela (Teams/email fora do ar).",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md; briefing/2026-10-01.json (p23)",
+      "desde": "2026-09-28",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "aberta",
+      "chefe": false
+    },
+    {
+      "id": "p30",
+      "titulo": "Mandar pro Leandro os argumentos da folha de CS e serviços acima de 2025",
+      "detalhe": "Sem novidade nesta janela, já soma mais de uma semana parado.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-24",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "parada",
+      "chefe": true
+    },
+    {
+      "id": "p31",
+      "titulo": "Destravar automações do CS pra clientes myFarm de baixo toque",
+      "detalhe": "Sem novidade de execução nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md (desde 18/09)",
+      "desde": "2026-09-18",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "parada",
+      "chefe": false
+    },
+    {
+      "id": "p32",
+      "titulo": "Encerramento formal da Fazenda Riqueza e do SJB Group",
+      "detalhe": "Prazo já vencido. Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-25",
+      "prazo": "2026-09-25",
+      "prioridade": "alta",
+      "status": "atrasada",
+      "chefe": false
+    },
+    {
+      "id": "p33",
+      "titulo": "Iniciar as 3 ações do plano de churn",
+      "detalhe": "Prazo já vencido. Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-16",
+      "prazo": "2026-09-17",
+      "prioridade": "alta",
+      "status": "atrasada",
+      "chefe": false
+    },
+    {
+      "id": "p34",
+      "titulo": "Fazer as devolutivas de 1:1 pendentes pro RH fechar os PDIs",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md (apontado desde 23/09)",
+      "desde": "2026-09-23",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "parada",
+      "chefe": false
+    },
+    {
+      "id": "p35",
+      "titulo": "Dar dono e limite pro caso AgroJem (horas sem proposta assinada)",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-23",
+      "prazo": null,
+      "prioridade": "alta",
+      "status": "parada",
+      "chefe": false
+    },
+    {
+      "id": "p36",
+      "titulo": "Aprovar a proposta comercial de upsell de licenças de um cliente AGM",
+      "detalhe": "Cliente está separando a base em duas empresas e vai precisar dobrar as licenças; a Amanda vai mandar a proposta.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Separação de base e licenças no Agrimanager com Amanda e Giovanna - Cliente AGM, 01/10 16:01",
+      "desde": "2026-10-01",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "nova",
+      "chefe": false
+    },
+    {
+      "id": "p37",
+      "titulo": "Investigar com o suporte uma inconsistência financeira recorrente (~R$ 40 mil, variação cambial) num cliente AGM",
+      "detalhe": "Pelo menos 2 casos na mesma cliente. O encaminhamento natural seria a Jaqueline, mas ela está em processo de afastamento/desligamento (ver p4) — falta redirecionar pra outra pessoa.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Tira dúvidas com Warlen (colaborador), 01/10 16:22",
+      "desde": "2026-10-01",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "nova",
+      "chefe": false
+    },
+    {
+      "id": "p38",
+      "titulo": "Oferecer o painel de fluxo de caixa do Vista BI como isca de retenção ao cliente AGM que está reduzindo licenças",
+      "detalhe": "Downsell de cerca de 43% (de R$ 10.670 para R$ 6.116/mês); vale usar o painel como argumento de retenção antes de o cliente sair de vez.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Redução de licenças AgriManage e proposta de migração com cliente, 01/10 09:46",
+      "desde": "2026-10-01",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "nova",
+      "chefe": false
+    },
+    {
+      "id": "p39",
+      "titulo": "Chamar a TI pra resolver a VPN do Fábio (consultor PJ em onboarding)",
+      "detalhe": "Sem evidência de resolução desde ontem; o Fábio segue sem acesso ao ambiente de trabalho até isso resolver.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "briefing/2026-10-01.json (p13)",
+      "desde": "2026-10-01",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "aberta",
+      "chefe": false
+    },
+    {
+      "id": "p40",
+      "titulo": "Fechar com o Leandro a precificação e a calculadora de horas do AgriManager",
+      "detalhe": "Julio e Cecílio já fecharam a calculadora; falta o Cecílio alinhar com o Leandro o formato de apresentação.",
+      "quem": "Cecílio",
+      "origem": "sistema",
+      "ref": "briefing/2026-10-01.json (p14)",
+      "desde": "2026-09-23",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "aberta",
+      "chefe": true
+    },
+    {
+      "id": "p41",
+      "titulo": "Alinhar com o financeiro o Plano Safra dos clientes \"não propor flexibilização 2027\"",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-25",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "aberta",
+      "chefe": false
+    },
+    {
+      "id": "p42",
+      "titulo": "Decidir se soma ao total recuperado Lucival, Beatriz e Marcelo Lara",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-25",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "aberta",
+      "chefe": false
+    },
+    {
+      "id": "p43",
+      "titulo": "Amanda: levantar com a Dinamara o valor real do acordo do Alzir com o escritório",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Amanda",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-25",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "aberta",
+      "chefe": false
+    },
+    {
+      "id": "p44",
+      "titulo": "Alinhar com o Ângelo o passo a passo pra venda de parceria entrar no HubSpot",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-28",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "aberta",
+      "chefe": false
+    },
+    {
+      "id": "p45",
+      "titulo": "Passar o registro dos OKRs pro CS",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-25",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "aberta",
+      "chefe": false
+    },
+    {
+      "id": "p46",
+      "titulo": "Consolidar o resultado das 6 viagens de 2026",
+      "detalhe": "Prazo já vencido. Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-16",
+      "prazo": "2026-09-17",
+      "prioridade": "media",
+      "status": "atrasada",
+      "chefe": false
+    },
+    {
+      "id": "p47",
+      "titulo": "Confirmar o ERP de destino da Franciosi",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-28",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "aberta",
+      "chefe": false
+    },
+    {
+      "id": "p48",
+      "titulo": "Amanda: centralizar os 52 clientes suspensos sem movimento",
+      "detalhe": "Sem novidade nesta janela; já soma bastante tempo parado.",
+      "quem": "Amanda",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-17",
+      "prazo": null,
+      "prioridade": "media",
+      "status": "parada",
+      "chefe": false
+    },
+    {
+      "id": "p49",
+      "titulo": "Aguardar retorno do cliente Thiago sobre a proposta revisada de painel",
+      "detalhe": "Painel ilimitado por R$ 2.200 + relatório DRE.",
+      "quem": "Julio",
+      "origem": "granola",
+      "ref": "Granola, Proposta de painel e relatório de churn com Andresa, 01/10 13:56",
+      "desde": "2026-10-01",
+      "prazo": null,
+      "prioridade": "baixa",
+      "status": "nova",
+      "chefe": false
+    },
+    {
+      "id": "p50",
+      "titulo": "Compartilhar com o Diego e a Joyce o relatório \"Por que o cliente saiu\"",
+      "detalhe": "Sem novidade nesta janela.",
+      "quem": "Julio",
+      "origem": "sistema",
+      "ref": "_contexto/agora.md",
+      "desde": "2026-09-23",
+      "prazo": null,
+      "prioridade": "baixa",
+      "status": "parada",
+      "chefe": false
+    }
+  ],
+  "chefe": [
+    {
+      "titulo": "Já alinhado com o Julio sobre o desligamento da Joyce Pereira",
+      "detalhe": "Falta só a validação jurídica da BP de RH antes de formalizar.",
+      "evidencia": "Granola, Conversa com a BP Flávia, 02/10 08:25",
+      "confianca": "certo"
+    },
+    {
+      "titulo": "Já aprovou abrir a vaga interna de Gerente de Projetos",
+      "detalhe": "Falta fechar o levantamento salarial (p16) e repassar à Flávia.",
+      "evidencia": "Granola, Conversa com a BP Flávia, 02/10 08:25",
+      "confianca": "certo"
+    },
+    {
+      "titulo": "Ligou pessoalmente pra Joice Magalhães (produto) cobrando a priorização dos bugs da Fazenda Estrela",
+      "detalhe": "Interveio por cima da linha Julio → Fernanda; sinal de que o cliente já chegou à diretoria.",
+      "evidencia": "Granola, Priorização de bugs e prazos de entrega com Fernanda e Joice, 01/10 17:28",
+      "confianca": "provavel"
+    },
+    {
+      "titulo": "Pressionou o time de dev da Fazenda Estrela depois que o Julio o acionou",
+      "detalhe": "Sem essa intervenção o time não andava, segundo relatado na reunião.",
+      "evidencia": "Granola, Fluxo de suporte e priorização de bugs do RP com Joyce, 01/10 16:55",
+      "confianca": "provavel"
+    },
+    {
+      "titulo": "Chamou a Fernanda em 29/09 junto com o Julio cobrando a resposta de um email parado da Fazenda Estrela",
+      "detalhe": "Inicialmente minimizou o problema antes de entender a gravidade.",
+      "evidencia": "Granola, Gestão de clientes em risco de cancelamento e fluxos operacionais, 01/10 10:54",
+      "confianca": "provavel"
+    },
+    {
+      "titulo": "Opinou contra o bloqueio total de duplicidade de nota fiscal no myFarm",
+      "detalhe": "Prefere alerta ao usuário em vez de bloqueio.",
+      "evidencia": "Granola, Fazenda Estrela - Reunião Interna demandas do cliente, 01/10 11:22",
+      "confianca": "provavel"
+    },
+    {
+      "titulo": "Vai alinhar com a Fernanda o processo/SLA do banco de ideias do myFarm assim que voltar de viagem",
+      "detalhe": "Ligado à pendência p19.",
+      "evidencia": "Granola, Fazenda Estrela - Reunião Interna demandas do cliente, 01/10 11:22",
+      "confianca": "provavel"
+    },
+    {
+      "titulo": "Segue sem resposta confirmável a dois pedidos diretos dele: a posição de cobranças (29/09) e quanto o Catelan paga (28/09)",
+      "detalhe": "Não dá pra saber se o Julio já respondeu, porque Teams e email seguem fora do ar nesta rotina — risco de ele achar que ficou sem retorno.",
+      "evidencia": "briefing/2026-10-01.json (p1, p7); _memoria/recados/2026-09-30-resumo-teams-sem-acesso.md",
+      "confianca": "certo"
+    }
+  ],
+  "time": [
+    {
+      "pessoa": "Joyce Pereira",
+      "sinal": "Em processo de desligamento, de atestado por ansiedade (volta 08/10); a própria BP de RH levantou risco jurídico de a dispensa parecer discriminatória por doença/deficiência.",
+      "evidencia": "Granola, Conversa com a BP Flávia sobre os desligamentos de Jaqueline e Joyce, 02/10 08:25",
+      "gravidade": "alerta",
+      "sugestao": "Não formalizar nada sem o parecer da Flávia/jurídico por escrito.",
+      "confianca": "certo"
+    },
+    {
+      "pessoa": "Jaqueline Martins",
+      "sinal": "8 anos de casa, afastada 30 dias (burnout, início de depressão), volta 31/10; o Julio já havia decidido não renovar com ela antes do afastamento.",
+      "evidencia": "Granola, Conversa com a BP Flávia sobre os desligamentos de Jaqueline e Joyce, 02/10 08:25",
+      "gravidade": "alerta",
+      "sugestao": "Checar estabilidade via INSS antes de qualquer comunicação formal.",
+      "confianca": "certo"
+    },
+    {
+      "pessoa": "Julio (o próprio)",
+      "sinal": "Verbaliza esgotamento em reuniões de trabalho registradas (\"tô adoecendo com essas coisas... tô quase jogando a toalha\"), acumulando CS e projetos sozinho com as duas analistas de projeto afastadas ao mesmo tempo.",
+      "evidencia": "Granola, Alinhamento equipe de CS (02/10 08:58), Gestão de clientes em risco de cancelamento (01/10 10:54) e Reunião Interna - myFarm - Pri (01/10 10:28)",
+      "gravidade": "alerta",
+      "sugestao": "Levar isso pro próprio 1:1 com o Leandro, não só deixar aparecer em reunião com o time.",
+      "confianca": "certo"
+    },
+    {
+      "pessoa": "Warlen",
+      "sinal": "Frustração e desgaste visíveis com inconsistências recorrentes de sistema numa base de cliente.",
+      "evidencia": "Granola, Tira dúvidas com Warlen (colaborador), 01/10 16:22",
+      "gravidade": "atencao",
+      "sugestao": "Acompanhar se o desgaste é pontual ou vira padrão nas próximas semanas.",
+      "confianca": "provavel"
+    },
+    {
+      "pessoa": "Fernanda Lima",
+      "sinal": "Reconhece sobrecarga própria (\"o volume é grande, tem cliente que a gente vai deixando\"), mas também assumiu proativamente um gap que não era dela.",
+      "evidencia": "Granola, Reunião Interna - myFarm - Pri, 01/10 10:28",
+      "gravidade": "atencao",
+      "sugestao": "Vale reconhecer a iniciativa e perguntar diretamente se ela precisa de apoio.",
+      "confianca": "provavel"
+    },
+    {
+      "pessoa": "André Cunha",
+      "sinal": "Ficou incomodado com um comentário deselegante de alguém do produto numa reunião em frente a um cliente VIP.",
+      "evidencia": "Granola, MyFarm bugs, validations, and client update with Fernanda, 01/10 15:42",
+      "gravidade": "atencao",
+      "sugestao": "Conversa rápida pra checar se ficou algum ressentimento.",
+      "confianca": "provavel"
+    },
+    {
+      "pessoa": "Time de projetos (geral)",
+      "sinal": "Dois analistas de projeto afastados ao mesmo tempo (Jaqueline e Joyce) e alta rotatividade na função; a própria BP de RH sugeriu que a rotina do cargo pode estar favorecendo adoecimento.",
+      "evidencia": "Granola, Conversa com a BP Flávia e Alinhamento equipe de CS, 02/10",
+      "gravidade": "alerta",
+      "sugestao": "Vale olhar a carga e o desenho do cargo de analista de projetos antes de só repor a vaga.",
+      "confianca": "provavel"
+    }
+  ],
+  "padroes": [
+    {
+      "padrao": "A Fazenda Estrela dominou a pauta de 01 e 02/10: 8 das 16 reuniões do Granola giram em torno desse cliente.",
+      "evidencia": "Granola, reuniões 3 a 6, 9, 10, 12 a 15 (01/10)",
+      "implicacao": "O time só reage quando o cliente ameaça cancelar; a causa raiz é um item parado cerca de 20 dias no time de dev sem resposta.",
+      "confianca": "certo"
+    },
+    {
+      "padrao": "Escalonamentos sem dono claro entre suporte, produto e comercial.",
+      "evidencia": "Chamados pulando a validação do suporte direto pra fila de produto (p18); ticket de balança nunca aberto (p7); responsável por retornos de email saiu de licença sem repassar pendências.",
+      "implicacao": "Já gerou cerca de 20 dias de atraso em respostas a clientes (Fazenda Estrela, Perdizes, Coap); é o que a reunião com o Ângelo em 05/10 (p21) tenta resolver.",
+      "confianca": "certo"
+    },
+    {
+      "padrao": "Falta de processo e SLA pro \"banco de ideias\" do myFarm.",
+      "evidencia": "Granola, Fazenda Estrela - Reunião Interna demandas do cliente, 01/10 11:22",
+      "implicacao": "Sem critério de priorização nem devolutiva ao cliente, com a capacidade do time de produto já baixa — é estrutural, não pontual.",
+      "confianca": "certo"
+    },
+    {
+      "padrao": "Falha recorrente de licenciamento pós-implantação no AGM: consultores esquecem de atualizar a licença depois que o cliente já está usando a versão cheia.",
+      "evidencia": "Granola, Separação de base e licenças no Agrimanager com Amanda e Giovanna, 01/10 16:01",
+      "implicacao": "Perda de receita recorrente \"em vários e vários casos\", segundo relatado — vale uma checagem mais ampla, não só do cliente desta reunião.",
+      "confianca": "provavel"
+    },
+    {
+      "padrao": "Dois desligamentos simultâneos de analistas de projeto, ambos com componente de saúde/deficiência.",
+      "evidencia": "Granola, Conversa com a BP Flávia, 02/10 08:25",
+      "implicacao": "Padrão de risco trabalhista que pede cuidado jurídico caso a caso, não tratamento conjunto.",
+      "confianca": "provavel"
+    }
+  ],
+  "anomalias": [
+    {
+      "titulo": "Microsoft 365 inacessível pelo quarto dia seguido nesta rotina",
+      "detalhe": "29/09, 30/09, 01/10 e agora 02/10; a janela sem visibilidade sobre email, Teams e agenda só cresce. O resumo do Teams das 16:30 também está parado desde 28/09 pelo mesmo motivo.",
+      "evidencia": "briefing/2026-10-01.json (p2); _memoria/recados/2026-09-30-resumo-teams-sem-acesso.md",
+      "confianca": "certo"
+    },
+    {
+      "titulo": "Inconsistência financeira recorrente não explicada (~R$ 40 mil, variação cambial)",
+      "detalhe": "Pelo menos 2 casos na mesma cliente AGM, sem explicação encontrada ainda.",
+      "evidencia": "Granola, Tira dúvidas com Warlen (colaborador), 01/10 16:22",
+      "confianca": "certo"
+    },
+    {
+      "titulo": "Dois clientes grandes em movimento de receita simultâneo e oposto",
+      "detalhe": "Um cliente AGM reduzindo contrato em ~43% (downsell) e a Fazenda Estrela perto de cancelar, no mesmo intervalo de dois dias — concentração de risco de receita.",
+      "evidencia": "Granola, Redução de licenças AgriManage (01/10 09:46) e Reunião Interna - myFarm - Pri (01/10 10:28)",
+      "confianca": "certo"
+    },
+    {
+      "titulo": "Prazo dado pelo próprio cliente Fazenda Estrela pode já ter vencido sem resposta formal",
+      "detalhe": "O cliente pediu uma posição ainda na tarde de 01/10; não há confirmação de que isso foi comunicado.",
+      "evidencia": "Granola, Reunião Interna - myFarm - Pri, 01/10 10:28",
+      "confianca": "suposicao"
+    }
+  ],
+  "correcoes": [
+    {
+      "tema": "Decisão de churn sem comunicação formal no prazo",
+      "observacao": "O Julio já concluiu internamente que o cancelamento da Fazenda Estrela é \"inevitável\", mas o prazo que o próprio cliente deu (tarde de 01/10) parece ter passado sem uma resposta oficial.",
+      "evidencia": "Granola, Reunião Interna - myFarm - Pri, 01/10 10:28",
+      "sugestao": "Formalizar e comunicar a decisão o quanto antes, mesmo que seja pra confirmar o cancelamento — atraso tende a piorar a saída, não evitar.",
+      "confianca": "provavel"
+    },
+    {
+      "tema": "Sinal de esgotamento pessoal aparecendo em reunião com o time",
+      "observacao": "O Julio verbalizou cansaço extremo (\"tô adoecendo\", \"quase jogando a toalha\") numa reunião de trabalho gravada, não num espaço privado com o Leandro.",
+      "evidencia": "Granola, Gestão de clientes em risco de cancelamento e fluxos operacionais, 01/10 10:54",
+      "sugestao": "Levar isso diretamente ao Leandro no 1:1 de terça, com números concretos de carga (ele já tinha sinalizado isso em 25/09) — antes que apareça de novo pro time.",
+      "confianca": "provavel"
+    }
+  ],
+  "aprendizados": [
+    {
+      "sobre": "Julio",
+      "texto": "Sem ele cobrar diretamente (\"cutucar\") o Leandro ou a diretoria, times de outras áreas (dev, produto) não avançam em prazos de cliente — reforça o padrão já registrado de ele ser o funil do time.",
+      "evidencia": "Granola, Fluxo de suporte e priorização de bugs do RP com Joyce, 01/10 16:55",
+      "confianca": "provavel"
+    },
+    {
+      "sobre": "time",
+      "texto": "O radar do time precisa de atualização: Joyce Pereira e Jaqueline Martins estão afastadas por saúde e em processo formal de desligamento (não mais só \"sinal de possível saída\" como registrado em 23/09) — com componente de risco jurídico por doença/deficiência levantado pela própria BP de RH.",
+      "evidencia": "Granola, Conversa com a BP Flávia sobre os desligamentos de Jaqueline e Joyce, 02/10 08:25",
+      "confianca": "certo"
+    },
+    {
+      "sobre": "Julio",
+      "texto": "Fala explícita de esgotamento pessoal em reunião de trabalho (não é vida pessoal — é sinal direto de carga insustentável, relevante pro próprio jeito-do-julio.md e pra gestão dele com o Leandro).",
+      "evidencia": "Granola, Alinhamento equipe de CS (02/10 08:58) e Reunião Interna - myFarm - Pri (01/10 10:28)",
+      "confianca": "certo"
+    }
+  ]
+}
