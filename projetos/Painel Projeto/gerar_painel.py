@@ -214,9 +214,12 @@ def evolucao(m):
 
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
-    xlsx = Path(args[0]) if args else modelo.planilha_mais_recente(PASTA)
-    print(f"lendo {xlsx.name} ...")
-    m = modelo.montar(xlsx)
+    try:
+        xlsx = Path(args[0]) if args else modelo.planilha_mais_recente(PASTA)
+        print(f"lendo {xlsx.name} ...")
+        m = modelo.montar(xlsx)
+    except FileNotFoundError as erro:   # sem planilha: avisa sem despejar o erro do Python
+        sys.exit(f"não achei a planilha: {erro}")
     dados = json.dumps(montar_dados(m, xlsx), ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     html = MODELO_HTML.read_text(encoding="utf-8")
     html = html.replace("/*__PLOTLY__*/", get_plotlyjs()).replace("/*__DADOS__*/", dados)

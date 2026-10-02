@@ -31,6 +31,8 @@
 !*.js
 !*.sh
 !*.ps1
+# atalho de dois cliques (ex.: atualizar-painel.bat do painel de projetos); sem isto ele não viajava entre as máquinas (2026-10-02)
+!*.bat
 
 # imagem (marca, carrossel, slide)
 !*.png
