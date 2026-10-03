@@ -198,6 +198,17 @@ th.sorted .arr{color:var(--ink)}
 #tblPrio td .pname{white-space:normal;max-width:230px}
 #tblPrio td .quebra{white-space:normal;max-width:220px}
 #tblPrio th,#tblPrio td{padding:10px 10px}
+.filtros-aba{display:flex;flex-wrap:wrap;gap:10px 22px;align-items:center;margin:0 0 14px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;background:var(--surface)}
+.fa-grupo{display:flex;flex-wrap:wrap;gap:8px;align-items:center;min-width:0}
+.fa-rot{font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.filtros-aba #prioConsultor{max-width:300px}
+.sel:disabled{opacity:.5;cursor:not-allowed}
+@media (max-width:720px){
+  .filtros-aba .fa-grupo{width:100%}
+  .filtros-aba .fa-rot{flex-basis:100%}
+  .filtros-aba label.data{flex:1 1 130px}
+  .filtros-aba label.data input{max-width:none;width:100%;min-width:0}
+}
 td.r,th.r{text-align:right}
 td .muted,.muted{color:var(--muted)}
 td .small{font-size:12px;color:var(--muted)}
@@ -387,6 +398,20 @@ a.hist-btn{text-decoration:none;display:inline-flex;align-items:center}
   <!-- PRIORIDADES -->
   <section id="tab-prioridades" role="tabpanel" class="hide">
     <div class="hint" style="margin-bottom:12px;max-width:980px">Por onde atacar: primeiro o crítico sem agenda, depois quem ainda implanta e está sem a próxima agenda, depois quem só falta encerrar, depois quem já tem agenda marcada e, por último, os suspensos. Dentro de cada grupo, quem está há mais tempo sem agenda vem antes. Clique no título de qualquer coluna para reordenar e num cartão para ver só aquele grupo.</div>
+    <div class="filtros-aba" role="group" aria-label="Filtros da aba Prioridades">
+      <div class="fa-grupo">
+        <span class="fa-rot">Início do projeto</span>
+        <div class="seg" id="iniPreset" role="group" aria-label="Início do projeto"></div>
+        <label class="data">De <input type="date" id="iniDe" class="sel"></label>
+        <label class="data">Até <input type="date" id="iniAte" class="sel"></label>
+      </div>
+      <div class="fa-grupo">
+        <span class="fa-rot">Consultor</span>
+        <select class="sel" id="prioConsultor" aria-label="Consultor"></select>
+        <select class="sel" id="prioPapel" aria-label="Papel do consultor no projeto"></select>
+      </div>
+      <button class="clear" id="prioLimpar" type="button">Limpar filtros da aba</button>
+    </div>
     <div class="grid" id="gruposPrio" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))"></div>
     <div class="toolbar" style="margin-top:14px">
       <div class="count-line" id="prioCount"></div>
@@ -579,6 +604,15 @@ const PAC_BY = {}; D.pacotes.forEach(a => (PAC_BY[a.cod] ||= []).push(a));
 /* ---------- estado e filtros ---------- */
 const ESTADO_PADRAO = {sistema:"Todos", status:"Abertos", saude:"", analista:"", consultor:"", fase:"", busca:"", tab:"geral", escopo:"todos", sort:{col:"saude", dir:1}};
 const st = Object.assign({}, ESTADO_PADRAO, {tab: store.get("tab","geral"), sort: store.get("sort", ESTADO_PADRAO.sort)});
+// papel do consultor no projeto: sem papel escolhido, vale qualquer um deles
+const PAPEIS = [["", "em qualquer papel"], ["resp", "responsável no cadastro"], ["atendeu", "atendeu o projeto"], ["ultima", "atendeu por último"], ["proxima", "tem a próxima agenda"]];
+const PAPEL_TESTE = {
+  resp: (p, c) => p.responsavel === c,
+  atendeu: (p, c) => p.consultores.some(x => x.nome === c),
+  ultima: (p, c) => p.ultima_os_consultor === c,
+  proxima: (p, c) => p.proxima_os_consultor === c,
+};
+const temConsultor = (p, c, papel = "") => papel ? PAPEL_TESTE[papel](p, c) : Object.values(PAPEL_TESTE).some(f => f(p, c));
 
 function filtrar(ignorar = {}){
   const b = st.busca.trim().toLowerCase();
@@ -587,7 +621,7 @@ function filtrar(ignorar = {}){
     (st.status === "Abertos" || (st.status === "Em andamento" ? p.status !== "Suspenso" : p.status === "Suspenso")) &&
     (ignorar.saude || !st.saude || p.saude === st.saude) &&
     (!st.analista || p.analista === st.analista) &&
-    (!st.consultor || p.responsavel === st.consultor || p.consultores.some(c => c.nome === st.consultor)) &&
+    (!st.consultor || temConsultor(p, st.consultor)) &&
     (ignorar.fase || st.fase === "" || p.fase === +st.fase) &&
     (!b || (p.nome + " " + p.projeto + " " + p.cliente + " " + p.grupo_economico + " " + p.cod).toLowerCase().includes(b)));
 }
@@ -606,15 +640,17 @@ function montarFiltros(){
   const uniq = a => [...new Set(a.filter(Boolean))].sort((x,y)=>x.localeCompare(y,"pt-BR"));
   opts($("#fSaude"), "Saúde: todas", SAUDES, "saude");
   opts($("#fAnalista"), "Analista: todos", uniq(PROJ.map(p=>p.analista)), "analista");
-  opts($("#fConsultor"), "Consultor: todos", uniq(PROJ.flatMap(p=>[p.responsavel, ...p.consultores.map(c=>c.nome)])), "consultor");
+  const consultores = uniq(PROJ.flatMap(p=>[p.responsavel, p.ultima_os_consultor, p.proxima_os_consultor, ...p.consultores.map(c=>c.nome)]));
+  opts($("#fConsultor"), "Consultor: todos", consultores, "consultor");
+  opts($("#prioConsultor"), "Consultor: todos", consultores, "consultor");   // o mesmo filtro do topo, repetido na aba Prioridades
   opts($("#fFase"), "Fase: todas", Object.keys(FASES).map(Number).sort((a,b)=>a-b), "fase", k => FASES[k]);
   $("#fBusca").oninput = e => { st.busca = e.target.value; atualizar(); };
-  $("#fLimpar").onclick = () => { Object.assign(st, {sistema:"Todos",status:"Abertos",saude:"",analista:"",consultor:"",fase:"",busca:""}); $("#fBusca").value=""; atualizar(); };
+  $("#fLimpar").onclick = () => { Object.assign(st, {sistema:"Todos",status:"Abertos",saude:"",analista:"",consultor:"",fase:"",busca:""}); $("#fBusca").value=""; inicioPrio = {preset: "todos"}; papelPrio = ""; atualizar(); };
 }
 function sincronizarFiltros(){
   document.querySelectorAll("#fSistema button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.sistema));
   document.querySelectorAll("#fStatus button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === st.status));
-  $("#fSaude").value = st.saude; $("#fAnalista").value = st.analista; $("#fConsultor").value = st.consultor; $("#fFase").value = st.fase;
+  $("#fSaude").value = st.saude; $("#fAnalista").value = st.analista; $("#fConsultor").value = st.consultor; $("#prioConsultor").value = st.consultor; $("#fFase").value = st.fase;
 }
 
 /* ---------- plotly ---------- */
@@ -913,6 +949,7 @@ const COLS_PRIO = [
   {k:"grupo", t:"Grupo", v:p=>D.grupos.indexOf(p.grupo), f:p=>grupoCurto(p.grupo)},
   {k:"nome", t:"Projeto", v:p=>p.nome, f:p=>`<div class="pname">${esc(p.nome)}</div><div class="small">${sysTag(p.sistema)} · #${p.cod} · ${esc(p.saude.toLowerCase())}</div><div class="linha-hist">${repTag(p)}${histBtn(p)}</div>`},
   {k:"analista", t:"Analista", v:p=>p.analista, f:p=>`<div class="pessoa">${esc(p.analista || "–")}<div class="small">resp.: ${esc(p.responsavel || "–")}</div></div>`},
+  {k:"abertura", t:"Início", v:p=>p.abertura, d0:-1, r:true, f:p=>`${dt(p.abertura)}<div class="small">há ${nf0.format(p.dias_aberto)} dias</div>`},
   {k:"ultima", t:"Última agenda", v:p=>p.dias_sem_agenda, d0:-1, r:true,
     f:p=>p.nunca_agenda ? `<span class="muted">nunca teve</span><div class="small">aberto há ${nf0.format(p.dias_aberto)} dias</div>` : `${dt(p.ultima)}<div class="small">há ${nf0.format(p.dias_sem_agenda)} dias</div>`},
   {k:"ultima_os", t:"Última OS executada", v:p=>p.ultima_os, d0:-1,
@@ -923,20 +960,68 @@ const COLS_PRIO = [
   {k:"saldo", t:"Saldo", v:p=>p.saldo, d0:-1, r:true, f:p=>`<b>${h(p.saldo)}</b><div class="small">${pct(p.pct)} usado</div>`},
   {k:"fase", t:"Fase", v:p=>p.fase, f:p=>`<span class="steps" title="${esc(p.fase_nome)}">${[1,2,3,4,5,6,7].map(i => `<i class="${i < p.fase ? "on" : i === p.fase ? "cur" : ""}"></i>`).join("")}</span><div class="small quebra" style="max-width:110px">${esc(p.fase_nome)}</div>`},
 ];
-function renderPrioridades(ps){
+// filtros só desta aba: início do projeto (abertura no CES) e papel do consultor; o consultor é o mesmo do topo
+let inicioPrio = {preset: "todos"};
+let papelPrio = "";
+const ANOS_INI = [...new Set(PROJ.map(p => (p.abertura || "").slice(0, 4)).filter(Boolean))].sort().reverse();
+const ANOS_BOTAO = ANOS_INI.slice(0, 2), ANO_CORTE = ANOS_BOTAO[ANOS_BOTAO.length - 1];
+const PRESETS_INI = [["todos", "Todos"], ["90", "Últimos 90 dias"], ...ANOS_BOTAO.map(a => [a, a]),
+  ...(ANOS_INI.some(a => a < ANO_CORTE) ? [["antes", `Antes de ${ANO_CORTE}`]] : [])];
+function datasInicio(){
+  const i = inicioPrio;
+  if(i.preset === "custom") return {de: i.de || "", ate: i.ate || ""};
+  if(i.preset === "90") return {de: isoD(somaDias(REF, -89)), ate: D.meta.ref};
+  if(i.preset === "antes") return {de: "", ate: `${+ANO_CORTE - 1}-12-31`};
+  if(/^\d{4}$/.test(i.preset)) return {de: `${i.preset}-01-01`, ate: `${i.preset}-12-31`};
+  return {de: "", ate: ""};
+}
+function rotuloInicio(){
+  const {de, ate} = datasInicio(), p = inicioPrio.preset;
+  if(p === "todos" || (!de && !ate)) return "";
+  if(p === "90") return "início nos últimos 90 dias";
+  if(p === "antes") return `início antes de ${ANO_CORTE}`;
+  if(p !== "custom") return `início em ${p}`;
+  return de && ate ? `início de ${dt(de)} a ${dt(ate)}` : de ? `início a partir de ${dt(de)}` : `início até ${dt(ate)}`;
+}
+const filtrarPrio = ps => { const {de, ate} = datasInicio();
+  return ps.filter(p => (!de || (p.abertura && p.abertura >= de)) && (!ate || (p.abertura && p.abertura <= ate)) &&
+    (!st.consultor || !papelPrio || temConsultor(p, st.consultor, papelPrio))); };
+function sincronizarFiltrosPrio(){
+  const sp = $("#iniPreset");
+  if(!sp.children.length) sp.innerHTML = PRESETS_INI.map(([v, t]) => `<button type="button" data-v="${esc(v)}">${esc(t)}</button>`).join("");
+  sp.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === inicioPrio.preset));
+  const {de, ate} = datasInicio(), inDe = $("#iniDe"), inAte = $("#iniAte");
+  inDe.min = inAte.min = PROJ.map(p => p.abertura).filter(Boolean).sort()[0] || ""; inDe.max = inAte.max = D.meta.ref;
+  inDe.value = de; inAte.value = ate && ate > D.meta.ref ? D.meta.ref : ate;
+  const sel = $("#prioPapel");
+  if(!sel.options.length) sel.innerHTML = PAPEIS.map(([v, t]) => `<option value="${v}">${esc(t)}</option>`).join("");
+  sel.value = papelPrio; sel.disabled = !st.consultor;
+  sel.title = st.consultor ? "" : "Escolha um consultor para filtrar pelo papel dele no projeto";
+}
+function renderPrioridades(todos){
+  sincronizarFiltrosPrio();
+  const ps = filtrarPrio(todos);
   $("#gruposPrio").innerHTML = D.grupos.map(g => { const gs = ps.filter(p => p.grupo === g);
     return `<button type="button" class="card kpi grupo-card" data-g="${esc(g)}" aria-pressed="${grupoPrio === g}">
       <div class="label">${grupoTag(g)}</div><div class="value">${gs.length}</div>
       <div class="foot">${esc(GRUPO_DESC[g])}<br>saldo somado ${h(sum(gs, p => p.saldo))}</div></button>`; }).join("");
   const lista = grupoPrio ? ps.filter(p => p.grupo === grupoPrio) : ps;
-  $("#prioCount").textContent = `${lista.length} projeto${lista.length === 1 ? "" : "s"}${grupoPrio ? ` em "${grupoPrio}" (clique de novo no cartão para ver todos)` : ""} · ordem padrão: coluna #`;
+  const recorte = [rotuloInicio(), st.consultor ? `${st.consultor}, ${PAPEIS.find(x => x[0] === papelPrio)[1]}` : ""].filter(Boolean);
+  $("#prioCount").textContent = `${lista.length} projeto${lista.length === 1 ? "" : "s"}${recorte.length ? " · " + recorte.join(" · ") : ""}${grupoPrio ? ` · em "${grupoPrio}" (clique de novo no cartão para ver todos)` : ""} · ordem padrão: coluna #`;
   tabelaOrdenavel("tblPrio", COLS_PRIO, lista, {padrao: {col: "prioridade", dir: 1}, cod: p => p.cod, desempate: porPrioridade, vazio: "Nenhum projeto com esses filtros."});
 }
 $("#gruposPrio").onclick = e => { const b = e.target.closest("[data-g]"); if(!b) return; grupoPrio = grupoPrio === b.dataset.g ? "" : b.dataset.g; renderPrioridades(filtrar()); };
+$("#iniPreset").onclick = e => { const b = e.target.closest("button"); if(!b) return; inicioPrio = {preset: b.dataset.v}; atualizar(); };
+["#iniDe", "#iniAte"].forEach(id => $(id).addEventListener("change", () => {
+  let de = $("#iniDe").value, ate = $("#iniAte").value;
+  if(de && ate && de > ate) [de, ate] = [ate, de];
+  inicioPrio = de || ate ? {preset: "custom", de, ate} : {preset: "todos"}; atualizar(); }));
+$("#prioPapel").onchange = e => { papelPrio = e.target.value; atualizar(); };
+$("#prioLimpar").onclick = () => { inicioPrio = {preset: "todos"}; papelPrio = ""; st.consultor = ""; grupoPrio = ""; atualizar(); };
 $("#btnCsvPrio").onclick = () => {
   const t = TABS_ORD.tblPrio; if(!t) return;
-  const cab = ["Prioridade","Grupo","Saúde","Código","Projeto","Sistema","Analista","Consultor responsável","Última agenda","Dias sem agenda","Última OS executada","Etapa da última OS","Consultor da última OS","Horas da última OS","Situação da última OS","Próxima agenda","OS da próxima agenda","Consultor da próxima agenda","Etapa da próxima agenda","Agendas vencidas","Saldo","% usado","Fase"];
-  const linhas = ordenarLinhas("tblPrio", t.cols, t.rows, t.opt.padrao, t.opt.desempate).linhas.map(p => [p.prioridade, p.grupo, p.saude, p.cod, p.nome, p.sistema, p.analista, p.responsavel, dt(p.ultima), p.dias_sem_agenda, p.ultima_os ?? "", p.ultima_os_etapa, p.ultima_os_consultor, ncsv(p.ultima_os_horas), p.ultima_os_situacao, dt(p.proxima), p.proxima_os ?? "", p.proxima_os_consultor, p.proxima_os_etapa, p.vencidas, ncsv(p.saldo), ncsv(Math.round(p.pct * 1000) / 10), p.fase_nome]);
+  const cab = ["Prioridade","Grupo","Saúde","Código","Projeto","Sistema","Analista","Consultor responsável","Início do projeto","Dias em aberto","Última agenda","Dias sem agenda","Última OS executada","Etapa da última OS","Consultor da última OS","Horas da última OS","Situação da última OS","Próxima agenda","OS da próxima agenda","Consultor da próxima agenda","Etapa da próxima agenda","Agendas vencidas","Saldo","% usado","Fase"];
+  const linhas = ordenarLinhas("tblPrio", t.cols, t.rows, t.opt.padrao, t.opt.desempate).linhas.map(p => [p.prioridade, p.grupo, p.saude, p.cod, p.nome, p.sistema, p.analista, p.responsavel, dt(p.abertura), p.dias_aberto, dt(p.ultima), p.dias_sem_agenda, p.ultima_os ?? "", p.ultima_os_etapa, p.ultima_os_consultor, ncsv(p.ultima_os_horas), p.ultima_os_situacao, dt(p.proxima), p.proxima_os ?? "", p.proxima_os_consultor, p.proxima_os_etapa, p.vencidas, ncsv(p.saldo), ncsv(Math.round(p.pct * 1000) / 10), p.fase_nome]);
   baixarCsv(`prioridades-projetos-hunter-${D.meta.ref}.csv`, cab, linhas);
 };
 
@@ -1464,7 +1549,8 @@ $("#btnTema").onclick = () => {
     `Encerrar: go live feito e sem agenda há mais de ${L.sem_agenda_critico} dias, sem nada marcado.`,
     `Atenção: ${L.sem_agenda_atencao} a ${L.sem_agenda_critico} dias sem agenda sem nada marcado, ${Math.round(L.consumo_atencao*100)}% das horas usadas sem go live, agenda vencida, OS sem fechar, ou aberto há mais tempo que 75% dos concluídos do mesmo sistema (myFarm: ${R.myFarm?nf0.format(R.myFarm.dias_p75):"–"} dias; AgriManager: ${R.AgriManager?nf0.format(R.AgriManager.dias_p75):"–"} dias).`,
     "Projeto: clicar num projeto abre a página dele numa nova aba (o mesmo arquivo com #p e o código no endereço), com ritmo comparado aos concluídos, gráficos, histórico e agendas.",
-    "Analista de projeto: coluna GERENTE do projeto. Consultor responsável: coluna RESPONSAVEL. Quem atendeu: consultores das OS.",
+    "Analista de projeto: coluna GERENTE do projeto. Consultor responsável: coluna RESPONSAVEL. Quem atendeu: consultores das OS. O filtro de consultor pega o projeto em que ele aparece em qualquer papel (responsável, atendeu, atendeu por último ou tem a próxima agenda); na aba Prioridades dá para escolher um papel só.",
+    "Início do projeto (filtro e coluna da aba Prioridades): data de abertura do projeto no CES (DT_INICIAL).",
     "Histórico: anotações dos reports de projetos das analistas (andamento, HandOff, analista de sucesso, horas, faturado e saldo financeiro), importadas por importar_reports.py e ligadas pelo código do projeto. Para hora e saldo vale o CES; o report traz a anotação e o financeiro (faturado menos realizado; negativo é hora entregue sem faturar).",
     "Agenda dos consultores e agendas realizadas: todas as OS que vieram na exportação do CES (hunter e farmer: treinamento, consultoria, DBA e outros), com o botão Só hunter. Horas da semana somam realizadas, sem fechar e marcadas; planejada que passou sem execução aparece riscada e não soma. Nessas abas valem os filtros de sistema, consultor e busca.",
   ].map(t => `<li>${esc(t)}</li>`).join("");

@@ -12,7 +12,8 @@ description: >-
   saldo de horas dos projetos, horas usadas, última agenda, próxima agenda, última OS, projetos
   parados, projetos por encerrar, quais projetos atacar primeiro, carteira de implantação,
   analista ou consultor de projeto, agenda dos consultores, agendas realizadas no período, horas
-  por consultor, projetos a atacar, dias sem agenda, report de projetos, anotações ou histórico do
+  por consultor, projetos a atacar, dias sem agenda, data de início do projeto, filtro por consultor
+  ou por papel do consultor, report de projetos, anotações ou histórico do
   projeto, HandOff, saldo financeiro, hora entregue sem faturar, mesmo sem dizer "skill". Não confundir com /painel (pendências
   do sistema).
 ---
@@ -39,7 +40,7 @@ acima da conclusão, e a conclusão é atualizada.
 | `modelo.py` | regras e cálculos: filtro hunter, horas, agendas, fase, saúde, prioridade. Os limites de saúde ficam no topo |
 | `gerar_painel.py` | monta os dados, embute no modelo da página e grava `painel-projetos-hunter.html` |
 | `painel_template.html` | a página (CSS e JavaScript), com os marcadores `/*__PLOTLY__*/` e `/*__DADOS__*/` |
-| `atualizar-painel.bat` | dois cliques: acha o Python, instala o que faltar, roda `gerar_painel.py` e abre o painel |
+| `atualizar-painel.bat` | dois cliques: acha o Python (lançador `py`, `python` do PATH ou a instalação do usuário), instala pandas, openpyxl e plotly se faltar, roda `gerar_painel.py` (repassa os argumentos: `atualizar-painel.bat --sem-abrir` só gera) e abre o painel; se der erro, avisa em português e o painel anterior fica intacto. Vai pro GitHub desde 02/10/2026 (`!*.bat` no `.gitignore`; antes ele não viajava entre as máquinas) |
 | `analise-projetos-hunter.ipynb` | a análise pergunta a pergunta, com as conclusões |
 | `painel-projetos-hunter.html` | o painel gerado (não editar à mão) |
 
@@ -49,7 +50,7 @@ acima da conclusão, e a conclusão é atualizada.
 |---|---|
 | Visão geral | números da carteira, onde está cada projeto (dias sem agenda × horas usadas), saúde, fase, evolução desde 2025 |
 | Projetos a atacar | o resumo de bater o olho: só os em andamento sem nada marcado, com os dias sem agenda em destaque, em duas listas (retomar a implantação e encerrar ou usar o saldo) e as faixas até 30, 31 a 90 e mais de 90 dias |
-| Prioridades | a fila de ataque: última agenda, última OS executada, próxima agenda e saldo de cada projeto |
+| Prioridades | a fila de ataque: início do projeto, última agenda, última OS executada, próxima agenda e saldo de cada projeto; filtros próprios de início do projeto (Todos, Últimos 90 dias, os dois anos mais recentes, "Antes de" e datas De/Até) e de consultor com o papel dele no projeto; cartões, tabela e CSV seguem os filtros |
 | Projetos | a tabela completa dos hunter em aberto |
 | Agenda dos projetos | próximas agendas, planejadas que venceram e OS sem fechar dos projetos hunter |
 | Agenda dos consultores | grade semanal consultor × dia com todas as OS (hunter e farmer), navegação por semana; só entra quem tem agenda na semana; o mouse num bloco mostra horário de início e fim, OS, etapa e horas, e os blocos do dia seguem a ordem do horário |
@@ -111,6 +112,14 @@ projetos em encerramento no report e a hora entregue sem faturar. Atalhos de end
   separa quem conclui; ficar parado sim (críticos e por encerrar estavam parados há 139 a 223 dias).
 - **Fase** = a mais avançada entre as agendas que aconteceram; as etapas das duas metodologias são
   traduzidas para sete fases em `fase_da_etapa` (`modelo.py`).
+- **Filtros da aba Prioridades** (pedido do Julio em 02/10/2026): **início do projeto** = data de
+  abertura no CES (`DT_INICIAL`, a mesma "abertura" da página do projeto), com botões e datas De/Até
+  (dá para usar só uma das pontas). **Consultor** é o mesmo filtro do topo (escolher num muda o
+  outro), e a aba acrescenta o **papel**: em qualquer papel, responsável no cadastro, atendeu o
+  projeto, atendeu por último (consultor da última OS executada) ou tem a próxima agenda. O filtro de
+  consultor do topo vale em qualquer papel, e passou a incluir quem tem a próxima agenda. "Limpar
+  filtros da aba" zera início, papel, consultor e o cartão escolhido; "Limpar filtros" do topo também
+  zera os da aba. Em 02/10/2026: 49 abertos em 2026, 28 em 2025 e 6 antes (todos suspensos).
 
 ## Passo 1. Receber a exportação
 
@@ -122,8 +131,10 @@ STATUS_ATUALIZACAO. Cada aba tem duas linhas de título antes do cabeçalho e co
 ## Passo 2. Atualizar o painel (sem IA)
 
 Dois cliques em `atualizar-painel.bat`, ou `python gerar_painel.py` na pasta. Se o Python sumir da
-máquina (já aconteceu), reinstalar com `winget install Python.Python.3.12 --scope user`; o .bat
-instala pandas, openpyxl e plotly sozinho.
+máquina (já aconteceu), reinstalar com `winget install Python.Python.3.12 --scope user` (o .bat
+mostra esse comando quando não acha o Python); o .bat instala pandas, openpyxl e plotly sozinho.
+Mexeu no `.bat`: manter as linhas com quebra CRLF e testar com dois cliques (ou `cmd /c` com o
+caminho inteiro) antes de entregar.
 
 ## Reports das analistas (quando houver `Report Projetos *.xlsx` na pasta)
 
@@ -182,4 +193,8 @@ vale pela anotação e pelo financeiro.
   (54 de 83 projetos no nome de quem não está mais no time de projetos): ler "analista" como o que
   está no cadastro, não como quem cuida de fato.
 - Para testar o painel em navegador sem tela, o Edge não desce de uns 500px de largura; testar o
-  celular dentro de um iframe de 390px.
+  celular dentro de um iframe de 390px. Para testar filtro e clique, copiar o painel com um
+  `<script>` no fim que clica nos botões e escreve o resultado num `<pre>`, abrir com o Chrome
+  `--headless=new --dump-dom` e conferir os números contra os dados embutidos (`const D = ...`).
+- O `.gitignore` do sistema bloqueava `.bat` até 02/10/2026: o `atualizar-painel.bat` existia só na
+  máquina onde foi criado, e na `pc-aliare` o Python estava sem plotly (o .bat recriado instalou).
