@@ -99,12 +99,81 @@ label.data input{max-width:160px}
   .card{padding:14px}
 }
 
-/* abas */
-.tabs{display:flex;gap:4px;margin:18px 0 18px;border-bottom:1px solid var(--border);overflow-x:auto;overflow-y:hidden;scrollbar-width:none}
-.tabs::-webkit-scrollbar{display:none}
-.tab{border:0;background:none;padding:10px 14px;cursor:pointer;color:var(--ink-2);border-bottom:2px solid transparent;margin-bottom:-1px;white-space:nowrap;font-weight:500}
-.tab[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--ink);font-weight:650}
-.tab .n{color:var(--muted);font-weight:500;margin-left:4px}
+/* menu lateral (as seções do painel) */
+.app{display:grid;grid-template-columns:244px minmax(0,1fr);min-height:100vh}
+.app.rail{grid-template-columns:68px minmax(0,1fr)}
+.side{position:sticky;top:0;height:100vh;overflow-y:auto;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:18px 12px 14px;z-index:30}
+.side-brand{display:flex;align-items:center;gap:10px;padding:2px 6px 16px;min-height:44px}
+.side-brand .marca{width:32px;height:32px;border-radius:9px;background:var(--ink);color:var(--page);display:grid;place-items:center;flex:none}
+.side-brand .marca svg{width:18px;height:18px}
+.side-brand .nome{font-weight:650;font-size:14px;line-height:1.2}
+.side-brand .nome small{display:block;color:var(--muted);font-weight:500;font-size:12px}
+.nav-grupo{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:650;padding:14px 10px 6px}
+.nav-item{display:flex;align-items:center;gap:10px;width:100%;border:0;background:none;padding:9px 10px;border-radius:10px;cursor:pointer;color:var(--ink-2);text-align:left;font-weight:500;position:relative}
+.nav-item svg{width:18px;height:18px;flex:none;color:var(--muted)}
+.nav-item .rot{flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nav-item .n{color:var(--muted);font-weight:500;font-size:12px;font-variant-numeric:tabular-nums}
+.nav-item:hover{background:var(--surface-2);color:var(--ink)}
+.nav-item[aria-current="page"]{background:var(--surface-2);color:var(--ink);font-weight:650}
+.nav-item[aria-current="page"] svg{color:var(--ink)}
+.nav-item[aria-current="page"]::before{content:"";position:absolute;left:-12px;top:8px;bottom:8px;width:3px;border-radius:0 3px 3px 0;background:var(--ink)}
+.nav-item:focus-visible,.side-recolher:focus-visible,.menu-btn:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.side-pe{margin-top:auto;padding:14px 6px 0;border-top:1px solid var(--border);display:flex;flex-direction:column;gap:8px}
+.side-pe .pos{color:var(--muted);font-size:12px;line-height:1.4}
+.side-recolher{border:0;background:none;color:var(--ink-2);cursor:pointer;display:flex;align-items:center;gap:8px;padding:6px 4px;border-radius:8px;font-size:12.5px}
+.side-recolher:hover{color:var(--ink);background:var(--surface-2)}
+.side-recolher svg{width:16px;height:16px;flex:none;transition:transform .15s}
+.app.rail .side{padding-left:10px;padding-right:10px}
+.app.rail .side-brand .nome,.app.rail .nav-item .rot,.app.rail .nav-item .n,.app.rail .nav-grupo,.app.rail .side-pe .pos,.app.rail .side-recolher .rot{display:none}
+.app.rail .side-brand{justify-content:center;padding-left:0;padding-right:0}
+.app.rail .nav-item{justify-content:center;padding:10px 0}
+.app.rail .nav-grupo{display:block;height:1px;padding:0;margin:10px 6px;background:var(--border);font-size:0}
+.app.rail .side-recolher{justify-content:center}
+.app.rail .side-recolher svg{transform:rotate(180deg)}
+.conteudo{min-width:0}
+.mbar{display:none}
+.side-fundo{display:none}
+@media (max-width:1023px){
+  .app,.app.rail{grid-template-columns:minmax(0,1fr)}
+  .side{position:fixed;left:0;top:0;bottom:0;width:272px;max-width:86vw;transform:translateX(-100%);transition:transform .2s ease;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .app.menu-aberto .side{transform:none}
+  .app.rail .side-brand .nome,.app.rail .nav-item .rot,.app.rail .nav-item .n,.app.rail .side-pe .pos{display:block}
+  .app.rail .nav-item{justify-content:flex-start;padding:9px 10px}
+  .app.rail .nav-grupo{height:auto;margin:0;background:none;font-size:11px;padding:14px 10px 6px}
+  .side-recolher{display:none!important}
+  .side-fundo{position:fixed;inset:0;background:var(--overlay);z-index:25}
+  .app.menu-aberto .side-fundo{display:block}
+  .mbar{display:flex;align-items:center;gap:10px;position:sticky;top:0;z-index:22;height:52px;padding:0 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+  .mbar .titulo{font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .menu-btn{border:1px solid var(--border);background:var(--surface);border-radius:10px;padding:7px 10px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;color:var(--ink)}
+  .menu-btn svg{width:18px;height:18px}
+  .filters{top:52px}
+}
+
+/* página inicial (visão sintética) */
+.ini-topo{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between;margin:2px 0 4px}
+.ini-topo .hint{max-width:640px}
+.ini-kpis{display:grid;gap:14px;grid-template-columns:minmax(260px,1.35fr) repeat(auto-fit,minmax(170px,1fr))}
+.ini-kpis4{display:grid;gap:14px;grid-template-columns:repeat(4,minmax(0,1fr))}
+.ini-kpis6{display:grid;gap:14px;grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:1100px){.ini-kpis4{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:720px){.ini-kpis{grid-template-columns:1fr 1fr}.ini-kpis .hero{grid-column:1 / -1}.ini-kpis6{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:420px){.ini-kpis,.ini-kpis4,.ini-kpis6{grid-template-columns:minmax(0,1fr)}}
+.kpi .value small{font-size:15px;font-weight:600;color:var(--ink-2);margin-left:4px;letter-spacing:0}
+.hero .value small{font-size:20px}
+.delta{display:inline-flex;align-items:center;gap:5px;color:var(--ink-2);font-size:12.5px;margin-top:8px}
+.delta .seta{font-size:11px;line-height:1;color:var(--c,var(--muted));font-family:"Segoe UI Symbol",system-ui,sans-serif;font-variant-emoji:text}
+.delta.ruim{--c:var(--critical)} .delta.bom{--c:var(--good)} .delta.neutro{--c:var(--muted)}
+.leitura{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:12px;margin-top:12px}
+.leitura li{color:var(--ink-2);line-height:1.5;padding-left:14px;border-left:3px solid var(--surface-3)}
+.leitura li b{color:var(--ink)}
+.atalhos{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(min(100%,180px),1fr));margin-top:10px}
+.atalho{display:flex;gap:12px;align-items:flex-start;text-align:left;border:1px solid var(--border);background:var(--surface);border-radius:12px;padding:12px 14px;cursor:pointer;color:inherit;font:inherit}
+.atalho:hover{background:var(--surface-2)}
+.atalho:focus-visible{outline:2px solid var(--focus);outline-offset:2px}
+.atalho svg{width:18px;height:18px;color:var(--ink-2);flex:none;margin-top:2px}
+.atalho b{display:block;font-weight:650;color:var(--ink)}
+.atalho span{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
 
 /* cartões */
 .grid{display:grid;gap:14px}
@@ -284,11 +353,42 @@ a.hist-btn{text-decoration:none;display:inline-flex;align-items:center}
 </head>
 <body>
 <div id="paginaProjeto" class="hide"></div>
+<div class="app" id="app">
+<aside class="side" id="side" aria-label="Seções do painel">
+  <div class="side-brand">
+    <span class="marca" aria-hidden="true"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16V9M8 16V4M13 16v-5M18 16V7"/></svg></span>
+    <span class="nome">Projetos hunter<small>Implantação myFarm e AgriManager</small></span>
+  </div>
+  <nav id="sideNav">
+    <button type="button" class="nav-item" data-tab="inicio" title="Início"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 9.5 10 3.5l7 6V16a1 1 0 0 1-1 1h-4v-4.5H8V17H4a1 1 0 0 1-1-1z"/></svg><span class="rot">Início</span></button>
+    <div class="nav-grupo">Carteira</div>
+    <button type="button" class="nav-item" data-tab="geral" title="Visão geral"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7"/><path d="M10 3v7l5 4"/></svg><span class="rot">Visão geral</span></button>
+    <button type="button" class="nav-item" data-tab="atacar" title="Projetos a atacar"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10" cy="10" r="7"/><circle cx="10" cy="10" r="3.5"/><circle cx="10" cy="10" r=".6" fill="currentColor"/></svg><span class="rot">Projetos a atacar</span></button>
+    <button type="button" class="nav-item" data-tab="prioridades" title="Prioridades"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5h9M8 10h9M8 15h9M3.5 4v3M2.8 15h1.8l-1.8 2h1.8M2.8 10.2c.3-.6 1.9-.6 1.9.3 0 .8-1.9 1.3-1.9 2h1.9"/></svg><span class="rot">Prioridades</span></button>
+    <button type="button" class="nav-item" data-tab="projetos" title="Projetos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3.5" width="14" height="13" rx="2"/><path d="M3 8h14M3 12.3h14M8 8v8.5"/></svg><span class="rot">Projetos</span><span class="n" id="nProj"></span></button>
+    <div class="nav-grupo">Agenda</div>
+    <button type="button" class="nav-item" data-tab="agenda" title="Agenda dos projetos"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="14" height="12.5" rx="2"/><path d="M3 8.5h14M7 2.8v3.4M13 2.8v3.4M7 12h2"/></svg><span class="rot">Agenda dos projetos</span></button>
+    <button type="button" class="nav-item" data-tab="consultores" title="Agenda dos consultores"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2.5" y="4" width="15" height="12.5" rx="2"/><path d="M2.5 8h15M7.5 8v8.5M12.5 8v8.5"/></svg><span class="rot">Agenda dos consultores</span></button>
+    <button type="button" class="nav-item" data-tab="realizadas" title="Agendas realizadas"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4.5" width="14" height="12.5" rx="2"/><path d="M3 8.5h14M7 2.8v3.4M13 2.8v3.4M7.2 12.6l1.9 1.8 3.7-3.8"/></svg><span class="rot">Agendas realizadas</span></button>
+    <div class="nav-grupo">Time</div>
+    <button type="button" class="nav-item" data-tab="pessoas" title="Pessoas"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="7.5" cy="7" r="2.8"/><path d="M2.5 16.5c.4-2.8 2.5-4.3 5-4.3s4.6 1.5 5 4.3"/><circle cx="13.8" cy="6.2" r="2.2"/><path d="M14 11.2c1.9.1 3.3 1.4 3.6 3.6"/></svg><span class="rot">Pessoas</span></button>
+  </nav>
+  <div class="side-pe">
+    <div class="pos" id="sidePos"></div>
+    <button type="button" class="side-recolher" id="btnRecolher" title="Recolher o menu"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5"/></svg><span class="rot">Recolher menu</span></button>
+  </div>
+</aside>
+<div class="side-fundo" id="sideFundo"></div>
+<div class="conteudo">
+<div class="mbar">
+  <button type="button" class="menu-btn" id="btnMenu" aria-controls="side" aria-expanded="false"><svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M3 5.5h14M3 10h14M3 14.5h14"/></svg>Menu</button>
+  <span class="titulo" id="mbarTitulo"></span>
+</div>
 <header class="top wrap">
   <div class="top-row">
     <div>
       <div class="eyebrow">Implantação · projetos hunter · myFarm e AgriManager</div>
-      <h1>Acompanhamento dos projetos de implantação</h1>
+      <h1 id="tituloSecao">Acompanhamento dos projetos de implantação</h1>
       <div class="sub" id="sub"></div>
     </div>
     <div class="top-actions">
@@ -310,20 +410,55 @@ a.hist-btn{text-decoration:none;display:inline-flex;align-items:center}
   </div>
 </div>
 
-<main class="wrap">
-  <nav class="tabs" role="tablist" aria-label="Seções">
-    <button class="tab" role="tab" data-tab="geral">Visão geral</button>
-    <button class="tab" role="tab" data-tab="atacar">Projetos a atacar</button>
-    <button class="tab" role="tab" data-tab="prioridades">Prioridades</button>
-    <button class="tab" role="tab" data-tab="projetos">Projetos <span class="n" id="nProj"></span></button>
-    <button class="tab" role="tab" data-tab="agenda">Agenda dos projetos</button>
-    <button class="tab" role="tab" data-tab="consultores">Agenda dos consultores</button>
-    <button class="tab" role="tab" data-tab="realizadas">Agendas realizadas</button>
-    <button class="tab" role="tab" data-tab="pessoas">Pessoas</button>
-  </nav>
+<main class="wrap" style="padding-top:18px">
+  <!-- INÍCIO: visão sintética -->
+  <section id="tab-inicio" class="hide">
+    <div class="ini-topo">
+      <div class="seg" id="iniPeriodo" role="group" aria-label="Período dos indicadores de resultado">
+        <button type="button" data-v="12m">Últimos 12 meses</button><button type="button" data-v="ano">Este ano</button>
+        <button type="button" data-v="anopassado">Ano passado</button><button type="button" data-v="2024">Desde 2024</button>
+      </div>
+      <div class="hint" id="iniPeriodoRot"></div>
+    </div>
+
+    <div class="section-title">Prazo da implantação</div>
+    <div class="ini-kpis" id="iniPrazo"></div>
+    <div class="grid g-main" style="margin-top:14px">
+      <div class="card">
+        <div class="card-head"><div><h3>TMI mês a mês</h3><div class="hint">Cada ponto é o TMI dos projetos entregues ao suporte nos 12 meses até aquele mês; com menos de 3 entregues, o mês fica sem ponto.</div></div><button class="linkbtn" data-tbl="tbTmi">Ver tabela</button></div>
+        <div class="chart short" id="chTmi"></div><div class="tbl-view" id="tbTmi"></div>
+      </div>
+      <div class="card">
+        <h3>Leitura rápida</h3>
+        <div class="hint">Calculada sobre o período escolhido e o recorte dos filtros.</div>
+        <ul class="leitura" id="iniLeitura"></ul>
+      </div>
+    </div>
+
+    <div class="section-title">Estoque de horas <span style="text-transform:none;letter-spacing:0;font-weight:500">(hoje, projetos em aberto)</span></div>
+    <div class="ini-kpis6" id="iniEstoque"></div>
+    <div class="card" style="margin-top:14px">
+      <div class="card-head"><div><h3>Onde está o estoque de horas</h3><div class="hint" id="hintEstoque">Saldo dos projetos em aberto, separado pela situação do projeto. Clique numa parte para ver os projetos.</div><div class="legend-inline" id="legEstoque" style="margin-top:8px"></div></div><button class="linkbtn" data-tbl="tbEstoque">Ver tabela</button></div>
+      <div class="chart" id="chEstoque" style="height:120px"></div><div class="tbl-view" id="tbEstoque"></div>
+    </div>
+
+    <div class="section-title">Vazão da carteira</div>
+    <div class="ini-kpis6" id="iniVazao"></div>
+
+    <div class="section-title">Horas realizadas e consumo</div>
+    <div class="ini-kpis4" id="iniHoras"></div>
+
+    <div class="section-title">Carteira hoje</div>
+    <div class="ini-kpis6" id="iniCarteira"></div>
+    <div class="card" style="margin-top:14px">
+      <h3>Por onde atacar</h3>
+      <div class="hint">A ordem de ataque da aba Prioridades. Clique para abrir a lista daquele grupo.</div>
+      <div class="atalhos" id="iniAtaque"></div>
+    </div>
+  </section>
 
   <!-- VISÃO GERAL -->
-  <section id="tab-geral" role="tabpanel">
+  <section id="tab-geral" role="tabpanel" class="hide">
     <div class="grid g-kpi" id="kpis"></div>
 
     <div class="grid g-main" style="margin-top:14px">
@@ -540,6 +675,8 @@ a.hist-btn{text-decoration:none;display:inline-flex;align-items:center}
     </details>
   </footer>
 </main>
+</div>
+</div>
 
 <div class="modal" id="modalHist" role="dialog" aria-modal="true" aria-labelledby="hTitulo">
   <div class="sheet sheet-hist" id="sheetHist"></div>
@@ -602,8 +739,8 @@ const AG_BY = {}; D.agendas.forEach(a => (AG_BY[a.cod] ||= []).push(a));
 const PAC_BY = {}; D.pacotes.forEach(a => (PAC_BY[a.cod] ||= []).push(a));
 
 /* ---------- estado e filtros ---------- */
-const ESTADO_PADRAO = {sistema:"Todos", status:"Abertos", saude:"", analista:"", consultor:"", fase:"", busca:"", tab:"geral", escopo:"todos", sort:{col:"saude", dir:1}};
-const st = Object.assign({}, ESTADO_PADRAO, {tab: store.get("tab","geral"), sort: store.get("sort", ESTADO_PADRAO.sort)});
+const ESTADO_PADRAO = {sistema:"Todos", status:"Abertos", saude:"", analista:"", consultor:"", fase:"", busca:"", tab:"inicio", escopo:"todos", sort:{col:"saude", dir:1}};
+const st = Object.assign({}, ESTADO_PADRAO, {sort: store.get("sort", ESTADO_PADRAO.sort)});
 // papel do consultor no projeto: sem papel escolhido, vale qualquer um deles
 const PAPEIS = [["", "em qualquer papel"], ["resp", "responsável no cadastro"], ["atendeu", "atendeu o projeto"], ["ultima", "atendeu por último"], ["proxima", "tem a próxima agenda"]];
 const PAPEL_TESTE = {
@@ -1306,7 +1443,7 @@ function modoProjeto(cod){
   const p = BY_COD[cod]; if(!p) return false;
   abertoCod = cod;
   document.title = `${p.nome} · projeto #${p.cod}`;
-  ["header.top", ".filters", "main"].forEach(sel => document.querySelectorAll(sel).forEach(el => el.classList.add("hide")));
+  $("#app").classList.add("hide");
   $("#paginaProjeto").classList.remove("hide");
   renderProjeto(p);
   return true;
@@ -1499,18 +1636,230 @@ function graficosProjeto(p, ags){
 }
 document.addEventListener("keydown", e => { if(e.key === "Escape" && histAberto) fecharHistorico(); });
 
+/* ---------- início: visão sintética ---------- */
+// Prazo, vazão e horas realizadas vêm de todos os projetos hunter (D.inicio, inclusive encerrados e cancelados)
+// e seguem só o filtro de sistema; estoque de horas e carteira hoje são os projetos em aberto e seguem todos os filtros.
+const INI = D.inicio || {projetos: [], horas_dia: []};
+const SECOES = {inicio:"Visão sintética", geral:"Visão geral", atacar:"Projetos a atacar", prioridades:"Prioridades", projetos:"Projetos",
+                agenda:"Agenda dos projetos", consultores:"Agenda dos consultores", realizadas:"Agendas realizadas", pessoas:"Pessoas"};
+const pad2 = n => String(n).padStart(2, "0");
+const ymd = d => `${d.getFullYear()}-${pad2(d.getMonth() + 1)}-${pad2(d.getDate())}`;
+const maisDias = (s, n) => { const d = toD(s); d.setDate(d.getDate() + n); return ymd(d); };
+const media = a => a.length ? a.reduce((t, x) => t + x, 0) / a.length : null;
+const sisOk = s => SISTEMAS.includes(s) && (st.sistema === "Todos" || s === st.sistema);
+const dentro = (s, P) => !!s && s > P.ini && s <= P.fim;
+const dias = v => v == null ? "–" : `${nf0.format(v)}<small>dias</small>`;
+const horasG = v => v == null ? "–" : `${nf0.format(v)}<small>h</small>`;
+let periodoIni = store.get("periodoIni", "12m");
+
+function periodoInicio(){
+  const ref = D.meta.ref, ano = +ref.slice(0, 4), fimAno = y => `${y}-12-31`;
+  const P = {
+    "12m": {ini: maisDias(ref, -365), fim: ref, ant: {ini: maisDias(ref, -730), fim: maisDias(ref, -365), rot: "12 meses anteriores"}},
+    "ano": {ini: fimAno(ano - 1), fim: ref, ant: {ini: fimAno(ano - 2), fim: `${ano - 1}${ref.slice(4)}`, rot: `mesmo período de ${ano - 1}`}},
+    "anopassado": {ini: fimAno(ano - 2), fim: fimAno(ano - 1), ant: {ini: fimAno(ano - 3), fim: fimAno(ano - 2), rot: String(ano - 2)}},
+    "2024": {ini: "2023-12-31", fim: ref, ant: null},
+  }[periodoIni] || null;
+  if(!P){ periodoIni = "12m"; return periodoInicio(); }
+  P.rot = `${dt(maisDias(P.ini, 1))} a ${dt(P.fim)}`;
+  return P;
+}
+
+function indicadoresPeriodo(P){
+  const hp = INI.projetos.filter(p => sisOk(p.s));
+  const enc = hp.filter(p => p.st === "concluido" && dentro(p.en, P)).map(p => Object.assign({d: difDias(p.ab, p.en)}, p));
+  const abertos = hp.filter(p => dentro(p.ab, P));
+  const ent = abertos.filter(p => p.st !== "cancelado"), canc = abertos.filter(p => p.st === "cancelado");
+  const tpa = ent.filter(p => p.pri).map(p => difDias(p.ab, p.pri));
+  const tgl = hp.filter(p => p.st !== "cancelado" && dentro(p.gl, P)).map(p => difDias(p.ab, p.gl));
+  const horas = sum(INI.horas_dia.filter(x => sisOk(x[1]) && dentro(x[0], P)), x => x[2]);
+  const meses = difDias(P.ini, P.fim) / 30.4375;
+  const adq = sum(enc, p => p.adq), uso = sum(enc, p => p.uso);
+  const porSis = f => Object.fromEntries(SISTEMAS.filter(sisOk).map(s => [s, f(enc.filter(p => p.s === s))]));
+  return {enc, ent, canc, abertos, meses,
+    tmi: media(enc.map(p => p.d)), tmiMed: median(enc.map(p => p.d)), tmiSis: porSis(l => ({v: media(l.map(p => p.d)), n: l.length})),
+    tpa: median(tpa), tpaMedia: media(tpa), nTpa: tpa.length, semAgenda: ent.length - tpa.length,
+    tgl: median(tgl), nTgl: tgl.length,
+    horas, horasMes: meses ? horas / meses : null,
+    consumo: adq ? uso / adq : null, sobra: sum(enc, p => Math.max((p.adq || 0) - (p.uso || 0), 0)),
+    usoMedio: enc.length ? uso / enc.length : null, usoSis: porSis(l => l.length ? sum(l, p => p.uso) / l.length : null),
+    vazao: ent.length ? enc.length / ent.length : null, ritmo: meses ? enc.length / meses : null,
+    maisDeAno: enc.filter(p => p.d > 365).length};
+}
+
+function delta(atual, anterior, rot, {unid = "", bomSeSobe = false, fmt = nf0.format} = {}){
+  if(atual == null || anterior == null || !rot) return "";
+  const d = atual - anterior, igual = Math.abs(d) < 1e-9;
+  const cls = igual ? "neutro" : (d > 0) === bomSeSobe ? "bom" : "ruim";
+  return `<div class="delta ${cls}"><span class="seta" aria-hidden="true">${igual ? "●︎" : d > 0 ? "▲︎" : "▼︎"}</span>${esc(rot)}: ${fmt(anterior)}${unid}</div>`;
+}
+const tile = (rot, valor, pe, extra = "") => `<div class="card kpi"><div class="label">${rot}</div><div class="value">${valor}</div>${pe ? `<div class="foot">${pe}</div>` : ""}${extra}</div>`;
+
+function partesEstoque(ps){
+  const and = p => p.status !== "Suspenso", parado = p => and(p) && !p.proxima && p.dias_sem_agenda > 30;
+  return [
+    {t:"Com agenda marcada", s:"Em dia", aba:"agenda", f:p => and(p) && !!p.proxima},
+    {t:"Sem nada marcado, até 30 dias sem agenda", s:"Atenção", aba:"atacar", f:p => and(p) && !p.proxima && p.dias_sem_agenda <= 30},
+    {t:"Parado antes do go live", s:"Crítico", aba:"atacar", f:p => parado(p) && p.fase < 5},
+    {t:"Parado depois do go live", s:"Encerrar", aba:"atacar", f:p => parado(p) && p.fase >= 5},
+    {t:"Suspensos", s:"Suspenso", aba:"suspensos", f:p => !and(p)},
+  ].map(g => { const l = ps.filter(g.f); return Object.assign(g, {n: l.length, horas: sum(l, p => Math.max(p.saldo, 0))}); });
+}
+
+function renderInicio(ps){
+  const P = periodoInicio(), I = indicadoresPeriodo(P), A = P.ant ? indicadoresPeriodo(P.ant) : null;
+  document.querySelectorAll("#iniPeriodo button").forEach(b => b.setAttribute("aria-pressed", b.dataset.v === periodoIni));
+  $("#iniPeriodoRot").innerHTML = `Período de <b>${P.rot}</b>${P.ant ? `, comparado com ${esc(P.ant.rot)}` : ""}. Prazo, vazão e horas realizadas seguem só o filtro de sistema; estoque de horas e carteira hoje seguem todos os filtros.`;
+  const R = D.referencia, rotAnt = P.ant ? P.ant.rot : "";
+  const and = ps.filter(p => p.status !== "Suspenso"), susp = ps.filter(p => p.status === "Suspenso");
+  const acima = and.filter(p => R[p.sistema] && p.dias_aberto > R[p.sistema].dias_p75);
+
+  // prazo
+  const sisVis = SISTEMAS.filter(sisOk);
+  $("#iniPrazo").innerHTML = `
+    <div class="card kpi hero">
+      <div class="label">TMI · tempo médio de implantação</div>
+      <div class="value">${dias(I.tmi)}</div>
+      <div class="split">${sisVis.length > 1 ? sisVis.map(s => `<span>${sysTag(s)} <b class="num">${I.tmiSis[s].v == null ? "–" : nf0.format(I.tmiSis[s].v)}</b> <span class="muted">(${I.tmiSis[s].n})</span></span>`).join("") : ""}</div>
+      <div class="foot">Da abertura à entrega pro suporte, média dos ${I.enc.length} projetos entregues no período · mediana de ${I.tmiMed == null ? "–" : nf0.format(I.tmiMed)} dias</div>
+      ${delta(I.tmi, A && A.tmi, rotAnt, {unid: " dias"})}
+    </div>
+    ${tile("Até a primeira agenda", dias(I.tpa), `mediana dos ${I.nTpa} abertos no período que já tiveram agenda${I.semAgenda ? ` · ${I.semAgenda} ainda sem agenda` : ""}`, delta(I.tpa, A && A.tpa, rotAnt, {unid: " dias"}))}
+    ${tile("Até o go live", dias(I.tgl), `mediana da abertura à primeira agenda de go live, dos ${I.nTgl} projetos com go live no período`, delta(I.tgl, A && A.tgl, rotAnt, {unid: " dias"}))}
+    ${tile("Acima do prazo normal", `${acima.length}<small>de ${and.length}</small>`, `em andamento abertos há mais tempo que 75% dos entregues do mesmo sistema (${sisVis.map(s => `${s} ${R[s] ? nf0.format(R[s].dias_p75) : "–"} dias`).join(", ")}) · hoje`)}`;
+
+  // estoque de horas (hoje)
+  const partes = partesEstoque(ps), parado = partes[2].horas + partes[3].horas, nParado = partes[2].n + partes[3].n;
+  const estoque = sum(ps, p => p.saldo), estouro = ps.filter(p => p.saldo < 0);
+  const prox30 = D.agendas.filter(a => a.situacao === "Próxima" && BY_COD[a.cod] && ps.includes(BY_COD[a.cod]) && diasAte(a.dia) <= 30);
+  const venc = D.agendas.filter(a => a.situacao === "Vencida" && BY_COD[a.cod] && ps.includes(BY_COD[a.cod]));
+  const marcadas = sum(ps, p => p.agendadas);
+  $("#iniEstoque").innerHTML =
+    tile("Estoque de horas total", horasG(estoque), `saldo de ${ps.length} projetos: ${nf0.format(sum(ps, p => p.adquiridas))}h adquiridas menos ${nf0.format(sum(ps, p => p.utilizadas))}h usadas`) +
+    tile("Estoque parado", horasG(parado), `${nParado} projetos em andamento há mais de 30 dias sem agenda e nada marcado · ${estoque > 0 ? pct(parado / estoque) : "–"} do estoque · ${nf0.format(partes[3].horas)}h depois do go live`) +
+    tile("Horas planejadas", horasG(marcadas), `marcadas nas próximas agendas de ${ps.filter(p => p.agendadas > 0).length} projetos · ${nf0.format(sum(prox30, a => a.horas))}h nos próximos 30 dias${venc.length ? ` · ${nf0.format(sum(venc, a => a.horas))}h planejadas que venceram` : ""}`) +
+    tile("Estoque dos suspensos", horasG(partes[4].horas), `${susp.length} projetos suspensos`) +
+    tile("Horas sem fechar", horasG(sum(ps, p => p.sem_fechar)), `agenda confirmada que aconteceu e ainda não conta como usada · ${ps.filter(p => p.sem_fechar > 0).length} projetos`) +
+    tile("Estoque livre", horasG(sum(ps, p => Math.max(p.saldo_livre, 0))), "saldo sem nenhuma agenda marcada nem sem fechar");
+  renderEstoque(partes, estouro);
+
+  // vazão
+  const andSis = PROJ.filter(p => sisOk(p.sistema) && p.status !== "Suspenso").length;
+  const mesesCarteira = I.ritmo ? andSis / I.ritmo : null;
+  const cresc = I.ent.length - I.enc.length;
+  const porSisEnt = sisVis.length > 1 ? sisVis.map(s => `${s} ${I.ent.filter(p => p.s === s).length}`).join(" · ") : "";
+  $("#iniVazao").innerHTML =
+    tile("Entradas", `${I.ent.length}<small>projetos</small>`, `abertos no período, sem os cancelados${porSisEnt ? " · " + porSisEnt : ""}`, delta(I.ent.length, A && A.ent.length, rotAnt, {bomSeSobe: true})) +
+    tile("Entregues ao suporte", `${I.enc.length}<small>projetos</small>`, `encerramentos formais no período · ${I.ritmo == null ? "–" : nf1.format(I.ritmo)} por mês`, delta(I.enc.length, A && A.enc.length, rotAnt, {bomSeSobe: true})) +
+    tile("Vazão", I.vazao == null ? "–" : pct(I.vazao), "entregues ÷ entradas; acima de 100% a carteira diminui", delta(I.vazao, A && A.vazao, rotAnt, {bomSeSobe: true, fmt: pct})) +
+    tile("Saldo da carteira no período", `${cresc > 0 ? "+" : ""}${cresc}<small>projetos</small>`, cresc > 0 ? "entraram mais projetos do que saíram" : cresc < 0 ? "saíram mais projetos do que entraram" : "entradas e saídas empataram") +
+    tile("Cancelados", `${I.canc.length}<small>de ${I.abertos.length}</small>`, `dos abertos no período já foram cancelados (${I.abertos.length ? pct(I.canc.length / I.abertos.length) : "–"})`, delta(I.abertos.length ? I.canc.length / I.abertos.length : null, A && A.abertos.length ? A.canc.length / A.abertos.length : null, rotAnt, {fmt: pct})) +
+    tile("Meses para entregar a carteira", mesesCarteira == null ? "–" : `${nf0.format(mesesCarteira)}<small>meses</small>`, `${andSis} em andamento ÷ ${I.ritmo == null ? "–" : nf1.format(I.ritmo)} entregues por mês no período`);
+
+  // horas realizadas
+  $("#iniHoras").innerHTML =
+    tile("Horas realizadas", horasG(I.horas), `OS fechadas, validadas e acertadas no período · ${nf0.format(I.horasMes || 0)}h por mês`, delta(I.horas, A && A.horas, rotAnt, {unid: "h", bomSeSobe: true})) +
+    tile("Consumo no encerramento", I.consumo == null ? "–" : pct(I.consumo), `das horas adquiridas foram usadas pelos ${I.enc.length} entregues no período`, delta(I.consumo, A && A.consumo, rotAnt, {fmt: pct, bomSeSobe: true})) +
+    tile("Horas que sobraram", horasG(I.sobra), "adquiridas e não usadas pelos projetos entregues no período", delta(I.sobra, A && A.sobra, rotAnt, {unid: "h"})) +
+    tile("Horas por projeto entregue", I.usoMedio == null ? "–" : horasG(I.usoMedio), sisVis.length > 1 ? sisVis.map(s => `${s} ${I.usoSis[s] == null ? "–" : nf0.format(I.usoSis[s]) + "h"}`).join(" · ") : "média de horas usadas");
+
+  // carteira hoje
+  const semProx = and.filter(p => !p.proxima), nunca = and.filter(p => p.nunca_agenda), posGL = and.filter(p => p.fase >= 5);
+  $("#iniCarteira").innerHTML =
+    tile("Projetos em aberto", `${ps.length}`, `${SISTEMAS.map(s => `${s} ${ps.filter(p => p.sistema === s).length}`).join(" · ")} · ${and.length} em andamento e ${susp.length} suspensos`) +
+    tile("Idade média da carteira", dias(media(and.map(p => p.dias_aberto))), `em andamento · mediana de ${nf0.format(median(and.map(p => p.dias_aberto)) ?? 0)} dias desde a abertura`) +
+    tile("Sem próxima agenda", `${semProx.length}<small>de ${and.length}</small>`, `${and.length ? pct(semProx.length / and.length) : "–"} dos em andamento · ${nunca.length} nunca tiveram agenda`) +
+    tile("Já passaram do go live", `${posGL.length}<small>de ${and.length}</small>`, `${and.length ? pct(posGL.length / and.length) : "–"} dos em andamento; os outros ainda implantam`) +
+    tile("Agendas nos próximos 30 dias", `${prox30.length}`, `${h(sum(prox30, a => a.horas))} marcadas em ${new Set(prox30.map(a => a.cod)).size} projetos`) +
+    tile("Agendas vencidas", `${venc.length}`, `planejadas que passaram sem execução nem cancelamento, em ${new Set(venc.map(a => a.cod)).size} projetos`);
+
+  const G_SAUDE = {"Crítico sem agenda":"Crítico", "Sem agenda marcada":"Atenção", "Encerrar":"Encerrar", "Com agenda marcada":"Em dia", "Suspenso":"Suspenso"};
+  $("#iniAtaque").innerHTML = D.grupos.map(g => { const l = ps.filter(p => p.grupo === g);
+    return `<button type="button" class="atalho" data-g="${esc(g)}"><span class="${SAUDE_CLS[G_SAUDE[g]]}" style="color:var(--c)">${ICON[G_SAUDE[g]]}</span><span style="margin:0"><b>${l.length} · ${esc(g)}</b><span>${nf0.format(sum(l, p => Math.max(p.saldo, 0)))}h de saldo</span></span></button>`; }).join("");
+
+  renderLeitura(I, A, P, partes, andSis, mesesCarteira);
+  renderTmi();
+}
+
+function renderEstoque(partes, estouro){
+  const tot = sum(partes, g => g.horas);
+  $("#legEstoque").innerHTML = partes.map(g => `<span><span class="${SAUDE_CLS[g.s]}" style="color:var(--c);display:inline-flex">${ICON[g.s].replace("<svg", '<svg width="14" height="14"')}</span>${esc(g.t)} <b class="num">${nf0.format(g.horas)}h</b></span>`).join("");
+  $("#hintEstoque").textContent = `Saldo positivo dos projetos em aberto (${nf0.format(tot)}h), separado pela situação do projeto. Clique numa parte para ver os projetos.` +
+    (estouro.length ? ` ${estouro.length} projeto${estouro.length > 1 ? "s" : ""} já usou ${nf0.format(-sum(estouro, p => p.saldo))}h além do adquirido e fica fora da barra.` : "");
+  const el = plot("chEstoque", partes.filter(g => g.horas > 0).map(g => ({type:"bar", orientation:"h", name:g.t, y:[""], x:[g.horas], meta:g.aba,
+      marker:{color:css(SAUDE_VAR[g.s]), line:{color:css("--surface"), width:2}},
+      text:[tot && g.horas / tot >= 0.07 ? nf0.format(g.horas) + "h" : ""], textposition:"inside", insidetextanchor:"middle", textfont:{color:"#fff", size:12.5},
+      hovertemplate:`${esc(g.t)}<br><b>${nf0.format(g.horas)}h</b> em ${g.n} projetos (${tot ? pct(g.horas / tot) : "–"})<extra></extra>`})),
+    {barmode:"stack", bargap:0.25, showlegend:false, xaxis:{ticksuffix:"h", showgrid:true, rangemode:"tozero"}, yaxis:{showticklabels:false, showgrid:false, showline:false}, margin:{l:8, r:12, t:6, b:8}});
+  if(el && !el._clk){ el._clk = true; el.on("plotly_click", ev => { const aba = ev.points[0].data.meta;
+    if(aba === "suspensos"){ st.status = "Suspensos"; mostrarAba("projetos"); } else mostrarAba(aba);
+    atualizar(); window.scrollTo(0, 0); }); }
+  tabela("tbEstoque", ["Situação", "Projetos", "Saldo", "Parte"], partes.map(g => [g.t, g.n, nf0.format(g.horas) + "h", tot ? pct(g.horas / tot) : "–"]));
+}
+
+function renderLeitura(I, A, P, partes, andSis, mesesCarteira){
+  const it = [];
+  if(I.enc.length) it.push(`Os <b>${I.enc.length} projetos entregues ao suporte</b> no período levaram em média <b>${nf0.format(I.tmi)} dias</b> da abertura à entrega${A && A.tmi != null ? ` (${esc(P.ant.rot)}: ${nf0.format(A.tmi)} dias)` : ""}. ${I.maisDeAno ? `${I.maisDeAno} deles estavam abertos há mais de um ano.` : ""}`);
+  else it.push("Nenhum projeto foi entregue ao suporte no período.");
+  const cresc = I.ent.length - I.enc.length;
+  it.push(`Entraram <b>${I.ent.length}</b> projetos e foram entregues <b>${I.enc.length}</b>: a carteira ${cresc > 0 ? `cresceu <b>${cresc}</b>` : cresc < 0 ? `diminuiu <b>${-cresc}</b>` : "ficou igual"} no período.${mesesCarteira != null ? ` No ritmo do período, os ${andSis} em andamento levam cerca de <b>${nf0.format(mesesCarteira)} meses</b> para serem entregues.` : ""}`);
+  const parado = partes[2].horas + partes[3].horas;
+  if(parado) it.push(`<b>${nf0.format(parado)}h</b> do estoque estão paradas em ${partes[2].n + partes[3].n} projetos sem agenda há mais de 30 dias; <b>${nf0.format(partes[3].horas)}h</b> delas em projetos que já passaram do go live (encerrar ou usar o saldo).`);
+  if(I.tpa != null) it.push(`A primeira agenda sai em mediana <b>${nf0.format(I.tpa)} dias</b> depois da abertura${I.tgl != null ? `, e o go live chega em <b>${nf0.format(I.tgl)} dias</b>` : ""}.`);
+  if(I.abertos.length) it.push(`<b>${I.canc.length}</b> dos ${I.abertos.length} projetos abertos no período já foram cancelados (${pct(I.canc.length / I.abertos.length)}).`);
+  $("#iniLeitura").innerHTML = it.map(t => `<li>${t}</li>`).join("");
+}
+
+const TMI_MIN = 3;   // mês com menos de 3 entregues em 12 meses fica sem ponto (um projeto sozinho não é média)
+function renderTmi(){
+  const fimM = D.meta.ref.slice(0, 7), meses = [];
+  for(let y = 2025, m = 1; `${y}-${pad2(m)}` <= fimM; m === 12 ? (y++, m = 1) : m++) meses.push(`${y}-${pad2(m)}`);
+  const fimDoMes = k => { const s = ymd(new Date(+k.slice(0, 4), +k.slice(5, 7), 0)); return s > D.meta.ref ? D.meta.ref : s; };
+  const conc = INI.projetos.filter(p => p.st === "concluido" && p.en && SISTEMAS.includes(p.s));
+  const grupos = st.sistema === "Todos" ? [["Todos", null, "--ink-2"], ...SISTEMAS.map(s => [s, s, SIS_VAR[s]])] : [[st.sistema, st.sistema, SIS_VAR[st.sistema]]];
+  const series = grupos.map(([nome, s, v]) => ({nome, v, pts: meses.map(k => { const fim = fimDoMes(k), ini = maisDias(fim, -365);
+    const l = conc.filter(p => (!s || p.s === s) && p.en > ini && p.en <= fim).map(p => difDias(p.ab, p.en));
+    return {v: l.length >= TMI_MIN ? media(l) : null, n: l.length}; })}));
+  const x = meses.map(mesRot);
+  plot("chTmi", series.map(sr => ({type:"scatter", mode:"lines+markers", name:sr.nome, x, y:sr.pts.map(p => p.v == null ? null : Math.round(p.v)), customdata:sr.pts.map(p => p.n),
+      line:{color:css(sr.v), width:2}, marker:{size:7, color:css(sr.v), line:{width:2, color:css("--surface")}}, connectgaps:false,
+      hovertemplate:`%{x} · ${esc(sr.nome)}<br><b>%{y} dias</b> (%{customdata} entregues em 12 meses)<extra></extra>`})),
+    {hovermode:"x unified", xaxis:{showgrid:false, nticks:8}, yaxis:{rangemode:"tozero", title:{text:"dias"}}, showlegend:series.length > 1, legend:{orientation:"h", x:0, y:1.15}});
+  tabela("tbTmi", ["Mês", ...series.map(s => s.nome)], x.map((m, i) => [m, ...series.map(s => s.pts[i].v == null ? "–" : `${nf0.format(s.pts[i].v)} dias (${s.pts[i].n})`)]));
+}
+
+$("#iniPeriodo").addEventListener("click", e => { const b = e.target.closest("button"); if(!b) return; periodoIni = b.dataset.v; store.set("periodoIni", periodoIni); atualizar(); });
+$("#iniAtaque").addEventListener("click", e => { const b = e.target.closest("[data-g]"); if(!b) return; grupoPrio = b.dataset.g; mostrarAba("prioridades"); atualizar(); window.scrollTo(0, 0); });
+
+/* ---------- menu lateral ---------- */
+function fecharMenu(){ $("#app").classList.remove("menu-aberto"); $("#btnMenu").setAttribute("aria-expanded", "false"); }
+$("#btnMenu").onclick = () => { const ab = $("#app").classList.toggle("menu-aberto"); $("#btnMenu").setAttribute("aria-expanded", ab); if(ab) document.querySelector('#sideNav .nav-item[aria-current="page"]')?.focus(); };
+$("#sideFundo").onclick = fecharMenu;
+document.addEventListener("keydown", e => { if(e.key === "Escape" && $("#app").classList.contains("menu-aberto")) fecharMenu(); });
+function recolherMenu(sim){
+  $("#app").classList.toggle("rail", sim); store.set("menuRecolhido", sim);
+  $("#btnRecolher").title = sim ? "Abrir o menu" : "Recolher o menu";
+  $("#btnRecolher .rot").textContent = sim ? "Abrir menu" : "Recolher menu";
+  setTimeout(() => window.dispatchEvent(new Event("resize")), 30);
+}
+$("#btnRecolher").onclick = () => recolherMenu(!$("#app").classList.contains("rail"));
+
 /* ---------- abas, tema, montagem ---------- */
 function mostrarAba(t){
-  st.tab = t; store.set("tab", t);
-  document.querySelectorAll(".tab").forEach(b => b.setAttribute("aria-selected", b.dataset.tab === t));
-  ["geral","atacar","prioridades","projetos","agenda","consultores","realizadas","pessoas"].forEach(x => $("#tab-"+x).classList.toggle("hide", x !== t));
+  if(!SECOES[t]) t = "inicio";
+  st.tab = t;
+  document.querySelectorAll("#sideNav .nav-item").forEach(b => b.dataset.tab === t ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
+  Object.keys(SECOES).forEach(x => $("#tab-"+x).classList.toggle("hide", x !== t));
+  $("#tituloSecao").textContent = SECOES[t]; $("#mbarTitulo").textContent = SECOES[t];
+  fecharMenu();
 }
-document.querySelectorAll(".tab").forEach(b => b.onclick = () => { mostrarAba(b.dataset.tab); atualizar(); });
+document.querySelectorAll("#sideNav .nav-item").forEach(b => b.onclick = () => { mostrarAba(b.dataset.tab); atualizar(); window.scrollTo(0, 0); });
 
 function atualizar(){
   sincronizarFiltros();
   const ps = filtrar();
   $("#nProj").textContent = ps.length;
+  if(st.tab === "inicio") renderInicio(ps);
   if(st.tab === "geral"){ renderKpis(ps); renderSaude(); renderInsights(ps); renderScatter(ps); renderFase(); renderSemAgenda(ps); renderEvolucao(); }
   if(st.tab === "atacar") renderAtacar(ps);
   if(st.tab === "prioridades") renderPrioridades(ps);
@@ -1554,10 +1903,13 @@ $("#btnTema").onclick = () => {
     "Histórico: anotações dos reports de projetos das analistas (andamento, HandOff, analista de sucesso, horas, faturado e saldo financeiro), importadas por importar_reports.py e ligadas pelo código do projeto. Para hora e saldo vale o CES; o report traz a anotação e o financeiro (faturado menos realizado; negativo é hora entregue sem faturar).",
     "Agenda dos consultores e agendas realizadas: todas as OS que vieram na exportação do CES (hunter e farmer: treinamento, consultoria, DBA e outros), com o botão Só hunter. Horas da semana somam realizadas, sem fechar e marcadas; planejada que passou sem execução aparece riscada e não soma. Nessas abas valem os filtros de sistema, consultor e busca.",
   ].map(t => `<li>${esc(t)}</li>`).join("");
+  $("#sidePos").innerHTML = `Posição do CES<br><b>${dt(m.atualizado_em.slice(0,10))} às ${m.atualizado_em.slice(11)}</b>`;
+  recolherMenu(!!store.get("menuRecolhido", false));
   montarFiltros();
-  mostrarAba(st.tab);
+  // o painel sempre abre na página inicial; #geral, #prioridades etc. no endereço abrem direto a seção
+  const aba = location.hash.match(/^#(inicio|geral|atacar|prioridades|projetos|agenda|consultores|realizadas|pessoas)$/);
+  mostrarAba(aba ? aba[1] : "inicio");
   atualizar();
-  const aba = location.hash.match(/^#(geral|atacar|prioridades|projetos|agenda|consultores|realizadas|pessoas)$/); if(aba){ mostrarAba(aba[1]); atualizar(); }
   const hh = location.hash.match(/^#h(\d+)/); if(hh && BY_COD[+hh[1]]) abrirHistorico(+hh[1]);
 })();
 </script>

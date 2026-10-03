@@ -1,0 +1,20 @@
+{
+  "dono": { "nome": "Julio Santos", "email": "julio.santos@aliare.co", "papel": "Coordenador de Operações" },
+  "chefe": { "nome": "Leandro Xavier", "email": "leandro.xavier@aliare.co", "papel": "Diretor executivo, chefe direto do Julio" },
+  "time": [
+    { "nome": "Fabio Novais", "nome_no_teams": "Fabio Antonio Oliveira Novais", "emails": ["fabio.novais@parceiro.aliare.co"], "area": "consultoria", "papel": "Consultor AgriManager PJ, em onboarding desde 22/09/2026" },
+    { "nome": "Felipe Verzotto", "emails": ["felipe.verzotto@aliare.co"], "area": "consultoria", "papel": "Consultor AgriManager" },
+    { "nome": "Guilherme Job", "emails": ["guilherme.job@myfarm.com.br", "guilherme.job@aliare.co"], "area": "consultoria", "papel": "Consultor de implantação myFarm" },
+    { "nome": "Leonardo Mendonça", "emails": ["leonardo.mendonca@parceiro.aliare.co"], "area": "consultoria", "papel": "Consultor PJ" },
+    { "nome": "Lucas Nogueira", "emails": ["lucas.nogueira@aliare.co"], "area": "consultoria", "papel": "Consultor de implantação myFarm" },
+    { "nome": "Rheider Silveira", "nome_no_teams": "Rheider Teles Silveira", "emails": ["rheider.silveira@parceirosiagri.com.br"], "area": "consultoria", "papel": "Consultor parceiro (Siagri)" },
+    { "nome": "Warlen Andrade", "emails": ["warlen.andrade@aliare.co"], "area": "consultoria", "papel": "Consultor" },
+    { "nome": "Jaqueline Martins", "emails": ["jaqueline.martins@aliare.co"], "area": "projetos", "papel": "Analista de projetos" },
+    { "nome": "Joyce Pereira", "emails": ["joyce.pereira@aliare.co"], "area": "projetos", "papel": "Analista de projetos (não confundir com Joice Magalhães)" },
+    { "nome": "Amanda Santos", "emails": ["amanda.santos@aliare.co"], "area": "cs", "papel": "Analista de sucesso do cliente" },
+    { "nome": "Ana Rocha", "emails": ["ana.rocha@aliare.co"], "area": "cs", "papel": "Analista de sucesso do cliente" },
+    { "nome": "Andrezza Perroni", "emails": ["andrezza.perroni@myfarm.com.br", "andrezza.perroni@aliare.co"], "area": "cs", "papel": "Analista de sucesso do cliente" },
+    { "nome": "Giovanna Costa", "emails": ["giovanna.costa@aliare.co"], "area": "cs", "papel": "Analista de sucesso do cliente (entrou em set/2026)" },
+    { "nome": "Ramona Brito", "emails": ["ramona.brito@aliare.co"], "area": "cs", "papel": "Analista de sucesso do cliente" }
+  ]
+}

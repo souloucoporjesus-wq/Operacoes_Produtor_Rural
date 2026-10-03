@@ -43,7 +43,9 @@ if errorlevel 1 (
 )
 
 rem 3. Gerar o painel com a exportação do CES mais nova da pasta e abrir no navegador
-echo  Lendo a exportação do CES e montando o painel...
+rem    (a página inicial com TMI, estoque de horas, vazão e carteira sai daqui, sem IA)
+echo  Lendo a exportação do CES e montando o painel: página inicial (TMI, estoque de horas,
+echo  vazão, horas realizadas, carteira) e as seções do menu lateral...
 echo.
 "%PYEXE%" %PYARG% gerar_painel.py %*
 if errorlevel 1 (
@@ -57,6 +59,7 @@ if errorlevel 1 (
 )
 
 echo.
-echo  Pronto: o painel abriu no navegador. Esta janela fecha sozinha.
-timeout /t 8 >nul
+echo  Pronto: o painel abriu no navegador, na página inicial. Os números de cabeça estão acima.
+echo  Esta janela fecha sozinha em 20 segundos.
+timeout /t 20 >nul
 exit /b 0

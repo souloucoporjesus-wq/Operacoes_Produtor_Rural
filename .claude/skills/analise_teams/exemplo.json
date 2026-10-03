@@ -1,0 +1,61 @@
+{
+  "data": "2026-10-05",
+  "gerado_em": "2026-10-05T09:14:00-03:00",
+  "janela": { "inicio": "02/10 09:00", "fim": "05/10 09:10" },
+  "fontes": {
+    "mensagens": 812, "conversas": 41, "do_julio": 187,
+    "primeira_julio": "07:52", "ultima_julio": "21:40", "julio_depois_19h": 23,
+    "conversas_top": [ { "nome": "Andrezza Perroni", "mensagens": 96 }, { "nome": "Fazenda Estrela (grupo)", "mensagens": 61 } ],
+    "por_dia": [ { "dia": "02/10", "mensagens": 640, "do_julio": 150 } ]
+  },
+  "termometro": { "nivel": "tenso", "frase": "Uma frase que diz como foi o período, com um fato." },
+  "resumo": ["A coisa mais importante primeiro.", "Segunda.", "Terceira."],
+  "foco": [ { "titulo": "Verbo no começo", "porque": "Por que hoje, com o fato.", "acao": "O passo concreto." } ],
+  "pendencias": [ {
+    "id": "p1", "titulo": "Responder o Leandro sobre X", "detalhe": "O fato em 1 ou 2 frases.",
+    "tipo": "voce_deve", "quem": "Julio", "para": "Leandro",
+    "desde": "2026-10-02", "prazo": null, "prioridade": "critica", "status": "nova",
+    "chefe": true, "cliente": "", "onde": "chat 1:1 com o Leandro",
+    "evidencia": "Leandro, 02/10 16:31: \"texto literal\"", "confianca": "certo"
+  } ],
+  "destravar": [ {
+    "id": "d1", "titulo": "O que está parado", "travado_em": "área ou pessoa", "quem_destrava": "quem",
+    "como": "o caminho", "desde": "2026-09-30", "impacto": "o que acontece se não andar",
+    "mensagem": "Rascunho curto pronto pra copiar."
+  } ],
+  "decisoes": [ {
+    "titulo": "O que foi decidido", "quem": "Julio", "quando": "02/10 15:10", "onde": "chat com a Andrezza",
+    "registrada": false, "evidencia": "citação literal", "risco": "o que pode dar errado sem registro"
+  } ],
+  "decisoes_a_tomar": [ {
+    "titulo": "Decidir X", "contexto": "o fato", "opcoes": ["opção A", "opção B"],
+    "recomendacao": "o que eu faria e por quê", "prazo": "2026-10-06"
+  } ],
+  "chefe": {
+    "leitura": "Como está a relação no período, em 2 ou 3 frases, com fato.",
+    "itens": [ { "titulo": "", "detalhe": "", "evidencia": "", "confianca": "provavel" } ],
+    "cuidados": ["Cuidado concreto com o chefe."]
+  },
+  "time": [ {
+    "pessoa": "Andrezza Perroni", "area": "cs", "gravidade": "atencao",
+    "sinal": "o que se viu", "evidencia": "citação com hora", "sugestao": "o que fazer", "confianca": "provavel"
+  } ],
+  "entrelinhas": [ {
+    "pessoa": "", "onde": "", "quando": "02/10 14:20", "citacao": "texto literal",
+    "leitura": "a leitura possível", "leitura_benigna": "o outro lado", "como_agir": "sem acusar", "confianca": "suposicao"
+  } ],
+  "escrita": {
+    "resumo": "Como ele escreveu no período, em 1 ou 2 frases.",
+    "fortes": [ { "texto": "", "evidencia": "" } ],
+    "melhorar": [ { "padrao": "", "evidencia": "", "impacto": "", "antes": "como saiu", "depois": "como podia sair" } ]
+  },
+  "decisao": {
+    "resumo": "Como ele decidiu no período.",
+    "padroes": [ { "padrao": "", "evidencia": "", "efeito": "", "sugestao": "", "confianca": "certo" } ]
+  },
+  "cuidados": [ { "titulo": "", "detalhe": "", "evidencia": "", "gravidade": "alta" } ],
+  "dicas": [ { "titulo": "", "texto": "", "pratica": "o que fazer hoje", "ligada_a": "o fato da janela" } ],
+  "mensagens": [ { "para": "", "assunto": "", "texto": "", "por_que": "" } ],
+  "clientes_risco": [ { "cliente": "", "situacao": "", "evidencia": "", "proximo_passo": "", "dono": "" } ],
+  "aprendizados": [ { "sobre": "Julio", "texto": "", "evidencia": "", "confianca": "provavel" } ]
+}

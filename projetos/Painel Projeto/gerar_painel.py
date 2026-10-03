@@ -6,7 +6,8 @@ Uso:
     python gerar_painel.py --sem-abrir     # só gera o arquivo
 
 Sai um HTML único (painel-projetos-hunter.html) com dados e gráficos embutidos:
-abre direto do arquivo, sem servidor e sem internet.
+abre direto do arquivo, sem servidor e sem internet. Abre na página inicial (visão sintética:
+TMI, estoque de horas, vazão, horas realizadas e carteira hoje), com o menu lateral para as seções.
 """
 import json
 import re
@@ -191,7 +192,35 @@ def montar_dados(m, arquivo):
         "evolucao": evolucao(m),
         "projetos": projetos, "agendas": agendas, "pacotes": pacotes,
         "agenda_geral": agenda_geral(m, set(int(c) for c in ab.COD)),
+        "inicio": inicio(m),
     }
+
+
+STATUS_CURTO = {"CONCLUIDO": "concluido", "CANCELADO": "cancelado", "EM ANDAMENTO": "andamento", "SUSPENSO": "suspenso"}
+
+
+def inicio(m):
+    """Base dos indicadores da página inicial (TMI, vazão, horas): todos os projetos hunter, inclusive
+    encerrados e cancelados, e as horas realizadas por dia desde 2024. Não muda nenhuma métrica das abas."""
+    hu = m.hunter
+    feitas = m.agendas[m.agendas.SITUACAO.isin(["Realizada", "Sem fechar"])]
+    primeira = feitas.groupby("COD_PROJETO").DIA.min()
+    go_live = feitas[feitas.FASE == modelo.FASE_GO_LIVE].groupby("COD_PROJETO").DIA.min()
+    realizadas = m.agendas[m.agendas.SITUACAO == "Realizada"]
+    usadas = realizadas.groupby("COD_PROJETO").HORAS.sum()
+    adquiridas = m.horas.groupby("PROJETO").QTDE.sum()
+    projetos = [{
+        "cod": int(r.COD), "s": r.SISTEMA_NOME, "st": STATUS_CURTO.get(r.STATUS, r.STATUS.lower()),
+        "ab": _data(r.DT_INICIAL), "en": _data(r.DT_ENCERRAMENTO) if r.STATUS == "CONCLUIDO" else None,
+        "pri": _data(primeira.get(r.COD)), "gl": _data(go_live.get(r.COD)),
+        "adq": _num(adquiridas.get(r.COD, 0)), "uso": _num(usadas.get(r.COD, 0)),
+    } for r in hu.itertuples()]
+    # horas realizadas por dia e sistema, sem os cancelados (o mesmo recorte do gráfico mensal da Visão geral)
+    validos = hu[hu.STATUS != "CANCELADO"][["COD", "SISTEMA_NOME"]]
+    r = realizadas[realizadas.DIA >= "2024-01-01"].merge(validos, left_on="COD_PROJETO", right_on="COD")
+    por_dia = r.groupby([r.DIA.dt.normalize(), "SISTEMA_NOME"]).HORAS.sum()
+    horas = [[_data(d), s, round(float(v), 1)] for (d, s), v in por_dia.items() if v]
+    return {"projetos": projetos, "horas_dia": horas}
 
 
 def evolucao(m):
@@ -212,6 +241,31 @@ def evolucao(m):
     return out
 
 
+def resumo_inicio(d):
+    """Os números de cabeça da página inicial (últimos 12 meses, sem filtro), com as mesmas regras da página,
+    pra aparecerem na janela do atualizar-painel.bat."""
+    from datetime import date, timedelta
+    ref = date.fromisoformat(d["meta"]["ref"])
+    ini, fim = (ref - timedelta(days=365)).isoformat(), ref.isoformat()
+    dentro = lambda s: s is not None and ini < s <= fim
+    dias = lambda a, b: (date.fromisoformat(b) - date.fromisoformat(a)).days
+    hp = [p for p in d["inicio"]["projetos"] if p["s"] in ("myFarm", "AgriManager")]
+    enc = [dias(p["ab"], p["en"]) for p in hp if p["st"] == "concluido" and dentro(p["en"])]
+    ent = [p for p in hp if dentro(p["ab"]) and p["st"] != "cancelado"]
+    ps = d["projetos"]
+    pos = lambda v: max(v or 0, 0)
+    parado = sum(pos(p["saldo"]) for p in ps if p["status"] != "Suspenso" and not p["proxima"] and p["dias_sem_agenda"] > 30)
+    suspensos = sum(pos(p["saldo"]) for p in ps if p["status"] == "Suspenso")
+    n = lambda v: f"{v:,.0f}".replace(",", ".")
+    tmi = f"{n(sum(enc) / len(enc))} dias ({len(enc)} projetos entregues ao suporte)" if enc else "sem projeto entregue no período"
+    vazao = f"{len(enc) / len(ent):.0%}" if ent else "–"
+    return [f"Página inicial, últimos 12 meses ({(ref - timedelta(days=364)):%d/%m/%Y} a {ref:%d/%m/%Y}), sem filtro:",
+            f"  TMI (tempo médio de implantação): {tmi}",
+            f"  Entradas: {len(ent)} · entregues ao suporte: {len(enc)} · vazão: {vazao}",
+            f"  Estoque de horas: {n(sum(p['saldo'] or 0 for p in ps))}h · parado: {n(parado)}h · "
+            f"planejado: {n(sum(p['agendadas'] or 0 for p in ps))}h · dos suspensos: {n(suspensos)}h"]
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     try:
@@ -220,11 +274,14 @@ def main():
         m = modelo.montar(xlsx)
     except FileNotFoundError as erro:   # sem planilha: avisa sem despejar o erro do Python
         sys.exit(f"não achei a planilha: {erro}")
-    dados = json.dumps(montar_dados(m, xlsx), ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
+    d = montar_dados(m, xlsx)
+    dados = json.dumps(d, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/")
     html = MODELO_HTML.read_text(encoding="utf-8")
     html = html.replace("/*__PLOTLY__*/", get_plotlyjs()).replace("/*__DADOS__*/", dados)
     SAIDA.write_text(html, encoding="utf-8")
     print(f"painel gerado: {SAIDA.name} ({len(m.abertos)} projetos em aberto, posição de {m.atualizado_em:%d/%m/%Y %H:%M})")
+    print()
+    print("\n".join(resumo_inicio(d)))
     if "--sem-abrir" not in sys.argv:
         webbrowser.open(SAIDA.as_uri())
 

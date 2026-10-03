@@ -1,0 +1,808 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Análise do Teams</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    color-scheme: light;
+    --fundo: #f4f6f2;
+    --superficie: #ffffff;
+    --suave: #eef1ea;
+    --tinta: #171d18;
+    --tinta-2: #55605a;
+    --tinta-3: #7a857f;
+    --linha: #dde3dc;
+    --destaque: #1f6b3a;
+    --destaque-suave: #e2efe5;
+    --critico: #d03b3b;
+    --critico-suave: #fbe9e9;
+    --serio: #ec835a;
+    --serio-suave: #fdeee7;
+    --alerta: #fab219;
+    --alerta-suave: #fff5dc;
+    --bom: #0ca30c;
+    --bom-suave: #e3f5e3;
+    --info: #6b7a8f;
+    --info-suave: #edf0f4;
+    --area-consultoria: #2a78d6;
+    --area-projetos: #eb6834;
+    --area-cs: #1baf7a;
+    --barra: #2a78d6;
+    --sombra: 0 1px 2px rgba(23, 29, 24, 0.06);
+    --fonte: "IBM Plex Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      color-scheme: dark;
+      --fundo: #121513; --superficie: #1a1f1b; --suave: #232925;
+      --tinta: #edf1ec; --tinta-2: #a9b3ac; --tinta-3: #87918a; --linha: #2c332e;
+      --destaque: #62c184; --destaque-suave: #1e3527;
+      --critico-suave: #3a2020; --serio-suave: #3a2a22; --alerta-suave: #3a321c;
+      --bom-suave: #1d331d; --info: #9aa8bb; --info-suave: #252b33;
+      --area-consultoria: #3987e5; --area-projetos: #d95926; --area-cs: #199e70; --barra: #3987e5;
+      --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
+    }
+  }
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+    --fundo: #121513; --superficie: #1a1f1b; --suave: #232925;
+    --tinta: #edf1ec; --tinta-2: #a9b3ac; --tinta-3: #87918a; --linha: #2c332e;
+    --destaque: #62c184; --destaque-suave: #1e3527;
+    --critico-suave: #3a2020; --serio-suave: #3a2a22; --alerta-suave: #3a321c;
+    --bom-suave: #1d331d; --info: #9aa8bb; --info-suave: #252b33;
+    --area-consultoria: #3987e5; --area-projetos: #d95926; --area-cs: #199e70; --barra: #3987e5;
+    --sombra: 0 1px 2px rgba(0, 0, 0, 0.3);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background: var(--fundo); color: var(--tinta); font-family: var(--fonte);
+    font-size: 14.5px; line-height: 1.5; padding: 0 16px 96px;
+  }
+  a { color: var(--destaque); }
+  h1, h2, h3, p { margin: 0; }
+  h1 { font-size: 22px; font-weight: 600; text-wrap: balance; }
+  h2 { font-size: 17px; font-weight: 600; text-wrap: balance; }
+  h3 { font-size: 14.5px; font-weight: 600; }
+  ul { margin: 0; padding: 0; list-style: none; }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--destaque); outline-offset: 2px; }
+  .rotulo { font-size: 11.5px; font-weight: 500; letter-spacing: 0.05em; text-transform: uppercase; color: var(--tinta-3); }
+  .mudo { color: var(--tinta-2); }
+  .fraco { color: var(--tinta-3); }
+  .num { font-variant-numeric: tabular-nums; }
+
+  .pagina { max-width: 1180px; margin: 0 auto; }
+
+  /* Cabeçalho */
+  header.topo { padding: 22px 0 14px; display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: flex-end; justify-content: space-between; }
+  .topo .sub { margin-top: 4px; color: var(--tinta-2); font-size: 13.5px; }
+  .topo .acoes { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+  .botao {
+    border: 1px solid var(--linha); background: var(--superficie); border-radius: 8px;
+    padding: 6px 12px; cursor: pointer; font-size: 13px; line-height: 1.3;
+  }
+  .botao:hover { border-color: var(--tinta-3); }
+  .botao.primario { background: var(--destaque); border-color: var(--destaque); color: #fff; }
+  :root[data-theme="dark"] .botao.primario { color: #0f1a12; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .botao.primario { color: #0f1a12; } }
+  select.botao { padding-right: 8px; }
+
+  /* Navegação */
+  nav.abas {
+    position: sticky; top: 0; z-index: 5; background: var(--fundo);
+    display: flex; gap: 4px; overflow-x: auto; padding: 8px 0; border-bottom: 1px solid var(--linha);
+    scrollbar-width: thin;
+  }
+  @media (min-width: 900px) { nav.abas { flex-wrap: wrap; overflow-x: visible; } }
+  .aba {
+    flex: none; border: 0; background: transparent; padding: 7px 12px; border-radius: 8px; cursor: pointer;
+    color: var(--tinta-2); font-size: 13.5px; font-weight: 500; display: flex; gap: 6px; align-items: center;
+  }
+  .aba:hover { background: var(--suave); color: var(--tinta); }
+  .aba[aria-selected="true"] { background: var(--superficie); color: var(--tinta); box-shadow: var(--sombra); border: 1px solid var(--linha); }
+  .aba .cont { font-size: 11.5px; background: var(--suave); border-radius: 99px; padding: 0 7px; color: var(--tinta-2); }
+  .aba .cont.quente { background: var(--critico); color: #fff; }
+
+  main { padding-top: 18px; }
+  section.painel { display: none; }
+  section.painel.ativo { display: block; }
+  .titulo-secao { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+  .titulo-secao p { color: var(--tinta-2); font-size: 13.5px; max-width: 70ch; }
+  .bloco + .bloco { margin-top: 26px; }
+  .abertura + .bloco { margin-top: 12px; }
+
+  /* Cartões */
+  .cartao {
+    background: var(--superficie); border: 1px solid var(--linha); border-radius: 12px;
+    padding: 14px 16px; box-shadow: var(--sombra);
+  }
+  .grade { display: grid; gap: 12px; }
+  .g2 { grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+  .g3 { grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
+  @media (max-width: 420px) { .g2, .g3 { grid-template-columns: 1fr; } }
+  .lista > * + * { margin-top: 10px; }
+
+  /* Termômetro e resumo */
+  .abertura { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr); gap: 12px; }
+  @media (max-width: 820px) { .abertura { grid-template-columns: 1fr; } }
+  .termometro { display: inline-flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px; padding: 4px 10px; border-radius: 99px; }
+  .termometro::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+  .t-tenso { background: var(--critico-suave); color: var(--critico); }
+  .t-atencao { background: var(--alerta-suave); color: #9a6a00; }
+  .t-estavel { background: var(--bom-suave); color: var(--bom); }
+  :root[data-theme="dark"] .t-atencao { color: var(--alerta); }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .t-atencao { color: var(--alerta); } }
+  .resumo li { padding-left: 16px; position: relative; }
+  .resumo li + li { margin-top: 8px; }
+  .resumo li::before { content: ""; position: absolute; left: 0; top: 0.62em; width: 6px; height: 6px; border-radius: 2px; background: var(--destaque); }
+  .resumo li:first-child { font-weight: 500; }
+
+  .foco { counter-reset: foco; }
+  .foco .cartao { position: relative; padding-left: 52px; }
+  .foco .cartao::before {
+    counter-increment: foco; content: counter(foco); position: absolute; left: 16px; top: 14px;
+    width: 26px; height: 26px; border-radius: 8px; background: var(--destaque-suave); color: var(--destaque);
+    display: grid; place-items: center; font-weight: 600; font-size: 13px;
+  }
+  .foco .acao { margin-top: 8px; font-size: 13.5px; }
+  .foco .acao b { font-weight: 600; }
+
+  /* Números */
+  .numeros { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 10px; }
+  .numero { background: var(--superficie); border: 1px solid var(--linha); border-radius: 12px; padding: 12px 14px; cursor: pointer; text-align: left; }
+  .numero:hover { border-color: var(--tinta-3); }
+  .numero .valor { font-size: 26px; font-weight: 600; line-height: 1.1; margin-top: 4px; }
+  .numero .valor.critico { color: var(--critico); }
+
+  /* Selos */
+  .selos { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .selo { font-size: 11.5px; font-weight: 500; padding: 1px 8px; border-radius: 99px; background: var(--suave); color: var(--tinta-2); white-space: nowrap; }
+  .selo.critica, .selo.alerta { background: var(--critico-suave); color: var(--critico); }
+  .selo.alta, .selo.serio { background: var(--serio-suave); color: #b4512a; }
+  .selo.media, .selo.atencao { background: var(--alerta-suave); color: #8a5f00; }
+  .selo.baixa, .selo.info { background: var(--info-suave); color: var(--info); }
+  .selo.positivo, .selo.resolvida { background: var(--bom-suave); color: var(--bom); }
+  .selo.chefe { background: var(--tinta); color: var(--superficie); }
+  .selo.parada, .selo.atrasada { background: var(--critico-suave); color: var(--critico); }
+  .selo.semregistro { background: var(--alerta-suave); color: #8a5f00; }
+  :root[data-theme="dark"] .selo.alta, :root[data-theme="dark"] .selo.serio { color: var(--serio); }
+  :root[data-theme="dark"] .selo.media, :root[data-theme="dark"] .selo.atencao, :root[data-theme="dark"] .selo.semregistro { color: var(--alerta); }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .selo.alta, :root:not([data-theme="light"]) .selo.serio { color: var(--serio); }
+    :root:not([data-theme="light"]) .selo.media, :root:not([data-theme="light"]) .selo.atencao, :root:not([data-theme="light"]) .selo.semregistro { color: var(--alerta); }
+  }
+  .confianca { font-size: 11px; color: var(--tinta-3); border: 1px solid var(--linha); border-radius: 4px; padding: 0 5px; white-space: nowrap; }
+
+  /* Itens (pendências, destravar etc.) */
+  .item { border-left: 4px solid var(--linha); }
+  .item.p-critica, .item.g-alerta { border-left-color: var(--critico); }
+  .item.p-alta { border-left-color: var(--serio); }
+  .item.p-media, .item.g-atencao { border-left-color: var(--alerta); }
+  .item.p-baixa, .item.g-info { border-left-color: var(--info); }
+  .item.g-positivo { border-left-color: var(--bom); }
+  .item .cabeca { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+  .item h3 { margin-bottom: 6px; }
+  .item .detalhe { margin-top: 6px; }
+  .item .meta { margin-top: 8px; font-size: 13px; color: var(--tinta-2); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .item.feito { opacity: 0.55; }
+  .item.feito h3 { text-decoration: line-through; }
+  details { margin-top: 8px; }
+  summary { cursor: pointer; color: var(--tinta-2); font-size: 13px; }
+  summary:hover { color: var(--tinta); }
+  blockquote {
+    margin: 8px 0 0; padding: 8px 12px; background: var(--suave); border-radius: 8px;
+    font-size: 13.5px; color: var(--tinta); white-space: pre-wrap;
+  }
+  .marcar { display: inline-flex; gap: 6px; align-items: center; font-size: 12.5px; color: var(--tinta-2); cursor: pointer; white-space: nowrap; }
+  .marcar input { width: 16px; height: 16px; accent-color: var(--destaque); }
+
+  .campo { display: grid; grid-template-columns: 130px minmax(0, 1fr); gap: 4px 12px; margin-top: 8px; font-size: 13.5px; }
+  .campo dt { color: var(--tinta-3); }
+  .campo dd { margin: 0; }
+  @media (max-width: 520px) { .campo { grid-template-columns: 1fr; } .campo dd { margin-bottom: 6px; } }
+
+  /* Rascunho de mensagem */
+  .rascunho { margin-top: 10px; background: var(--destaque-suave); border-radius: 10px; padding: 10px 12px; }
+  .rascunho .texto { white-space: pre-wrap; font-size: 13.5px; margin-top: 4px; }
+  .rascunho .barra-r { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+
+  /* Filtros */
+  .filtros { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
+  .chip { border: 1px solid var(--linha); background: var(--superficie); border-radius: 99px; padding: 4px 12px; cursor: pointer; font-size: 13px; }
+  .chip[aria-pressed="true"] { background: var(--tinta); color: var(--superficie); border-color: var(--tinta); }
+  .busca { border: 1px solid var(--linha); background: var(--superficie); border-radius: 8px; padding: 6px 10px; min-width: 200px; flex: 1 1 200px; max-width: 320px; }
+  .vazio { padding: 22px; text-align: center; color: var(--tinta-3); border: 1px dashed var(--linha); border-radius: 12px; }
+
+  /* Time */
+  .area-titulo { display: flex; align-items: center; gap: 8px; margin: 4px 0 10px; }
+  .area-titulo .marca { width: 12px; height: 12px; border-radius: 3px; }
+  .pessoa .nome { display: flex; align-items: center; gap: 8px; }
+  .pessoa .bolinha { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+
+  /* Entrelinhas */
+  .citacao { font-size: 15px; line-height: 1.5; padding: 10px 14px; border-left: 3px solid var(--tinta-3); background: var(--suave); border-radius: 0 8px 8px 0; margin-top: 8px; }
+  .leituras { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  @media (max-width: 640px) { .leituras { grid-template-columns: 1fr; } }
+  .leitura { border-radius: 8px; padding: 8px 12px; font-size: 13.5px; }
+  .leitura.ruim { background: var(--critico-suave); }
+  .leitura.boa { background: var(--bom-suave); }
+  .leitura .rotulo { margin-bottom: 2px; }
+  .como-agir { margin-top: 10px; font-size: 13.5px; }
+
+  /* Antes e depois */
+  .antes-depois { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+  @media (max-width: 640px) { .antes-depois { grid-template-columns: 1fr; } }
+  .antes-depois > div { border-radius: 8px; padding: 8px 12px; font-size: 13.5px; white-space: pre-wrap; }
+  .antes-depois .antes { background: var(--critico-suave); }
+  .antes-depois .depois { background: var(--bom-suave); }
+
+  /* Barras de volume */
+  .barras { display: grid; gap: 6px; }
+  .barra-linha { display: grid; grid-template-columns: minmax(110px, 38%) minmax(0, 1fr) 44px; gap: 10px; align-items: center; font-size: 13px; padding: 3px 0; border-radius: 6px; }
+  .barra-linha:hover { background: var(--suave); }
+  .barra-linha .nome-b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--tinta-2); }
+  .barra-trilho { height: 10px; position: relative; }
+  .barra-trilho span { position: absolute; left: 0; top: 0; bottom: 0; background: var(--barra); border-radius: 0 4px 4px 0; min-width: 3px; }
+  .barra-linha .v { text-align: right; color: var(--tinta-2); }
+  .dica-flutuante {
+    position: fixed; pointer-events: none; z-index: 20; background: var(--tinta); color: var(--superficie);
+    font-size: 12.5px; padding: 6px 9px; border-radius: 6px; max-width: 280px; display: none;
+  }
+
+  /* Dicas */
+  .dica .pratica { margin-top: 10px; padding: 8px 12px; border-radius: 8px; background: var(--destaque-suave); font-size: 13.5px; }
+  .dica .ligada { margin-top: 8px; font-size: 12.5px; color: var(--tinta-3); }
+
+  table.hist { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+  table.hist th, table.hist td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--linha); }
+  table.hist th { color: var(--tinta-3); font-weight: 500; font-size: 12px; }
+  table.hist td.num, table.hist th.num { text-align: right; }
+
+  footer.rodape { margin-top: 40px; padding-top: 14px; border-top: 1px solid var(--linha); font-size: 12.5px; color: var(--tinta-3); }
+
+  .aviso-copia {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 30;
+    background: var(--tinta); color: var(--superficie); padding: 8px 14px; border-radius: 8px; font-size: 13px;
+    opacity: 0; transition: opacity .2s; pointer-events: none;
+  }
+  .aviso-copia.on { opacity: 1; }
+
+  @media (forced-colors: active) {
+    .barra-trilho span { background: CanvasText; }
+    .selo { border: 1px solid CanvasText; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+<div class="pagina">
+  <header class="topo">
+    <div>
+      <div class="rotulo">Análise do Teams · confidencial</div>
+      <h1 id="titulo">Análise do Teams</h1>
+      <p class="sub" id="subtitulo"></p>
+    </div>
+    <div class="acoes">
+      <select class="botao" id="historico-sel" aria-label="Abrir outra análise"></select>
+      <button class="botao" id="tema" type="button" aria-label="Alternar tema claro e escuro">Tema</button>
+    </div>
+  </header>
+
+  <nav class="abas" id="abas" role="tablist" aria-label="Seções"></nav>
+
+  <main id="conteudo"></main>
+
+  <footer class="rodape" id="rodape"></footer>
+</div>
+<div class="dica-flutuante" id="dica-flutuante" role="tooltip"></div>
+<div class="aviso-copia" id="aviso-copia" role="status" aria-live="polite"></div>
+
+<script id="dados" type="application/json">/*__DADOS__*/null</script>
+<script id="historico" type="application/json">/*__HISTORICO__*/[]</script>
+<script>
+(function () {
+  "use strict";
+  var BASE = "/*__BASE__*/";
+  var D = JSON.parse(document.getElementById("dados").textContent || "null");
+  var H = JSON.parse(document.getElementById("historico").textContent || "[]");
+  if (!D) { document.getElementById("conteudo").innerHTML = '<p class="vazio">Sem dados.</p>'; return; }
+
+  // ---------- utilidades ----------
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+    });
+  }
+  function arr(x) { return Array.isArray(x) ? x : []; }
+  function guardar(chave, valor) { try { localStorage.setItem(chave, JSON.stringify(valor)); } catch (e) {} }
+  function ler(chave, padrao) {
+    try { var v = localStorage.getItem(chave); return v == null ? padrao : JSON.parse(v); } catch (e) { return padrao; }
+  }
+  function chaveDe(t) { return "teams-feito:" + String(t || "").toLowerCase().replace(/[^a-z0-9à-ú]+/gi, "-").slice(0, 80); }
+  var MESES = ["janeiro","fevereiro","março","abril","maio","junho","julho","agosto","setembro","outubro","novembro","dezembro"];
+  var DIAS = ["domingo","segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sábado"];
+  function dataLonga(iso) {
+    var p = String(iso).split("-"); var d = new Date(+p[0], +p[1] - 1, +p[2]);
+    return DIAS[d.getDay()] + ", " + (+p[2]) + " de " + MESES[+p[1] - 1] + " de " + p[0];
+  }
+  function dataCurta(iso) { if (!iso) return ""; var p = String(iso).split("-"); return p.length === 3 ? p[2] + "/" + p[1] : iso; }
+  function diasEntre(a, b) {
+    if (!a || !b) return null;
+    var pa = a.split("-"), pb = b.split("-");
+    var da = new Date(+pa[0], +pa[1] - 1, +pa[2]), db = new Date(+pb[0], +pb[1] - 1, +pb[2]);
+    return Math.round((db - da) / 86400000);
+  }
+  function idade(desde) {
+    var n = diasEntre(desde, D.data); if (n == null) return "";
+    if (n <= 0) return "hoje"; if (n === 1) return "há 1 dia"; return "há " + n + " dias";
+  }
+  var CONF = { certo: "Certo", provavel: "Provável", suposicao: "Suposição" };
+  function conf(c) { return c ? '<span class="confianca" title="Confiança da leitura">' + esc(CONF[c] || c) + "</span>" : ""; }
+  var PRIOR = { critica: "Crítica", alta: "Alta", media: "Média", baixa: "Baixa" };
+  var STATUS = { nova: "Nova", aberta: "Aberta", atrasada: "Atrasada", parada: "Parada", resolvida: "Resolvida" };
+  var TIPO = { voce_deve: "Você deve", time_deve: "Time deve", outra_area_deve: "Outra área deve" };
+  var GRAV = { alerta: "Alerta", atencao: "Atenção", info: "Informação", positivo: "Positivo" };
+  var AREA = { consultoria: "Consultoria", projetos: "Projetos", cs: "Sucesso do cliente", outro: "Outros" };
+  var ORDEM_P = { critica: 0, alta: 1, media: 2, baixa: 3 };
+  var ORDEM_G = { alerta: 0, atencao: 1, info: 2, positivo: 3 };
+
+  function avisar(msg) {
+    var el = document.getElementById("aviso-copia"); el.textContent = msg; el.classList.add("on");
+    clearTimeout(avisar.t); avisar.t = setTimeout(function () { el.classList.remove("on"); }, 1800);
+  }
+  function copiar(texto) {
+    function plano() {
+      var t = document.createElement("textarea"); t.value = texto; t.style.position = "fixed"; t.style.opacity = "0";
+      document.body.appendChild(t); t.select();
+      try { document.execCommand("copy"); avisar("Copiado"); } catch (e) { avisar("Não deu pra copiar"); }
+      document.body.removeChild(t);
+    }
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(texto).then(function () { avisar("Copiado"); }, plano);
+    } else { plano(); }
+  }
+  function rascunho(texto, rotulo) {
+    if (!texto) return "";
+    return '<div class="rascunho"><div class="barra-r"><span class="rotulo">' + esc(rotulo || "Mensagem pronta") +
+      '</span><button class="botao" type="button" data-copiar="' + esc(texto) + '">Copiar</button></div>' +
+      '<div class="texto">' + esc(texto) + "</div></div>";
+  }
+  function evid(e, rotulo) {
+    if (!e) return "";
+    return "<details><summary>" + esc(rotulo || "Ver evidência") + "</summary><blockquote>" + esc(e) + "</blockquote></details>";
+  }
+
+  // ---------- cabeçalho ----------
+  var F = D.fontes || {};
+  document.getElementById("titulo").textContent = "Análise do Teams";
+  var partesSub = [dataLonga(D.data)];
+  if (D.janela) partesSub.push("janela " + (D.janela.inicio || "") + " a " + (D.janela.fim || ""));
+  if (F.mensagens != null) partesSub.push(Number(F.mensagens).toLocaleString("pt-BR") + " mensagens em " + (F.conversas || 0) + " conversas");
+  document.getElementById("subtitulo").textContent = partesSub.join(" · ");
+  document.title = "Teams " + dataCurta(D.data);
+
+  var sel = document.getElementById("historico-sel");
+  var listaH = H.length ? H : [{ data: D.data }];
+  sel.innerHTML = listaH.map(function (h) {
+    return '<option value="' + esc(h.data) + '"' + (h.data === D.data ? " selected" : "") + ">Análise de " + esc(dataCurta(h.data)) + "/" + esc(String(h.data).slice(0, 4)) + "</option>";
+  }).join("");
+  sel.addEventListener("change", function () { if (sel.value !== D.data) location.href = BASE + sel.value + ".html"; });
+
+  // tema
+  var raiz = document.documentElement;
+  var temaSalvo = ler("teams-tema", null);
+  if (temaSalvo) raiz.setAttribute("data-theme", temaSalvo);
+  document.getElementById("tema").addEventListener("click", function () {
+    var atual = raiz.getAttribute("data-theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    var novo = atual === "dark" ? "light" : "dark";
+    raiz.setAttribute("data-theme", novo); guardar("teams-tema", novo);
+  });
+
+  // ---------- seções ----------
+  var pend = arr(D.pendencias).slice().sort(function (a, b) {
+    var pa = ORDEM_P[a.prioridade] == null ? 9 : ORDEM_P[a.prioridade], pb = ORDEM_P[b.prioridade] == null ? 9 : ORDEM_P[b.prioridade];
+    if (pa !== pb) return pa - pb; return String(a.desde || "").localeCompare(String(b.desde || ""));
+  });
+  var abertas = pend.filter(function (p) { return p.status !== "resolvida"; });
+  var criticas = abertas.filter(function (p) { return p.prioridade === "critica"; });
+  var timeArr = arr(D.time);
+  var alertas = timeArr.filter(function (t) { return t.gravidade === "alerta"; });
+  var chefe = D.chefe || {};
+
+  var SECOES = [
+    { id: "hoje", nome: "Hoje" },
+    { id: "pendencias", nome: "Pendências", cont: abertas.length, quente: criticas.length > 0 },
+    { id: "destravar", nome: "Destravar", cont: arr(D.destravar).length },
+    { id: "decisoes", nome: "Decisões", cont: arr(D.decisoes).length + arr(D.decisoes_a_tomar).length },
+    { id: "leandro", nome: "Leandro", cont: arr(chefe.itens).length },
+    { id: "time", nome: "Time", cont: timeArr.length, quente: alertas.length > 0 },
+    { id: "entrelinhas", nome: "Entrelinhas", cont: arr(D.entrelinhas).length },
+    { id: "clientes", nome: "Clientes", cont: arr(D.clientes_risco).length },
+    { id: "jeito", nome: "Seu jeito" },
+    { id: "dicas", nome: "Dicas e cuidados", cont: arr(D.dicas).length + arr(D.cuidados).length },
+    { id: "mensagens", nome: "Mensagens prontas", cont: arr(D.mensagens).length },
+    { id: "historico", nome: "Histórico" }
+  ];
+
+  var html = {};
+
+  // Hoje
+  html.hoje = (function () {
+    var t = D.termometro || {};
+    var nivel = t.nivel || "atencao";
+    var nomeNivel = { tenso: "Dia tenso", atencao: "Pede atenção", estavel: "Estável" }[nivel] || nivel;
+    var s = '<div class="abertura"><div class="cartao">' +
+      '<div class="selos" style="justify-content:space-between"><span class="termometro t-' + esc(nivel) + '">' + esc(nomeNivel) + "</span>" +
+      (F.do_julio != null ? '<span class="fraco num" style="font-size:12.5px">' + esc(F.do_julio) + " mensagens suas" +
+        (F.primeira_julio ? " · de " + esc(F.primeira_julio) + " a " + esc(F.ultima_julio || "") : "") +
+        (F.julio_depois_19h ? " · " + esc(F.julio_depois_19h) + " depois das 19h" : "") + "</span>" : "") + "</div>" +
+      (t.frase ? '<p style="margin-top:10px;font-size:15.5px;font-weight:500">' + esc(t.frase) + "</p>" : "") +
+      '<ul class="resumo" style="margin-top:12px">' + arr(D.resumo).map(function (r) { return "<li>" + esc(r) + "</li>"; }).join("") + "</ul></div>";
+    s += '<div class="cartao"><div class="rotulo" style="margin-bottom:10px">Conversas mais ativas</div>' + barras(arr(F.conversas_top)) +
+      (arr(F.por_dia).length ? '<div class="rotulo" style="margin:16px 0 10px">Mensagens por dia</div>' + barras(arr(F.por_dia).map(function (d) { return { nome: d.dia, mensagens: d.mensagens, extra: d.do_julio != null ? d.do_julio + " suas" : "" }; })) : "") +
+      "</div></div>";
+
+    s += '<div class="bloco"><div class="numeros">' +
+      numero("Críticas", criticas.length, "pendencias", criticas.length > 0) +
+      numero("Você deve", abertas.filter(function (p) { return p.tipo === "voce_deve"; }).length, "pendencias") +
+      numero("Time deve", abertas.filter(function (p) { return p.tipo === "time_deve"; }).length, "pendencias") +
+      numero("Para destravar", arr(D.destravar).length, "destravar") +
+      numero("Alertas no time", alertas.length, "time", alertas.length > 0) +
+      numero("Entrelinhas", arr(D.entrelinhas).length, "entrelinhas") +
+      "</div></div>";
+
+    if (arr(D.foco).length) {
+      s += '<div class="bloco"><div class="titulo-secao"><h2>Foco de hoje</h2><p>Se fizer só isso hoje, já valeu.</p></div><div class="grade g3 foco">' +
+        arr(D.foco).map(function (f) {
+          return '<div class="cartao"><h3>' + esc(f.titulo) + '</h3><p class="mudo" style="margin-top:6px;font-size:13.5px">' + esc(f.porque) + "</p>" +
+            (f.acao ? '<p class="acao"><b>Como:</b> ' + esc(f.acao) + "</p>" : "") + "</div>";
+        }).join("") + "</div></div>";
+    }
+    if (criticas.length) {
+      s += '<div class="bloco"><div class="titulo-secao"><h2>Críticas em aberto</h2></div><div class="lista">' + criticas.map(cartaoPendencia).join("") + "</div></div>";
+    }
+    var cuid = arr(D.cuidados).filter(function (c) { return c.gravidade === "alta"; });
+    if (cuid.length) {
+      s += '<div class="bloco"><div class="titulo-secao"><h2>Cuidado hoje</h2></div><div class="grade g2">' + cuid.map(cartaoCuidado).join("") + "</div></div>";
+    }
+    return s;
+  })();
+
+  function numero(rotulo, valor, destino, critico) {
+    return '<button class="numero" type="button" data-ir="' + destino + '"><div class="rotulo">' + esc(rotulo) +
+      '</div><div class="valor num' + (critico ? " critico" : "") + '">' + esc(valor) + "</div></button>";
+  }
+  function barras(itens) {
+    if (!itens.length) return '<p class="fraco">Sem dados de volume.</p>';
+    var max = Math.max.apply(null, itens.map(function (i) { return +i.mensagens || 0; })) || 1;
+    return '<div class="barras">' + itens.map(function (i) {
+      var w = Math.max(1, Math.round(((+i.mensagens || 0) / max) * 100));
+      var dica = i.nome + ": " + i.mensagens + " mensagens" + (i.extra ? " (" + i.extra + ")" : "");
+      return '<div class="barra-linha" data-dica="' + esc(dica) + '"><span class="nome-b">' + esc(i.nome) +
+        '</span><span class="barra-trilho"><span style="width:' + w + '%"></span></span><span class="v num">' + esc(i.mensagens) + "</span></div>";
+    }).join("") + "</div>";
+  }
+
+  // Pendências
+  function cartaoPendencia(p) {
+    var k = chaveDe(p.titulo);
+    var feito = !!ler(k, false) || p.status === "resolvida";
+    var meta = [];
+    if (p.quem) meta.push("<span><b>Quem:</b> " + esc(p.quem) + (p.para ? " → " + esc(p.para) : "") + "</span>");
+    if (p.desde) meta.push("<span><b>Desde:</b> " + esc(dataCurta(p.desde)) + " (" + esc(idade(p.desde)) + ")</span>");
+    if (p.prazo) meta.push("<span><b>Prazo:</b> " + esc(dataCurta(p.prazo)) + "</span>");
+    if (p.onde) meta.push("<span><b>Onde:</b> " + esc(p.onde) + "</span>");
+    if (p.cliente) meta.push("<span><b>Cliente:</b> " + esc(p.cliente) + "</span>");
+    return '<article class="cartao item p-' + esc(p.prioridade) + (feito ? " feito" : "") + '" data-item="pend" data-tipo="' + esc(p.tipo) +
+      '" data-prior="' + esc(p.prioridade) + '" data-texto="' + esc((p.titulo + " " + p.detalhe + " " + p.quem + " " + p.cliente + " " + p.onde).toLowerCase()) + '">' +
+      '<div class="cabeca"><div><h3>' + esc(p.titulo) + '</h3><div class="selos">' +
+      '<span class="selo ' + esc(p.prioridade) + '">' + esc(PRIOR[p.prioridade] || p.prioridade) + "</span>" +
+      (p.status ? '<span class="selo ' + esc(p.status) + '">' + esc(STATUS[p.status] || p.status) + "</span>" : "") +
+      (p.tipo ? '<span class="selo">' + esc(TIPO[p.tipo] || p.tipo) + "</span>" : "") +
+      (p.chefe ? '<span class="selo chefe">Leandro</span>' : "") + conf(p.confianca) + "</div></div>" +
+      '<label class="marcar"><input type="checkbox" data-feito="' + esc(k) + '" data-titulo="' + esc(p.titulo) + '"' + (feito ? " checked" : "") + "> Resolvi</label></div>" +
+      (p.detalhe ? '<p class="detalhe">' + esc(p.detalhe) + "</p>" : "") +
+      (meta.length ? '<div class="meta">' + meta.join("") + "</div>" : "") + evid(p.evidencia) + "</article>";
+  }
+  html.pendencias = (function () {
+    if (!pend.length) return '<p class="vazio">Nada em aberto.</p>';
+    return '<div class="titulo-secao"><h2>Pendências</h2><p>O que ficou em aberto e de quem é. Marque "Resolvi" e use "Copiar o que resolvi" pra me contar na próxima sessão.</p></div>' +
+      '<div class="filtros" id="filtros-pend">' +
+      '<button class="chip" type="button" data-f-tipo="" aria-pressed="true">Todas</button>' +
+      '<button class="chip" type="button" data-f-tipo="voce_deve" aria-pressed="false">Você deve</button>' +
+      '<button class="chip" type="button" data-f-tipo="time_deve" aria-pressed="false">Time deve</button>' +
+      '<button class="chip" type="button" data-f-tipo="outra_area_deve" aria-pressed="false">Outra área deve</button>' +
+      '<select class="botao" id="f-prior" aria-label="Prioridade"><option value="">Toda prioridade</option><option value="critica">Crítica</option><option value="alta">Alta</option><option value="media">Média</option><option value="baixa">Baixa</option></select>' +
+      '<input class="busca" id="f-busca" type="search" placeholder="Buscar cliente, pessoa, assunto" aria-label="Buscar">' +
+      '<label class="marcar"><input type="checkbox" id="f-esconder"> Esconder resolvidas</label>' +
+      '<button class="botao primario" type="button" id="copiar-feitos">Copiar o que resolvi</button></div>' +
+      '<div class="lista" id="lista-pend">' + pend.map(cartaoPendencia).join("") + '</div><p class="vazio" id="pend-vazio" hidden>Nenhuma pendência com esse filtro.</p>';
+  })();
+
+  // Destravar
+  html.destravar = (function () {
+    var l = arr(D.destravar);
+    if (!l.length) return '<p class="vazio">Nada travado esperando você.</p>';
+    return '<div class="titulo-secao"><h2>Precisa ser destravado</h2><p>Parado esperando alguém. Quem destrava, como, e a mensagem pronta.</p></div><div class="grade g2">' +
+      l.map(function (d) {
+        return '<article class="cartao item p-alta"><h3>' + esc(d.titulo) + "</h3>" +
+          '<dl class="campo">' +
+          (d.travado_em ? "<dt>Travado em</dt><dd>" + esc(d.travado_em) + "</dd>" : "") +
+          (d.quem_destrava ? "<dt>Quem destrava</dt><dd>" + esc(d.quem_destrava) + "</dd>" : "") +
+          (d.desde ? "<dt>Desde</dt><dd>" + esc(dataCurta(d.desde)) + " (" + esc(idade(d.desde)) + ")</dd>" : "") +
+          (d.impacto ? "<dt>Se não andar</dt><dd>" + esc(d.impacto) + "</dd>" : "") +
+          (d.como ? "<dt>Como</dt><dd>" + esc(d.como) + "</dd>" : "") + "</dl>" +
+          rascunho(d.mensagem) + "</article>";
+      }).join("") + "</div>";
+  })();
+
+  // Decisões
+  html.decisoes = (function () {
+    var t = arr(D.decisoes), a = arr(D.decisoes_a_tomar), s = "";
+    s += '<div class="titulo-secao"><h2>Esperando a sua decisão</h2><p>Opções na mesa e o que eu faria.</p></div>';
+    s += a.length ? '<div class="grade g2">' + a.map(function (d) {
+      return '<article class="cartao item p-media"><h3>' + esc(d.titulo) + "</h3>" +
+        (d.contexto ? '<p class="detalhe mudo">' + esc(d.contexto) + "</p>" : "") +
+        (arr(d.opcoes).length ? '<div class="rotulo" style="margin-top:10px">Opções</div><ul style="margin-top:4px">' + arr(d.opcoes).map(function (o) { return "<li>· " + esc(o) + "</li>"; }).join("") + "</ul>" : "") +
+        (d.recomendacao ? '<div class="rascunho"><span class="rotulo">Recomendação</span><div class="texto">' + esc(d.recomendacao) + "</div></div>" : "") +
+        (d.prazo ? '<div class="meta"><span><b>Até:</b> ' + esc(dataCurta(d.prazo)) + "</span></div>" : "") + "</article>";
+    }).join("") + "</div>" : '<p class="vazio">Nenhuma decisão esperando você.</p>';
+    s += '<div class="bloco"><div class="titulo-secao"><h2>Decisões tomadas</h2><p>"Sem registro" é decisão que ficou só no chat: vale formalizar.</p></div>';
+    s += t.length ? '<div class="lista">' + t.map(function (d) {
+      return '<article class="cartao item ' + (d.registrada ? "g-positivo" : "p-media") + '"><div class="cabeca"><h3>' + esc(d.titulo) + "</h3>" +
+        '<div class="selos">' + (d.registrada ? '<span class="selo positivo">Registrada</span>' : '<span class="selo semregistro">Sem registro</span>') + "</div></div>" +
+        '<div class="meta">' + (d.quem ? "<span><b>Quem:</b> " + esc(d.quem) + "</span>" : "") + (d.quando ? "<span><b>Quando:</b> " + esc(d.quando) + "</span>" : "") +
+        (d.onde ? "<span><b>Onde:</b> " + esc(d.onde) + "</span>" : "") + "</div>" +
+        (d.risco ? '<p class="detalhe"><b>Risco:</b> ' + esc(d.risco) + "</p>" : "") + evid(d.evidencia) + "</article>";
+    }).join("") + "</div>" : '<p class="vazio">Nenhuma decisão registrada na janela.</p>';
+    return s + "</div>";
+  })();
+
+  // Leandro
+  html.leandro = (function () {
+    var s = '<div class="titulo-secao"><h2>Com o Leandro</h2><p>Tudo que envolve o seu chefe na janela.</p></div>';
+    if (chefe.leitura) s += '<div class="cartao"><div class="rotulo">Leitura da relação no período</div><p style="margin-top:6px;font-size:15px">' + esc(chefe.leitura) + "</p></div>";
+    var it = arr(chefe.itens);
+    s += it.length ? '<div class="lista" style="margin-top:12px">' + it.map(function (i) {
+      return '<article class="cartao item p-alta"><div class="cabeca"><h3>' + esc(i.titulo) + "</h3>" + conf(i.confianca) + "</div>" +
+        (i.detalhe ? '<p class="detalhe">' + esc(i.detalhe) + "</p>" : "") + evid(i.evidencia) + "</article>";
+    }).join("") + "</div>" : '<p class="vazio" style="margin-top:12px">Nada com o Leandro na janela.</p>';
+    if (arr(chefe.cuidados).length) {
+      s += '<div class="bloco"><div class="titulo-secao"><h2>Cuidados com o chefe</h2></div><div class="cartao"><ul class="resumo">' +
+        arr(chefe.cuidados).map(function (c) { return "<li>" + esc(c) + "</li>"; }).join("") + "</ul></div></div>";
+    }
+    return s;
+  })();
+
+  // Time
+  html.time = (function () {
+    if (!timeArr.length) return '<p class="vazio">Sem sinais do time na janela.</p>';
+    var grupos = ["consultoria", "projetos", "cs", "outro"];
+    var s = '<div class="titulo-secao"><h2>Sinais do time</h2><p>Por área. Vermelho é alerta, amarelo atenção, verde o que foi bem feito e merece reconhecimento.</p></div>' +
+      '<div class="filtros" id="filtros-time">' +
+      '<button class="chip" type="button" data-f-grav="" aria-pressed="true">Todos</button>' +
+      ["alerta", "atencao", "info", "positivo"].map(function (g) { return '<button class="chip" type="button" data-f-grav="' + g + '" aria-pressed="false">' + GRAV[g] + "</button>"; }).join("") + "</div>";
+    grupos.forEach(function (g) {
+      var l = timeArr.filter(function (t) { return (t.area || "outro") === g; }).sort(function (a, b) { return (ORDEM_G[a.gravidade] || 0) - (ORDEM_G[b.gravidade] || 0); });
+      if (!l.length) return;
+      var cor = g === "outro" ? "var(--tinta-3)" : "var(--area-" + g + ")";
+      s += '<div class="bloco grupo-time"><div class="area-titulo"><span class="marca" style="background:' + cor + '"></span><h2>' + esc(AREA[g]) + '</h2><span class="fraco">' + l.length + "</span></div>" +
+        '<div class="grade g2">' + l.map(function (t) {
+          return '<article class="cartao item pessoa g-' + esc(t.gravidade) + '" data-grav="' + esc(t.gravidade) + '"><div class="cabeca"><h3 class="nome">' + esc(t.pessoa) + "</h3>" +
+            '<div class="selos"><span class="selo ' + esc(t.gravidade) + '">' + esc(GRAV[t.gravidade] || t.gravidade) + "</span>" + conf(t.confianca) + "</div></div>" +
+            '<p class="detalhe">' + esc(t.sinal) + "</p>" +
+            (t.sugestao ? '<p class="detalhe" style="font-size:13.5px"><b>O que fazer:</b> ' + esc(t.sugestao) + "</p>" : "") + evid(t.evidencia) + "</article>";
+        }).join("") + "</div></div>";
+    });
+    return s;
+  })();
+
+  // Entrelinhas
+  html.entrelinhas = (function () {
+    var l = arr(D.entrelinhas);
+    var s = '<div class="titulo-secao"><h2>Entrelinhas</h2><p>Falas com possível segunda intenção. É hipótese com evidência, não sentença: sempre com o outro lado e um jeito de agir sem acusar.</p></div>';
+    if (!l.length) return s + '<p class="vazio">Nada fora do normal nas falas desta janela.</p>';
+    return s + '<div class="lista">' + l.map(function (e) {
+      return '<article class="cartao"><div class="cabeca"><div><h3>' + esc(e.pessoa) + '</h3><p class="fraco" style="font-size:12.5px">' + esc([e.onde, e.quando].filter(Boolean).join(" · ")) + "</p></div>" + conf(e.confianca) + "</div>" +
+        '<div class="citacao">"' + esc(e.citacao) + '"</div>' +
+        '<div class="leituras"><div class="leitura ruim"><div class="rotulo">Leitura possível</div>' + esc(e.leitura) + "</div>" +
+        '<div class="leitura boa"><div class="rotulo">O outro lado</div>' + esc(e.leitura_benigna) + "</div></div>" +
+        (e.como_agir ? '<p class="como-agir"><b>Como agir:</b> ' + esc(e.como_agir) + "</p>" : "") + "</article>";
+    }).join("") + "</div>";
+  })();
+
+  // Clientes
+  html.clientes = (function () {
+    var l = arr(D.clientes_risco);
+    var s = '<div class="titulo-secao"><h2>Clientes e dinheiro em risco</h2></div>';
+    if (!l.length) return s + '<p class="vazio">Nenhum cliente em risco apareceu no Teams.</p>';
+    return s + '<div class="grade g2">' + l.map(function (c) {
+      return '<article class="cartao item p-critica"><h3>' + esc(c.cliente) + "</h3>" +
+        '<p class="detalhe">' + esc(c.situacao) + "</p>" +
+        '<dl class="campo">' + (c.proximo_passo ? "<dt>Próximo passo</dt><dd>" + esc(c.proximo_passo) + "</dd>" : "") +
+        (c.dono ? "<dt>Dono</dt><dd>" + esc(c.dono) + "</dd>" : "") + "</dl>" + evid(c.evidencia) + "</article>";
+    }).join("") + "</div>";
+  })();
+
+  // Seu jeito
+  html.jeito = (function () {
+    var e = D.escrita || {}, d = D.decisao || {};
+    var s = '<div class="titulo-secao"><h2>Como você escreve</h2><p>' + esc(e.resumo || "") + "</p></div>";
+    if (arr(e.fortes).length) {
+      s += '<div class="grade g3">' + arr(e.fortes).map(function (f) {
+        return '<article class="cartao item g-positivo"><div class="rotulo">Ponto forte</div><p style="margin-top:4px">' + esc(f.texto) + "</p>" + evid(f.evidencia) + "</article>";
+      }).join("") + "</div>";
+    }
+    if (arr(e.melhorar).length) {
+      s += '<div class="bloco"><div class="titulo-secao"><h2>O que melhorar na escrita</h2></div><div class="lista">' + arr(e.melhorar).map(function (m) {
+        return '<article class="cartao item p-media"><h3>' + esc(m.padrao) + "</h3>" +
+          (m.impacto ? '<p class="detalhe mudo">' + esc(m.impacto) + "</p>" : "") +
+          ((m.antes || m.depois) ? '<div class="antes-depois"><div class="antes"><div class="rotulo">Como saiu</div>' + esc(m.antes) + '</div><div class="depois"><div class="rotulo">Como podia sair</div>' + esc(m.depois) + "</div></div>" : "") +
+          evid(m.evidencia) + "</article>";
+      }).join("") + "</div></div>";
+    }
+    s += '<div class="bloco"><div class="titulo-secao"><h2>Como você decide</h2><p>' + esc(d.resumo || "") + "</p></div>";
+    s += arr(d.padroes).length ? '<div class="grade g2">' + arr(d.padroes).map(function (p) {
+      return '<article class="cartao"><div class="cabeca"><h3>' + esc(p.padrao) + "</h3>" + conf(p.confianca) + "</div>" +
+        '<dl class="campo">' + (p.efeito ? "<dt>Efeito</dt><dd>" + esc(p.efeito) + "</dd>" : "") + (p.sugestao ? "<dt>Sugestão</dt><dd>" + esc(p.sugestao) + "</dd>" : "") + "</dl>" + evid(p.evidencia) + "</article>";
+    }).join("") + "</div>" : '<p class="vazio">Sem observações de decisão nesta janela.</p>';
+    s += "</div>";
+    if (arr(D.aprendizados).length) {
+      s += '<div class="bloco"><div class="titulo-secao"><h2>O que aprendi (pra você confirmar)</h2><p>Só entra na memória do sistema quando você confirmar, pelo /atualizar.</p></div><div class="lista">' +
+        arr(D.aprendizados).map(function (a) {
+          return '<article class="cartao"><div class="cabeca"><div><span class="selo">' + esc(a.sobre) + '</span><p style="margin-top:6px">' + esc(a.texto) + "</p></div>" + conf(a.confianca) + "</div>" + evid(a.evidencia) + "</article>";
+        }).join("") + "</div></div>";
+    }
+    return s;
+  })();
+
+  // Dicas e cuidados
+  function cartaoCuidado(c) {
+    var g = { alta: "alerta", media: "atencao", baixa: "info" }[c.gravidade] || "info";
+    return '<article class="cartao item g-' + g + '"><div class="cabeca"><h3>' + esc(c.titulo) + '</h3><span class="selo ' + g + '">' + esc({ alta: "Alto", media: "Médio", baixa: "Baixo" }[c.gravidade] || c.gravidade) + "</span></div>" +
+      '<p class="detalhe">' + esc(c.detalhe) + "</p>" + evid(c.evidencia) + "</article>";
+  }
+  html.dicas = (function () {
+    var s = '<div class="titulo-secao"><h2>Dicas de liderança</h2><p>Cada dica sai de um fato desta janela, com uma prática pra hoje.</p></div>';
+    s += arr(D.dicas).length ? '<div class="grade g2">' + arr(D.dicas).map(function (d) {
+      var k = "teams-pratica:" + D.data + ":" + chaveDe(d.titulo);
+      return '<article class="cartao dica"><h3>' + esc(d.titulo) + '</h3><p class="detalhe">' + esc(d.texto) + "</p>" +
+        (d.pratica ? '<div class="pratica"><label class="marcar" style="color:inherit;white-space:normal;align-items:flex-start"><input type="checkbox" data-pratica="' + esc(k) + '"' + (ler(k, false) ? " checked" : "") + "> <span><b>Pratique hoje:</b> " + esc(d.pratica) + "</span></label></div>" : "") +
+        (d.ligada_a ? '<p class="ligada">Ligada a: ' + esc(d.ligada_a) + "</p>" : "") + "</article>";
+    }).join("") + "</div>" : '<p class="vazio">Sem dicas nesta janela.</p>';
+    var c = arr(D.cuidados).slice().sort(function (a, b) { return ({ alta: 0, media: 1, baixa: 2 }[a.gravidade] || 3) - ({ alta: 0, media: 1, baixa: 2 }[b.gravidade] || 3); });
+    s += '<div class="bloco"><div class="titulo-secao"><h2>Cuidados</h2><p>O que pode virar problema pra você.</p></div>';
+    s += c.length ? '<div class="grade g2">' + c.map(cartaoCuidado).join("") + "</div>" : '<p class="vazio">Nenhum cuidado especial.</p>';
+    return s + "</div>";
+  })();
+
+  // Mensagens prontas
+  html.mensagens = (function () {
+    var l = arr(D.mensagens);
+    var s = '<div class="titulo-secao"><h2>Mensagens prontas</h2><p>Rascunhos pra copiar, ajustar e mandar. Nada é enviado sozinho.</p></div>';
+    if (!l.length) return s + '<p class="vazio">Sem mensagens sugeridas.</p>';
+    return s + '<div class="grade g2">' + l.map(function (m) {
+      return '<article class="cartao"><div class="rotulo">Para ' + esc(m.para) + "</div><h3 style=\"margin-top:2px\">" + esc(m.assunto) + "</h3>" +
+        (m.por_que ? '<p class="detalhe mudo" style="font-size:13.5px">' + esc(m.por_que) + "</p>" : "") + rascunho(m.texto, "Texto") + "</article>";
+    }).join("") + "</div>";
+  })();
+
+  // Histórico
+  html.historico = (function () {
+    var s = '<div class="titulo-secao"><h2>Histórico</h2><p>Todas as análises guardadas. Clique pra abrir.</p></div>';
+    if (!H.length) return s + '<p class="vazio">Esta é a primeira análise.</p>';
+    return s + '<div class="cartao" style="overflow-x:auto"><table class="hist"><thead><tr><th>Data</th><th>Termômetro</th><th class="num">Críticas</th><th class="num">Em aberto</th><th class="num">Alertas no time</th><th class="num">Mensagens</th></tr></thead><tbody>' +
+      H.slice().reverse().map(function (h) {
+        var atual = h.data === D.data;
+        return "<tr><td>" + (atual ? "<b>" + esc(dataCurta(h.data)) + "/" + esc(String(h.data).slice(0, 4)) + "</b> (esta)" : '<a href="' + esc(BASE + h.data) + '.html">' + esc(dataCurta(h.data)) + "/" + esc(String(h.data).slice(0, 4)) + "</a>") +
+          "</td><td>" + esc({ tenso: "Tenso", atencao: "Atenção", estavel: "Estável" }[h.nivel] || h.nivel || "") + '</td><td class="num">' + esc(h.criticas) +
+          '</td><td class="num">' + esc(h.abertas) + '</td><td class="num">' + esc(h.alertas) + '</td><td class="num">' + esc(h.mensagens != null ? Number(h.mensagens).toLocaleString("pt-BR") : "") + "</td></tr>";
+      }).join("") + "</tbody></table></div>";
+  })();
+
+  // ---------- montar ----------
+  var nav = document.getElementById("abas"), main = document.getElementById("conteudo");
+  nav.innerHTML = SECOES.map(function (s) {
+    return '<button class="aba" type="button" role="tab" id="aba-' + s.id + '" aria-controls="sec-' + s.id + '" aria-selected="false" data-aba="' + s.id + '">' + esc(s.nome) +
+      (s.cont ? '<span class="cont' + (s.quente ? " quente" : "") + '">' + s.cont + "</span>" : "") + "</button>";
+  }).join("");
+  main.innerHTML = SECOES.map(function (s) {
+    return '<section class="painel" role="tabpanel" id="sec-' + s.id + '" aria-labelledby="aba-' + s.id + '">' + (html[s.id] || "") + "</section>";
+  }).join("");
+  document.getElementById("rodape").innerHTML = "Confidencial: fala de pessoas do time. Não encaminhar, não publicar. " +
+    "Gerado em " + esc(String(D.gerado_em || "").replace("T", " ").slice(0, 16)) + " a partir do Teams (só leitura).";
+
+  function abrir(id, rolar) {
+    if (!document.getElementById("sec-" + id)) id = "hoje";
+    SECOES.forEach(function (s) {
+      document.getElementById("sec-" + s.id).classList.toggle("ativo", s.id === id);
+      document.getElementById("aba-" + s.id).setAttribute("aria-selected", s.id === id ? "true" : "false");
+    });
+    if (location.hash !== "#" + id) history.replaceState(null, "", "#" + id);
+    var aba = document.getElementById("aba-" + id); if (aba && aba.scrollIntoView) aba.scrollIntoView({ block: "nearest", inline: "nearest" });
+    if (rolar) window.scrollTo({ top: 0 });
+  }
+  nav.addEventListener("click", function (ev) { var b = ev.target.closest("[data-aba]"); if (b) abrir(b.getAttribute("data-aba"), true); });
+  nav.addEventListener("keydown", function (ev) {
+    if (ev.key !== "ArrowRight" && ev.key !== "ArrowLeft") return;
+    var ids = SECOES.map(function (s) { return s.id; });
+    var atual = ids.indexOf((location.hash || "#hoje").slice(1));
+    var prox = ids[(atual + (ev.key === "ArrowRight" ? 1 : ids.length - 1)) % ids.length];
+    abrir(prox, false); document.getElementById("aba-" + prox).focus();
+  });
+  abrir((location.hash || "#hoje").slice(1), false);
+
+  // cliques gerais
+  document.addEventListener("click", function (ev) {
+    var c = ev.target.closest("[data-copiar]"); if (c) { copiar(c.getAttribute("data-copiar")); return; }
+    var ir = ev.target.closest("[data-ir]"); if (ir) { abrir(ir.getAttribute("data-ir"), true); return; }
+  });
+  document.addEventListener("change", function (ev) {
+    var f = ev.target.getAttribute && ev.target.getAttribute("data-feito");
+    if (f) { guardar(f, ev.target.checked); ev.target.closest(".item").classList.toggle("feito", ev.target.checked); filtrarPend(); return; }
+    var p = ev.target.getAttribute && ev.target.getAttribute("data-pratica");
+    if (p) guardar(p, ev.target.checked);
+  });
+
+  // filtros de pendências
+  var fTipo = "";
+  function filtrarPend() {
+    var lista = document.getElementById("lista-pend"); if (!lista) return;
+    var prior = (document.getElementById("f-prior") || {}).value || "";
+    var busca = ((document.getElementById("f-busca") || {}).value || "").toLowerCase().trim();
+    var esconder = (document.getElementById("f-esconder") || {}).checked;
+    var vis = 0;
+    lista.querySelectorAll("[data-item=pend]").forEach(function (el) {
+      var ok = (!fTipo || el.getAttribute("data-tipo") === fTipo) && (!prior || el.getAttribute("data-prior") === prior) &&
+        (!busca || el.getAttribute("data-texto").indexOf(busca) >= 0) && !(esconder && el.classList.contains("feito"));
+      el.hidden = !ok; if (ok) vis++;
+    });
+    document.getElementById("pend-vazio").hidden = vis > 0;
+  }
+  var fp = document.getElementById("filtros-pend");
+  if (fp) {
+    fp.addEventListener("click", function (ev) {
+      var b = ev.target.closest("[data-f-tipo]"); if (!b) return;
+      fTipo = b.getAttribute("data-f-tipo");
+      fp.querySelectorAll("[data-f-tipo]").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      filtrarPend();
+    });
+    document.getElementById("f-prior").addEventListener("change", filtrarPend);
+    document.getElementById("f-busca").addEventListener("input", filtrarPend);
+    document.getElementById("f-esconder").addEventListener("change", filtrarPend);
+    document.getElementById("copiar-feitos").addEventListener("click", function () {
+      var feitos = [].slice.call(document.querySelectorAll("[data-feito]:checked")).map(function (i) { return "- " + i.getAttribute("data-titulo"); });
+      if (!feitos.length) { avisar("Nenhuma marcada como resolvida"); return; }
+      copiar("Resolvi (análise do Teams de " + dataCurta(D.data) + "):\n" + feitos.join("\n"));
+    });
+  }
+  var ft = document.getElementById("filtros-time");
+  if (ft) {
+    ft.addEventListener("click", function (ev) {
+      var b = ev.target.closest("[data-f-grav]"); if (!b) return;
+      var g = b.getAttribute("data-f-grav");
+      ft.querySelectorAll("[data-f-grav]").forEach(function (x) { x.setAttribute("aria-pressed", x === b ? "true" : "false"); });
+      document.querySelectorAll("#sec-time .pessoa").forEach(function (el) { el.hidden = !!g && el.getAttribute("data-grav") !== g; });
+      document.querySelectorAll("#sec-time .grupo-time").forEach(function (gr) { gr.hidden = !gr.querySelector(".pessoa:not([hidden])"); });
+    });
+  }
+
+  // dica flutuante das barras
+  var dica = document.getElementById("dica-flutuante");
+  document.addEventListener("mousemove", function (ev) {
+    var b = ev.target.closest && ev.target.closest("[data-dica]");
+    if (!b) { dica.style.display = "none"; return; }
+    dica.textContent = b.getAttribute("data-dica"); dica.style.display = "block";
+    var x = Math.min(ev.clientX + 14, window.innerWidth - dica.offsetWidth - 8);
+    dica.style.left = x + "px"; dica.style.top = (ev.clientY + 16) + "px";
+  });
+})();
+</script>
+</body>
+</html>

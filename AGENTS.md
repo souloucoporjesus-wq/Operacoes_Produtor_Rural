@@ -64,9 +64,10 @@ diário de outra origem, avisa se o `agora.md` está velho.
 | de um projeto ou cliente, pra trabalhar nele | a pasta dele: `AGENTS.md` + `contexto.md` + `andamento.md` |
 | posição de suspensos, inadimplência e churn, e o que ficou combinado com a diretoria | `retencao/contexto.md` (reuniões brutas em `retencao/reunioes/`) |
 | o NPS de produto e serviços (bases da Track, notebook, apresentação pra diretoria): a pasta do NPS | `relatorios/Atualização de NPS/` (a skill `analise_NPS` conduz) |
-| os projetos de implantação hunter (exportação do CES, saldo de horas, última e próxima agenda, prioridades): a pasta do painel de projetos | `projetos/Painel Projeto/` (a skill `analise_projetos` conduz; `atualizar-painel.bat` atualiza sem IA) |
+| os projetos de implantação hunter (exportação do CES, TMI, vazão, estoque de horas parado e planejado, saldo de horas, última e próxima agenda, prioridades): a pasta do painel de projetos | `projetos/Painel Projeto/` (a skill `analise_projetos` conduz; `atualizar-painel.bat` atualiza sem IA, abrindo na página inicial) |
 | converter KML ou KMZ de talhão pro Importar Talhão do myFarm, inclusive arquivo só com linhas de plantio: a página do conversor | `projetos/KLM/conversor-kml-myfarm.html` (a skill `kml-converter-myfarm` conduz) |
 | o briefing do dia (pendências, o que ficou parado, Leandro, sinais do time, ajustes pro Julio) | `painel/briefing.html`; o histórico em `briefing/AAAA-MM-DD.json` e `.md` (a skill `briefing` gera) |
+| a análise diária do Teams (pendências, destravar, Leandro, time, entrelinhas, escrita e decisão do Julio, dicas de liderança): a pasta do Teams (**confidencial**) | `projetos/Teams/` (o painel mais recente em `painel.html`; a skill `analise_teams` conduz; a tarefa das 9h chama `rodar-analise.ps1`) |
 | como o Julio trabalha, escreve e decide (o que o sistema aprendeu) | `_contexto/jeito-do-julio.md` |
 | sinais do time, quem é quem, histórico de entradas e saídas (**confidencial**) | `equipe/radar.md` |
 | o que está atrasado, o que cobrar de quem, decisões a tomar, projetos: a visão de painel | `painel/index.html` (o `/painel` regenera a partir do `agora.md`, dos `andamento.md` e do `decisoes.md`) |
@@ -211,3 +212,6 @@ no fim", e a sessão nunca morre sem essa oferta. Não oferecer em sessão trivi
   muitos tickets, pra priorizar atenção de desenvolvimento (dados em `dados/`)
 - `projetos/KLM/` · conversor de KML de talhão pro myFarm: a página `conversor-kml-myfarm.html` (roda
   no navegador, sem internet), o pacote original da skill e arquivos de exemplo de cliente
+- `projetos/Teams/` · análise diária do Teams (seg a sex, 9h, nas duas máquinas): um JSON, um painel
+  e um texto por dia em `analises/`, o painel mais recente em `painel.html`. **Confidencial**: fala de
+  pessoas do time, não compartilhar nem publicar

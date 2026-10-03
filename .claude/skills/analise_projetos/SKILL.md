@@ -5,17 +5,22 @@ description: >-
   AgriManager) a partir da exportação do CES: cruza as abas Projetos, Hr Adquirida, OS executada,
   OS planejada e Implantador, calcula horas adquiridas, usadas e saldo, dias em aberto, última e
   próxima agenda, última OS executada, fase da jornada, saúde e ordem de ataque de cada projeto, e
-  gera o painel em HTML que abre direto no navegador (abas Visão geral, Projetos a atacar, Prioridades, Projetos,
-  Agenda dos projetos, Agenda dos consultores, Agendas realizadas e Pessoas, com página própria
-  de cada projeto aberta em nova aba e botão Histórico com as anotações dos reports das analistas). Use sempre que o usuário chamar /analise_projetos
+  gera o painel em HTML que abre direto no navegador, na página inicial (visão sintética com TMI,
+  estoque de horas parado, planejado e dos suspensos, vazão da carteira, horas realizadas e carteira
+  de hoje, num período à escolha) e com menu lateral para as seções Visão geral, Projetos a atacar,
+  Prioridades, Projetos, Agenda dos projetos, Agenda dos consultores, Agendas realizadas e Pessoas,
+  com página própria de cada projeto aberta em nova aba e botão Histórico com as anotações dos
+  reports das analistas. O atualizar-painel.bat faz tudo isso sem IA. Use sempre que o usuário chamar /analise_projetos
   ou falar em painel de projetos, projetos de implantação, projetos hunter, exportação do CES,
   saldo de horas dos projetos, horas usadas, última agenda, próxima agenda, última OS, projetos
   parados, projetos por encerrar, quais projetos atacar primeiro, carteira de implantação,
   analista ou consultor de projeto, agenda dos consultores, agendas realizadas no período, horas
   por consultor, projetos a atacar, dias sem agenda, data de início do projeto, filtro por consultor
   ou por papel do consultor, report de projetos, anotações ou histórico do
-  projeto, HandOff, saldo financeiro, hora entregue sem faturar, mesmo sem dizer "skill". Não confundir com /painel (pendências
-  do sistema).
+  projeto, HandOff, saldo financeiro, hora entregue sem faturar, TMI, tempo médio de implantação,
+  tempo até o go live, vazão, entradas e encerramentos, estoque de horas, horas paradas, horas
+  planejadas, horas dos suspensos, página inicial ou visão sintética do painel, menu lateral,
+  mesmo sem dizer "skill". Não confundir com /painel (pendências do sistema).
 ---
 
 # /analise_projetos · painel dos projetos de implantação hunter
@@ -23,7 +28,9 @@ description: >-
 O painel mostra ao Julio, projeto a projeto, onde cada implantação está, quanto de hora sobra, há
 quanto tempo não tem agenda, qual foi a última OS executada, o que está marcado e por onde atacar.
 Tudo mora na **pasta do painel de projetos** (ver o mapa do `AGENTS.md`). O painel é um HTML único
-com dados e gráficos embutidos: abre direto do arquivo, sem servidor e sem internet.
+com dados e gráficos embutidos: abre direto do arquivo, sem servidor e sem internet. Abre sempre na
+**página inicial** (visão sintética, pedido do Julio em 03/10/2026) e navega pelas seções num
+**menu lateral** à esquerda, no lugar das abas que ficavam no topo.
 
 O método de análise é o da skill `analise_dados_senior`: uma pergunta por vez, resultado conferido
 antes de virar conclusão, interpretação em vez de repetir número. Pergunta nova entra no notebook
@@ -38,16 +45,24 @@ acima da conclusão, e a conclusão é atualizada.
 | `importar_reports.py` | lê os reports e grava `historico-projetos.json`; roda com IA, fora do .bat |
 | `historico-projetos.json` | o histórico acumulado das anotações; o `gerar_painel.py` lê e o .bat mantém no painel |
 | `modelo.py` | regras e cálculos: filtro hunter, horas, agendas, fase, saúde, prioridade. Os limites de saúde ficam no topo |
-| `gerar_painel.py` | monta os dados, embute no modelo da página e grava `painel-projetos-hunter.html` |
-| `painel_template.html` | a página (CSS e JavaScript), com os marcadores `/*__PLOTLY__*/` e `/*__DADOS__*/` |
-| `atualizar-painel.bat` | dois cliques: acha o Python (lançador `py`, `python` do PATH ou a instalação do usuário), instala pandas, openpyxl e plotly se faltar, roda `gerar_painel.py` (repassa os argumentos: `atualizar-painel.bat --sem-abrir` só gera) e abre o painel; se der erro, avisa em português e o painel anterior fica intacto. Vai pro GitHub desde 02/10/2026 (`!*.bat` no `.gitignore`; antes ele não viajava entre as máquinas) |
+| `gerar_painel.py` | monta os dados, embute no modelo da página e grava `painel-projetos-hunter.html`. O bloco `inicio` dos dados (todos os hunter, inclusive encerrados e cancelados, com abertura, entrega, primeira agenda, primeira agenda de go live, horas adquiridas e usadas, e as horas realizadas por dia desde 2024) alimenta a página inicial; os outros blocos não mudaram. No fim imprime os números de cabeça da página inicial (`resumo_inicio`) |
+| `painel_template.html` | a página (CSS e JavaScript), com os marcadores `/*__PLOTLY__*/` e `/*__DADOS__*/`; os indicadores da página inicial são calculados aqui (`indicadoresPeriodo`, `partesEstoque`, `renderInicio`) |
+| `atualizar-painel.bat` | dois cliques: acha o Python (lançador `py`, `python` do PATH ou a instalação do usuário), instala pandas, openpyxl e plotly se faltar, roda `gerar_painel.py` (repassa os argumentos: `atualizar-painel.bat --sem-abrir` só gera) e abre o painel na página inicial; a janela mostra os números de cabeça (TMI, entradas, entregues, vazão e estoque de horas total, parado, planejado e dos suspensos) e fecha em 20 segundos. Faz a análise inteira sem IA. Se der erro, avisa em português e o painel anterior fica intacto. Vai pro GitHub desde 02/10/2026 (`!*.bat` no `.gitignore`; antes ele não viajava entre as máquinas) |
 | `analise-projetos-hunter.ipynb` | a análise pergunta a pergunta, com as conclusões |
 | `painel-projetos-hunter.html` | o painel gerado (não editar à mão) |
 
-## As abas do painel
+## As seções do painel (menu lateral)
 
-| aba | o que mostra |
+O menu fica à esquerda, em três grupos: Carteira (Visão geral, Projetos a atacar, Prioridades,
+Projetos), Agenda (Agenda dos projetos, Agenda dos consultores, Agendas realizadas) e Time
+(Pessoas), com o Início no topo e a data de posição do CES no pé. "Recolher menu" deixa só os
+ícones (fica lembrado no navegador). Abaixo de 1024px o menu vira gaveta, aberta pelo botão Menu da
+barra do topo. O painel sempre abre no Início; `#geral`, `#prioridades` etc. no endereço abrem
+direto a seção. O título da página mostra a seção atual.
+
+| seção | o que mostra |
 |---|---|
+| Início (visão sintética) | o resumo para abrir o dia, com período à escolha (últimos 12 meses, este ano, ano passado, desde 2024) comparado com o período anterior: **prazo** (TMI em destaque, por sistema e com mediana; até a primeira agenda; até o go live; acima do prazo normal), gráfico do TMI mês a mês e leitura rápida em frases; **estoque de horas** hoje (total, parado, planejado, dos suspensos, sem fechar, livre) e a barra "onde está o estoque" por situação; **vazão** (entradas, entregues ao suporte, vazão, saldo da carteira, cancelados, meses para entregar a carteira); **horas realizadas e consumo** (realizadas e por mês, consumo no encerramento, horas que sobraram, horas por projeto entregue); **carteira hoje** (em aberto, idade média, sem próxima agenda, já passaram do go live, agendas nos próximos 30 dias, agendas vencidas) e os atalhos "Por onde atacar", que abrem a aba Prioridades no grupo |
 | Visão geral | números da carteira, onde está cada projeto (dias sem agenda × horas usadas), saúde, fase, evolução desde 2025 |
 | Projetos a atacar | o resumo de bater o olho: só os em andamento sem nada marcado, com os dias sem agenda em destaque, em duas listas (retomar a implantação e encerrar ou usar o saldo) e as faixas até 30, 31 a 90 e mais de 90 dias |
 | Prioridades | a fila de ataque: início do projeto, última agenda, última OS executada, próxima agenda e saldo de cada projeto; filtros próprios de início do projeto (Todos, Últimos 90 dias, os dois anos mais recentes, "Antes de" e datas De/Até) e de consultor com o papel dele no projeto; cartões, tabela e CSV seguem os filtros |
@@ -121,6 +136,53 @@ projetos em encerramento no report e a hora entregue sem faturar. Atalhos de end
   filtros da aba" zera início, papel, consultor e o cartão escolhido; "Limpar filtros" do topo também
   zera os da aba. Em 02/10/2026: 49 abertos em 2026, 28 em 2025 e 6 antes (todos suspensos).
 
+## Indicadores da página inicial (pedido do Julio em 03/10/2026)
+
+Nenhuma métrica das outras seções mudou: os blocos de dados antigos saem idênticos (conferido em
+03/10/2026, aba por aba, contra o painel anterior). As contas abaixo estão em `painel_template.html`
+e repetidas em Python no notebook (pergunta "Quanto tempo leva uma implantação (TMI)") e no
+`resumo_inicio` do `gerar_painel.py`; mudou uma, mudar as três e conferir que batem.
+
+- **Recorte:** prazo, vazão e horas realizadas usam todos os hunter (inclusive encerrados e
+  cancelados) e seguem só o filtro de sistema. Estoque de horas e carteira hoje são os projetos em
+  aberto e seguem todos os filtros do topo.
+- **Período:** últimos 12 meses (padrão), este ano, ano passado ou desde 2024, sempre até a data de
+  posição do CES. Comparação: 12 meses anteriores, mesmo período do ano anterior, o ano antes do ano
+  passado; "desde 2024" não compara. A seta é vermelha quando piorou e verde quando melhorou.
+- **TMI (tempo médio de implantação):** média de dias da abertura (`DT_INICIAL`) até a entrega pro
+  suporte (`DT_ENCERRAMENTO`, a mesma data dos encerramentos da Visão geral), dos hunter concluídos
+  com entrega no período. Mostra também a mediana e o TMI de cada sistema. Atenção: quando a fila de
+  encerramento anda, entram projetos antigos e o TMI sobe; ler junto com "abertos há mais de 1 ano".
+- **TMI mês a mês:** cada ponto é o TMI dos entregues nos 12 meses até o fim daquele mês, desde
+  jan/2025; com menos de 3 entregues o ponto fica vazio.
+- **Até a primeira agenda:** mediana de dias da abertura à primeira agenda que aconteceu, dos
+  abertos no período (sem cancelados) que já tiveram agenda. **Até o go live:** mediana de dias da
+  abertura à primeira agenda de go live, dos projetos (sem cancelados) com go live no período. Só
+  63% dos concluídos desde 2024 têm agenda de go live registrada.
+- **Acima do prazo normal:** em andamento abertos há mais tempo que 75% dos concluídos do mesmo
+  sistema (a mesma régua da saúde Atenção).
+- **Entradas:** abertos no período sem os cancelados (o mesmo número do gráfico de entradas da Visão
+  geral). **Entregues ao suporte:** concluídos com entrega no período. **Vazão:** entregues ÷
+  entradas (acima de 100% a carteira diminui). **Cancelados:** entre os abertos no período (o CES não
+  tem data de cancelamento, então a conta é pela safra de abertura). **Meses para entregar a
+  carteira:** em andamento hoje ÷ entregues por mês no período.
+- **Horas realizadas:** OS fechadas, validadas e acertadas no período, sem os projetos cancelados (o
+  mesmo número do gráfico mensal da Visão geral). **Consumo no encerramento:** horas usadas ÷
+  adquiridas dos entregues no período. **Horas que sobraram:** adquiridas e não usadas pelos
+  entregues. **Horas por projeto entregue:** média de horas usadas.
+- **Estoque de horas:** total = soma do saldo dos abertos (o mesmo "Saldo de horas" da Visão geral).
+  **Parado** = saldo dos em andamento há mais de 30 dias sem agenda e sem nada marcado (o mesmo corte
+  de "Parados há +30 dias"). **Planejado** = horas das próximas agendas marcadas. **Dos suspensos** =
+  saldo dos suspensos. **Sem fechar** e **livre** como na página do projeto. A barra "onde está o
+  estoque" separa o saldo positivo em cinco situações: com agenda marcada, sem nada marcado até 30
+  dias, parado antes do go live (bate com "Crítico sem agenda"), parado depois do go live (bate com
+  "Encerrar") e suspensos; projeto com saldo negativo fica fora da barra e é citado no texto.
+- **Números de 03/10/2026** (posição de 01/10/2026, últimos 12 meses): TMI de 330 dias (mediana de
+  341; 12 meses anteriores: 252), myFarm 317 e AgriManager 376; 26 entregues para 71 entradas, vazão
+  de 37% (era 151%); 34 meses para entregar os 73 em andamento; primeira agenda em 8 dias e go live
+  em 51; estoque de 1.764h, com 526h paradas (382h depois do go live), 663h planejadas e 378h nos
+  suspensos; 2.342h realizadas (2.707h antes).
+
 ## Passo 1. Receber a exportação
 
 O Julio exporta do CES a planilha com as abas Projetos, Hr Adquirida, OS_EXECUTADA, OS PLANEJADA,
@@ -133,8 +195,12 @@ STATUS_ATUALIZACAO. Cada aba tem duas linhas de título antes do cabeçalho e co
 Dois cliques em `atualizar-painel.bat`, ou `python gerar_painel.py` na pasta. Se o Python sumir da
 máquina (já aconteceu), reinstalar com `winget install Python.Python.3.12 --scope user` (o .bat
 mostra esse comando quando não acha o Python); o .bat instala pandas, openpyxl e plotly sozinho.
+O .bat faz a análise inteira sem IA: a página inicial, as seções e a página de cada projeto saem do
+`gerar_painel.py`, e a janela mostra os números de cabeça da página inicial pra conferir de relance.
 Mexeu no `.bat`: manter as linhas com quebra CRLF e testar com dois cliques (ou `cmd /c` com o
-caminho inteiro) antes de entregar.
+caminho inteiro) antes de entregar. Rodado sem console (`cmd /c` de dentro de outro programa), o
+`timeout` do fim avisa "não há suporte para o redirecionamento de entrada": é só o teste, nos dois
+cliques ele espera os 20 segundos.
 
 ## Reports das analistas (quando houver `Report Projetos *.xlsx` na pasta)
 
@@ -171,7 +237,9 @@ vale pela anotação e pelo financeiro.
 3. Pergunta nova: célula markdown com a pergunta, código curto, executar, conferir (n visível,
    share × taxa, outra explicação), reflexão; sempre acima da conclusão, e atualizar a conclusão.
 4. Mudança de regra ou de tela: mexer em `modelo.py` (regras) ou `painel_template.html` (tela),
-   regenerar e conferir no navegador antes de entregar, inclusive tema escuro e largura de celular.
+   regenerar e conferir no navegador antes de entregar, inclusive tema escuro, menu recolhido e
+   largura de celular (menu em gaveta). Seção nova entra no menu lateral (`#sideNav`) e no `SECOES`
+   do JavaScript, com o mesmo `data-tab` do `id="tab-..."`.
 5. Responder ao Julio com o que mudou na fila de ataque (críticos, sem agenda, a encerrar) e com
    as tags [Certo] / [Provável] / [Suposição].
 
@@ -198,3 +266,12 @@ vale pela anotação e pelo financeiro.
   `--headless=new --dump-dom` e conferir os números contra os dados embutidos (`const D = ...`).
 - O `.gitignore` do sistema bloqueava `.bat` até 02/10/2026: o `atualizar-painel.bat` existia só na
   máquina onde foi criado, e na `pc-aliare` o Python estava sem plotly (o .bat recriado instalou).
+- O painel gerado vai pro GitHub e as duas máquinas geram: em 03/10/2026 o merge `1f52571` deixou
+  marcas de conflito (`<<<<<<<`) dentro do `painel-projetos-hunter.html` e a página não carregava.
+  Conflito no painel nunca se resolve na mão: regerar com o `.bat` (ou `gerar_painel.py`) e subir o
+  arquivo gerado. Conflito no `painel_template.html`, no `modelo.py` ou no `gerar_painel.py`, sim,
+  se resolve na mão.
+- O navegador embutido do Claude não abre o painel por `file://`; para olhar, servir a pasta com
+  `py -3 -m http.server 8765 --directory "projetos/Painel Projeto"`. Com a janela minimizada a página
+  não desenha quadro (`requestAnimationFrame` não roda): os gráficos da página do projeto ficam vazios
+  no teste, não no uso.
